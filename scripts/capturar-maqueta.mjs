@@ -88,21 +88,46 @@ async function capturar(hoja, etiqueta) {
   }
 }
 
+// Camino más corto de enlaces desde el índice hasta cada página (búsqueda en anchura sobre los href
+// relativos de los HTML): a una ficha de prueba se llega por el catálogo, no desde la portada.
+const enlacesDe = (pagina) =>
+  [...readFileSync(join(MAQUETA, pagina), "utf8").matchAll(/<a\b[^>]*\bhref="([^"#?:/]+\.html)"/g)].map((m) => m[1]);
+
+function caminoHasta(destino) {
+  const previo = new Map([["index.html", null]]);
+  const cola = ["index.html"];
+  while (cola.length) {
+    const actual = cola.shift();
+    if (actual === destino) break;
+    if (!existsSync(join(MAQUETA, actual))) continue;
+    for (const siguiente of enlacesDe(actual)) {
+      if (previo.has(siguiente)) continue;
+      previo.set(siguiente, actual);
+      cola.push(siguiente);
+    }
+  }
+  if (!previo.has(destino)) return null;
+  const pasos = [];
+  for (let p = destino; p !== "index.html"; p = previo.get(p)) pasos.unshift(p);
+  return pasos;
+}
+
 async function abrir(contexto, pagina) {
   const hoja = await contexto.newPage();
   hoja.on("console", (m) => m.type() === "error" && registro.fallas.push(`${pagina}: error en consola: ${m.text()}`));
   hoja.on("pageerror", (e) => registro.fallas.push(`${pagina}: excepción: ${e.message}`));
   const respuesta = await hoja.goto(`${base}/diseno`);
   if (respuesta.status() !== 200) registro.fallas.push(`el índice respondió ${respuesta.status()}`);
-  if (pagina !== "index.html") {
-    const enlace = hoja.locator(`a[href="${pagina}"]`).first();
-    if ((await enlace.count()) === 0) {
-      registro.fallas.push(`${pagina}: el índice no enlaza a esta página (no se llega caminando)`);
-      await hoja.goto(`${base}/diseno/${pagina}`);
-    } else {
-      await enlace.click();
-      await hoja.waitForURL(`**/diseno/${pagina}`);
-    }
+  if (pagina === "index.html") return hoja;
+  const camino = caminoHasta(pagina);
+  if (!camino) {
+    registro.fallas.push(`${pagina}: ningún enlace lleva a esta página desde el índice (no se llega caminando)`);
+    await hoja.goto(`${base}/diseno/${pagina}`);
+    return hoja;
+  }
+  for (const paso of camino) {
+    await hoja.locator(`a[href="${paso}"]`).first().click();
+    await hoja.waitForURL(`**/diseno/${paso}`);
   }
   return hoja;
 }

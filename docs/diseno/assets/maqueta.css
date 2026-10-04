@@ -98,6 +98,42 @@ body:not([data-estado="error"]) [data-si="error"] {
   vertical-align: top;
 }
 
+/* En teléfono la matriz se apila: tres columnas estrechas partían las palabras por la mitad. Cada fila
+   pasa a ser un bloque (dónde, en negrita · qué hacer · qué deberías ver). */
+@media (max-width: 599px) {
+  .mq-tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mq-tabla tr,
+  .mq-tabla td {
+    display: block;
+  }
+
+  .mq-tabla tr {
+    padding: var(--e-2) 0;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .mq-tabla td {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .mq-tabla td:first-child {
+    font-weight: 700;
+  }
+
+  .mq-tabla td + td {
+    margin-top: var(--e-1);
+  }
+}
+
 .mq-recorrido {
   margin: var(--e-4) 0 0;
   padding: 0;

@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { PRUEBAS, archivoDeFicha } from "./datos/catalogo.mjs";
 import { fechaDeConsulta } from "./nucleo/fecha.mjs";
 import { catalogo } from "./paginas/catalogo.mjs";
 import { direccion } from "./paginas/direccion.mjs";
@@ -20,7 +21,7 @@ export const PAGINAS = [
   { archivo: "direccion.html", generar: direccion },
   { archivo: "kit.html", generar: kit },
   { archivo: "catalogo.html", generar: catalogo },
-  { archivo: "prueba.html", generar: prueba },
+  ...PRUEBAS.map((p) => ({ archivo: archivoDeFicha(p.id), generar: prueba(p.id) })),
 ];
 
 const destino = salida();

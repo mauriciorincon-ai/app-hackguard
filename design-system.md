@@ -137,6 +137,7 @@ envejece. Una deuda («sin control asignado») es atención, no falla.
 | Botón | Borde de `--linea-fuerte`, sin relleno. Activo: borde y base azules, negrita |
 | Cadena de cierre | Hallazgo → corrección → re-prueba → cierre; horizontal en escritorio, vertical en teléfono; lo pendiente en línea punteada |
 | Aviso de pantalla | Vacío, carga y error con título propio y qué hacer. El error nombra cada falla |
+| Avisos de un objeto | Bajo el encabezado de una ficha, un sello por cada cosa que su lector debe saber antes de leerla (verificación vencida, toca revisarla, marcada para revisión). Del más grave al más leve; dice el umbral y qué hacer, no repite la cifra que ya está en la ficha. Un objeto sin nada que avisar no lleva sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
 filtros) se diseñan; ninguno es un texto gris de relleno.
@@ -178,6 +179,8 @@ hoja de impresión del informe (mirada 5).
 
 ## 12. Registro de cambios
 
+- **0.2.1** — Avisos de un objeto (sellos bajo el encabezado de la ficha). Regla de maqueta: una pantalla
+  de detalle muestra siempre el estado de su propio objeto.
 - **0.2.0** — Dirección «acta» (elegida por el usuario en la mirada 1): Source Serif 4 en títulos, regla
   doble, esquinas rectas, secciones numeradas. Navegación, filtros, ficha, texto destacado, movimiento,
   idioma y contrato con el código.

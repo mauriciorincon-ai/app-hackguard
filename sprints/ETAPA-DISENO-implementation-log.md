@@ -193,7 +193,50 @@ arnés). Su respuesta eligiendo dirección se tomó además como el visto bueno 
   se alinea por la línea base del texto.
 - **Cabecera de teléfono de más de 400 px de alto:** marca y botones en una línea, navegación debajo.
 
+### Mirada 2, ronda 2 — una ficha por prueba (2026-10-04)
+
+**Qué vio el usuario.** Filtró el catálogo por «Vencido», abrió una fila y la ficha dijo «Vigente ·
+verificada hace 12 días»: todas las filas abrían la ficha de `PR-IA-PINJ-001`. Yo lo había declarado
+como decisión («todas las filas abren la misma ficha») en vez de verlo como lo que era: un detalle que
+muestra el estado de otro objeto. Ninguna prueba lo veía, porque cada página era coherente por separado.
+
+**Qué se construyó.**
+
+- `datos/catalogo.mjs`: `REGLAS` (cinco reglas de veredicto como dato: `tasa-de-fallo/v1` y
+  `alertas-zap/v1` del spike; tres ilustrativas para modelos de decisión y revisión propia) y el detalle
+  de las 21 pruebas (por qué importa, resultado esperado, cuándo aplica, prioridad base, selector cuando
+  el spike lo trae). `fichaDe(id)` lanza si a una prueba le falta detalle, cita una regla inexistente o
+  nombra k sin declararlo. Todo al nivel de la regla dura 3: qué se verifica y qué se espera.
+- `paginas/prueba.mjs` pasa a ser una fábrica: **una página por prueba** (`prueba-<id>.html`, 21). La
+  ficha varía con su prueba: sello «Verificación vencida» o «Toca revisarla» bajo el encabezado, sello de
+  revisión de contenido, «Sin control asignado» como deuda, repeticiones con cota / sin cota /
+  determinista, vía de carga (adaptador o manual), fuentes derivadas del marco y la herramienta.
+- Los sellos dicen el **umbral** (30/60 de `umbrales.json`), no los días transcurridos: la cifra que
+  envejece sigue en un solo lugar, el que vigila la matriz de envejecimiento.
+- Arnés de capturas: llega a cada página por el **camino más corto de enlaces desde el índice** (a una
+  ficha se entra por el catálogo); antes exigía un enlace directo desde la portada.
+- Matriz del pie en teléfono: se apila por fila (tres columnas estrechas partían las palabras).
+
+**Demo en rojo (misma tanda, confirmada con `cmp`).**
+
+| # | Gate | Cambio deliberado | Rojo que dio |
+|---|---|---|---|
+| G4 | `maqueta-fichas` (nuevo) | el enlace de todas las filas vuelve a apuntar a la ficha de `PR-IA-PINJ-001` (el defecto original) | 4 de 5 en rojo: «dos filas abren la misma ficha: expected 1 to be 21» y «PR-SW-XSS-001 abre la ficha de otra prueba (prueba-pr-ia-pinj-001.html)»; al revertir, `catalogo.html` idéntico byte a byte y 5 de 5 en verde |
+
+El gate corre sobre la maqueta versionada y sobre una generada 45 días después (cuando varias filas ya
+cambiaron de estado), y exige que entre las dos se vean los tres estados de vigencia.
+
+**Verificación.** 344 pruebas unitarias (11 archivos) · 410 e2e en local (25 páginas × interacción, 380 px
+en dos idiomas, axe en dos temas y dos idiomas, movimiento reducido; 1 min) · capturas de cinco fichas
+representativas y del catálogo leídas como imagen, sin fallas.
+
+**Decisión.** El e2e recorre las 21 fichas completas, no una muestra: los nombres y textos difieren en
+largo y el desborde a 380 px es justo lo que una muestra no vería. Cuesta un minuto.
+
 ## Desviación del plan
+
+- **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba
+  (`prueba-<id>.html`). Es un ajuste pedido por el usuario en la mirada 2, no cambia el plan de miradas.
 
 - **La paleta se eligió a mano y se validó por código**, no se «buscó» por código como decía el plan:
   con cinco papeles bastó ajustar luminosidades hasta pasar los umbrales. Los umbrales son literales en

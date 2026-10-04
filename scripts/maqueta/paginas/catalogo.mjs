@@ -1,7 +1,7 @@
 // catalogo.html — pantalla 2 (C1, C3). El catálogo de pruebas como libro: una fila por prueba, filtrable
 // por familia, marco, control, madurez, vigencia y revisión de contenido. Los filtros FUNCIONAN
 // (controlador «filtro» de assets/maqueta.js). Vigencias y conteos salen de nucleo/calculos.mjs.
-import { CONTROLES, FAMILIAS, HERRAMIENTAS, INSTANTANEA, MADUREZ, MARCOS, PRUEBAS } from "../datos/catalogo.mjs";
+import { CONTROLES, FAMILIAS, HERRAMIENTAS, INSTANTANEA, MADUREZ, MARCOS, PRUEBAS, archivoDeFicha } from "../datos/catalogo.mjs";
 import { huellaDe, vigencia } from "../nucleo/calculos.mjs";
 import { celda, dato, dias, estado, huella, sello } from "../nucleo/componentes.mjs";
 import { VIGENCIA } from "../nucleo/estados.mjs";
@@ -22,7 +22,7 @@ function fila(prueba, consulta, umbrales) {
     ? { es: `k = ${prueba.k}`, en: `k = ${prueba.k}` }
     : { es: "determinista", en: "deterministic" };
 
-  const principal = `<p><a href="prueba.html">${t(prueba.nombre)}</a></p>
+  const principal = `<p><a href="${archivoDeFicha(prueba.id)}">${t(prueba.nombre)}</a></p>
 <p>${t(prueba.que_verifica)}</p>
 <p class="hg-menor">${t(FAMILIAS[prueba.familia])} · ${nombreDe(HERRAMIENTAS[prueba.herramienta])} · ${t(repeticiones)}</p>`;
 
@@ -42,7 +42,7 @@ function fila(prueba, consulta, umbrales) {
     `data-revision="${prueba.revision}"`,
   ].join(" ");
 
-  return `<li data-filtrable ${atributos}><dl class="hg-fila">
+  return `<li data-filtrable data-prueba="${prueba.id}" ${atributos}><dl class="hg-fila">
 ${celda({ es: "Prueba", en: "Test" }, `<p>${dato(prueba.id)}</p>`)}
 ${celda({ es: "Qué verifica", en: "What it verifies" }, principal)}
 ${celda({ es: "Marco y control", en: "Framework and control" }, `<p class="hg-menor">${neutro(`${marco.corto} ${marco.version} · ${prueba.ref}`)}</p>${controles}`)}
@@ -180,8 +180,8 @@ ${sello(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 2. El catálogo de pruebas. En la maqueta, todas las filas abren la misma ficha. Los datos son sintéticos y las versiones de los marcos, ilustrativas.",
-        en: "Review 2. The test catalog. In the mockup, every row opens the same record. Data is synthetic and framework versions are illustrative.",
+        es: "Mirada 2. El catálogo de pruebas. Cada fila abre la ficha de su prueba. Los datos son sintéticos y las versiones de los marcos, ilustrativas.",
+        en: "Review 2. The test catalog. Each row opens its own test's record. Data is synthetic and framework versions are illustrative.",
       },
       grupos: [barraDeEstados()],
     },
@@ -206,6 +206,11 @@ ${sello(
         donde: { es: "Columna «Marco y control»", en: "“Framework and control” column" },
         hacer: { es: "Busca las pruebas de software", en: "Find the software tests" },
         ver: { es: "«Sin control asignado» se ve como una deuda, no como un error", en: "“No control assigned” reads as a debt, not as an error" },
+      },
+      {
+        donde: { es: "Nombre de una prueba", en: "A test's name" },
+        hacer: { es: "Filtra por «Vencido» y abre una de las filas", en: "Filter by “Overdue” and open one of the rows" },
+        ver: { es: "Se abre la ficha de esa prueba, y dice que está vencida", en: "That test's record opens, and it says it is overdue" },
       },
       {
         donde: { es: "En el teléfono", en: "On the phone" },

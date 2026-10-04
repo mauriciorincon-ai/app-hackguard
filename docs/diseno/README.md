@@ -45,17 +45,19 @@ Aprobadas con el plan de la etapa (2026-10-03):
 3. **Entrega de la maqueta:** copia `docs/diseno/` → `public/diseno/` en el `build` (derivado, ignorado),
    con `vercel.json` y `serve.json` equivalentes. Solo en despliegues protegidos. Que el paquete público
    del H2 jamás la incluya es un gate a construir en el S4.
-4. **Nombres de página:** `index` · `direccion` · `kit` · `tablero` · `catalogo` · `prueba` · `marcos` ·
-   `controles` · `propuestas` · `activo` · `plan` · `evidencia` · `hallazgo` · `brecha` · `control` ·
-   `informe`.
+4. **Nombres de página:** `index` · `direccion` · `kit` · `tablero` · `catalogo` · `prueba-<id>` (una
+   por prueba del catálogo) · `marcos` · `controles` · `propuestas` · `activo` · `plan` · `evidencia` ·
+   `hallazgo` · `brecha` · `control` · `informe`.
 5. **C18 (validación del instrumento)** no tiene pantalla propia: banda de estado en `tablero` y ficha
    de reproducibilidad en `informe`.
 6. **Toda marca de estado es un trazo SVG**, nunca un carácter de una fuente.
 7. **Tema por defecto: oscuro.** El claro se diseña y se mira con el mismo cuidado.
 9. **Navegación:** cinco secciones (Tablero · Catálogo · Activos · Evidencia · Brecha) y, dentro de cada
    una, sus páginas. Una página que la maqueta aún no tiene se dibuja como texto, no como enlace roto.
-10. **En el catálogo de la maqueta, todas las filas abren la misma ficha** (`prueba.html`, la de
-    `PR-IA-PINJ-001`).
+10. **Cada fila del catálogo abre la ficha de SU prueba** (`prueba-<id>.html`, una página por prueba;
+    21 hoy). Reemplaza la decisión anterior —todas las filas abrían la ficha de `PR-IA-PINJ-001`—, que
+    el usuario encontró rota en la mirada 2: una prueba vencida se leía «Vigente» al abrirla. Una
+    pantalla de detalle de la maqueta jamás muestra el estado de otro objeto.
 8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
    en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
 
@@ -68,7 +70,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 |---|---|---|
 | 0 | Fase 0: el preview del PR abre la maqueta provisional | **abre** (2026-10-03) |
 | 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
-| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba` | **en mirada** (ronda 1) |
+| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **en mirada** (ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo` · `plan` | pendiente |
 | 4 | `evidencia` · `hallazgo` | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
@@ -82,6 +84,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 |---|---|---|---|---|
 | 2026-10-03 | `index.html` provisional (fase 0, tubería) | preview del PR #4, escritorio, tema oscuro | Captura de pantalla del preview con la página con estilos, las tres filas de vigencia y el estado «Cargando» activo con su mensaje; texto: «Esto aparece que se supone que debo hacer». No pidió ajustes. Antes había respondido «continúa» sin comentar la página y se le repreguntó | Fase 1: dirección |
 | 2026-10-04 | `direccion.html` (mirada 1, ronda 1): dirección A «libro» recomendada y B «acta» conmutable | preview del PR #4 | «Me voy con B» — **dirección elegida: B «acta»** (títulos con serifa Source Serif 4, regla doble, esquinas rectas, secciones numeradas). Eligió la alternativa, no la recomendada; sin más ajustes | Consolidación de B como única dirección (la A y el conmutador se retiran) y fase 2: sistema completo, kit, catálogo y ficha de prueba |
+| 2026-10-04 | `catalogo` y ficha de prueba (mirada 2, ronda 1) | preview del PR #4, escritorio, tema oscuro | Captura de la ficha de `PR-IA-PINJ-001` («Vigente · verificada hace 12 días») abierta desde una fila filtrada por «Vencido»; texto: «Esto muestra en el que esta vencido». **Ajuste pedido:** la ficha debe ser la de la prueba que se abrió. Antes preguntó «Que falta de mi» (se le respondió con los enlaces directos). Mirada 2 aún sin veredicto | Ronda 2 (segunda vuelta, sin parada propia): una ficha por prueba con su vigencia, su regla de veredicto y sus avisos (por revisar · vencida · marcada para revisión · sin control); gate «cada fila abre su ficha» |
 
 ## Cobertura (se llena durante la etapa)
 
@@ -89,7 +92,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 |---|---|---|
 | `tablero` | C16 · C18 | — |
 | `catalogo` | C1 · C3 | con datos · sin resultados (filtros) · vacío · carga · error (pruebas rechazadas al cargar) |
-| `prueba` | C1 · C6 | con datos · vacío (prueba retirada) · carga · error (no pasa su esquema) |
+| `prueba-<id>` | C1 · C3 · C6 | con datos, en sus variantes: vigente · por revisar · vencida (sello bajo el encabezado) · marcada para revisión de contenido · sin control asignado · con repeticiones y cota · determinista · con adaptador o por carga manual — y vacío (prueba retirada) · carga · error (no pasa su esquema) |
 | `marcos` | C4 | — |
 | `controles` | C5 | — |
 | `propuestas` | C2 · C7 · C15 | — |
@@ -113,6 +116,7 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Autocontención | `tests/unit/maqueta-autocontenida.test.ts` | Cualquier petición a la red |
 | Bilingüe | `tests/unit/maqueta-bilingue.test.ts` | Texto o atributo en un solo idioma |
 | Envejecimiento | `tests/unit/maqueta-envejecimiento.test.ts` | Estado equivocado en una fecha umbral |
+| Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, o que fila y ficha digan vigencias distintas (hoy y 45 días después) |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
 | Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
 

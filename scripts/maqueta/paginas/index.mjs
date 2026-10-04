@@ -1,5 +1,6 @@
 // index.html: el recorrido de la maqueta. Provisional hasta la mirada 5 (la portada real): por ahora
 // lista las páginas que ya existen, en el orden en que se miran.
+import { archivoDeFicha } from "../datos/catalogo.mjs";
 import { t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
 
@@ -29,11 +30,11 @@ const PAGINAS = [
     },
   },
   {
-    archivo: "prueba.html",
+    archivo: archivoDeFicha("PR-IA-PINJ-001"),
     nombre: { es: "Ficha de prueba", en: "Test record" },
     que: {
-      es: "Mirada 2. Qué verifica, resultado esperado, regla de veredicto, marco y controles.",
-      en: "Review 2. What it verifies, expected result, verdict rule, framework and controls.",
+      es: "Mirada 2. Qué verifica, resultado esperado, regla de veredicto, marco y controles. Cada prueba del catálogo tiene la suya.",
+      en: "Review 2. What it verifies, expected result, verdict rule, framework and controls. Every test in the catalog has its own.",
     },
   },
 ];

@@ -367,6 +367,17 @@ a {
   font-weight: 700;
 }
 
+/* Avisos de un objeto (bajo su encabezado): uno por línea, del más grave al más leve. */
+.hg-avisos {
+  display: grid;
+  gap: var(--e-3);
+  margin-top: var(--e-5);
+}
+
+.hg-avisos .hg-sello p {
+  max-width: 70ch;
+}
+
 /* ---------- Encabezado del control ---------- */
 
 .hg-encabezado {
