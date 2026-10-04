@@ -8,7 +8,7 @@
     "start": "serve out -l ${PORT:-3000} --config ../serve.json",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --coverage",
     "test:e2e": "playwright test",
     "prepare": "git config core.hooksPath githooks",
     "maqueta": "node scripts/maqueta/generar.mjs",
