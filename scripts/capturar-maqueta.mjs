@@ -1,6 +1,6 @@
 // Arnés de capturas de la maqueta, con PASADA DE INTERACCIÓN (regla 22).
 //
-//   pnpm capturas:maqueta --salida <dir fuera del repo> [--paginas index,kit] [--anchos 380,1280] [--simular]
+//   pnpm capturas:maqueta --salida <dir fuera del repo> [--paginas index,kit] [--anchos 380,1280] [--tramos 1100] [--simular]
 //
 // Sirve docs/diseno/ bajo /diseno/ en un puerto libre y entra POR EL ÍNDICE, como el usuario (no por
 // file://). Por cada página × tema × idioma × ancho × estado de sala: mide desborde horizontal y guarda
@@ -40,6 +40,9 @@ if (!existsSync(join(MAQUETA, "index.html"))) {
 const paginas = (opcion("paginas")?.split(",").map((p) => `${p}.html`) ?? readdirSync(MAQUETA).filter((f) => f.endsWith(".html"))).sort();
 const anchos = (opcion("anchos") ?? "380,1280").split(",").map(Number);
 const simular = args.includes("--simular");
+// --tramos <alto>: parte cada página en tramos de ese alto (px CSS). Una página larga en una sola
+// captura no se puede leer como imagen.
+const tramos = opcion("tramos") ? Number(opcion("tramos")) : 0;
 const TEMAS = ["oscuro", "claro"];
 const IDIOMAS = ["es", "en"];
 const VISIONES = ["deuteranopia", "protanopia", "tritanopia", "achromatopsia"];
@@ -66,6 +69,24 @@ const base = `http://127.0.0.1:${servidor.address().port}`;
 
 const registro = { arbol: MAQUETA, capturas: 0, interacciones: {}, fuentes: {}, fallas: [] };
 const navegador = await chromium.launch();
+
+async function capturar(hoja, etiqueta) {
+  if (!tramos) {
+    await hoja.screenshot({ path: join(salida, `${etiqueta}.png`), fullPage: true, animations: "disabled" });
+    registro.capturas += 1;
+    return;
+  }
+  const { ancho, alto } = await hoja.evaluate(() => ({ ancho: document.documentElement.clientWidth, alto: document.documentElement.scrollHeight }));
+  for (let y = 0, n = 0; y < alto; y += tramos, n += 1) {
+    await hoja.screenshot({
+      path: join(salida, `${etiqueta}__t${n}.png`),
+      fullPage: true,
+      animations: "disabled",
+      clip: { x: 0, y, width: ancho, height: Math.min(tramos, alto - y) },
+    });
+    registro.capturas += 1;
+  }
+}
 
 async function abrir(contexto, pagina) {
   const hoja = await contexto.newPage();
@@ -108,29 +129,10 @@ try {
             if (estado) await hoja.locator(`[data-controlador="estado"][data-valor="${estado}"]`).click();
             const etiqueta = [nombre, tema, idioma, ancho, estado].filter(Boolean).join("__");
             for (const d of await desbordes(hoja)) registro.fallas.push(`${etiqueta}: desborde → ${d}`);
-            await hoja.screenshot({ path: join(salida, `${etiqueta}.png`), fullPage: true, animations: "disabled" });
-            registro.capturas += 1;
+            await capturar(hoja, etiqueta);
           }
           await contexto.close();
         }
-      }
-    }
-
-    // Variantes de dirección (solo las páginas que la ofrecen): la alternativa también se fotografía.
-    for (const tema of TEMAS) {
-      for (const ancho of anchos) {
-        const contexto = await navegador.newContext({ viewport: { width: ancho, height: 900 }, deviceScaleFactor: 2 });
-        await contexto.addInitScript((t) => localStorage.setItem("hg-maqueta-v0:tema", t), tema);
-        const hoja = await abrir(contexto, pagina);
-        const otras = await hoja.locator('[data-controlador="direccion"][aria-pressed="false"]').evaluateAll((els) => els.map((el) => el.getAttribute("data-valor")));
-        for (const direccion of otras) {
-          await hoja.locator(`[data-controlador="direccion"][data-valor="${direccion}"]`).click();
-          const etiqueta = [nombre, tema, "es", ancho, `direccion-${direccion}`].join("__");
-          for (const d of await desbordes(hoja)) registro.fallas.push(`${etiqueta}: desborde → ${d}`);
-          await hoja.screenshot({ path: join(salida, `${etiqueta}.png`), fullPage: true, animations: "disabled" });
-          registro.capturas += 1;
-        }
-        await contexto.close();
       }
     }
 

@@ -8,8 +8,32 @@ const PAGINAS = [
     archivo: "direccion.html",
     nombre: { es: "Dirección", en: "Direction" },
     que: {
-      es: "La identidad de HackGuard sobre un corte real de la vista por control: tipografía, color, estados y la cadena de cierre.",
-      en: "HackGuard's identity on a real slice of the control view: type, color, statuses and the closure chain.",
+      es: "Mirada 1, aprobada. La identidad sobre un corte real de la vista por control: tipografía, color, estados y la cadena de cierre.",
+      en: "Review 1, approved. The identity on a real slice of the control view: type, color, statuses and the closure chain.",
+    },
+  },
+  {
+    archivo: "kit.html",
+    nombre: { es: "Kit de componentes", en: "Component kit" },
+    que: {
+      es: "Mirada 2. Cada token y cada componente del sistema de diseño.",
+      en: "Review 2. Every token and component of the design system.",
+    },
+  },
+  {
+    archivo: "catalogo.html",
+    nombre: { es: "Catálogo de pruebas", en: "Test catalog" },
+    que: {
+      es: "Mirada 2. Las pruebas de las cuatro familias, con filtros que funcionan.",
+      en: "Review 2. Tests for the four families, with working filters.",
+    },
+  },
+  {
+    archivo: "prueba.html",
+    nombre: { es: "Ficha de prueba", en: "Test record" },
+    que: {
+      es: "Mirada 2. Qué verifica, resultado esperado, regla de veredicto, marco y controles.",
+      en: "Review 2. What it verifies, expected result, verdict rule, framework and controls.",
     },
   },
 ];

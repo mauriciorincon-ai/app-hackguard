@@ -142,6 +142,57 @@ enlace directo del preview en el chat.
 claro en escritorio, teléfono en oscuro, dirección B y estado de error. Sin desbordes, 8 controles
 activados en `direccion.html` y 2 en `index.html`, fuentes en `loaded`.
 
+## Fase 2 — Sistema, kit, catálogo y ficha (2026-10-04)
+
+**Mirada 1 registrada:** el usuario eligió la dirección **B «acta»** («Me voy con B»), no la recomendada.
+Se consolidó como única dirección: la A y su conmutador se retiraron del repo (hoja, script, generador,
+arnés). Su respuesta eligiendo dirección se tomó además como el visto bueno para seguir con la fase 2.
+
+### Qué se construyó
+
+- **`design-system.md` 0.2.0** completo: personalidad, color, tipografía, espacio, estados, componentes
+  canon, movimiento, idioma, contrato con el código, anti-patrones.
+- **`kit.html`**: cada token y componente con la hoja real.
+- **`catalogo.html`** (pantalla 2): 21 pruebas sintéticas de las cuatro familias en filas de libro, con
+  filtros que funcionan (familia, marco, control, madurez, vigencia, revisión), contador y «Quitar
+  filtros». Estados: con datos, sin resultados, vacío, carga y error (pruebas rechazadas al cargar).
+- **`prueba.html`** (pantalla 3): ficha con resultado esperado destacado, regla de veredicto con k y su
+  cota, asimetría, «no ejecutada» frente a «superada», configuración de la corrida, marco y controles
+  con su propia vigencia, cuándo aplica y fuentes.
+- **Navegación de la app** (cinco secciones y subnavegación) en el armazón de página.
+- **Catálogo sintético** en `scripts/maqueta/datos/catalogo.mjs`; el corte de la vista por control ahora
+  sale de él.
+- **Arnés:** capturas por tramos (`--tramos`), listas desplegables en la pasada de interacción, vueltas
+  para controles ocultos o ya pulsados, y una sonda nueva: nada se sale de su columna dentro de una fila.
+
+### Decisiones
+
+- **Las opciones de una lista llevan sus dos idiomas** en `data-es` / `data-en` y el script pone el del
+  idioma activo (un `<option>` no admite marcado); el gate bilingüe lo exige.
+- **En teléfono las filas van en dos columnas** bajo el folio y la descripción: la primera versión
+  ocupaba casi una pantalla por prueba.
+- **El marco y la prueba tienen relojes distintos:** la ficha muestra la vigencia de la prueba, de la
+  herramienta, del marco y de cada fuente por separado.
+- **Fuentes como texto, no como enlace:** la maqueta no enlaza hacia fuera.
+
+### Demos en rojo de esta fase
+
+| # | Gate | Cambio deliberado | Rojo que dio |
+|---|---|---|---|
+| G1 | sonda de columna (arnés) | un dato con ancho mínimo mayor que su columna | «celda: `<span class="hg-huella">` se sale de su columna por 80 px» |
+| G2 | pasada de interacción | (estado real) «Todas» quedaba pulsado tras «Quitar filtros» | «el control «filtro:familia» no cambió nada al activarlo» — era un defecto de la sonda, no de la página; se corrigió la sonda |
+| G3 | bilingüe · listas | una opción de lista sin su inglés | «opción sin inglés → `<option value="limpia" data-es="Limpia">`» |
+
+### Bugs y resoluciones
+
+- **La sonda de interacción daba un falso rojo** con grupos que vuelven a su estado inicial; ahora pulsa
+  antes un hermano. Y otro falso rojo de la sonda de columna con los rótulos ocultos a la vista.
+- **Mi primera demo de la sonda de columna no falló** (quitar el corte de la huella no la desbordaba a
+  1280 px): la medición lo dijo y se cambió por una demo que sí desborda.
+- **El texto que sigue a un estado se descolgaba** (la línea base la ponía el símbolo): el estado ahora
+  se alinea por la línea base del texto.
+- **Cabecera de teléfono de más de 400 px de alto:** marca y botones en una línea, navegación debajo.
+
 ## Desviación del plan
 
 - **La paleta se eligió a mano y se validó por código**, no se «buscó» por código como decía el plan:

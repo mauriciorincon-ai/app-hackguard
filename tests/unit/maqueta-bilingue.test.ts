@@ -20,7 +20,7 @@ describe("maqueta: todo texto en los dos idiomas", () => {
         const padre = nodo.parentElement!;
         // OJO: <html lang> no cuenta — con él, todo texto de la página «tendría idioma» y el gate no
         // podría fallar (así nació: su primera demo en rojo salió verde).
-        if (padre.closest("body [lang], body[lang], [data-neutro], script, style")) continue;
+        if (padre.closest("body [lang], body[lang], [data-neutro], option[data-es][data-en], script, style")) continue;
         sueltos.push(texto.trim().slice(0, 60));
       }
       expect(sueltos, `${pagina}: texto sin idioma declarado`).toEqual([]);
@@ -35,6 +35,15 @@ describe("maqueta: todo texto en los dos idiomas", () => {
       }
       const ingles = doc.body.querySelectorAll('[lang="en"]').length;
       expect(ingles).toBe(doc.body.querySelectorAll('[lang="es"]').length);
+    });
+
+    it(`${pagina}: cada opción de una lista lleva sus dos idiomas, y arranca en español`, () => {
+      for (const opcion of doc.querySelectorAll("option:not([data-neutro])")) {
+        const quien = opcion.outerHTML.slice(0, 80);
+        expect(opcion.getAttribute("data-es"), `${pagina}: opción sin español → ${quien}`).toBeTruthy();
+        expect(opcion.getAttribute("data-en"), `${pagina}: opción sin inglés → ${quien}`).toBeTruthy();
+        expect(opcion.textContent, `${pagina}: la opción no arranca en español → ${quien}`).toBe(opcion.getAttribute("data-es"));
+      }
     });
 
     it(`${pagina}: título y atributos de texto con sus dos idiomas`, () => {

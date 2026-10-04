@@ -6,8 +6,11 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fechaDeConsulta } from "./nucleo/fecha.mjs";
+import { catalogo } from "./paginas/catalogo.mjs";
 import { direccion } from "./paginas/direccion.mjs";
 import { index } from "./paginas/index.mjs";
+import { kit } from "./paginas/kit.mjs";
+import { prueba } from "./paginas/prueba.mjs";
 import { MAQUETA, salida } from "./rutas.mjs";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -15,12 +18,16 @@ const AQUI = dirname(fileURLToPath(import.meta.url));
 export const PAGINAS = [
   { archivo: "index.html", generar: index },
   { archivo: "direccion.html", generar: direccion },
+  { archivo: "kit.html", generar: kit },
+  { archivo: "catalogo.html", generar: catalogo },
+  { archivo: "prueba.html", generar: prueba },
 ];
 
 const destino = salida();
 const contexto = {
   consulta: fechaDeConsulta(),
   umbrales: JSON.parse(readFileSync(join(AQUI, "datos", "umbrales.json"), "utf8")),
+  existentes: PAGINAS.map((p) => p.archivo),
 };
 
 mkdirSync(destino, { recursive: true });

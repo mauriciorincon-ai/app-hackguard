@@ -10,6 +10,14 @@ export function huellaDe(registro) {
   return "sha256:" + createHash("sha256").update(canonico).digest("hex");
 }
 
+/** Semáforo de vigencia (RF-01.5): días desde la última verificación y su estado. */
+export function vigencia(verificada, consulta, umbrales) {
+  const dias = diasEntre(verificada, consulta);
+  if (dias < 0) throw new Error(`verificación (${verificada}) posterior a la fecha de consulta (${consulta})`);
+  const { por_revisar, vencido } = umbrales.vigencia;
+  return { dias, estado: dias >= vencido ? "vencido" : dias >= por_revisar ? "por_revisar" : "vigente" };
+}
+
 /** Antigüedad de una evidencia: vigente hasta el umbral, antigua desde él (DA-04: 180 días). */
 export function antiguedad(fecha, consulta, umbrales) {
   const dias = diasEntre(fecha, consulta);

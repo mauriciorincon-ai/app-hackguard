@@ -3,6 +3,8 @@
 // espera — ninguna carga ni procedimiento. Las versiones de marcos y los resúmenes del Anexo A son
 // ilustrativos: se fijan con fuente y fecha en la fase 0 del S1 (DA-01). De ISO/IEC solo viaja el
 // identificador y un resumen con palabras propias (regla 11).
+import { CONTROLES, HERRAMIENTAS, PRUEBAS as CATALOGO } from "./catalogo.mjs";
+
 export const ACTIVOS = {
   "ACT-DEMO-ASISTENTE": { nombre: { es: "Asistente demo de soporte", en: "Demo support assistant" } },
   "ACT-DEMO-CLASIFICADOR": { nombre: { es: "Clasificador demo de solicitudes", en: "Demo request classifier" } },
@@ -12,50 +14,22 @@ export const CONTROL = {
   id: "iso42001-A.6.2.4",
   marco: "ISO/IEC 42001:2023",
   capa: { es: "Anexo A · capa por defecto", en: "Annex A · default layer" },
-  resumen: {
-    es: "El sistema de IA se verifica y se valida antes de usarse",
-    en: "The AI system is verified and validated before use",
-  },
+  resumen: CONTROLES["iso42001-A.6.2.4"],
+};
+
+// Las pruebas del plan que cubren el control del corte: salen del catálogo, con el activo que el plan
+// les asigna.
+const delCatalogo = (id, activo) => {
+  const prueba = CATALOGO.find((c) => c.id === id);
+  const herramienta = HERRAMIENTAS[prueba.herramienta].nombre;
+  return { id, activo, herramienta, k: prueba.k, que_verifica: prueba.que_verifica };
 };
 
 export const PRUEBAS = [
-  {
-    id: "PR-IA-PINJ-001",
-    activo: "ACT-DEMO-ASISTENTE",
-    herramienta: "garak",
-    k: 20,
-    que_verifica: {
-      es: "El asistente no obedece instrucciones que llegan dentro del contenido que procesa.",
-      en: "The assistant does not follow instructions that arrive inside the content it processes.",
-    },
-  },
-  {
-    id: "PR-IA-ENC-002",
-    activo: "ACT-DEMO-ASISTENTE",
-    herramienta: "garak",
-    que_verifica: {
-      es: "El asistente mantiene sus restricciones cuando la entrada llega en otra codificación.",
-      en: "The assistant keeps its restrictions when the input arrives in a different encoding.",
-    },
-  },
-  {
-    id: "PR-MD-CAL-001",
-    activo: "ACT-DEMO-CLASIFICADOR",
-    herramienta: "scikit-learn",
-    que_verifica: {
-      es: "Las probabilidades del clasificador corresponden a su acierto real cerca del umbral de decisión.",
-      en: "The classifier's probabilities match its real accuracy near the decision threshold.",
-    },
-  },
-  {
-    id: "PR-MD-PAR-001",
-    activo: "ACT-DEMO-CLASIFICADOR",
-    herramienta: "promptfoo",
-    que_verifica: {
-      es: "El clasificador decide lo mismo ante el mismo caso en español y en inglés.",
-      en: "The classifier makes the same decision for the same case in Spanish and in English.",
-    },
-  },
+  delCatalogo("PR-IA-PINJ-001", "ACT-DEMO-ASISTENTE"),
+  delCatalogo("PR-IA-ENC-002", "ACT-DEMO-ASISTENTE"),
+  delCatalogo("PR-MD-CAL-001", "ACT-DEMO-CLASIFICADOR"),
+  delCatalogo("PR-MD-PAR-001", "ACT-DEMO-CLASIFICADOR"),
 ];
 
 // Sobres de evidencia confirmados. `evaluadas`/`fallidas` son conteos del adaptador.

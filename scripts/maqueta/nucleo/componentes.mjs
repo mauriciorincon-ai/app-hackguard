@@ -19,7 +19,7 @@ export const dato = (texto) => `<span class="hg-dato" data-neutro>${esc(texto)}<
 /** Huella abreviada (algoritmo + primeros 8 y últimos 4). */
 export function huella(valor) {
   const [algoritmo, hex] = valor.split(":");
-  return `<span class="hg-huella" data-neutro><span class="hg-huella-pre">${esc(algoritmo)}:</span>${esc(hex.slice(0, 8))}…${esc(hex.slice(-4))}</span>`;
+  return `<span class="hg-huella" data-neutro><span class="hg-huella-pre">${esc(algoritmo)}:</span><wbr>${esc(hex.slice(0, 8))}…${esc(hex.slice(-4))}</span>`;
 }
 
 /** La firma en tinta azul: una persona confirmó esto, en esta fecha. */

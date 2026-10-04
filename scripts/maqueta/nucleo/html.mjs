@@ -20,6 +20,13 @@ export function t(texto) {
   return `<span lang="es">${esc(es)}</span><span lang="en">${esc(en)}</span>`;
 }
 
+/** Texto en los dos idiomas con piezas de HTML incrustadas: «{clave}» se sustituye por `piezas.clave`. */
+export function tHtml(texto, piezas) {
+  const { es, en } = par(texto);
+  const armar = (frase) => esc(frase).replace(/\{(\w+)\}/g, (_, clave) => piezas[clave]);
+  return `<span lang="es">${armar(es)}</span><span lang="en">${armar(en)}</span>`;
+}
+
 /** Atributo de texto (aria-label, title…) con sus dos idiomas; el script lo conmuta. */
 export function atributo(nombre, texto) {
   const { es, en } = par(texto);

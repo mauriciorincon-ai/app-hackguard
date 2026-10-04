@@ -52,6 +52,12 @@ Aprobadas con el plan de la etapa (2026-10-03):
    de reproducibilidad en `informe`.
 6. **Toda marca de estado es un trazo SVG**, nunca un carácter de una fuente.
 7. **Tema por defecto: oscuro.** El claro se diseña y se mira con el mismo cuidado.
+9. **Navegación:** cinco secciones (Tablero · Catálogo · Activos · Evidencia · Brecha) y, dentro de cada
+   una, sus páginas. Una página que la maqueta aún no tiene se dibuja como texto, no como enlace roto.
+10. **En el catálogo de la maqueta, todas las filas abren la misma ficha** (`prueba.html`, la de
+    `PR-IA-PINJ-001`).
+8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
+   en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
 
 ## Plan de miradas
 
@@ -61,8 +67,8 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | # | Artefacto | Estado |
 |---|---|---|
 | 0 | Fase 0: el preview del PR abre la maqueta provisional | **abre** (2026-10-03) |
-| 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **en mirada** (ronda 1) |
-| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba` | pendiente |
+| 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
+| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba` | **en mirada** (ronda 1) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo` · `plan` | pendiente |
 | 4 | `evidencia` · `hallazgo` | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
@@ -75,14 +81,15 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | Fecha | Artefacto | Dónde se miró | Veredicto del usuario (textual) | Qué se construyó encima |
 |---|---|---|---|---|
 | 2026-10-03 | `index.html` provisional (fase 0, tubería) | preview del PR #4, escritorio, tema oscuro | Captura de pantalla del preview con la página con estilos, las tres filas de vigencia y el estado «Cargando» activo con su mensaje; texto: «Esto aparece que se supone que debo hacer». No pidió ajustes. Antes había respondido «continúa» sin comentar la página y se le repreguntó | Fase 1: dirección |
+| 2026-10-04 | `direccion.html` (mirada 1, ronda 1): dirección A «libro» recomendada y B «acta» conmutable | preview del PR #4 | «Me voy con B» — **dirección elegida: B «acta»** (títulos con serifa Source Serif 4, regla doble, esquinas rectas, secciones numeradas). Eligió la alternativa, no la recomendada; sin más ajustes | Consolidación de B como única dirección (la A y el conmutador se retiran) y fase 2: sistema completo, kit, catálogo y ficha de prueba |
 
 ## Cobertura (se llena durante la etapa)
 
 | Página | Funcionalidad | Estados que muestra |
 |---|---|---|
 | `tablero` | C16 · C18 | — |
-| `catalogo` | C1 · C3 | — |
-| `prueba` | C1 · C6 | — |
+| `catalogo` | C1 · C3 | con datos · sin resultados (filtros) · vacío · carga · error (pruebas rechazadas al cargar) |
+| `prueba` | C1 · C6 | con datos · vacío (prueba retirada) · carga · error (no pasa su esquema) |
 | `marcos` | C4 | — |
 | `controles` | C5 | — |
 | `propuestas` | C2 · C7 · C15 | — |

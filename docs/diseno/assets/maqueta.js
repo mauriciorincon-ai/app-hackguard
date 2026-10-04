@@ -42,6 +42,8 @@
     if (titulo && titulo.getAttribute("data-" + idioma)) {
       document.title = titulo.getAttribute("data-" + idioma);
     }
+    var opciones = document.querySelectorAll("option[data-" + idioma + "]");
+    for (var o = 0; o < opciones.length; o++) opciones[o].textContent = opciones[o].getAttribute("data-" + idioma);
     var conEtiqueta = document.querySelectorAll("[data-aria-label-" + idioma + "]");
     for (var i = 0; i < conEtiqueta.length; i++) {
       conEtiqueta[i].setAttribute("aria-label", conEtiqueta[i].getAttribute("data-aria-label-" + idioma));
@@ -60,11 +62,67 @@
     guardar("idioma", idioma);
   });
 
-  registrar("direccion", function (control) {
-    var direccion = control.getAttribute("data-valor");
-    raiz.setAttribute("data-direccion", direccion);
-    guardar("direccion", direccion);
-    marcarGrupo(control, "direccion");
+  // Filtros del catálogo: cada control declara data-campo; "" es «todos». Una fila [data-filtrable]
+  // se oculta si no cumple algún campo. Los campos con varias entradas (controles) van separados por
+  // espacios.
+  function valorDe(campo) {
+    var pulsado = document.querySelector('button[data-controlador="filtro"][data-campo="' + campo + '"][aria-pressed="true"]');
+    if (pulsado) return pulsado.getAttribute("data-valor");
+    var lista = document.querySelector('select[data-controlador="filtro"][data-campo="' + campo + '"]');
+    return lista ? lista.value : "";
+  }
+
+  function aplicarFiltros() {
+    var campos = {};
+    var controles = document.querySelectorAll('[data-controlador="filtro"]');
+    for (var i = 0; i < controles.length; i++) campos[controles[i].getAttribute("data-campo")] = true;
+    var activos = 0;
+    var criterio = {};
+    for (var campo in campos) {
+      criterio[campo] = valorDe(campo);
+      if (criterio[campo]) activos++;
+    }
+    var filas = document.querySelectorAll("[data-filtrable]");
+    var visibles = 0;
+    for (var j = 0; j < filas.length; j++) {
+      var cumple = true;
+      for (var c in criterio) {
+        if (!criterio[c]) continue;
+        var valores = (filas[j].getAttribute("data-" + c) || "").split(" ");
+        if (valores.indexOf(criterio[c]) === -1) cumple = false;
+      }
+      filas[j].hidden = !cumple;
+      if (cumple) visibles++;
+    }
+    var cuentas = document.querySelectorAll("[data-cuenta-filtrada]");
+    for (var k = 0; k < cuentas.length; k++) cuentas[k].textContent = String(visibles);
+    var vacio = document.querySelector("[data-sin-resultados]");
+    if (vacio) vacio.hidden = visibles !== 0 || filas.length === 0;
+    var limpiar = document.querySelector('[data-controlador="filtro-limpiar"]');
+    if (limpiar) limpiar.hidden = activos === 0;
+  }
+
+  registrar("filtro", function (control) {
+    if (control.tagName === "BUTTON") marcarGrupo(control, "filtro");
+    else control.setAttribute("data-valor-activo", control.value);
+    aplicarFiltros();
+  });
+
+  registrar("filtro-limpiar", function () {
+    var listas = document.querySelectorAll('select[data-controlador="filtro"]');
+    for (var i = 0; i < listas.length; i++) {
+      listas[i].value = "";
+      listas[i].setAttribute("data-valor-activo", "");
+    }
+    var botones = document.querySelectorAll('button[data-controlador="filtro"]');
+    for (var j = 0; j < botones.length; j++) {
+      botones[j].setAttribute("aria-pressed", String(botones[j].getAttribute("data-valor") === ""));
+    }
+    aplicarFiltros();
+  });
+
+  registrar("alternar", function (control) {
+    control.setAttribute("aria-pressed", String(control.getAttribute("aria-pressed") !== "true"));
   });
 
   registrar("estado", function (control) {
@@ -80,24 +138,19 @@
     raiz.setAttribute("lang", idioma);
   }
 
-  var direccion = leer("direccion");
-  if (direccion === "a" || direccion === "b") raiz.setAttribute("data-direccion", direccion);
-
   document.addEventListener("DOMContentLoaded", function () {
     aplicarIdioma(raiz.getAttribute("data-lang"));
-    var botones = document.querySelectorAll('[data-controlador="direccion"]');
-    for (var i = 0; i < botones.length; i++) {
-      botones[i].setAttribute(
-        "aria-pressed",
-        String(botones[i].getAttribute("data-valor") === raiz.getAttribute("data-direccion")),
-      );
-    }
   });
 
-  document.addEventListener("click", function (evento) {
+  function despachar(evento) {
     var control = evento.target.closest ? evento.target.closest("[data-controlador]") : null;
     if (!control) return;
+    var esLista = control.tagName === "SELECT" || control.tagName === "INPUT";
+    if ((evento.type === "change") !== esLista) return;
     var accion = controladores[control.getAttribute("data-controlador")];
     if (accion) accion(control);
-  });
+  }
+
+  document.addEventListener("click", despachar);
+  document.addEventListener("change", despachar);
 })();

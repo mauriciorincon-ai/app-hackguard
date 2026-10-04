@@ -1,7 +1,8 @@
 /* HackGuard — hoja del sistema de diseño (lo que el producto obedecerá). Los colores salen de
-   tokens.css; aquí no hay ningún valor de color suelto. Dirección «libro de evidencia»: filas de libro
-   mayor antes que tarjetas, lectura a 15 px o más, la tinta azul reservada a lo que una persona firma
-   o acciona, y cada estado con su símbolo y su texto además del color.
+   tokens.css; aquí no hay ningún valor de color suelto. Dirección «acta» (mirada 1): títulos con serifa,
+   regla doble, esquinas rectas y secciones numeradas; filas de libro mayor antes que tarjetas, lectura
+   a 15 px o más, la tinta azul reservada a lo que una persona firma o acciona, y cada estado con su
+   símbolo y su texto además del color.
    Regla de 380 px: todo hijo de rejilla lleva min-width: 0 y nada tiene ancho fijo. */
 
 @font-face {
@@ -31,14 +32,14 @@
 :root {
   --fuente-texto: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
   --fuente-dato: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --fuente-titulo: var(--fuente-texto);
-  --peso-titulo: 700;
+  --fuente-titulo: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --peso-titulo: 600;
 
   --t-menor: 0.9375rem; /* 15 px: el mínimo de lectura */
   --t-base: 1rem;
   --t-medio: 1.125rem;
-  --t-h2: 1.375rem;
-  --t-h1: 1.75rem;
+  --t-h2: 1.5rem;
+  --t-h1: 2rem;
 
   --e-1: 4px;
   --e-2: 8px;
@@ -49,26 +50,13 @@
   --e-7: 48px;
   --e-8: 72px;
 
-  --radio: 4px;
-  --ancho: 1120px;
-  --regla: 2px; /* la regla gruesa que abre un libro */
-}
-
-/* Dirección alternativa «acta»: títulos en serif, esquinas rectas, secciones numeradas. */
-html[data-direccion="b"] {
-  --fuente-titulo: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --peso-titulo: 600;
   --radio: 1px;
-  --t-h1: 2rem;
-  --t-h2: 1.5rem;
+  --ancho: 1120px;
+  --regla: 4px; /* la regla doble que abre un libro */
 }
 
 @media (min-width: 720px) {
   :root {
-    --t-h1: 2.125rem;
-  }
-
-  html[data-direccion="b"] {
     --t-h1: 2.5rem;
   }
 }
@@ -144,9 +132,15 @@ a {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--e-3) var(--e-5);
+  gap: var(--e-2) var(--e-5);
   padding: var(--e-3) var(--e-4);
   border-bottom: 1px solid var(--linea);
+}
+
+/* En teléfono: marca y botones en la primera línea, navegación debajo, sin el descriptor. */
+.hg-cab > nav {
+  order: 3;
+  flex-basis: 100%;
 }
 
 .hg-marca {
@@ -156,6 +150,21 @@ a {
   gap: var(--e-1) var(--e-3);
   color: var(--tinta);
   text-decoration: none;
+}
+
+.hg-marca > .hg-menor {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .hg-cab > nav {
+    order: 0;
+    flex-basis: auto;
+  }
+
+  .hg-marca > .hg-menor {
+    display: inline;
+  }
 }
 
 .hg-marca-nombre {
@@ -220,16 +229,19 @@ a {
   margin-bottom: var(--e-2);
 }
 
-.hg-seccion > h2 + p {
+.hg-seccion > p {
   max-width: 70ch;
+}
+
+.hg-intro {
   color: var(--tinta-2);
 }
 
-html[data-direccion="b"] .hg-pagina {
+.hg-pagina {
   counter-reset: seccion;
 }
 
-html[data-direccion="b"] .hg-seccion > h2::before {
+.hg-seccion > h2::before {
   counter-increment: seccion;
   content: counter(seccion) ". ";
   color: var(--tinta-2);
@@ -249,11 +261,13 @@ html[data-direccion="b"] .hg-seccion > h2::before {
   white-space: nowrap;
 }
 
+/* La huella solo se parte después del algoritmo, nunca dentro del valor. */
 .hg-huella {
   font-family: var(--fuente-dato);
   font-size: var(--t-menor);
   color: var(--tinta);
-  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .hg-huella-pre {
@@ -312,10 +326,16 @@ html[data-direccion="b"] .hg-seccion > h2::before {
 /* El texto va siempre en tinta; el color vive en la marca. */
 .hg-estado {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--e-2);
   font-weight: 600;
   color: var(--tinta);
+}
+
+/* La marca se apoya en la línea base del texto (así el texto que sigue al estado no se descuelga). */
+.hg-estado > .hg-marca-estado {
+  position: relative;
+  top: 0.2em;
 }
 
 /* Sello: el estado que resume algo. Tinte + borde sólido + barra lateral + marca. */
@@ -373,7 +393,7 @@ html[data-direccion="b"] .hg-seccion > h2::before {
 @media (min-width: 960px) {
   .hg-encabezado {
     grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-    align-items: end;
+    align-items: start;
     gap: var(--e-6);
   }
 }
@@ -386,7 +406,7 @@ html[data-direccion="b"] .hg-seccion > h2::before {
   margin: var(--e-6) 0 0;
   padding: 0;
   list-style: none;
-  border-top: var(--regla) solid var(--tinta);
+  border-top: var(--regla) double var(--tinta);
   border-bottom: 1px solid var(--linea);
 }
 
@@ -422,26 +442,39 @@ html[data-direccion="b"] .hg-seccion > h2::before {
   margin: var(--e-4) 0 0;
   padding: 0;
   list-style: none;
-  border-top: var(--regla) solid var(--tinta);
-}
-
-html[data-direccion="b"] .hg-libro,
-html[data-direccion="b"] .hg-cifras {
-  border-top-style: double;
-  border-top-width: 4px;
+  border-top: var(--regla) double var(--tinta);
 }
 
 .hg-libro-cab {
   display: none;
 }
 
+/* En teléfono: folio y descripción a todo el ancho y sin rótulo (se explican solos); el resto de las
+   celdas, de dos en dos, cada una con su rótulo. */
 .hg-fila {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--e-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-3) var(--e-4);
   margin: 0;
   padding: var(--e-4) 0;
   border-bottom: 1px solid var(--linea);
+}
+
+.hg-fila > .hg-celda:nth-child(-n + 2) {
+  grid-column: 1 / -1;
+}
+
+.hg-fila > .hg-celda:nth-child(-n + 2) > dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hg-fila > .hg-celda:nth-child(2) {
+  margin-top: calc(var(--e-2) * -1);
 }
 
 .hg-celda {
@@ -473,18 +506,22 @@ html[data-direccion="b"] .hg-cifras {
     gap: var(--e-5);
   }
 
+  .hg-fila > .hg-celda:nth-child(-n + 2) {
+    grid-column: auto;
+    margin-top: 0;
+  }
+
   .hg-libro-cab {
     display: grid;
     margin-top: var(--e-4);
     padding: var(--e-2) 0;
-    border-top: var(--regla) solid var(--tinta);
+    border-top: var(--regla) double var(--tinta);
     border-bottom: 1px solid var(--linea-fuerte);
     font-size: var(--t-menor);
     color: var(--tinta-2);
   }
 
-  .hg-libro-cab + .hg-libro,
-  html[data-direccion="b"] .hg-libro-cab + .hg-libro {
+  .hg-libro-cab + .hg-libro {
     margin-top: 0;
     border-top: 0;
   }
@@ -497,11 +534,6 @@ html[data-direccion="b"] .hg-cifras {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
-
-html[data-direccion="b"] .hg-libro-cab {
-  border-top-style: double;
-  border-top-width: 4px;
 }
 
 /* ---------- Cadena de cierre: hallazgo → corrección → re-prueba → cierre ---------- */
@@ -631,7 +663,7 @@ html[data-direccion="b"] .hg-libro-cab {
   max-width: 60ch;
   margin-top: var(--e-6);
   padding: var(--e-5) 0;
-  border-top: var(--regla) solid var(--tinta);
+  border-top: var(--regla) double var(--tinta);
 }
 
 .hg-aviso > * + * {
@@ -666,4 +698,236 @@ html[data-direccion="b"] .hg-libro-cab {
       border-color 150ms ease-out,
       box-shadow 150ms ease-out;
   }
+}
+
+/* ---------- Navegación ---------- */
+
+.hg-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--e-3);
+  font-size: var(--t-menor);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-nav a,
+.hg-nav span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--tinta);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.hg-nav a:hover {
+  border-bottom-color: var(--linea-fuerte);
+}
+
+.hg-nav [aria-current="page"],
+.hg-nav [aria-current="true"] {
+  border-bottom-color: var(--acento);
+  font-weight: 700;
+}
+
+.hg-nav .es-pendiente {
+  color: var(--tinta-2);
+}
+
+.hg-subnav {
+  margin-bottom: var(--e-5);
+  border-bottom: 1px solid var(--linea);
+}
+
+@media (min-width: 960px) {
+  .hg-cab .hg-nav {
+    gap: 0 var(--e-5);
+    font-size: var(--t-base);
+  }
+}
+
+/* ---------- Filtros y campos ---------- */
+
+.hg-filtros {
+  display: grid;
+  gap: var(--e-3);
+  margin-top: var(--e-6);
+}
+
+.hg-filtros > * {
+  min-width: 0;
+}
+
+.hg-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2);
+}
+
+.hg-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-3);
+}
+
+@media (min-width: 720px) {
+  .hg-campos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.hg-campo {
+  display: grid;
+  gap: var(--e-1);
+  min-width: 0;
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-campo select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+  font: inherit;
+}
+
+.hg-campo select[data-valor-activo]:not([data-valor-activo=""]) {
+  border-color: var(--acento);
+  box-shadow: inset 0 -3px 0 var(--acento);
+}
+
+.hg-pie-de-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2) var(--e-4);
+  min-height: 44px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- Ficha: pares rótulo–valor en renglones ---------- */
+
+.hg-ficha {
+  margin: 0;
+  border-top: var(--regla) double var(--tinta);
+}
+
+.hg-ficha > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-1) var(--e-4);
+  padding: var(--e-3) 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-ficha dt {
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-ficha dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.hg-ficha dd > * + * {
+  margin-top: var(--e-1);
+}
+
+@media (min-width: 560px) {
+  .hg-ficha > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+}
+
+.hg-entrada {
+  max-width: 62ch;
+  margin-top: var(--e-3);
+  font-size: var(--t-medio);
+}
+
+.hg-seccion > .hg-ficha,
+.hg-seccion > .hg-lista {
+  margin-top: var(--e-4);
+}
+
+.hg-seccion > p + p {
+  margin-top: var(--e-3);
+}
+
+.hg-lista {
+  display: grid;
+  gap: var(--e-2);
+  max-width: 70ch;
+  margin: 0;
+  padding-left: var(--e-5);
+}
+
+.hg-destacado {
+  max-width: 62ch;
+  margin-top: var(--e-4);
+  padding-left: var(--e-4);
+  border-left: 4px solid var(--tinta);
+  font: var(--peso-titulo) var(--t-medio) / 1.4 var(--fuente-titulo);
+}
+
+/* ---------- Muestras del kit ---------- */
+
+.hg-muestras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-4);
+  margin: var(--e-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-muestras > li {
+  min-width: 0;
+}
+
+.hg-muestra-color {
+  display: block;
+  height: 56px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+}
+
+@media (min-width: 720px) {
+  .hg-muestras {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1040px) {
+  .hg-muestras {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.hg-escala > * + * {
+  margin-top: var(--e-4);
+}
+
+.hg-pila > * + * {
+  margin-top: var(--e-4);
+}
+
+.hg-titulo-2 {
+  font-size: var(--t-h2);
+}
+
+.hg-espaciado {
+  margin-top: var(--e-5);
 }

@@ -1,11 +1,9 @@
-/* Hoja de SALA de la maqueta: lo que NO es producto — la nota de sala, la botonera de estados, el
-   conmutador de dirección y la matriz «Qué revisar» del pie. Lo que sí es producto vive en hg.css.
+/* Hoja de SALA de la maqueta: lo que NO es producto — la nota de sala, la botonera de estados
+   y la matriz «Qué revisar» del pie. Lo que sí es producto vive en hg.css.
    Todo lo de sala lleva borde discontinuo para que no se confunda con la pantalla. */
 
 html[data-theme="oscuro"] [data-si-tema="claro"],
-html[data-theme="claro"] [data-si-tema="oscuro"],
-html[data-direccion="a"] [data-si-direccion="b"],
-html[data-direccion="b"] [data-si-direccion="a"] {
+html[data-theme="claro"] [data-si-tema="oscuro"] {
   display: none;
 }
 

@@ -1,13 +1,14 @@
 // direccion.html — mirada 1. La identidad de HackGuard sobre un corte REAL de la vista por control
 // (pantalla 12, C17): estados de control, veredictos, antigüedad de la evidencia, severidad, huella,
-// firma y la cadena hallazgo → corrección → re-prueba → cierre. Dirección A «libro» (recomendada) y
-// B «acta», conmutables. Toda cifra sale de nucleo/calculos.mjs con la fecha de consulta.
+// firma y la cadena hallazgo → corrección → re-prueba → cierre. El usuario eligió la dirección «acta»
+// (títulos con serifa, regla doble, secciones numeradas); la alternativa «libro» se retiró.
+// Toda cifra sale de nucleo/calculos.mjs con la fecha de consulta.
 import { ACTIVOS, CONTROL, HALLAZGOS, PRUEBAS, SOBRES } from "../datos/mundo.mjs";
 import { cotaPorCiento, huellaDe, plazo, vistaPorControl } from "../nucleo/calculos.mjs";
 import { celda, dato, dias, estado, firma, huella, sello } from "../nucleo/componentes.mjs";
 import { CONFIRMACION, ESTADO_DE_CONTROL, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";
 import { neutro, t } from "../nucleo/html.mjs";
-import { barraDeEstados, grupoDeSala, pagina } from "../nucleo/pagina.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 
 const plural = (n, uno, varios) => (n === 1 ? uno : varios);
@@ -164,7 +165,7 @@ ${grupo({ es: "Vigencia y confirmación", en: "Freshness and confirmation" }, { 
 </div>`;
 }
 
-export function direccion({ consulta, umbrales }) {
+export function direccion({ consulta, umbrales, existentes }) {
   const vista = vistaPorControl({ pruebas: PRUEBAS, sobres: SOBRES, hallazgos: HALLAZGOS }, consulta, umbrales);
   const plazosPorHallazgo = Object.fromEntries(
     HALLAZGOS.filter((h) => !h.cierre).map((h) => [h.id, { ...plazo(h, consulta, umbrales), desde: h.apertura, severidad: h.severidad }]),
@@ -187,8 +188,7 @@ export function direccion({ consulta, umbrales }) {
 
   const cerradosPrimero = [...HALLAZGOS].sort((a, b) => Number(Boolean(b.cierre)) - Number(Boolean(a.cierre)));
 
-  const contenido = `<p class="hg-migas">${t({ es: "Brecha / Vista por control", en: "Gap / Control view" })}</p>
-<div class="hg-encabezado">
+  const contenido = `<div class="hg-encabezado">
 <div>
 <p>${dato(CONTROL.id)} <span class="hg-menor">· ${neutro(CONTROL.marco)} · ${t(CONTROL.capa)}</span></p>
 <h1>${t(CONTROL.resumen)}</h1>
@@ -207,7 +207,7 @@ ${sello(ESTADO_DE_CONTROL[vista.estado], `<p>${t(fraseDeControl(vista, plazos))}
 
 <section class="hg-seccion" aria-labelledby="pruebas">
 <h2 id="pruebas">${t({ es: "Pruebas que cubren este control", en: "Tests that cover this control" })}</h2>
-<p>${t({
+<p class="hg-intro">${t({
     es: "Una fila por prueba, con su último sobre de evidencia confirmado.",
     en: "One row per test, with its latest confirmed evidence envelope.",
   })}</p>
@@ -219,7 +219,7 @@ ${vista.filas.map((f) => filaDePrueba(f, plazosPorHallazgo)).join("\n")}
 
 <section class="hg-seccion" aria-labelledby="cadena">
 <h2 id="cadena">${t({ es: "Cadena de cierre", en: "Closure chain" })}</h2>
-<p>${t({
+<p class="hg-intro">${t({
     es: "Un hallazgo solo se cierra cuando la misma prueba, repetida con la misma configuración, sale bien. Que deje de aparecer en un escaneo no lo cierra.",
     en: "A finding only closes when the same test, repeated with the same configuration, passes. No longer showing up in a scan does not close it.",
   })}</p>
@@ -228,7 +228,7 @@ ${cerradosPrimero.map((h) => cadena(h, plazosPorHallazgo[h.id])).join("\n")}
 
 <section class="hg-seccion" aria-labelledby="vocabulario">
 <h2 id="vocabulario">${t({ es: "Vocabulario de estados", en: "Status vocabulary" })}</h2>
-<p>${t({
+<p class="hg-intro">${t({
     es: "Cada estado se reconoce por su forma y por su texto. El color acompaña, nunca trabaja solo.",
     en: "Each status is recognized by its shape and its label. Color supports it and never works alone.",
   })}</p>
@@ -263,34 +263,19 @@ ${sello(
 
   return pagina({
     titulo: { es: "HackGuard · dirección", en: "HackGuard · direction" },
+    seccion: { id: "brecha", archivo: "control.html" },
+    existentes,
     sala: {
       nota: {
-        es: "Mirada 1, dirección. La identidad de HackGuard sobre un corte real de la vista por control. Todos los datos son sintéticos.",
-        en: "Review 1, direction. HackGuard's identity on a real slice of the control view. All data is synthetic.",
+        es: "Dirección aprobada en la mirada 1: «acta». Un corte real de la vista por control. Todos los datos son sintéticos.",
+        en: "Direction approved in review 1: “record”. A real slice of the control view. All data is synthetic.",
       },
       grupos: [
-        grupoDeSala(
-          "direccion",
-          { es: "Dirección", en: "Direction" },
-          [
-            { valor: "a", nombre: { es: "A · Libro", en: "A · Ledger" } },
-            { valor: "b", nombre: { es: "B · Acta", en: "B · Record" } },
-          ],
-          "a",
-        ),
         barraDeEstados(),
       ],
     },
     contenido,
     revisar: [
-      {
-        donde: { es: "Sala de diseño, «Dirección»", en: "Design room, “Direction”" },
-        hacer: { es: "Alterna entre A y B", en: "Switch between A and B" },
-        ver: {
-          es: "A: títulos en la misma letra del texto, regla sencilla. B: títulos con serifa, regla doble y secciones numeradas",
-          en: "A: headings in the body typeface, single rule. B: serif headings, double rule and numbered sections",
-        },
-      },
       {
         donde: { es: "Botón de tema, arriba", en: "Theme button, top" },
         hacer: { es: "Pasa de oscuro a claro", en: "Go from dark to light" },
