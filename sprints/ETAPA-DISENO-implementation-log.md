@@ -453,6 +453,45 @@ como imagen: catálogo, carga de evidencia (los dos lotes, lote confirmado, form
 hallazgos abierto, corregido y cerrado, en oscuro y claro, escritorio y teléfono · lint y typecheck
 limpios · nada bajo `src/`. Las 36 páginas no rehechas salen byte a byte iguales del generador.
 
+### Mirada 4-ter, tramo 1 — veredicto: aprobado (2026-10-04)
+
+«Muy muy bien excelente ahora si que realmente se ve como una aplicacion seria, el recorrido en hallazgos
+esta perfecto y se entiende y confirmar el lote esta claro, Los abri y los apruebo». Sin ajustes. Con esta
+mirada la dirección «consola» queda vista y aprobada en pantallas reales (la 4-bis se había decidido sin
+evidencia de mirada). CI del commit `be72357`: `quality`, `e2e` y `lighthouse` en `success`.
+
+### Guía del tramo 2 (lo que falta de la mirada 4-ter)
+
+El usuario cambia de modelo para este tramo; esta guía es para que cualquiera lo ejecute igual.
+
+**Regla:** mismo contenido, mismos estados, mismos datos y mismos atributos `data-*` que hoy; solo cambia
+la disposición. Cada página pasa de `pagina()` a `paginaDeApp()` (con `migas`, `consulta` y la nota de
+sala «Mirada 4-ter, segundo tramo») y deja de usar las clases de `hg.css`. Modelos a imitar:
+`paginas/catalogo.mjs` (lista), `paginas/hallazgo.mjs` (detalle) y `paginas/evidencia.mjs` (formulario).
+
+| Página | Tipo | Cómo queda |
+|---|---|---|
+| `prueba-<id>` (21) | detalle | Cabecera con identificador y chips (vigencia, madurez, marcada); sellos de aviso debajo; paneles «Qué verifica y por qué», «Resultado esperado y regla de veredicto», «Aplicabilidad»; carril: propiedades (familia, herramienta, k y cota, marco y referencia, controles, vigencia fechada). Conservar `data-ficha-de`, `data-ficha-vigencia`, `data-aviso-de-vigencia` y que la vigencia se lea en la cabecera (el gate `maqueta-fichas` busca `.hg-encabezado [data-fechado='vigencia']`: pasar el selector a `.hg-cabecera` con su demo en rojo) |
+| `marcos` | lista | Tira de cifras; tabla de marcos (versión vigente, publicada, vigencia, propuesta); panel del mapa de equivalencias como tabla; panel de instantáneas |
+| `controles` | lista | Tabla de áreas del Anexo A con sus controles y las pruebas que les dan evidencia; panel «pruebas sin control» |
+| `propuestas` | lista con decisión | Cada propuesta, un panel: a la izquierda quién propone, qué y su fuente; a la derecha (dentro del panel) los botones de decisión y su consecuencia. Píldoras de filtro por origen. Conservar `data-propuesta`, `data-decision` y `data-cuenta-pendientes` |
+| `activo-<id>` (3) | detalle | Selector de objeto (los tres activos); cabecera con chip de estado; paneles dueño / proveedor (`hg-contraste` o dos paneles), perfil, alcance, reglas de enfrentamiento; carril: estado de autorización y enlace al plan. Sin autorización: sello + plantilla (revelado) |
+| `plan-<id>` (3) | lista + carril | Selector de objeto; tira de cifras; tabla de planeadas (`data-planeada`) y tabla de excluidas (`data-excluida`, `data-motivo`); panel de cobertura por control; carril: «Emitir el plan» (tarjeta de acción) y paquete de ejecución. Conservar `data-plan-de` |
+| `kit` | catálogo de piezas | Rehacer con los componentes de `design-system.md` § 6 (incluye los de las miradas 3 y 4, que era deuda) |
+| `direccion` | corte de la vista por control | Rehacer como adelanto de `control` con tabla + recorrido; conserva `data-control-estado` y `data-fila-control` (los usa la matriz de envejecimiento) |
+| `index` | recorrido | Con el armazón nuevo, como tabla de páginas (la portada real llega en la mirada 5) |
+
+**Al terminar:** borrar `assets/hg.css`, `assets/interfaz.css`, `paginas/interfaz.mjs`, `interfaz-a/b/c.html`,
+`pagina()` y lo que ya nadie use de `componentes.mjs` (`celda`, `libro`) y de `maqueta.css` (`.mq-sala`
+con caja, `.mq-recorrido`); quitar la fuente Source Serif 4 y su comprobación en el e2e («un enlace
+relativo del índice…»); retirar el aviso «En transición» de `design-system.md`; actualizar la tabla «Qué
+vive aquí» del README. Las secciones activo y plan dependen del objeto: pasar `seccion.paginas` como hoy.
+
+**Verificar antes de pedir la mirada:** `pnpm maqueta` · `pnpm test` · `pnpm lint` · `pnpm typecheck` ·
+`pnpm build && E2E_PUERTO=3217 pnpm test:e2e` · `pnpm capturas:maqueta --salida <fuera del repo>` y leer
+las capturas como imagen (oscuro y claro, 380 y 1280) · barrido de cero enlaces tras el último `git add` ·
+`gh pr checks 4` tras el push. Todo selector de gate que cambie lleva su demo en rojo y `cmp`.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
