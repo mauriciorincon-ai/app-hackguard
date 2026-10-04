@@ -75,6 +75,13 @@ Aprobadas con el plan de la etapa (2026-10-03):
 
 ## Plan de miradas
 
+> **Cambio de plan del 2026-10-04 (pedido por el usuario en la mirada 4):** la dirección «acta» de la
+> mirada 1 resolvió tipografía y color, pero no la interfaz; las dos opciones mostradas diferían solo en
+> la letra. Se insertan dos miradas antes de la 5: **4-bis** (elegir la dirección de interfaz viendo la
+> misma pantalla en tres estructuras distintas) y **4-ter** (rehacer con ella lo ya construido). Lo que
+> se conserva de lo aprobado: el contenido y los estados de cada pantalla, el vocabulario de estados
+> (símbolo + texto + color), la paleta validada y todos los gates.
+
 Todas son de **forma** y abren parada. El **texto** (copy en ambos idiomas) queda «maquetado, no visto»
 y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige aprobación previa.
 
@@ -84,7 +91,9 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` | **aprobada** (2026-10-04, ronda 1) |
-| 4 | `evidencia` · `hallazgo-<id>` | **en mirada** (ronda 1) |
+| 4 | `evidencia` · `hallazgo-<id>` | **función aprobada, diseño rechazado** (2026-10-04, ronda 1): reabre la dirección visual |
+| 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **en construcción** (añadida el 2026-10-04 a pedido del usuario) |
+| 4-ter | Las pantallas de las miradas 1 a 4 rehechas con la dirección que se elija | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
 
@@ -99,6 +108,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-04 | `catalogo` y ficha de prueba (mirada 2, ronda 1) | preview del PR #4, escritorio, tema oscuro | Captura de la ficha de `PR-IA-PINJ-001` («Vigente · verificada hace 12 días») abierta desde una fila filtrada por «Vencido»; texto: «Esto muestra en el que esta vencido». **Ajuste pedido:** la ficha debe ser la de la prueba que se abrió. Antes preguntó «Que falta de mi» (se le respondió con los enlaces directos). Mirada 2 aún sin veredicto | Ronda 2 (segunda vuelta, sin parada propia): una ficha por prueba con su vigencia, su regla de veredicto y sus avisos (por revisar · vencida · marcada para revisión · sin control); gate «cada fila abre su ficha» |
 | 2026-10-04 | `catalogo`, fichas de prueba y `kit.html` (mirada 2, ronda 2) | preview del PR #4 | «Los abri y los apruebo» — **mirada 2 aprobada**, sin más ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 3: marcos, controles, propuestas, activo y plan |
 | 2026-10-04 | `marcos`, `controles`, `propuestas`, `activo-<id>` y `plan-<id>` (mirada 3, ronda 1) | preview del PR #4 | «Lo abri y lo apruebo» — **mirada 3 aprobada**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 4: carga de evidencia y hallazgo |
+| 2026-10-04 | `evidencia` y `hallazgo-<id>` (mirada 4, ronda 1) | preview del PR #4 | «a nivel funcional considero que está bien el diseño de la evidencia con el tema de la carga y demás pero estoy sintiendo que el diseño no sé es un poco ordinario la verdad no me parece que sea elegante que sea ordenado siento que hay como vacíos es como si fuera un documento no es como si fuera realmente una interfaz de una aplicación así que yo creo que es bueno revisarlo completamente porque bueno tú me presentaste dos opciones pero eran dos opciones apenas de la letra yo siento que realmente le falta muchísimo al diseño» — **función aprobada; diseño rechazado**: pide revisar la interfaz completa. Alcanza a lo aprobado en las miradas 1 a 3 (misma estructura) | Mirada 4-bis: tres direcciones de interfaz sobre la misma pantalla, antes de tocar nada más |
 
 ## Cobertura (se llena durante la etapa)
 

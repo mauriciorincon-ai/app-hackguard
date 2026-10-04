@@ -342,7 +342,31 @@ Mirada 3 aprobada («Lo abri y lo apruebo») y registrada antes de empezar.
 508 pruebas unitarias (13 archivos) · 634 e2e en local (39 páginas) · arnés completo sobre las 39 páginas
 en 380 y 1280 px sin fallas · capturas de las pantallas nuevas leídas como imagen en ambos anchos.
 
+## Mirada 4 — veredicto: función sí, diseño no (2026-10-04)
+
+El usuario aprobó la función de la carga de evidencia y rechazó el diseño: «ordinario», «no elegante»,
+«hay como vacíos», «es como si fuera un documento, no la interfaz de una aplicación», y señaló que las dos
+opciones de la mirada 1 «eran dos opciones apenas de la letra». Tiene razón en las dos cosas.
+
+**Qué falló en mi proceso.** La hipótesis de la mirada 1 («libro de evidencia») era literalmente un
+documento: una columna centrada, secciones numeradas, regla doble, listas de rótulo y valor a todo el
+ancho. La alternativa que ofrecí cambiaba la tipografía y los remates, no la estructura, así que el
+usuario eligió entre dos letras y yo registré una «dirección» aprobada. Cuatro miradas después la
+estructura seguía sin haberse puesto a prueba. Lección para el método: **una mirada de dirección ofrece
+alternativas que difieran en estructura** (navegación, disposición, densidad, componentes), no solo en
+piel; si las opciones comparten el esqueleto, no se eligió el esqueleto.
+
+**Qué se conserva.** Contenido y estados de las pantallas (aprobados en función), vocabulario de estados,
+paleta validada por código, generador, datos y gates. **Qué se rehace:** el armazón de la app, la
+disposición de cada pantalla y los componentes.
+
+**Cómo sigue.** Mirada 4-bis: la misma pantalla en tres direcciones de interfaz. Mirada 4-ter: rehacer lo
+construido con la elegida. Luego la 5 y G-Diseño, como estaban.
+
 ## Desviación del plan
+
+- **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
+  usuario; registrado en el plan de miradas del README de diseño antes de construir.
 
 - **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba
   (`prueba-<id>.html`). Es un ajuste pedido por el usuario en la mirada 2, no cambia el plan de miradas.
