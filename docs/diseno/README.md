@@ -70,7 +70,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 |---|---|---|
 | 0 | Fase 0: el preview del PR abre la maqueta provisional | **abre** (2026-10-03) |
 | 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
-| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **en mirada** (ronda 2) |
+| 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo` · `plan` | pendiente |
 | 4 | `evidencia` · `hallazgo` | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
@@ -85,6 +85,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-03 | `index.html` provisional (fase 0, tubería) | preview del PR #4, escritorio, tema oscuro | Captura de pantalla del preview con la página con estilos, las tres filas de vigencia y el estado «Cargando» activo con su mensaje; texto: «Esto aparece que se supone que debo hacer». No pidió ajustes. Antes había respondido «continúa» sin comentar la página y se le repreguntó | Fase 1: dirección |
 | 2026-10-04 | `direccion.html` (mirada 1, ronda 1): dirección A «libro» recomendada y B «acta» conmutable | preview del PR #4 | «Me voy con B» — **dirección elegida: B «acta»** (títulos con serifa Source Serif 4, regla doble, esquinas rectas, secciones numeradas). Eligió la alternativa, no la recomendada; sin más ajustes | Consolidación de B como única dirección (la A y el conmutador se retiran) y fase 2: sistema completo, kit, catálogo y ficha de prueba |
 | 2026-10-04 | `catalogo` y ficha de prueba (mirada 2, ronda 1) | preview del PR #4, escritorio, tema oscuro | Captura de la ficha de `PR-IA-PINJ-001` («Vigente · verificada hace 12 días») abierta desde una fila filtrada por «Vencido»; texto: «Esto muestra en el que esta vencido». **Ajuste pedido:** la ficha debe ser la de la prueba que se abrió. Antes preguntó «Que falta de mi» (se le respondió con los enlaces directos). Mirada 2 aún sin veredicto | Ronda 2 (segunda vuelta, sin parada propia): una ficha por prueba con su vigencia, su regla de veredicto y sus avisos (por revisar · vencida · marcada para revisión · sin control); gate «cada fila abre su ficha» |
+| 2026-10-04 | `catalogo`, fichas de prueba y `kit.html` (mirada 2, ronda 2) | preview del PR #4 | «Los abri y los apruebo» — **mirada 2 aprobada**, sin más ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 3: marcos, controles, propuestas, activo y plan |
 
 ## Cobertura (se llena durante la etapa)
 
