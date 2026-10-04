@@ -47,7 +47,7 @@ Aprobadas con el plan de la etapa (2026-10-03):
    del H2 jamás la incluya es un gate a construir en el S4.
 4. **Nombres de página:** `index` · `direccion` · `kit` · `tablero` · `catalogo` · `prueba-<id>` (una
    por prueba del catálogo) · `marcos` · `controles` · `propuestas` · `activo-<id>` y `plan-<id>` (una
-   por activo demo) · `evidencia` · `hallazgo` · `brecha` · `control` · `informe`.
+   por activo demo) · `evidencia` · `hallazgo-<id>` (una por hallazgo) · `brecha` · `control` · `informe`.
 5. **C18 (validación del instrumento)** no tiene pantalla propia: banda de estado en `tablero` y ficha
    de reproducibilidad en `informe`.
 6. **Toda marca de estado es un trazo SVG**, nunca un carácter de una fuente.
@@ -65,6 +65,11 @@ Aprobadas con el plan de la etapa (2026-10-03):
     (aritmética de maqueta, no el planificador del producto); la fórmula de prioridad es ilustrativa.
 12. **Los botones de la bandeja de propuestas funcionan pero no guardan nada**: marcan la decisión, dicen
     su consecuencia y descuentan la cifra «por decidir». Pulsar otra vez la misma decisión la deshace.
+13. **Una página por hallazgo** (`hallazgo-<id>.html`; cuatro, uno por momento del ciclo: abierto y
+    vencido, corregido con re-prueba por confirmar, aceptado con riesgo y cerrado por re-prueba), con el
+    mismo conmutador de objeto que los activos.
+14. **La carga de evidencia muestra un solo activo** (el asistente demo) con dos lotes por confirmar; las
+    tres vías son pestañas de la misma pantalla. Los campos y botones funcionan, pero no guardan nada.
 8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
    en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
 
@@ -79,7 +84,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` | **aprobada** (2026-10-04, ronda 1) |
-| 4 | `evidencia` · `hallazgo` | pendiente |
+| 4 | `evidencia` · `hallazgo-<id>` | **en mirada** (ronda 1) |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
 
@@ -107,8 +112,8 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | `propuestas` | C2 · C7 · C15 | con datos (fuente verificada · fuente sin verificar · marcada por el filtro · cambio de versión · herramienta · sobre con prueba dudosa y veredicto por regla · texto que mezcla dos pruebas; cada una sin decidir / aprobada / rechazada / separada) · filtro por quién propone · registro de la corrida · vacío · carga · error (propuesta que no cumple su esquema) |
 | `activo-<id>` | C8 | con datos (autorizado con proveedor y política leída · autorizado sin proveedor · **sin autorización**, con la plantilla para activos propios) · vacío · carga · error (perfil sin dueño) |
 | `plan-<id>` | C9 · C10 | con datos (planeadas con prioridad y razón · excluidas por perfil, por alcance y por el operador · control sin prueba · paquete de ejecución por herramienta) · **sin autorización: no hay plan** · vacío con «Emitir el plan» · carga · error (instantánea que no coincide con su huella) |
-| `evidencia` | C11 · C14 | — |
-| `hallazgo` | C12 · C13 | — |
+| `evidencia` | C11 · C14 · C15 | con datos, por vía: **archivo de herramienta** (dos lotes por confirmar: sobres con veredicto sugerido fallida / superada / no ejecutada, revisión obligatoria o en la muestra, huellas, advertencias; lote sin decidir / confirmado / a revisión individual) · **texto pegado** (campo vacío / lleno / propuesto) · **sobre manual** (formulario con obligatorios por llenar / completo / guardado) · vacío · carga · error (versión de herramienta fuera del rango probado) |
+| `hallazgo-<id>` | C12 · C13 | con datos: abierto con plazo vencido · corregido con re-prueba por confirmar · aceptado con riesgo y revisión programada (o vencida) · cerrado por re-prueba; severidad por tabla de prioridad de IA o por vector CVSS 4.0; salidas posibles con lo que exige cada una · vacío · carga · error (vector incompleto) |
 | `brecha` | C16 | — |
 | `control` | C17 | — |
 | `informe` | C16 · C18 | — |
@@ -127,14 +132,27 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Envejecimiento | `tests/unit/maqueta-envejecimiento.test.ts` | Estado equivocado en una fecha umbral |
 | Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, o que fila y ficha digan vigencias distintas (hoy y 45 días después) |
 | Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
+| Evidencia | `tests/unit/maqueta-evidencia.test.ts` | Una fallida fuera de la revisión obligatoria de su lote; un hallazgo mostrado como cerrado sin su cadena completa; una tabla de prioridad cuya casilla no es la severidad declarada |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
-| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
+| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
 
 ## Tokens de reusables consumidos
 
-HackGuard no consume el diagramador en el H1. La forma visual de la **tabla de prioridad de acción** de
-la escala de IA (patrón de `reusables/instrumentos-de-plan/`: impacto primero, piso y techo, las dos
-prioridades a la vista) se decide en la mirada 4 y se registra aquí.
+HackGuard no consume el diagramador en el H1, ni tokens de ningún reusable. Del reusable
+`instrumentos-de-plan` toma solo el **patrón** de la tabla de prioridad de acción (el impacto primero, la
+tabla en datos, nunca una suma de dimensiones), dibujado con los tokens propios de `design-system.md`:
+
+- **Forma:** matriz de impacto (filas, de 4 a 1) por frecuencia observada (columnas, en cuatro bandas).
+  Cada casilla lleva el nivel con su símbolo de barras y su texto; la casilla del hallazgo se marca con
+  un marco de tinta y la leyenda «este hallazgo» (nunca solo con color).
+- **Piso y techo** escritos en la propia fila: impacto 4 nunca baja de «alto»; impacto 1 nunca pasa de
+  «medio».
+- **La facilidad no se opina:** es la frecuencia observada en el sobre de origen (fallas / repeticiones).
+  Alcance y detectabilidad se registran y ordenan dentro de un mismo nivel; no lo cambian.
+- **En teléfono** la fila se nombra con su número, el símbolo va sobre su texto y las anclas del impacto
+  bajan a una leyenda bajo la tabla.
+- La tabla y sus bandas son **ilustrativas y provisionales** (mirada 4); la definitiva se fija con el
+  sprint del libro de evidencia.
 
 ## Registro de G-Diseño (se llena al cerrar la etapa)
 

@@ -26,9 +26,9 @@ function consecuencias(p) {
       : p.contenido === "marcada_para_revision"
         ? { es: "Aprobada tras tu revisión. Queda registrado que la revisaste tú, y entra al catálogo en la próxima instantánea.", en: "Approved after your review. It is recorded that you reviewed it, and it enters the catalog in the next snapshot." }
         : { es: "Aprobada. Entra al catálogo en la próxima instantánea, con tu firma y la fecha.", en: "Approved. It enters the catalog in the next snapshot, with your signature and the date." };
-  return `<p class="hg-menor" data-si-decision="aprobar">${t(aprobada)}</p>
-<p class="hg-menor" data-si-decision="rechazar">${t({ es: "Rechazada. Sale de la bandeja y queda en el registro con tu motivo.", en: "Rejected. It leaves the inbox and stays in the log with your reason." })}</p>
-${p.separable ? `<p class="hg-menor" data-si-decision="separar">${t({ es: "Separada. Vuelve a la bandeja como dos propuestas, una por prueba.", en: "Split. It returns to the inbox as two proposals, one per test." })}</p>` : ""}
+  return `<p class="hg-menor" data-si-decision="aprobar" hidden>${t(aprobada)}</p>
+<p class="hg-menor" data-si-decision="rechazar" hidden>${t({ es: "Rechazada. Sale de la bandeja y queda en el registro con tu motivo.", en: "Rejected. It leaves the inbox and stays in the log with your reason." })}</p>
+${p.separable ? `<p class="hg-menor" data-si-decision="separar" hidden>${t({ es: "Separada. Vuelve a la bandeja como dos propuestas, una por prueba.", en: "Split. It returns to the inbox as two proposals, one per test." })}</p>` : ""}
 <p class="hg-menor" data-si-decision="">${t({ es: "Sin decidir.", en: "Not decided." })}</p>`;
 }
 

@@ -42,3 +42,15 @@ export const ESTADO_DE_ACTIVO = {
   en_prueba: { rol: "neutro", simbolo: "reloj", nombre: { es: "En prueba", en: "Under test" } },
   cerrado_ciclo: { rol: "positivo", simbolo: "ok", nombre: { es: "Ciclo cerrado", en: "Cycle closed" } },
 };
+
+// Ciclo de vida de un hallazgo (§ 6.8). Solo el cierre por re-prueba es «positivo»; los cierres
+// alternativos son neutros (no demuestran que el control funcione) y el riesgo aceptado pide atención.
+export const ESTADO_DE_HALLAZGO = {
+  abierto: { rol: "falla", simbolo: "falla", nombre: { es: "Abierto", en: "Open" } },
+  corregido: { rol: "atencion", simbolo: "reloj", nombre: { es: "Corregido, falta la re-prueba", en: "Fixed, retest pending" } },
+  re_probado: { rol: "atencion", simbolo: "parcial", nombre: { es: "Re-probado, falta confirmar", en: "Retested, confirmation pending" } },
+  cerrado: { rol: "positivo", simbolo: "ok", nombre: { es: "Cerrado por re-prueba", en: "Closed by retest" } },
+  cerrado_por_eliminacion: { rol: "neutro", simbolo: "no_aplica", nombre: { es: "Cerrado por eliminación", en: "Closed by removal" } },
+  no_reproducible: { rol: "neutro", simbolo: "vacio", nombre: { es: "No reproducible", en: "Not reproducible" } },
+  aceptado_con_riesgo: { rol: "atencion", simbolo: "aviso", nombre: { es: "Aceptado con riesgo", en: "Accepted with risk" } },
+};

@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { readdirSync, readFileSync } from "node:fs";
-import { desbordes, pasadaDeInteraccion } from "../../scripts/maqueta/arnes/sondas.mjs";
+import { desbordes, palabrasPartidas, pasadaDeInteraccion } from "../../scripts/maqueta/arnes/sondas.mjs";
 
 // La maqueta de la Etapa de Diseño se prueba SERVIDA, entrando por donde entra el usuario, no por
 // doble clic: en las dos apps hermanas el preview dio 404 o perdió los estilos y ninguna prueba lo vio
@@ -54,12 +54,14 @@ for (const pagina of PAGINAS) {
   });
 
   for (const idioma of ["es", "en"] as const) {
-    test(`${pagina} [${idioma}]: cabe en 380 px sin desplazamiento horizontal`, async ({ page }) => {
+    test(`${pagina} [${idioma}]: cabe en 380 px sin desplazamiento horizontal ni palabras partidas`, async ({ page }) => {
       await page.addInitScript(([clave, valor]) => localStorage.setItem(clave, valor), [`${PREFERENCIA}idioma`, idioma]);
       await page.setViewportSize({ width: 380, height: 800 });
       await page.goto(`/diseno/${pagina}`);
       await expect(page.locator("html")).toHaveAttribute("lang", idioma);
       expect(await desbordes(page)).toEqual([]);
+      // Y sin partir palabras por la mitad (una columna estrecha lo hace sin desbordar nada).
+      expect(await palabrasPartidas(page)).toEqual([]);
     });
 
     for (const tema of ["oscuro", "claro"] as const) {

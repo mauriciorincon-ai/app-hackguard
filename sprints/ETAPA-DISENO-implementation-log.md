@@ -288,6 +288,60 @@ tomó también como visto bueno de fase, igual que en la mirada 1 (se le dijo al
 442 pruebas unitarias (12 archivos) · 554 e2e en local (34 páginas) · capturas de las pantallas nuevas en
 escritorio y teléfono leídas como imagen, sin fallas · 23 controles activados en la bandeja.
 
+## Fase 4 — Carga de evidencia y hallazgo (2026-10-04)
+
+Mirada 3 aprobada («Lo abri y lo apruebo») y registrada antes de empezar.
+
+### Qué se construyó
+
+- **`evidencia.html`** (C11, C14, C15): las tres vías como pestañas. *Archivo de herramienta*: dos lotes por
+  confirmar (garak y ZAP) con cabecera (archivo que no se guarda, adaptador, quién ejecutó, zona horaria,
+  huella del lote, advertencias), libro de sobres con veredicto sugerido por la regla, revisión obligatoria
+  o en la muestra y dos huellas por sobre, y los botones «Confirmar el lote» / «Revisar uno por uno».
+  *Texto pegado* y *Sobre manual*: formularios que cuentan los obligatorios que faltan.
+- **`hallazgo-<id>.html`** (C12, C13): cuatro hallazgos. Cadena de cierre con sus variantes, severidad por
+  tabla de prioridad de IA (casilla marcada, piso y techo) o por vector CVSS 4.0 leído métrica a métrica,
+  plazo con atraso, revisión del riesgo aceptado, control que falla y salidas posibles con lo que exigen.
+- Datos: `LOTES`, `MUESTREO`, `ESCALA_IA`, `CVSS` y dos hallazgos nuevos en `datos/mundo.mjs`. El vector y
+  el puntaje CVSS son un par de los ejemplos curados de FIRST que verificó el spike (5.1, nivel medio).
+- Controladores nuevos: `pestana` y `campo`; `decidir` muestra la frase de cada decisión con `hidden`.
+
+### Decisiones
+
+- **ZAP sin constancia de ejecución ⇒ «no ejecutada»** se ve en el segundo lote; el sobre superado del
+  mismo lote es la re-prueba por confirmar de un hallazgo corregido: las dos pantallas se enlazan.
+- **La facilidad sale de la frecuencia observada** (fallas / repeticiones del sobre de origen), no de una
+  opinión. El generador lanza si la tabla da un nivel distinto del que el hallazgo declara.
+- **El botón de guardar no se deshabilita**: avisa de lo que falta. Un botón deshabilitado no explica nada.
+- **Con lotes de tres sobres la muestra es el lote entero**: no existe en la maqueta una fila «fuera de
+  la muestra». Se explica el plan de muestreo con sus tamaños; ese estado queda para el S3.
+- `direccion.html` (corte aprobado de un control) filtra los hallazgos a los de sus pruebas: sigue
+  idéntica byte a byte con los hallazgos nuevos en el mundo.
+
+### Demos en rojo de esta fase (confirmadas con `cmp`)
+
+| # | Gate | Cambio deliberado | Rojo que dio |
+|---|---|---|---|
+| G7 | sonda de palabras partidas (nueva, en arnés y e2e) | (estado real) la tabla de prioridad en 380 px | «palabra partida → «Crítico» (46 px) no cabe en `<span>` (14 px)» en los hallazgos de IA; verde tras reorganizar la tabla, en las 39 páginas |
+| G8 | `maqueta-evidencia` (nuevo) | HZ-0007 se declara «cerrado» sin corrección ni re-prueba | «HZ-0007: se muestra cerrado con eslabones pendientes (sin corrección o sin re-prueba): expected 3 to be +0» |
+| G9 | matriz de envejecimiento, clase nueva `revision` | el riesgo aceptado no avisa hasta 30 días después de su fecha | «hallazgo-hz-0005.html @ 2026-11-30 (revision desde 2026-09-01): estado a los 90 días: expected 'vigente' to be 'toca_revisar'» |
+
+### Bugs y resoluciones
+
+- **La tabla de prioridad partía las palabras letra por letra en teléfono** y ninguna prueba lo veía (no
+  desbordaba). Es la segunda vez de la misma clase (la primera, la matriz del pie): por eso la sonda
+  nueva. En teléfono la tabla se reorganiza y las anclas bajan a una leyenda.
+- **La sonda de interacción se atascaba** buscando un campo bajo una pestaña oculta: ahora recorre
+  estados de pantalla y, dentro de cada uno, las pestañas visibles; y llena los campos de texto.
+- **El arnés pulsaba el enlace del idioma oculto** (un enlace dentro de una frase existe una vez por
+  idioma): ahora sigue el primer enlace visible.
+- Identificador y estado pegados en el conmutador de hallazgos; «las 1 fallidas» en el texto del lote.
+
+### Verificación
+
+508 pruebas unitarias (13 archivos) · 634 e2e en local (39 páginas) · arnés completo sobre las 39 páginas
+en 380 y 1280 px sin fallas · capturas de las pantallas nuevas leídas como imagen en ambos anchos.
+
 ## Desviación del plan
 
 - **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba

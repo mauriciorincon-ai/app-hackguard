@@ -146,10 +146,33 @@
     var deshace = control.getAttribute("aria-pressed") === "true";
     var grupo = propuesta.querySelectorAll('[data-controlador="decidir"]');
     for (var i = 0; i < grupo.length; i++) grupo[i].setAttribute("aria-pressed", String(!deshace && grupo[i] === control));
-    propuesta.setAttribute("data-decision", deshace ? "" : control.getAttribute("data-valor"));
+    var decision = deshace ? "" : control.getAttribute("data-valor");
+    propuesta.setAttribute("data-decision", decision);
+    var frases = propuesta.querySelectorAll("[data-si-decision]");
+    for (var f = 0; f < frases.length; f++) frases[f].hidden = frases[f].getAttribute("data-si-decision") !== decision;
     var pendientes = document.querySelectorAll('[data-propuesta][data-decision=""]').length;
     var cifras = document.querySelectorAll("[data-cuenta-pendientes]");
     for (var j = 0; j < cifras.length; j++) cifras[j].textContent = String(pendientes);
+  });
+
+  // Pestañas: el grupo marca cuál está pulsada y el contenedor [data-pestanas] guarda la vía elegida
+  // (la hoja muestra solo el panel de esa vía).
+  registrar("pestana", function (control) {
+    var contenedor = document.querySelector("[data-pestanas]");
+    if (contenedor) contenedor.setAttribute("data-via", control.getAttribute("data-valor"));
+    marcarGrupo(control, "pestana");
+  });
+
+  // Campo de formulario: marca si está lleno y recuenta los obligatorios que faltan en su formulario.
+  registrar("campo", function (control) {
+    var campo = control.closest(".hg-campo");
+    if (campo) campo.setAttribute("data-lleno", String(control.value !== ""));
+    var formulario = control.closest("[data-formulario]");
+    if (!formulario) return;
+    var faltan = formulario.querySelectorAll('[data-obligatorio]:not([data-lleno="true"])').length;
+    var cifras = formulario.querySelectorAll("[data-faltan]");
+    for (var i = 0; i < cifras.length; i++) cifras[i].textContent = String(faltan);
+    formulario.setAttribute("data-completo", String(faltan === 0));
   });
 
   var tema = leer("tema");
@@ -167,12 +190,15 @@
   function despachar(evento) {
     var control = evento.target.closest ? evento.target.closest("[data-controlador]") : null;
     if (!control) return;
-    var esLista = control.tagName === "SELECT" || control.tagName === "INPUT";
-    if ((evento.type === "change") !== esLista) return;
+    // Un botón responde al clic; una lista, a «change»; un campo de texto, a «input» (cada tecla).
+    var etiqueta = control.tagName;
+    var espera = etiqueta === "SELECT" ? "change" : etiqueta === "INPUT" || etiqueta === "TEXTAREA" ? "input" : "click";
+    if (evento.type !== espera) return;
     var accion = controladores[control.getAttribute("data-controlador")];
     if (accion) accion(control);
   }
 
   document.addEventListener("click", despachar);
   document.addEventListener("change", despachar);
+  document.addEventListener("input", despachar);
 })();

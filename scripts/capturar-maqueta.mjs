@@ -14,7 +14,7 @@ import { chromium } from "@playwright/test";
 import { createServer } from "node:http";
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { extname, join, normalize, resolve, sep } from "node:path";
-import { desbordes, pasadaDeInteraccion } from "./maqueta/arnes/sondas.mjs";
+import { desbordes, palabrasPartidas, pasadaDeInteraccion } from "./maqueta/arnes/sondas.mjs";
 import { MAQUETA, RAIZ } from "./maqueta/rutas.mjs";
 
 const args = process.argv.slice(2);
@@ -126,7 +126,8 @@ async function abrir(contexto, pagina) {
     return hoja;
   }
   for (const paso of camino) {
-    await hoja.locator(`a[href="${paso}"]`).first().click();
+    // El primer enlace VISIBLE: un enlace dentro de una frase existe dos veces (una por idioma).
+    await hoja.locator(`a[href="${paso}"]:visible`).first().click();
     await hoja.waitForURL(`**/diseno/${paso}`);
   }
   return hoja;
@@ -154,6 +155,7 @@ try {
             if (estado) await hoja.locator(`.mq-sala [data-controlador="estado"][data-valor="${estado}"]`).click();
             const etiqueta = [nombre, tema, idioma, ancho, estado].filter(Boolean).join("__");
             for (const d of await desbordes(hoja)) registro.fallas.push(`${etiqueta}: desborde → ${d}`);
+            for (const d of await palabrasPartidas(hoja)) registro.fallas.push(`${etiqueta}: palabra partida → ${d}`);
             await capturar(hoja, etiqueta);
           }
           await contexto.close();

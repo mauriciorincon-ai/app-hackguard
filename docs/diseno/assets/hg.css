@@ -999,6 +999,7 @@ a {
 .hg-conmutador li > span {
   display: inline-flex;
   align-items: center;
+  gap: var(--e-2);
   min-height: 44px;
   padding: var(--e-2) var(--e-3);
   border: 1px solid var(--linea-fuerte);
@@ -1084,22 +1085,22 @@ a {
   border-left: 3px solid var(--linea-fuerte);
 }
 
-.hg-propuesta:not([data-decision=""]) .hg-propuesta-decision {
+.hg-propuesta:not([data-decision=""]) .hg-propuesta-decision,
+.hg-propuesta-decision[data-propuesta]:not([data-decision=""]) {
   border-left-color: var(--acento);
 }
 
-.hg-propuesta [data-si-decision] {
-  display: none;
+.hg-propuesta-decision > * + * {
+  margin-top: var(--e-2);
 }
 
-.hg-propuesta[data-decision=""] [data-si-decision=""],
-.hg-propuesta[data-decision="aprobar"] [data-si-decision="aprobar"],
-.hg-propuesta[data-decision="rechazar"] [data-si-decision="rechazar"],
-.hg-propuesta[data-decision="separar"] [data-si-decision="separar"] {
-  display: block;
+/* Un lote: su libro de sobres ocupa todo el ancho, debajo de la cabecera y la decisión. */
+.hg-lote-sobres {
+  grid-column: 1 / -1;
 }
 
-.hg-propuesta:not([data-decision=""]) [data-si-decision] {
+/* La frase de cada decisión la muestra el controlador (atributo hidden); al decidir pasa a tinta plena. */
+[data-propuesta]:not([data-decision=""]) [data-si-decision] {
   color: var(--tinta);
 }
 
@@ -1119,4 +1120,180 @@ a {
 .hg-lista-datos {
   padding-left: 0;
   list-style: none;
+}
+
+/* ---------- Pestañas de vía: un panel por valor ---------- */
+
+[data-pestanas]:not([data-via="adaptador"]) [data-si-via="adaptador"],
+[data-pestanas]:not([data-via="pegado"]) [data-si-via="pegado"],
+[data-pestanas]:not([data-via="manual"]) [data-si-via="manual"] {
+  display: none;
+}
+
+[data-si-via] > .hg-intro {
+  margin-top: var(--e-4);
+  max-width: 70ch;
+}
+
+/* ---------- Formulario ---------- */
+
+.hg-formulario {
+  display: grid;
+  gap: var(--e-4);
+  max-width: 44rem;
+  margin-top: var(--e-4);
+  padding-top: var(--e-4);
+  border-top: var(--regla) double var(--tinta);
+}
+
+.hg-campo-de-formulario {
+  display: grid;
+  gap: var(--e-1);
+}
+
+.hg-campo-de-formulario label {
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-campo-de-formulario input,
+.hg-campo-de-formulario textarea,
+.hg-campo-de-formulario select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: var(--tinta);
+  font: inherit;
+}
+
+.hg-campo-de-formulario textarea {
+  resize: vertical;
+}
+
+/* Un campo obligatorio lleno lleva la base azul: lo escribió una persona. */
+.hg-campo-de-formulario[data-lleno="true"] input,
+.hg-campo-de-formulario[data-lleno="true"] textarea,
+.hg-campo-de-formulario[data-lleno="true"] select {
+  border-color: var(--acento);
+  box-shadow: inset 0 -3px 0 var(--acento);
+}
+
+.hg-formulario > .hg-boton {
+  justify-self: start;
+}
+
+[data-formulario]:not([data-completo="true"]) [data-si-completo="true"],
+[data-formulario][data-completo="true"] [data-si-completo="false"] {
+  display: none;
+}
+
+/* ---------- Matriz de prioridad de acción ---------- */
+
+.hg-matriz {
+  margin-top: var(--e-4);
+  overflow-x: auto;
+}
+
+.hg-matriz table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: var(--regla) double var(--tinta);
+  font-size: var(--t-menor);
+}
+
+.hg-matriz caption {
+  padding-bottom: var(--e-2);
+  color: var(--tinta-2);
+  text-align: left;
+}
+
+.hg-matriz th,
+.hg-matriz td {
+  padding: var(--e-2) var(--e-2) var(--e-2) 0;
+  border-bottom: 1px solid var(--linea);
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.hg-matriz thead th {
+  color: var(--tinta-2);
+}
+
+.hg-matriz tbody th {
+  min-width: 9rem;
+  max-width: 22rem;
+}
+
+.hg-matriz tbody th > span {
+  display: block;
+}
+
+/* Una palabra de la tabla nunca se parte: si no cabe, la tabla se reorganiza (abajo), no la palabra. */
+.hg-matriz th,
+.hg-matriz td {
+  overflow-wrap: normal;
+}
+
+.hg-matriz-leyenda {
+  display: none;
+  gap: var(--e-2);
+  margin: var(--e-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Teléfono: la fila se nombra con su número, el símbolo va sobre su texto y las anclas bajan a la leyenda. */
+@media (max-width: 719px) {
+  .hg-matriz .hg-matriz-ancla {
+    display: none;
+  }
+
+  .hg-matriz tbody th {
+    min-width: 0;
+  }
+
+  .hg-matriz td .hg-estado {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .hg-matriz td.es-esta {
+    padding-left: var(--e-1);
+  }
+
+  .hg-matriz-leyenda {
+    display: grid;
+  }
+}
+
+.hg-matriz .hg-limite {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.hg-matriz td > .hg-menor {
+  display: block;
+}
+
+/* La casilla del hallazgo: marco de tinta, no solo color. */
+.hg-matriz td.es-esta {
+  outline: 2px solid var(--tinta);
+  outline-offset: -2px;
+  padding-left: var(--e-2);
+  font-weight: 700;
+}
+
+.hg-vector {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+
+.hg-seccion > .hg-cadena {
+  margin-top: var(--e-4);
 }

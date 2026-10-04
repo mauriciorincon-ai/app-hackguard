@@ -2,7 +2,7 @@
 // idioma, bloque de SALA (lo que no es producto: nota de la mirada y botoneras), contenido, y al pie la
 // matriz «Qué revisar y qué deberías ver». CSS y JS son archivos relativos de assets/ (cero red, cero
 // scripts en línea: la política de contenido de /diseno/ solo admite 'self').
-import { ACTIVOS, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
+import { ACTIVOS, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 import { atributo, esc, t } from "./html.mjs";
 
 const PRIMER_ACTIVO = Object.keys(ACTIVOS)[0];
@@ -46,7 +46,7 @@ export const NAVEGACION = [
     nombre: { es: "Evidencia", en: "Evidence" },
     paginas: [
       { archivo: "evidencia.html", nombre: { es: "Carga", en: "Intake" } },
-      { archivo: "hallazgo.html", nombre: { es: "Hallazgos", en: "Findings" } },
+      { archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]), nombre: { es: "Hallazgos", en: "Findings" } },
     ],
   },
   {

@@ -3,7 +3,10 @@
 // firma y la cadena hallazgo → corrección → re-prueba → cierre. El usuario eligió la dirección «acta»
 // (títulos con serifa, regla doble, secciones numeradas); la alternativa «libro» se retiró.
 // Toda cifra sale de nucleo/calculos.mjs con la fecha de consulta.
-import { ACTIVOS, CONTROL, HALLAZGOS, PRUEBAS, SOBRES } from "../datos/mundo.mjs";
+import { ACTIVOS, CONTROL, HALLAZGOS as TODOS_LOS_HALLAZGOS, PRUEBAS, SOBRES } from "../datos/mundo.mjs";
+
+// Este corte es el de UN control: solo cuentan los hallazgos de las pruebas que lo cubren.
+const HALLAZGOS = TODOS_LOS_HALLAZGOS.filter((h) => PRUEBAS.some((p) => p.id === h.prueba));
 import { cotaPorCiento, huellaDe, plazo, vistaPorControl } from "../nucleo/calculos.mjs";
 import { celda, dato, dias, estado, firma, huella, sello } from "../nucleo/componentes.mjs";
 import { CONFIRMACION, ESTADO_DE_CONTROL, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";

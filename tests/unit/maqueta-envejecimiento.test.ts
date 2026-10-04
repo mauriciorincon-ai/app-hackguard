@@ -10,6 +10,7 @@
 //   vigencia  (RF-01.5): por revisar desde 30 días, vencido desde 60.
 //   evidencia (DA-04):   antigua desde 180 días.
 //   plazo     (§ 11.3):  crítico 7 días, alto 30, medio 90; vencido al día siguiente del plazo.
+//   revision  (RF-04.7): un riesgo aceptado toca revisarlo a los días que su hallazgo declara.
 import { readFileSync, rmSync } from "node:fs";
 import { afterAll, describe, expect, it } from "vitest";
 import { documentoDe, generarEnTemporal, leerPagina, paginasDe, RAIZ_MAQUETA } from "./lib/maqueta";
@@ -29,6 +30,11 @@ const REGLA: Record<string, Regla> = {
   evidencia: {
     umbrales: () => [180],
     estado: (dias) => (dias >= 180 ? "antigua" : "vigente"),
+  },
+  // Riesgo aceptado: se revisa a los N días que el propio hallazgo declara (data-plazo).
+  revision: {
+    umbrales: (el) => [Number(el.getAttribute("data-plazo"))],
+    estado: (dias, el) => (dias >= Number(el.getAttribute("data-plazo")) ? "toca_revisar" : "vigente"),
   },
   plazo: {
     umbrales: (el) => [PLAZO[el.getAttribute("data-severidad")!] + 1],
@@ -140,6 +146,7 @@ describe("maqueta: matriz de envejecimiento", () => {
       vigencia: ["por_revisar", "vencido", "vigente"],
       evidencia: ["antigua", "vigente"],
       plazo: ["vencido"],
+      revision: ["toca_revisar", "vigente"],
     };
     for (const [clase, estados] of vistos) {
       for (const estado of completos[clase]) {

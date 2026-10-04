@@ -1,7 +1,7 @@
 // index.html: el recorrido de la maqueta. Provisional hasta la mirada 5 (la portada real): por ahora
 // lista las páginas que ya existen, en el orden en que se miran.
 import { archivoDeFicha } from "../datos/catalogo.mjs";
-import { ACTIVOS, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
+import { ACTIVOS, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 
 const ACTIVO = Object.keys(ACTIVOS)[0];
 import { t } from "../nucleo/html.mjs";
@@ -78,6 +78,22 @@ const PAGINAS = [
     que: {
       es: "Mirada 3. Pruebas planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.",
       en: "Review 3. Planned and excluded tests with their reasons, coverage by control and execution package.",
+    },
+  },
+  {
+    archivo: "evidencia.html",
+    nombre: { es: "Carga de evidencia", en: "Evidence intake" },
+    que: {
+      es: "Mirada 4. Las tres vías de carga y la confirmación por lote, con todas las fallas a la vista.",
+      en: "Review 4. The three intake routes and batch confirmation, with every failure in plain view.",
+    },
+  },
+  {
+    archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]),
+    nombre: { es: "Hallazgo", en: "Finding" },
+    que: {
+      es: "Mirada 4. Cadena de cierre, severidad, plazo y salidas posibles. Cuatro hallazgos, uno por momento del ciclo.",
+      en: "Review 4. Closure chain, severity, deadline and possible outcomes. Four findings, one per moment of the life cycle.",
     },
   },
 ];

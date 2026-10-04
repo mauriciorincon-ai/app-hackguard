@@ -7,11 +7,13 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PRUEBAS, archivoDeFicha } from "./datos/catalogo.mjs";
 import { fechaDeConsulta } from "./nucleo/fecha.mjs";
-import { ACTIVOS, archivoDeActivo, archivoDePlan } from "./datos/mundo.mjs";
+import { ACTIVOS, HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "./datos/mundo.mjs";
 import { activo } from "./paginas/activo.mjs";
 import { catalogo } from "./paginas/catalogo.mjs";
 import { controles } from "./paginas/controles.mjs";
 import { direccion } from "./paginas/direccion.mjs";
+import { evidencia } from "./paginas/evidencia.mjs";
+import { hallazgo } from "./paginas/hallazgo.mjs";
 import { index } from "./paginas/index.mjs";
 import { kit } from "./paginas/kit.mjs";
 import { marcos } from "./paginas/marcos.mjs";
@@ -33,6 +35,8 @@ export const PAGINAS = [
   { archivo: "propuestas.html", generar: propuestas },
   ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDeActivo(id), generar: activo(id) })),
   ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDePlan(id), generar: plan(id) })),
+  { archivo: "evidencia.html", generar: evidencia },
+  ...HALLAZGOS.map((h) => ({ archivo: archivoDeHallazgo(h.id), generar: hallazgo(h.id) })),
 ];
 
 const destino = salida();

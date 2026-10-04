@@ -141,6 +141,10 @@ envejece. Una deuda («sin control asignado») es atención, no falla.
 | Conmutador de objeto | Fila de enlaces con borde que dice cuál objeto está abierto (un activo). Va encima de la subnavegación, porque las páginas de debajo son de ese objeto. El abierto lleva base azul y negrita |
 | Propuesta | Fila de bandeja: a la izquierda quién propone, qué y con qué fuente; a la derecha, tras una barra, los botones de decisión y la frase que dice qué pasa con cada una. Al decidir, la barra pasa a tinta azul (la mano humana) |
 | Revelado | Contenido que abre el botón que lo precede (la plantilla para activos propios) |
+| Pestañas | Grupo de botones que elige un panel de la misma pantalla (las tres vías de carga). Mismo aspecto que los botones de grupo |
+| Formulario | Campos en una columna bajo regla doble: rótulo arriba, ayuda debajo, 44 px de alto mínimo. Un campo lleno lleva base azul. Bajo los campos, cuántos obligatorios faltan; el botón de guardar avisa si falta alguno en vez de estar deshabilitado |
+| Lote | Fila de bandeja con su cabecera (archivo, adaptador, huellas, advertencias), su decisión a la derecha y, a todo el ancho, el libro de sus sobres |
+| Matriz de prioridad | Tabla de impacto por frecuencia con el nivel en cada casilla (barras + texto) y la casilla del objeto en un marco de tinta. Una palabra de la tabla nunca se parte: en teléfono la tabla se reorganiza |
 | Avisos de un objeto | Bajo el encabezado de una ficha, un sello por cada cosa que su lector debe saber antes de leerla (verificación vencida, toca revisarla, marcada para revisión). Del más grave al más leve; dice el umbral y qué hacer, no repite la cifra que ya está en la ficha. Un objeto sin nada que avisar no lleva sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
@@ -178,12 +182,15 @@ animación de entrada.
 
 ## 11. Pendiente
 
-Formularios de entrada (miradas 3 y 4) · tabla de prioridad de acción de la escala de IA (mirada 4) ·
-hoja de impresión del informe (mirada 5) · llevar al `kit.html` los componentes de la mirada 3
-(conmutador de objeto, propuesta, revelado): hoy solo se ven en sus pantallas (se paga en la mirada 5).
+Hoja de impresión del informe (mirada 5) · llevar al `kit.html` los componentes de las miradas 3 y 4
+(conmutador de objeto, propuesta, revelado, pestañas, formulario, lote, matriz de prioridad): hoy solo se
+ven en sus pantallas (se paga en la mirada 5).
 
 ## 12. Registro de cambios
 
+- **0.4.0** — Mirada 4: pestañas, formulario, lote, matriz de prioridad de acción y cadena de cierre con
+  sus variantes (riesgo aceptado, re-prueba por confirmar). Regla nueva: ninguna palabra se parte por la
+  mitad; si no cabe, cambia la disposición.
 - **0.3.0** — Mirada 3: libros de tres y cuatro columnas, conmutador de objeto, propuesta con sus botones
   de decisión, revelado y título menor.
 - **0.2.1** — Avisos de un objeto (sellos bajo el encabezado de la ficha). Regla de maqueta: una pantalla
