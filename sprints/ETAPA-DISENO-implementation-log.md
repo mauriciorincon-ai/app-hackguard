@@ -68,7 +68,11 @@ tal cual. **Falta la prueba real: el usuario abre el preview con sesión.**
 
 Los PRs #1 y #2 de dependabot estaban en rojo por haber nacido sobre el commit inicial, antes de la
 excepción de auditoría del PR #3. #1 (acciones de CI): regenerado con `@dependabot rebase`, tres checks
-en `success`, mergeado. #2 (npm): regeneración pedida después del merge del #1.
+en `success`, mergeado. #2 (npm, react y react-dom 19.3.0): tras regenerarse siguió en rojo en el propio gate de la regla 18 —su
+lockfile dejaba `electron-to-chromium` en 1.5.443 y `main` ya tiene 1.5.444—. No se peleó el lockfile de
+dependabot: se abrió el PR #5 desde `main` con los mismos dos bumps y el lockfile regenerado
+(`verificar-dependencias`: 653 paquetes, ninguno por debajo de `main`; `pnpm peers check` limpio), tres
+checks en `success`, mergeado, y el #2 se cerró como reemplazado.
 
 ## Desviación del plan
 
