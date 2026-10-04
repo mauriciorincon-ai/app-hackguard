@@ -1,0 +1,4 @@
+# Maqueta de la Etapa de Diseño: el HTML es SALIDA de scripts/maqueta/ y se compara byte a byte
+# (tests/unit/maqueta-deriva.test.ts). Un formateador cambia bytes y rompe el gate.
+docs/diseno/
+public/diseno/

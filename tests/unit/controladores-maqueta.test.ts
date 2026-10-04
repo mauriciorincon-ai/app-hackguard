@@ -1,38 +1,58 @@
-// Gate de CONTROLADORES (kit v1.32.0, regla 22): todo control dibujado en la maqueta tiene su script
-// cargado. Origen: en la Etapa de Diseño de Big-D la ficha del nivel 2 no cargó su script desde la
-// mirada 2 y cuatro miradas no lo vieron — una captura de un panel cerrado «mide bien».
-// Plantilla del kit: recorre docs/diseno/*.html; en un repo recién estampado (sin maqueta) pasa vacío
-// y lo dice. Cada app puede endurecerlo (p. ej., exigir un `data-controlador` por control).
+// Gate de CONTROLADORES (kit v1.32.0, regla 22), ENDURECIDO para HackGuard: todo control dibujado en
+// la maqueta declara data-controlador="<nombre>", y la página carga un script local que contiene su
+// registrar("<nombre>", …). Origen: en la Etapa de Diseño de Big-D la ficha del nivel 2 no cargó su
+// script desde la mirada 2 y cuatro miradas no lo vieron — una captura de un panel cerrado «mide bien».
+// La plantilla del kit solo pedía «algún script»; aquí el par control ↔ controlador es exacto.
+// Además: todo enlace relativo apunta a una página o a un ancla que existe.
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, dirname, resolve } from "node:path";
+import { documentoDe, leerPagina, paginasDe, RAIZ_MAQUETA } from "./lib/maqueta";
 
-const DIR = resolve(process.cwd(), "docs/diseno");
-const paginas = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".html")) : [];
+const INTERACTIVO =
+  'button, select, input, textarea, summary, [role="button"], [role="switch"], [role="tab"], [role="slider"]';
+const paginas = paginasDe(RAIZ_MAQUETA);
 
-const CONTROL = /<(button|select|input|details)\b[^>]*>|\brole="(button|switch|tab|slider)"|\bdata-(accion|controlador|paso|lang-set)=/g;
-const SCRIPT = /<script\b[^>]*\bsrc="([^"]+)"[^>]*>|<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g;
+describe("maqueta: cada control tiene su controlador cargado", () => {
+  it("hay maqueta que verificar", () => expect(paginas.length).toBeGreaterThan(0));
 
-describe("maqueta: controladores con script cargado", () => {
-  if (paginas.length === 0) {
-    it("sin maqueta todavía (docs/diseno vacío): nada que verificar", () => expect(paginas).toHaveLength(0));
-    return;
-  }
   for (const pagina of paginas) {
-    it(`${pagina}: si dibuja controles, carga al menos un script y todo src existe`, () => {
-      const html = readFileSync(join(DIR, pagina), "utf8");
-      const controles = html.match(CONTROL) ?? [];
-      const scripts = [...html.matchAll(SCRIPT)];
-      const srcs = scripts.map((m) => m[1]).filter(Boolean);
-      for (const src of srcs) {
-        if (/^https?:/.test(src)) throw new Error(`${pagina}: script externo prohibido (${src}) — la maqueta es autocontenida`);
-        expect(existsSync(join(dirname(join(DIR, pagina)), src)), `${pagina}: falta el script ${src}`).toBe(true);
+    const doc = documentoDe(leerPagina(RAIZ_MAQUETA, pagina));
+
+    it(`${pagina}: scripts locales, existentes y sin código en línea`, () => {
+      for (const script of doc.querySelectorAll("script")) {
+        const src = script.getAttribute("src");
+        expect(src, `${pagina}: script en línea prohibido (la política de /diseno/ solo admite 'self')`).toBeTruthy();
+        expect(/^(https?:)?\/\//.test(src!), `${pagina}: script externo prohibido (${src})`).toBe(false);
+        expect(existsSync(join(RAIZ_MAQUETA, src!)), `${pagina}: falta el script ${src}`).toBe(true);
       }
-      // <details> se abre solo; los demás controles exigen un script (externo existente o inline no vacío).
-      const interactivos = controles.filter((c) => !c.startsWith("<details"));
-      if (interactivos.length > 0) {
-        const inline = scripts.some((m) => (m[2] ?? "").trim().length > 0);
-        expect(srcs.length > 0 || inline, `${pagina}: ${interactivos.length} control(es) dibujado(s) y ningún script cargado`).toBe(true);
+    });
+
+    it(`${pagina}: todo control interactivo declara data-controlador y su script lo registra`, () => {
+      const cargado = [...doc.querySelectorAll("script[src]")]
+        .map((s) => readFileSync(join(RAIZ_MAQUETA, s.getAttribute("src")!), "utf8"))
+        .join("\n");
+      const registrados = new Set([...cargado.matchAll(/registrar\("([a-z-]+)"/g)].map((m) => m[1]));
+      for (const control of doc.querySelectorAll(INTERACTIVO)) {
+        const nombre = control.getAttribute("data-controlador");
+        const quien = control.outerHTML.slice(0, 100);
+        expect(nombre, `${pagina}: control sin data-controlador → ${quien}`).toBeTruthy();
+        expect(registrados.has(nombre!), `${pagina}: ningún script cargado registra «${nombre}» → ${quien}`).toBe(true);
+      }
+    });
+
+    it(`${pagina}: todo enlace relativo llega a algo que existe`, () => {
+      for (const enlace of doc.querySelectorAll("a[href]")) {
+        const href = enlace.getAttribute("href")!;
+        const [archivo, ancla] = href.split("#");
+        if (archivo) {
+          expect(/^[a-z0-9-]+\.html$/.test(archivo), `${pagina}: enlace no relativo a la maqueta (${href})`).toBe(true);
+          expect(paginas.includes(archivo), `${pagina}: enlace a una página que no existe (${href})`).toBe(true);
+        }
+        if (ancla) {
+          const destino = archivo ? documentoDe(leerPagina(RAIZ_MAQUETA, archivo)) : doc;
+          expect(destino.getElementById(ancla), `${pagina}: ancla inexistente (${href})`).not.toBeNull();
+        }
       }
     });
   }

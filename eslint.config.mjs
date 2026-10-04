@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generados o derivados: cobertura, y la maqueta de la Etapa de Diseño (HTML autocontenido con
+    // su propio JS de sala; public/diseno/ es su copia de build).
+    "coverage/**",
+    "docs/diseno/**",
+    "public/diseno/**",
   ]),
 ]);
 

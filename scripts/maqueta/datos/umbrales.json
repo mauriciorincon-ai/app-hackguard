@@ -1,0 +1,12 @@
+{
+  "vigencia": {
+    "por_revisar": 30,
+    "vencido": 60
+  },
+  "plazo_por_severidad": {
+    "critico": 7,
+    "alto": 30,
+    "medio": 90
+  },
+  "evidencia_antigua": 180
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es" data-lang="es" data-theme="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title data-es="HackGuard · maqueta" data-en="HackGuard · mockup">HackGuard · maqueta</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/maqueta.css">
+<script src="assets/maqueta.js"></script>
+</head>
+<body data-estado="datos">
+<a class="mq-salto" href="#contenido"><span lang="es">Saltar al contenido</span><span lang="en">Skip to content</span></a>
+<header class="mq-cab">
+<a class="mq-marca" href="index.html" data-neutro>HackGuard</a>
+<div class="mq-conmutadores">
+<button type="button" data-controlador="tema" aria-label="Cambiar entre tema oscuro y claro" data-aria-label-es="Cambiar entre tema oscuro y claro" data-aria-label-en="Switch between dark and light theme"><span data-si-tema="oscuro"><span lang="es">Oscuro</span><span lang="en">Dark</span></span><span data-si-tema="claro"><span lang="es">Claro</span><span lang="en">Light</span></span></button>
+<button type="button" data-controlador="idioma" aria-label="Cambiar el idioma a inglés" data-aria-label-es="Cambiar el idioma a inglés" data-aria-label-en="Switch the language to Spanish"><span lang="es" data-neutro>ES</span><span lang="en" data-neutro>EN</span></button>
+</div>
+</header>
+<main id="contenido">
+<h1><span lang="es">Maqueta de HackGuard</span><span lang="en">HackGuard mockup</span></h1>
+<p class="mq-entrada"><span lang="es">Esta página es provisional. Comprueba que la maqueta se genera, se sirve y responde; aquí todavía no hay diseño que juzgar.</span><span lang="en">This page is temporary. It checks that the mockup builds, is served and responds; there is no design to judge here yet.</span></p>
+
+<section aria-labelledby="vigencia">
+<h2 id="vigencia"><span lang="es">Vigencia calculada</span><span lang="en">Computed freshness</span></h2>
+<p><span lang="es">Fecha de consulta:</span><span lang="en">Query date:</span> <strong data-neutro>2026-10-03</strong>. <span lang="es">Los días salen de esa fecha, nunca del reloj.</span><span lang="en">Day counts come from that date, never from the clock.</span></p>
+<ul class="mq-filas">
+<li class="mq-fila" data-vigencia="vigente" data-dias="12" data-verificada="2026-09-21">
+<span class="mq-fila-nombre"><strong data-neutro>garak</strong> <span class="mq-menor"><span lang="es">Herramienta</span><span lang="en">Tool</span></span></span>
+<span class="mq-estado mq-estado-vigente"><svg class="marca" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="7" fill="currentColor"/><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mq-estado-texto"><span lang="es">Vigente</span><span lang="en">Current</span></span></span>
+<span class="mq-menor"><span lang="es">verificada hace 12 días</span><span lang="en">verified 12 days ago</span> · <span data-neutro>2026-09-21</span></span>
+</li>
+<li class="mq-fila" data-vigencia="por_revisar" data-dias="41" data-verificada="2026-08-23">
+<span class="mq-fila-nombre"><strong data-neutro>OWASP ZAP</strong> <span class="mq-menor"><span lang="es">Herramienta</span><span lang="en">Tool</span></span></span>
+<span class="mq-estado mq-estado-por_revisar"><svg class="marca" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 1.6L15 14H1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6.2v3.6M8 11.6v.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="mq-estado-texto"><span lang="es">Por revisar</span><span lang="en">Review due</span></span></span>
+<span class="mq-menor"><span lang="es">verificada hace 41 días</span><span lang="en">verified 41 days ago</span> · <span data-neutro>2026-08-23</span></span>
+</li>
+<li class="mq-fila" data-vigencia="vencido" data-dias="75" data-verificada="2026-07-20">
+<span class="mq-fila-nombre"><strong data-neutro>OWASP Top 10 for LLM Applications</strong> <span class="mq-menor"><span lang="es">Marco</span><span lang="en">Framework</span></span></span>
+<span class="mq-estado mq-estado-vencido"><svg class="marca" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="13" height="13" rx="1.5" fill="currentColor"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round"/></svg><span class="mq-estado-texto"><span lang="es">Vencido</span><span lang="en">Overdue</span></span></span>
+<span class="mq-menor"><span lang="es">verificada hace 75 días</span><span lang="en">verified 75 days ago</span> · <span data-neutro>2026-07-20</span></span>
+</li>
+</ul>
+</section>
+
+<section aria-labelledby="estados">
+<h2 id="estados"><span lang="es">Estados de pantalla</span><span lang="en">Screen states</span></h2>
+<div class="mq-estados" role="group" aria-label="Estado de la pantalla" data-aria-label-es="Estado de la pantalla" data-aria-label-en="Screen state"><button type="button" data-controlador="estado" data-valor="datos" aria-pressed="true"><span lang="es">Con datos</span><span lang="en">With data</span></button><button type="button" data-controlador="estado" data-valor="vacio" aria-pressed="false"><span lang="es">Vacío</span><span lang="en">Empty</span></button><button type="button" data-controlador="estado" data-valor="carga" aria-pressed="false"><span lang="es">Cargando</span><span lang="en">Loading</span></button><button type="button" data-controlador="estado" data-valor="error" aria-pressed="false"><span lang="es">Error</span><span lang="en">Error</span></button></div>
+<div class="mq-muestra">
+<p data-si="datos"><span lang="es">Así se ve la pantalla cuando hay datos.</span><span lang="en">This is the screen when there is data.</span></p>
+<p data-si="vacio"><span lang="es">Todavía no hay nada que mostrar.</span><span lang="en">There is nothing to show yet.</span></p>
+<p data-si="carga"><span lang="es">Leyendo los archivos del catálogo…</span><span lang="en">Reading the catalog files…</span></p>
+<p data-si="error"><span lang="es">No se pudo leer el catálogo. Revisa el archivo y vuelve a cargarlo.</span><span lang="en">The catalog could not be read. Check the file and load it again.</span></p>
+</div>
+</section>
+</main>
+<footer class="mq-pie"><h2><span lang="es">Qué revisar y qué deberías ver</span><span lang="en">What to check and what you should see</span></h2><div class="mq-tabla"><table><thead><tr><th scope="col"><span lang="es">Dónde</span><span lang="en">Where</span></th><th scope="col"><span lang="es">Qué hacer</span><span lang="en">What to do</span></th><th scope="col"><span lang="es">Qué deberías ver</span><span lang="en">What you should see</span></th></tr></thead><tbody><tr><td><span lang="es">Botón de tema, arriba</span><span lang="en">Theme button, top</span></td><td><span lang="es">Púlsalo</span><span lang="en">Press it</span></td><td><span lang="es">El fondo pasa de oscuro a claro y vuelve</span><span lang="en">The background goes from dark to light and back</span></td></tr><tr><td><span lang="es">Botón de idioma, arriba</span><span lang="en">Language button, top</span></td><td><span lang="es">Púlsalo</span><span lang="en">Press it</span></td><td><span lang="es">Todo el texto cambia a inglés</span><span lang="en">All the text switches to Spanish</span></td></tr><tr><td><span lang="es">Vigencia calculada</span><span lang="en">Computed freshness</span></td><td><span lang="es">Lee las tres filas</span><span lang="en">Read the three rows</span></td><td><span lang="es">Cada estado tiene un símbolo distinto y su texto, no solo un color</span><span lang="en">Each status has its own symbol and label, not just a color</span></td></tr><tr><td><span lang="es">Estados de pantalla</span><span lang="en">Screen states</span></td><td><span lang="es">Pulsa cada uno</span><span lang="en">Press each one</span></td><td><span lang="es">El mensaje de abajo cambia</span><span lang="en">The message below changes</span></td></tr></tbody></table></div></footer>
+</body>
+</html>

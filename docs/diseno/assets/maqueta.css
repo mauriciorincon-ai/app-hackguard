@@ -1,0 +1,215 @@
+/* Hoja de la maqueta — armazón PROVISIONAL de la fase 0. Sin valores de color sueltos: todo sale de
+   tokens.css. Regla de 380 px: los hijos de rejilla llevan min-width: 0 y nada tiene ancho fijo. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html[data-lang="es"] [lang="en"],
+html[data-lang="en"] [lang="es"] {
+  display: none !important;
+}
+
+html[data-theme="oscuro"] [data-si-tema="claro"],
+html[data-theme="claro"] [data-si-tema="oscuro"] {
+  display: none;
+}
+
+body:not([data-estado="datos"]) [data-si="datos"],
+body:not([data-estado="vacio"]) [data-si="vacio"],
+body:not([data-estado="carga"]) [data-si="carga"],
+body:not([data-estado="error"]) [data-si="error"] {
+  display: none;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--acento);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+.mq-salto {
+  position: absolute;
+  left: 16px;
+  top: -64px;
+  padding: 8px 12px;
+  background: var(--superficie);
+  color: var(--tinta);
+}
+
+.mq-salto:focus {
+  top: 8px;
+}
+
+.mq-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.mq-marca {
+  font-weight: 700;
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.mq-conmutadores,
+.mq-estados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--tinta);
+  font: inherit;
+  cursor: pointer;
+}
+
+button[aria-pressed="true"] {
+  border-color: var(--acento);
+  box-shadow: inset 0 -3px 0 var(--acento);
+  font-weight: 600;
+}
+
+main,
+.mq-pie {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+h2 {
+  margin: 32px 0 8px;
+  font-size: 1.125rem;
+}
+
+.mq-entrada,
+.mq-menor {
+  color: var(--tinta-2);
+}
+
+.mq-menor {
+  font-size: 0.9375rem;
+}
+
+.mq-filas {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--linea);
+}
+
+.mq-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.mq-fila > * {
+  min-width: 0;
+}
+
+@media (min-width: 720px) {
+  .mq-fila {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr);
+    align-items: center;
+  }
+}
+
+.mq-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.mq-estado .marca {
+  flex: none;
+}
+
+.mq-estado-vigente .marca {
+  color: var(--vigente);
+}
+
+.mq-estado-por_revisar .marca {
+  color: var(--por-revisar);
+}
+
+.mq-estado-vencido .marca {
+  color: var(--vencido);
+}
+
+.mq-muestra {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+
+.mq-muestra p {
+  margin: 0;
+}
+
+.mq-pie {
+  border-top: 1px solid var(--linea);
+}
+
+.mq-pie h2 {
+  margin-top: 0;
+}
+
+.mq-tabla {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+th,
+td {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--linea);
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  button {
+    transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+}

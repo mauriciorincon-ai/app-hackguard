@@ -1,0 +1,29 @@
+/* Tokens PROVISIONALES de la fase 0 (tubería). La mirada 1 los reemplaza por los generados desde
+   scripts/paleta/. El tema por defecto es el oscuro; el texto va siempre en tinta, el color de
+   estado solo en la marca y el borde. */
+:root,
+[data-theme="oscuro"] {
+  --fondo: #0e1116;
+  --superficie: #161b22;
+  --tinta: #e6e9ee;
+  --tinta-2: #aab2bf;
+  --linea: #3a424e;
+  --acento: #8ab4ff;
+  --vigente: #5fb3a1;
+  --por-revisar: #e0b040;
+  --vencido: #e8848c;
+  color-scheme: dark;
+}
+
+[data-theme="claro"] {
+  --fondo: #f6f5f1;
+  --superficie: #ffffff;
+  --tinta: #1b1e24;
+  --tinta-2: #4a515c;
+  --linea: #8b929c;
+  --acento: #1f4fb3;
+  --vigente: #17705f;
+  --por-revisar: #8a6100;
+  --vencido: #b3261e;
+  color-scheme: light;
+}
