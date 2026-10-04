@@ -631,6 +631,12 @@ inglés), lista de controles, `control-iso42001-a-6-2-4` (claro), `control-iso42
 hoja, cabeceras de tabla repetidas en cada hoja · deriva cero al regenerar · lint y typecheck limpios ·
 nada bajo `src/`.
 
+### Mirada 5 — veredicto: aprobado (2026-10-04)
+
+«Muy buenas visuales y muy claras, las abri y las apruebo, continua». Sin ajustes. CI del commit
+`6b4b6fb`: `quality`, `e2e` y `lighthouse` en `success`. Con esto las trece pantallas del H1 están
+construidas y vistas; lo siguiente es el cierre de la etapa (fase 6).
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
