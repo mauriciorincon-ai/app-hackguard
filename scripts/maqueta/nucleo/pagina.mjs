@@ -112,22 +112,13 @@ function matriz(filas) {
   return `<footer class="mq-pie"><div class="mq-pie-caja"><h2>${t(MATRIZ)}</h2><div class="mq-tabla"><table><thead><tr>${cabecera}</tr></thead><tbody>${cuerpo}</tbody></table></div></div></footer>`;
 }
 
-export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion, existentes = [], antes = "", contenido, revisar }) {
-  return `<!doctype html>
-<html lang="es" data-lang="es" data-theme="oscuro">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title data-es="${esc(titulo.es)}" data-en="${esc(titulo.en)}">${esc(titulo.es)}</title>
-<link rel="stylesheet" href="assets/tokens.css">
-<link rel="stylesheet" href="assets/hg.css">
-<link rel="stylesheet" href="assets/maqueta.css">
-<script src="assets/maqueta.js"></script>
-</head>
-<body data-estado="${esc(estadoInicial)}">
-<a class="mq-salto" href="#contenido">${t(SALTO)}</a>
-<header class="hg-cab">
+/**
+ * `armazon: false` deja fuera la cabecera y el <main> de la dirección «acta»: la página trae su propia
+ * estructura de aplicación (mirada 4-bis). `hojas` añade hojas de estilo; `claseDeCuerpo`, la clase de <body>.
+ */
+export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion, existentes = [], antes = "", contenido, revisar, armazon = true, claseDeCuerpo = "", hojas = [] }) {
+  const cuerpo = armazon
+    ? `<header class="hg-cab">
 <a class="hg-marca" href="index.html"><span class="hg-marca-nombre" data-neutro>HackGuard</span><span class="hg-menor">${t(DESCRIPTOR)}</span></a>
 ${navegacion(seccion, existentes)}
 <div class="hg-botonera">
@@ -139,7 +130,23 @@ ${sala(datosDeSala)}
 <main id="contenido" class="hg-pagina">
 ${antes}${subnavegacion(seccion, existentes)}
 ${contenido}
-</main>
+</main>`
+    : contenido;
+  return `<!doctype html>
+<html lang="es" data-lang="es" data-theme="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title data-es="${esc(titulo.es)}" data-en="${esc(titulo.en)}">${esc(titulo.es)}</title>
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/hg.css">
+<link rel="stylesheet" href="assets/maqueta.css">
+${hojas.map((h) => `<link rel="stylesheet" href="${esc(h)}">\n`).join("")}<script src="assets/maqueta.js"></script>
+</head>
+<body${claseDeCuerpo ? ` class="${esc(claseDeCuerpo)}"` : ""} data-estado="${esc(estadoInicial)}">
+<a class="mq-salto" href="#contenido">${t(SALTO)}</a>
+${cuerpo}
 ${matriz(revisar)}
 </body>
 </html>

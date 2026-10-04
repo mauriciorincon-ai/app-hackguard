@@ -158,7 +158,7 @@
   // Pestañas: el grupo marca cuál está pulsada y el contenedor [data-pestanas] guarda la vía elegida
   // (la hoja muestra solo el panel de esa vía).
   registrar("pestana", function (control) {
-    var contenedor = document.querySelector("[data-pestanas]");
+    var contenedor = control.closest("[data-pestanas]");
     if (contenedor) contenedor.setAttribute("data-via", control.getAttribute("data-valor"));
     marcarGrupo(control, "pestana");
   });

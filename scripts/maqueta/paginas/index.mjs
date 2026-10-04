@@ -9,6 +9,14 @@ import { pagina } from "../nucleo/pagina.mjs";
 
 const PAGINAS = [
   {
+    archivo: "interfaz-a.html",
+    nombre: { es: "Tres direcciones de interfaz", en: "Three interface directions" },
+    que: {
+      es: "Mirada 4-bis, la que toca ahora. La misma pantalla como consola, como expediente y como tablero.",
+      en: "Review 4-bis, the current one. The same screen as a console, as a case file and as a dashboard.",
+    },
+  },
+  {
     archivo: "direccion.html",
     nombre: { es: "Dirección", en: "Direction" },
     que: {

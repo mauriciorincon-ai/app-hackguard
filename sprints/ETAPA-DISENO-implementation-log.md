@@ -363,6 +363,30 @@ disposición de cada pantalla y los componentes.
 **Cómo sigue.** Mirada 4-bis: la misma pantalla en tres direcciones de interfaz. Mirada 4-ter: rehacer lo
 construido con la elegida. Luego la 5 y G-Diseño, como estaban.
 
+### Mirada 4-bis — tres direcciones de interfaz (2026-10-04)
+
+La misma pantalla (carga de evidencia, lotes por confirmar), con los mismos datos, en tres estructuras:
+
+| | Navegación | Disposición | Densidad | Pieza propia |
+|---|---|---|---|---|
+| **A · Consola** | barra lateral con iconos y cuentas; en teléfono, barra inferior | tabla al centro + inspector a la derecha; lotes como pestañas | alta (14 px, filas compactas) | inspector del sobre seleccionado |
+| **B · Expediente** | barra lateral | el lote como un caso: recorrido de tres pasos, sobres a la izquierda, carril «para confirmar» a la derecha | media (15 px), títulos con serifa | recorrido y lista de pendientes |
+| **C · Tablero** | navegación superior en píldoras | cifras grandes arriba y los dos lotes lado a lado | baja (15 px, radios de 10 px) | tarjetas de cifra con barra |
+
+Piezas nuevas comunes: iconos de navegación en trazo SVG, chip de estado (símbolo + texto + color, en
+píldora con tinte y borde), barra de proporción en SVG (sin estilos en línea), botón primario lleno, y una
+tira de sala de una línea en vez del cuadro que encabezaba cada página. `pagina()` admite ahora
+`armazon: false` para páginas que traen su propia estructura. El controlador `pestana` busca su
+contenedor más cercano (permite más de un grupo por página).
+
+La sonda de palabras partidas ya rindió aquí: nombró los chips que se partían dentro de la tabla de la
+dirección A a 1280 px («Superada», «muestra», «siempre») antes de que yo mirara la captura.
+
+Verificación: 539 unitarias · 682 e2e en local (42 páginas) · capturas de las tres direcciones en los
+dos temas y los dos anchos leídas como imagen. En las capturas de teléfono la barra inferior fija aparece
+a media página (así fotografía Playwright un elemento fijo en una captura de página entera); en un
+teléfono real queda abajo.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el

@@ -70,6 +70,12 @@ Aprobadas con el plan de la etapa (2026-10-03):
     mismo conmutador de objeto que los activos.
 14. **La carga de evidencia muestra un solo activo** (el asistente demo) con dos lotes por confirmar; las
     tres vías son pestañas de la misma pantalla. Los campos y botones funcionan, pero no guardan nada.
+15. **Mirada 4-bis: tres direcciones de interfaz sobre la misma pantalla** (`interfaz-a` «Consola»:
+    barra lateral, tabla densa e inspector; `interfaz-b` «Expediente»: barra lateral, el lote como un
+    caso con su recorrido y un carril «para confirmar»; `interfaz-c` «Tablero»: navegación superior,
+    cifras grandes y los lotes lado a lado). Comparten datos, paleta y vocabulario de estados; difieren
+    en navegación, disposición, densidad y componentes. Viven en `assets/interfaz.css`, aparte de la hoja
+    del sistema: la elegida pasa a `hg.css` y a `design-system.md`, y las otras dos se borran.
 8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
    en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
 
@@ -92,7 +98,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` | **aprobada** (2026-10-04, ronda 1) |
 | 4 | `evidencia` · `hallazgo-<id>` | **función aprobada, diseño rechazado** (2026-10-04, ronda 1): reabre la dirección visual |
-| 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **en construcción** (añadida el 2026-10-04 a pedido del usuario) |
+| 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **en mirada** (ronda 1, 2026-10-04) |
 | 4-ter | Las pantallas de las miradas 1 a 4 rehechas con la dirección que se elija | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
