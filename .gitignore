@@ -23,7 +23,12 @@ Thumbs.db
 
 # Evidencia de activos reales (regla dura 8): alcances, reglas de enfrentamiento, sobres y hallazgos
 # jamás viajan al repo público. Respaldo en un repo privado solo de datos.
-datos/privado/
+# Solo su README viaja: explica qué va ahí y qué jamás (tests/unit/datos-privados.test.ts lo vigila).
+datos/privado/*
+!datos/privado/README.md
 
 # Maqueta copiada por scripts/copiar-maqueta.mjs en cada build: derivado de docs/diseno/.
 public/diseno/
+
+# Respaldos de scripts/demo-rojo.sh (kit v1.35.0): si una demo se interrumpe, no deben entrar a un commit.
+.demo-rojo/

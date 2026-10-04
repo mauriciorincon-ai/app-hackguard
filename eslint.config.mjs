@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "coverage/**",
     "docs/diseno/**",
     "public/diseno/**",
+    // Salida de `vercel build` (scripts/build-como-proveedor.mjs, kit v1.39.0).
+    ".vercel/**",
   ]),
 ]);
 

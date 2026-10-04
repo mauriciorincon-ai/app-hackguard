@@ -32,6 +32,11 @@ jobs:
       - run: pnpm lint
       - run: pnpm test            # vitest run --coverage (umbral 70% en vitest.config)
       - run: pnpm build
+      # kit v1.39.0 — lo que el proveedor publica no es lo que el build escribe (Big-D S2, S2-AUD-32): en el perfil
+      # --estatico hace `vercel build` sin conexion con el adapter de Next y exige que cada pagina publicada sea
+      # identica a la de out/. En el perfil web dice «n/a» y pasa.
+      - name: Build como el proveedor y salida publicada = out/ (kit v1.39.0)
+        run: node scripts/build-como-proveedor.mjs
       - run: pnpm audit --audit-level high
 
   e2e:
@@ -81,3 +86,5 @@ jobs:
           lhci collect --startServerCommand="pnpm start" --numberOfRuns=3 $URLS
           lhci assert --budgetsFile=./perf-budget.json --aggregationMethod=median-run
           lhci assert --config=./lighthouse-categorias.json --aggregationMethod=median-run
+          # kit v1.37.0: margen (<10 % del presupuesto = aviso) + toda URL medida tiene presupuesto (rojo si no)
+          node scripts/lighthouse-margen.mjs

@@ -5,6 +5,10 @@
 > kit-app **v1.33.0** con perfil **`--estatico`**. Tercera app con especificación completa del
 > usuario y tercer proyecto de la trilogía con big-d y planlang. Nace con el pipeline completo desde
 > el día 0 (Etapa de Diseño · filtros ⭐/⭐⭐ · cero enlaces · bilingüe integral).
+>
+> **Sincronizada con kit-app v1.39.0** el 2026-10-04 (S1, fase 0), por nombre: v1.34.0 → v1.39.0. Frases centinela:
+> «La evidencia se escribe DESPUÉS del hecho» (regla 27) ·
+> «lo que el proveedor publica no es lo que el build escribe» (Stack, perfil estático).
 
 ## Las dos casas (regla dura)
 
@@ -89,6 +93,14 @@ huellas y CVSS 4.0; código desechable, jamás se copia como producto).
   servidor: `pnpm start` sirve `out/` con `serve` (versión exacta) y así Lighthouse y Playwright corren
   igual que en el perfil web. Sin Server Actions, sin rutas dinámicas sin `generateStaticParams`, sin
   `next/image` con el loader por defecto (`unoptimized`).
+  **La CI construye COMO EL PROVEEDOR (kit v1.39.0):** `scripts/build-como-proveedor.mjs` corre en `quality` tras
+  `pnpm build`; si `next.config.*` declara `output: "export"`, hace `vercel build` sin conexión con el adapter de Next
+  (`NEXT_ENABLE_ADAPTER=1`, CLI fijado en el script) y exige que **cada página de `.vercel/output/static/` sea idéntica
+  byte a byte a la de `out/`** (`scripts/verificar-salida-publicada.mjs`). En Vercel, Next 16 copia las páginas durante
+  `next build` y publica esa copia, no `out/`: **todo paso posterior al build que modifica `out/` (CSP, manifiestos,
+  huellas) escribe también en la carpeta publicada**, o no llega a producción sin que ninguna prueba local lo vea.
+  *(Big-D S2, S2-AUD-32: la CSP faltaba en producción; lo vio el usuario guardando la página del preview.)* Patrón:
+  `wiki/patterns/lo-que-el-proveedor-publica.md` (planeadora, RO).
 - **Deploy:** Vercel (preview por PR, prod desde `main`, protección en **All Deployments**: la app
   privada no se muestra a nadie; la superficie pública es el paquete estático dentro de hoja-de-vida, H2).
   **Observabilidad:** Sentry client-only y metadata-only desde el kit (inerte sin DSN).
@@ -199,7 +211,10 @@ decisions/NNN-titulo.md   (ADRs de implementación)
    la palabra de fase sin comentar el artefacto: **DETENTE y repregunta «¿qué viste al
    abrirlo?»** antes de construir encima — esa negativa es la demo en rojo de este gate.
    AskUserQuestion/previews ASCII **no sustituyen la mirada**: si preguntas por chat sobre un
-   artefacto visual, pide la respuesta con el archivo abierto y dilo. Cada mirada queda
+   artefacto visual, pide la respuesta con el archivo abierto y dilo. **Y cuando la mirada exige leer el HTML del
+   preview (una meta, una cabecera, un script; kit v1.39.0, método v1.41.0), la mecánica es la PÁGINA GUARDADA
+   (Cmd+S) y buscar en el archivo**, nunca «ver código fuente»: en Safari Cmd+Opt+U no hace nada sin el menú de
+   desarrollo y el primer «no» puede ser falso *(Big-D S2, P4)*. Cada mirada queda
    **registrada** (README de diseño o bitácora) ANTES de la construcción siguiente — la
    planeadora lo audita en G-Diseño y al cierre; sin registro, el cierre queda condicionado.
    **Y el PLAN de miradas —número, agrupación y ORDEN— es parte del gate (kit v1.21.0):**
@@ -305,7 +320,16 @@ decisions/NNN-titulo.md   (ADRs de implementación)
    floja de gitleaks, 2026-07-15; contraprecedente que sí lo hizo: PR desechable con `openai`
    → anti-IA en rojo en 7 s, Velo S1). La demo puede ir en un **PR desechable** que se cierra
    sin mergear; se registra igual. Aplica también al **verificar un gate heredado** cuando un
-   sprint depende de él por primera vez.
+   sprint depende de él por primera vez. **La demo se corre con `scripts/demo-rojo.sh` (kit
+   v1.35.0):** mutación literal → gate (debe fallar) → restauración desde UNA carpeta de respaldo
+   verificada con `grep` y `cmp` → gate restaurado (debe pasar); `--puerto` mata el server viejo
+   por puerto y comprueba que no quede `EADDRINUSE`. Y la **tercera pregunta** antes de darla por
+   hecha: *¿puede fallar siquiera?* — un test de determinismo sin un miembro con azar no puede
+   *(ds S5: K-S5-8/10/11)*. **Endurecido en v1.38.0 (ds S6, AU-S6-12 y K-S6-2/4/5):** `--debe-nombrar`
+   exige que el rojo venga de la aserción (un servidor que no arrancó o una mutación que no compila no
+   son rojos); un exit 126/127 no cuenta como rojo; `--minimo-tests N` rechaza un verde que corrió menos
+   de N pruebas (un filtro `-t` que no coincide sale 0); una interrupción restaura antes de salir; y la
+   presencia/ausencia de la mutación se verifica con Python, también cuando `--buscar` tiene varias líneas.
    **Y su hermana (kit v1.16.0): un gate que nunca EJECUTÓ tampoco es un gate.** `skipped` no es
    verde: un job con `needs:` sobre otro que falló queda saltado y GitHub lo lista entre los
    checks requeridos **sin alarma**, así que una columna sin rojo se lee como aprobación. Antes de
@@ -413,10 +437,25 @@ decisions/NNN-titulo.md   (ADRs de implementación)
    CI pasa VERDE porque **ninguna puerta compara el resultado contra la INTENCIÓN del PR**:
    leer la salida del install ES el gate. `pnpm peers check` corre en quality (es lo único que
    ve un peer insatisfecho). Overrides: en `pnpm-workspace.yaml`, jamás en `package.json`.
-   **Comprobación MECÁNICA (kit v1.32.0):** `scripts/verificar-dependencias.mjs` compara las
+   **Comprobación MECÁNICA (kit v1.32.0; falla CERRADO desde v1.35.0 — si no puede leer la rama
+   base sale en rojo, no «se omite»; solo un repo cuya base no tiene lockfile pasa en verde con
+   aviso):** `scripts/verificar-dependencias.mjs` compara las
    versiones de `pnpm-lock.yaml` del PR contra `origin/main` y falla si alguna quedó por debajo;
    corre en el job `quality` en cada PR. Leer la salida del install sigue siendo obligatorio; el
    script es la red que no depende de que alguien la lea.
+   **Excepciones de auditoría (kit v1.34.0):** `pnpm audit --audit-level high` es gate y su nivel no se baja. Si una
+   advisory alta o crítica **no tiene versión parcheada publicada** (GitHub la lista con `first_patched_version: null`),
+   se ignora **solo esa advisory, por id**, en `pnpm-workspace.yaml` → `auditConfig.ignoreGhsas` (pnpm 11 ya no lee
+   `pnpm.*` en `package.json`), con un **ADR en `decisions/`** que diga id, razón (ruta de la dependencia, si es solo de
+   desarrollo), fecha y **condición de retiro**. El PR que traiga el parche borra la entrada y cierra el ADR. Una
+   advisory CON parche nunca se excepciona: se sube la dependencia. *(HackGuard, estampado 2026-10-03: `braces` sin
+   parche vía `eslint-config-next`.)*
+   **Bajadas FORZADAS (kit v1.39.0, Big-D PR #6):** a veces el bump trae un paquete que **fija exacta** una versión
+   más vieja que la de `main` (`vitest` 5.0.3 fija `why-is-node-running` 3.2.1; la 5.0.2 pedía `^3.2.1`). Esa bajada
+   es la intención del PR, no pnpm degradando: `verificar-dependencias.mjs` la acepta **solo si algún paquete del
+   lockfile del PR que usa esa versión la declara exacta en el registro** (`npm view`), y nombra cuál («bajada forzada
+   aceptada porque vitest@5.0.3 la fija exacta»). Un rango que admite la versión de `main`, sin dependiente o sin
+   registro, sigue en rojo; una degradación a propósito sigue declarándose en `degradaciones-permitidas.json`.
 19. **Todo puente entre dos lenguajes exige su GATE DE CONTRATO, en el mismo sprint que lo
    cruza (kit v1.28.0).** Donde un dato cambia de lenguaje o de runtime —Rust→TS por eventos
    de Tauri, worker→UI por `postMessage`, servidor→cliente por JSON, Swift→Rust por FFI— la
@@ -462,6 +501,41 @@ decisions/NNN-titulo.md   (ADRs de implementación)
     calendario toca.)* **LCP por perfil:** si la app mide texto con una tabla de métricas (G15) y por eso
     sirve sus fuentes con `display: block`, el presupuesto de LCP es **3,0 s declarado por ADR** (estándares
     v2.17.0), con el subconjunto de las fuentes a su cobertura como deuda pagable.
+24. **Las protecciones del sistema del usuario se enseñan ANTES de tocarlas (kit v1.36.0, método v1.38.0 —
+    regla dura del pipeline).** Antes de crear, modificar o invocar algo que el sistema operativo protege
+    —Llavero, permisos TCC, ítems de inicio o launchd, Touch ID, Automatización, cuentas, certificados—
+    presentas una **matriz de una fila por acción: qué · para qué · qué aviso vas a ver · cómo se deshace** y
+    esperas un «sí» por acción. Vale para scripts, tests, `/release-check` y cualquier comando que corras tú:
+    si no sabes si pide permiso, se enseña. *(Origen: Angel Ghost S3 — un ítem de inicio «sh · desarrollador no
+    identificado», seis contraseñas de administrador y un `cargo test` que abrió el micrófono.)*
+    `/audita-sprint` lo pregunta (casilla 8). En apps que ya tienen esta regla con otro número, cítala por NOMBRE.
+25. **El comando de pruebas por defecto no toca hardware ni permisos (kit v1.36.0).** `pnpm test`, `cargo test`,
+    `pytest` a secas corren solo lo que no abre micrófono, cámara, audio del sistema, Llavero, red local ni
+    diálogos del sistema. Lo que los toca va detrás de una marca explícita (`#[ignore]`, una *feature*, un
+    `describe.skip` con `RUN_HARDWARE=1`) y lo corre la CI (`cargo test -- --include-ignored` en
+    `build-escritorio`) o un comando nombrado en el README. Un verde que costó un aviso del sistema al usuario
+    no es un verde.
+    *Reglas 24 y 25 en HackGuard: **no aplican** (perfil estático web; ni la app ni sus pruebas tocan
+    protecciones del sistema, hardware ni permisos). Se conservan por nombre para que la numeración siga la del
+    kit; si un sprint llegara a tocarlas, aplican enteras.*
+26. **Worktrees prohibidos (kit v1.37.0, regla del usuario 2026-09-27).** Todo el trabajo ocurre en el checkout
+    principal `~/Code/app-hackguard`: nada de `git worktree` ni de `.claude/worktrees`. Un trabajo en paralelo (una
+    etapa de diseño mientras corre un sprint sin pantalla) vive como archivos en este directorio y se comitea a su
+    rama sin cambiar de rama (índice temporal); jamás `git stash` a secas sobre trabajo ajeno. *(planlang: la Etapa
+    de Diseño y el S1 convivieron así; un worktree duplica el `node_modules`, pierde el `settings.local.json` y
+    deja ramas que nadie cierra.)*
+27. **La evidencia se escribe DESPUÉS del hecho (kit v1.38.0, método v1.40.0).** Una frase de evidencia en
+    la bitácora, el summary o el PR —«leído como imagen», «N de N», «% de líneas», «medido con…», «en verde
+    en la CI»— se escribe después de la corrida que la produce, con su cuenta tomada del resultado, nunca
+    como plan en pasado. Es la hermana de «ninguna cifra sin procedencia»: una evidencia anticipada es una
+    promesa disfrazada. La segunda pasada de la casilla 4 de `/audita-sprint` busca estas frases y exige la
+    corrida que las sostiene *(ds S6: «leído como imagen» antes de leer, «36 de 36» que mezclaba anchos con
+    altos y «93,24 % de líneas» que era la cifra de sentencias; se corrigieron porque alguien releyó)*.
+    **Y la pasada de capturas cubre los extremos de magnitud** de cada dataset o contenido de ejemplo (el
+    valor más grande y el más pequeño que la app puede mostrar: seis dígitos, ~1e-11, el texto más largo),
+    no solo el ejemplo principal *(ds S6: los dos defectos del cierre vivían en el gráfico de precios)*.
+    **Un spike de costos se corre con máquina quieta y carga registrada** (molde
+    `docs/SPIKE-DE-COSTOS.plantilla.md`; se repite el lote si hubo carga) *(ds S6, K-S6-3)*.
 
 ## Estándares (los 6+1, gates en CI)
 
@@ -502,7 +576,11 @@ ajustes"; **el modelo poderoso audita y PLANEA los ajustes para que CUALQUIER mo
 capacidad los ejecute**; Fase 2 solo tras aprobación del usuario) — ANTES de la guía/gate ⭐.
 Luego, con la DoD completa: `/deploy-check` → genera `sprints/SPRINT_NNN-summary.md`
 (plantilla abajo; **registra la auditoría: hallazgos y pagos**) → PR → gate ⭐ del usuario →
-merge con CI verde. **El summary es CONDICIÓN DE MERGE (método v1.24.0): viaja DENTRO del PR
+merge con CI verde. **El PR del sprint nace en borrador (`gh pr create --draft`) y su cuerpo EMPIEZA con la línea
+del merge (kit v1.38.0, método v1.40.0):** «cuando esté verde: marca el PR listo, mergea con **squash** y
+borra la rama; después corre `/cierre-sprint hackguard`» — la misma línea cierra el summary (sección fija
+«Para mergear»). El merge lo hace el usuario; escrita solo al final de la orden no llegó al momento del
+merge *(ds S6: dos PRs entraron como merge commit, uno al arrancar la fase 0)*. **El summary es CONDICIÓN DE MERGE (método v1.24.0): viaja DENTRO del PR
 del sprint — un PR de sprint sin `SPRINT_NNN-summary.md` no se mergea.** Sin summary el sprint
 es INVISIBLE para la planeadora (el S3 de Innmobiliaria lo estuvo UN MES) — y sin auditoría
 registrada, el cierre queda condicionado. **Y si el sprint se mergea SIN completar sus fases,
@@ -577,6 +655,7 @@ pr: <link>
 ## Sugerencias de mejora al método  [¿algo de metodo/metodo.md debería cambiar?]
 ## Deuda técnica aceptada  [qué, por qué, sprint de pago]
 ## Archivos clave (máx. 10) · ## Cómo probar
+## Para mergear  [línea FIJA (kit v1.38.0): «marca el PR listo, mergea con SQUASH y borra la rama; después corre /cierre-sprint hackguard» — la hace el usuario]
 ```
 
 ## Patrones de dominio de esta app
