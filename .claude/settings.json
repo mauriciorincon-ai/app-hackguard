@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.claude.com/en/docs/claude-code/schemas/settings.json",
+  "_comment": "Hooks de seguridad y calidad del kit-app. En Windows corren bajo Git Bash (incluido con Git for Windows). Prerrequisitos: gitleaks (winget install gitleaks), prettier y eslint en devDependencies.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "_comment": "Bloquear secrets ANTES de escribir: escanea el CONTENIDO que la herramienta va a escribir (tool_input.content / new_string, vía jq + gitleaks --pipe; kit v1.32.1, B-8 planlang) y además lo staged",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "inp=$(cat); c=$(printf '%s' \"$inp\" | jq -r '.tool_input.content // .tool_input.new_string // empty' 2>/dev/null); if [ -n \"$c\" ] && command -v gitleaks >/dev/null 2>&1; then printf '%s' \"$c\" | gitleaks detect --pipe --no-banner --redact >/dev/null 2>&1; if [ $? -eq 1 ]; then echo 'SECRET DETECTADO en el contenido a escribir. Escritura bloqueada: mueve la clave a .env.local / Vercel env vars.'; exit 2; fi; fi; gitleaks protect --no-banner --redact --staged 2>/dev/null; if [ $? -eq 1 ]; then echo 'SECRET DETECTADO en lo staged. Escritura bloqueada: mueve la clave a .env.local / Vercel env vars.'; exit 2; fi; exit 0"
+          }
+        ]
+      },
+      {
+        "_comment": "Bloquear push directo a main/master",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); if echo \"$input\" | grep -qE 'git push[^|]*( origin)? +(main|master)( |$|\\\")'; then echo 'BLOQUEADO: push directo a main prohibido. Trabaja en branch sprint-NNN/<tema> y abre PR.'; exit 2; fi; exit 0"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "_comment": "Auto-formato tras edición de fuentes",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(cat | sed -n 's/.*\"file_path\":\"\\([^\"]*\\)\".*/\\1/p'); case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.json|*.md) pnpm exec prettier --write \"$f\" >/dev/null 2>&1 || true;; esac; exit 0"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "_comment": "Recordatorio de checkpoint",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$(git status --porcelain 2>/dev/null)\" ]; then echo 'Hay cambios sin commitear: considera un checkpoint antes de cerrar.'; fi; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}
