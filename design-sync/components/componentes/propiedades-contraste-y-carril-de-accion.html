@@ -1,0 +1,2425 @@
+<!-- @dsCard group="Componentes" name="Propiedades, contraste y carril de acción" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propiedades, contraste y carril de acción · HackGuard 1.0.0</title>
+<style>
+/* GENERADO por scripts/paleta/generar-tokens.mjs desde scripts/paleta/tokens.mjs — no editar a mano
+   (tests/unit/paleta.test.ts compara byte a byte). Tema por defecto: oscuro. */
+:root,
+[data-theme="oscuro"] {
+  --fondo: #12100e;
+  --superficie: #1b1916;
+  --superficie-2: #25221f;
+  --linea: #3a3833;
+  --linea-fuerte: #78746e;
+  --tinta: #ece9e4;
+  --tinta-2: #bbb7af;
+  --acento: #89b1fa;
+  --acento-tinte: #1c2a43;
+  --positivo: #5acdc4;
+  --positivo-tinte: #0b2e2b;
+  --atencion: #efc558;
+  --atencion-tinte: #352a0e;
+  --falla: #f7755a;
+  --falla-tinte: #431e16;
+  --neutro: #a29e96;
+  --neutro-tinte: #25221f;
+  color-scheme: dark;
+}
+
+[data-theme="claro"] {
+  --fondo: #f6f3eb;
+  --superficie: #fefcf9;
+  --superficie-2: #ede9e0;
+  --linea: #d4d1c8;
+  --linea-fuerte: #7e7a71;
+  --tinta: #1f1c18;
+  --tinta-2: #544f48;
+  --acento: #1b419f;
+  --acento-tinte: #dae7fe;
+  --positivo: #017273;
+  --positivo-tinte: #c9efeb;
+  --atencion: #a77b0f;
+  --atencion-tinte: #f9eecd;
+  --falla: #a9170a;
+  --falla-tinte: #ffe0da;
+  --neutro: #848078;
+  --neutro-tinte: #ede9e0;
+  color-scheme: light;
+}
+
+/* Al imprimir, la paleta del tema claro en los dos temas: el papel es claro. */
+@media print {
+  :root,
+  [data-theme="oscuro"],
+  [data-theme="claro"] {
+    --fondo: #f6f3eb;
+    --superficie: #fefcf9;
+    --superficie-2: #ede9e0;
+    --linea: #d4d1c8;
+    --linea-fuerte: #7e7a71;
+    --tinta: #1f1c18;
+    --tinta-2: #544f48;
+    --acento: #1b419f;
+    --acento-tinte: #dae7fe;
+    --positivo: #017273;
+    --positivo-tinte: #c9efeb;
+    --atencion: #a77b0f;
+    --atencion-tinte: #f9eecd;
+    --falla: #a9170a;
+    --falla-tinte: #ffe0da;
+    --neutro: #848078;
+    --neutro-tinte: #ede9e0;
+    color-scheme: light;
+  }
+}
+
+/* HackGuard — hoja del sistema de diseño, dirección «consola» (elegida en la mirada 4-bis, aplicada a
+   todas las pantallas en la 4-ter). Es la hoja que el producto obedecerá. Los colores salen de
+   tokens.css; aquí no hay ningún valor de color suelto.
+
+   Una aplicación, no un documento: barra lateral con las secciones, barra de contexto, tablas densas,
+   paneles con borde, un carril de acción a la derecha en las pantallas de detalle y un recorrido de
+   pasos para lo que tiene ciclo de vida. La tinta azul sigue reservada a lo que una persona firma,
+   elige o acciona, y cada estado lleva su símbolo y su texto además del color.
+   Regla de 380 px: todo hijo de rejilla lleva min-width: 0 y nada tiene ancho fijo. */
+
+:root {
+  --fuente-texto: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fuente-dato: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --t-micro: 0.75rem; /* 12 px: rótulos */
+  --t-menor: 0.8125rem; /* 13 px: datos secundarios */
+  --t-base: 0.875rem; /* 14 px: texto de interfaz */
+  --t-medio: 1rem;
+  --t-h1: 1.375rem;
+
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 24px;
+  --e-6: 32px;
+  --e-7: 48px;
+
+  --radio: 6px;
+  --radio-menor: 4px;
+  --lateral: 224px;
+  --carril: 304px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html[data-lang="es"] [lang="en"],
+html[data-lang="en"] [lang="es"] {
+  display: none !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font: 400 var(--t-base) / 1.45 var(--fuente-texto);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--t-h1);
+}
+
+h2 {
+  font-size: var(--t-medio);
+}
+
+h3 {
+  font-size: var(--t-base);
+}
+
+p,
+dl,
+dd {
+  margin: 0;
+}
+
+a {
+  color: var(--acento);
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+  border-radius: var(--radio-menor);
+}
+
+.hg-menor {
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-rotulo {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.hg-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Pila: bloques uno bajo otro con la misma separación. */
+.hg-pila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4);
+  align-content: start;
+}
+
+/* Junto: líneas que van pegadas (un identificador y lo que nombra). */
+.hg-junto {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.hg-lista {
+  display: grid;
+  gap: var(--e-1);
+  margin: 0;
+  padding-left: var(--e-4);
+}
+
+.hg-lista-datos {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* ---------- Dato, huella y firma ---------- */
+
+.hg-dato {
+  font-family: var(--fuente-dato);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
+
+/* La huella solo se parte después del algoritmo, nunca dentro del valor. */
+.hg-huella {
+  font-family: var(--fuente-dato);
+  font-size: var(--t-menor);
+  color: var(--tinta);
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+.hg-huella-pre {
+  color: var(--tinta-2);
+}
+
+.hg-vector {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+
+/* La tinta azul es la mano humana: lo que una persona confirmó. */
+.hg-firma {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--acento);
+  font-size: var(--t-menor);
+  font-weight: 600;
+}
+
+.hg-firma [data-neutro] {
+  white-space: nowrap;
+}
+
+/* ---------- Estados: símbolo + texto + color ---------- */
+
+.es-positivo {
+  --rol: var(--positivo);
+  --rol-tinte: var(--positivo-tinte);
+}
+
+.es-atencion {
+  --rol: var(--atencion);
+  --rol-tinte: var(--atencion-tinte);
+}
+
+.es-falla {
+  --rol: var(--falla);
+  --rol-tinte: var(--falla-tinte);
+}
+
+.es-neutro {
+  --rol: var(--neutro);
+  --rol-tinte: var(--neutro-tinte);
+}
+
+.es-acento {
+  --rol: var(--acento);
+  --rol-tinte: var(--acento-tinte);
+}
+
+.hg-marca-estado {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--rol, currentColor);
+}
+
+/* Estado en línea: el texto va siempre en tinta; el color vive en la marca. */
+.hg-estado {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.hg-estado > .hg-marca-estado {
+  margin-top: 2px;
+}
+
+/* Chip: el estado que decide algo en una fila o en una cabecera. Tinte + borde + marca + texto. */
+.hg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 8px 1px 6px;
+  border: 1px solid var(--rol);
+  border-radius: var(--radio-menor);
+  background: var(--rol-tinte);
+  color: var(--tinta);
+  font-size: var(--t-menor);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.hg-chip .hg-marca-estado {
+  width: 14px;
+  height: 14px;
+}
+
+.hg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Sello: el aviso que resume algo que el lector debe saber antes de seguir. */
+.hg-sello {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-3);
+  padding: var(--e-3) var(--e-4);
+  border: 1px solid var(--rol);
+  border-radius: var(--radio);
+  background: var(--rol-tinte);
+  color: var(--tinta);
+  text-align: left;
+}
+
+.hg-sello > .hg-marca-estado {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+.hg-sello > div {
+  display: grid;
+  gap: var(--e-1);
+  min-width: 0;
+}
+
+.hg-sello p {
+  max-width: 84ch;
+}
+
+.hg-sello-titulo {
+  display: block;
+  font-weight: 700;
+}
+
+.hg-sello-menor {
+  gap: var(--e-2);
+  padding: var(--e-2) var(--e-3);
+  font-size: var(--t-menor);
+}
+
+.hg-sello-menor > .hg-marca-estado {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Barra de proporción ---------- */
+
+.hg-proporcion {
+  display: block;
+  width: 100%;
+  max-width: 14rem;
+  height: 6px;
+}
+
+.hg-proporcion-fondo {
+  fill: var(--linea);
+}
+
+.hg-proporcion-parte {
+  fill: var(--rol, var(--falla));
+}
+
+/* Avance (ejecutadas de las planeadas): en tinta. Cuánto se ejecutó no es un veredicto. */
+.hg-proporcion-avance .hg-proporcion-parte {
+  fill: var(--tinta-2);
+}
+
+/* ---------- Botones ---------- */
+
+.hg-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hg-boton:hover {
+  border-color: var(--tinta);
+}
+
+/* Lo elegido por una persona: borde y tinte de tinta azul, y además una barra inferior y más peso, que se
+   reconocen sin color (regla 12: el color nunca va solo). */
+.hg-boton[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: var(--acento-tinte);
+  box-shadow: inset 0 -3px 0 var(--acento);
+  font-weight: 700;
+}
+
+.hg-boton-primario {
+  border-color: var(--acento);
+  background: var(--acento);
+  color: var(--fondo);
+}
+
+/* Un enlace con forma de botón (abrir otra pantalla) no lleva subrayado. */
+a.hg-boton {
+  text-decoration: none;
+}
+
+.hg-boton-primario[aria-pressed="true"] {
+  background: var(--acento);
+  box-shadow:
+    0 0 0 2px var(--superficie),
+    0 0 0 4px var(--acento);
+}
+
+.hg-boton-discreto {
+  min-height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  font-weight: 500;
+}
+
+/* Filtro: una píldora por valor de la faceta principal. */
+.hg-filtro {
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.hg-filtro[aria-pressed="true"] {
+  font-weight: 700;
+}
+
+.hg-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.hg-acciones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+}
+
+/* ---------- Armazón de la aplicación ---------- */
+
+.hg-app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hg-cuerpo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-principal {
+  flex: 1;
+  padding: var(--e-4);
+}
+
+.hg-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  color: var(--tinta);
+  font-size: var(--t-medio);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.hg-marca-signo {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--acento);
+}
+
+.hg-icono {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.hg-nav ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radio);
+  color: var(--tinta-2);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.hg-nav a:hover {
+  background: var(--superficie-2);
+  color: var(--tinta);
+}
+
+/* La sección abierta, en tinta; la página abierta, con fondo y barra de tinta azul. */
+.hg-nav a[aria-current="true"] {
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+.hg-nav a[aria-current="page"] {
+  background: var(--superficie-2);
+  box-shadow: inset 3px 0 0 var(--acento);
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+.hg-nav .hg-nav-sub {
+  margin: 2px 0 var(--e-2) 19px;
+  padding-left: 9px;
+  border-left: 1px solid var(--linea);
+}
+
+.hg-nav-sub a {
+  min-height: 32px;
+  font-size: var(--t-menor);
+}
+
+.hg-cuenta {
+  margin-left: auto;
+  padding: 0 7px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-family: var(--fuente-dato);
+  font-size: var(--t-micro);
+  font-weight: 500;
+  color: var(--tinta-2);
+}
+
+.hg-lateral-pie {
+  display: none;
+}
+
+/* Barra de contexto: dónde estás y los ajustes. En teléfono lleva la marca. */
+.hg-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-1) var(--e-4);
+  min-height: 48px;
+  padding: var(--e-2) var(--e-4);
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  flex-basis: 100%;
+  order: 3;
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-migas strong {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.hg-migas strong .hg-dato {
+  color: var(--tinta);
+}
+
+.hg-ajustes {
+  display: flex;
+  gap: var(--e-1);
+  margin-left: auto;
+}
+
+/* Páginas de la sección: en teléfono van como pestañas bajo la barra (en escritorio, en la lateral). */
+.hg-subnav {
+  padding: 0 var(--e-4);
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-subnav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--e-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-subnav a,
+.hg-subnav li > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--tinta-2);
+  font-size: var(--t-menor);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.hg-subnav a[aria-current="page"] {
+  border-bottom-color: var(--acento);
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+/* Teléfono y tableta: la navegación baja a una barra fija al pie. */
+@media (max-width: 1099px) {
+  .hg-app {
+    padding-bottom: 64px;
+  }
+
+  .hg-lateral {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 5;
+    border-top: 1px solid var(--linea-fuerte);
+    background: var(--superficie);
+  }
+
+  .hg-lateral > :not(.hg-nav),
+  .hg-nav .hg-nav-sub,
+  .hg-nav .hg-cuenta {
+    display: none;
+  }
+
+  .hg-nav > ul {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .hg-nav a {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-height: 60px;
+    padding: 0 2px;
+    border-radius: 0;
+    font-size: var(--t-micro);
+  }
+
+  .hg-nav a[aria-current="true"],
+  .hg-nav a[aria-current="page"] {
+    background: none;
+    box-shadow: inset 0 3px 0 var(--acento);
+  }
+
+  .hg-boton {
+    min-height: 44px;
+  }
+
+  .hg-boton-discreto,
+  .hg-filtro {
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .hg-app {
+    grid-template-columns: var(--lateral) minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  .hg-lateral {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--e-5);
+    height: 100vh;
+    padding: var(--e-4) var(--e-3);
+    overflow-y: auto;
+    border-right: 1px solid var(--linea);
+    background: var(--superficie);
+  }
+
+  .hg-lateral > .hg-marca {
+    padding: 2px 10px;
+  }
+
+  .hg-lateral-pie {
+    display: grid;
+    gap: 2px;
+    margin-top: auto;
+    padding: var(--e-3) 10px 0;
+    border-top: 1px solid var(--linea);
+  }
+
+  .hg-lateral-pie p + .hg-rotulo {
+    margin-top: var(--e-2);
+  }
+
+  .hg-barra {
+    padding: var(--e-2) var(--e-5);
+  }
+
+  .hg-barra > .hg-marca,
+  .hg-subnav {
+    display: none;
+  }
+
+  .hg-migas {
+    flex-basis: auto;
+    order: 0;
+  }
+
+  .hg-principal {
+    padding: var(--e-5) var(--e-5) var(--e-6);
+  }
+}
+
+/* ---------- Cabecera de página y cifras ---------- */
+
+.hg-cabecera {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+}
+
+.hg-cabecera > * {
+  min-width: 0;
+}
+
+.hg-cabecera-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px var(--e-2);
+  margin-bottom: 6px;
+}
+
+.hg-bajada {
+  max-width: 76ch;
+  margin-top: var(--e-1);
+  color: var(--tinta-2);
+}
+
+.hg-cabecera-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--e-3);
+  margin-top: var(--e-2);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+/* Cifras: una tira de celdas, no tarjetas sueltas. La línea entre celdas es el fondo de la tira. */
+.hg-resumen {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--linea);
+  list-style: none;
+}
+
+.hg-resumen > li {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: var(--e-2) var(--e-4);
+  background: var(--superficie);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-resumen .hg-estado {
+  font-weight: 500;
+  color: var(--tinta-2);
+}
+
+.hg-cifra {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+@media (min-width: 720px) {
+  .hg-resumen {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .hg-cabecera {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--e-5);
+  }
+
+  .hg-resumen {
+    grid-template-columns: repeat(4, auto);
+  }
+}
+
+/* ---------- Panel ---------- */
+
+.hg-panel {
+  min-width: 0;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.hg-panel-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-1) var(--e-4);
+  padding: var(--e-3) var(--e-4);
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-panel-cab > * {
+  min-width: 0;
+}
+
+/* El título no se encoge (medido al píxel, una palabra se partiría); lo que le acompaña sí. */
+.hg-panel-cab h2 {
+  flex: 0 0 auto;
+  max-width: 100%;
+  font-size: var(--t-base);
+}
+
+.hg-panel-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-1) var(--e-3);
+}
+
+.hg-panel-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  padding: var(--e-4);
+}
+
+.hg-panel-cuerpo + .hg-panel-cuerpo {
+  border-top: 1px solid var(--linea);
+}
+
+.hg-panel-cuerpo > p {
+  max-width: 84ch;
+}
+
+.hg-panel-pie {
+  padding: var(--e-3) var(--e-4);
+  border-top: 1px solid var(--linea);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+/* ---------- Pestañas y selector de objeto ---------- */
+
+.hg-pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--e-1);
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-pestana {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: -1px;
+  padding: 0 var(--e-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--tinta-2);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hg-pestana:hover {
+  color: var(--tinta);
+}
+
+.hg-pestana[aria-pressed="true"] {
+  border-bottom-color: var(--acento);
+  color: var(--tinta);
+}
+
+/* Selector: qué objeto de una serie está abierto (un lote, un hallazgo). */
+.hg-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-opcion {
+  display: grid;
+  gap: 1px;
+  align-content: start;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta-2);
+  font: inherit;
+  font-size: var(--t-menor);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hg-opcion:hover {
+  border-color: var(--linea-fuerte);
+  color: var(--tinta);
+}
+
+.hg-opcion-titulo {
+  font-family: var(--fuente-dato);
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.hg-opcion[aria-pressed="true"],
+.hg-opcion[aria-current="true"] {
+  border-color: var(--acento);
+  box-shadow: inset 0 -2px 0 var(--acento);
+  color: var(--tinta);
+}
+
+@media (min-width: 720px) {
+  .hg-selector {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .hg-selector > * {
+    flex: 0 1 15rem;
+    min-width: 0;
+  }
+}
+
+/* ---------- Herramientas de una tabla: filtros y campos ---------- */
+
+.hg-herramientas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  padding: var(--e-3) var(--e-4);
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-herramientas-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2) var(--e-4);
+}
+
+.hg-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-2) var(--e-3);
+}
+
+.hg-campo {
+  display: grid;
+  gap: 3px;
+  align-content: start;
+  min-width: 0;
+}
+
+.hg-campo > span,
+.hg-campo > label {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.hg-campo select,
+.hg-campo input,
+.hg-campo textarea {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: var(--tinta);
+  font: inherit;
+}
+
+.hg-campo textarea {
+  resize: vertical;
+}
+
+/* Un filtro activo o un campo lleno llevan tinta azul: lo eligió o lo escribió una persona. */
+.hg-campo select[data-valor-activo]:not([data-valor-activo=""]),
+.hg-campo[data-lleno="true"] select,
+.hg-campo[data-lleno="true"] input,
+.hg-campo[data-lleno="true"] textarea {
+  border-color: var(--acento);
+  box-shadow: inset 0 -2px 0 var(--acento);
+}
+
+@media (min-width: 720px) {
+  .hg-campos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1099px) {
+  .hg-campo select,
+  .hg-campo input,
+  .hg-campo textarea {
+    min-height: 44px;
+  }
+}
+
+/* ---------- Formulario ---------- */
+
+.hg-formulario {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3) var(--e-4);
+}
+
+@media (min-width: 720px) {
+  .hg-formulario-doble {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hg-campo-ancho {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Revelado: contenido que abre el botón que lo precede. */
+.hg-revelado {
+  display: none;
+}
+
+[data-controlador="alternar"][aria-pressed="true"] + .hg-revelado {
+  display: block;
+}
+
+[data-formulario]:not([data-completo="true"]) [data-si-completo="true"],
+[data-formulario][data-completo="true"] [data-si-completo="false"] {
+  display: none;
+}
+
+/* ---------- Tabla ---------- */
+
+/* Dentro de una tabla ninguna palabra se parte: si no cabe, la tabla pasa a tarjetas (abajo). */
+.hg-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-wrap: normal;
+}
+
+.hg-tabla th {
+  padding: var(--e-2) var(--e-3);
+  border-bottom: 1px solid var(--linea);
+  background: var(--superficie-2);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.hg-tabla td {
+  padding: 10px var(--e-3);
+  border-bottom: 1px solid var(--linea);
+  vertical-align: top;
+}
+
+.hg-tabla th:first-child,
+.hg-tabla td:first-child {
+  padding-left: var(--e-4);
+}
+
+.hg-tabla th:last-child,
+.hg-tabla td:last-child {
+  padding-right: var(--e-4);
+}
+
+.hg-tabla td > * + * {
+  margin-top: 2px;
+}
+
+.hg-tabla tbody tr:hover {
+  background: var(--superficie-2);
+}
+
+/* El estado de una fila no se parte; lo que lo acompaña (días, razones) sí. */
+.hg-tabla td[data-celda="estado"] .hg-estado {
+  white-space: nowrap;
+}
+
+/* La columna que dice qué es la fila no se aprieta hasta una palabra por línea. */
+@media (min-width: 860px) {
+  .hg-tabla td[data-celda="principal"] {
+    min-width: 13rem;
+  }
+}
+
+.hg-tabla td[data-celda="resultado"] {
+  min-width: 8rem;
+}
+
+.hg-tabla td[data-celda="resultado"] .hg-proporcion {
+  margin: 6px 0 var(--e-1);
+}
+
+/* El nombre de una fila abre su objeto: en tinta, y azul al pasar. */
+.hg-enlace-fila {
+  color: var(--tinta);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hg-enlace-fila:hover {
+  color: var(--acento);
+  text-decoration: underline;
+}
+
+/* Fila seleccionada: fondo y barra de tinta azul; el carril muestra su detalle. */
+.hg-tabla tr[data-seleccionada="true"] {
+  background: var(--superficie-2);
+}
+
+.hg-tabla tr[data-seleccionada="true"] td:first-child {
+  box-shadow: inset 3px 0 0 var(--acento);
+}
+
+.hg-fila-boton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin: -3px -7px;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radio-menor);
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hg-fila-boton .hg-dato {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.hg-fila-boton:hover {
+  border-color: var(--linea-fuerte);
+}
+
+.hg-fila-boton[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: var(--acento-tinte);
+}
+
+/* Bajo 860 px la tabla pasa a tarjetas: identificador y estado arriba, el resto debajo. */
+@media (max-width: 859px) {
+  .hg-tabla {
+    overflow-wrap: anywhere;
+  }
+
+  .hg-tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .hg-tabla thead tr,
+  .hg-tabla thead th {
+    display: block;
+    width: 1px;
+    padding: 0;
+    border: 0;
+  }
+
+  .hg-tabla,
+  .hg-tabla tbody,
+  .hg-tabla td {
+    display: block;
+  }
+
+  .hg-tabla tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px var(--e-3);
+    padding: var(--e-3) var(--e-4);
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .hg-tabla td,
+  .hg-tabla td:first-child,
+  .hg-tabla td:last-child {
+    grid-column: 1 / -1;
+    padding: 0;
+    border: 0;
+  }
+
+  .hg-tabla td[data-celda="id"] {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hg-tabla td[data-celda="estado"] {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .hg-tabla tr[data-seleccionada="true"] {
+    box-shadow: inset 3px 0 0 var(--acento);
+  }
+
+  .hg-tabla tr[data-seleccionada="true"] td:first-child {
+    box-shadow: none;
+  }
+
+  .hg-fila-boton {
+    min-height: 44px;
+    margin: -8px -7px;
+  }
+}
+
+/* ---------- Zona de trabajo: contenido + carril de acción ---------- */
+
+.hg-trabajo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4);
+  align-items: start;
+}
+
+.hg-carril {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+  min-width: 0;
+}
+
+.hg-tarjeta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  min-width: 0;
+  padding: var(--e-4);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+/* La tarjeta de acción es donde decide una persona: filo de tinta azul. */
+.hg-tarjeta-accion {
+  border-top: 2px solid var(--acento);
+}
+
+.hg-tarjeta-titulo {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.hg-tarjeta-nombre {
+  font-size: var(--t-medio);
+  font-weight: 700;
+}
+
+.hg-consecuencia {
+  font-size: var(--t-menor);
+  font-weight: 600;
+}
+
+.hg-vinculo {
+  display: grid;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie-2);
+}
+
+.hg-pendientes {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-pendientes > li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-2);
+  padding: var(--e-2) 0;
+  border-bottom: 1px solid var(--linea);
+  font-size: var(--t-menor);
+}
+
+.hg-pendientes > li:first-child {
+  padding-top: 0;
+}
+
+.hg-pendientes .hg-marca-estado {
+  margin-top: 1px;
+}
+
+@media (min-width: 720px) and (max-width: 1239px) {
+  .hg-carril {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1240px) {
+  .hg-trabajo {
+    grid-template-columns: minmax(0, 1fr) var(--carril);
+  }
+}
+
+/* ---------- Propiedades: rótulo arriba, valor abajo ---------- */
+
+.hg-propiedades {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hg-propiedades > div {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  min-width: 0;
+  padding: var(--e-2) 0;
+  border-top: 1px solid var(--linea);
+}
+
+.hg-propiedades > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.hg-propiedades > div:last-child {
+  padding-bottom: 0;
+}
+
+.hg-propiedades dt {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.hg-propiedades dd {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  min-width: 0;
+}
+
+/* Lo fechado: el estado en una línea y su frase debajo; en la línea de una cabecera, todo seguido. */
+[data-fechado] > .hg-menor {
+  display: block;
+  margin-top: 2px;
+}
+
+.hg-cabecera-linea [data-fechado] {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+}
+
+.hg-cabecera-linea [data-fechado] > .hg-menor {
+  display: inline;
+  margin-top: 0;
+}
+
+/* En un panel ancho las propiedades van en columnas, sin líneas entre ellas. */
+@media (min-width: 560px) {
+  .hg-propiedades-en-columnas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--e-4) var(--e-5);
+  }
+
+  .hg-propiedades-en-columnas > div,
+  .hg-propiedades-en-columnas > div:first-child,
+  .hg-propiedades-en-columnas > div:last-child {
+    padding: 0;
+    border-top: 0;
+  }
+}
+
+@media (min-width: 860px) {
+  .hg-propiedades-en-tres {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Dos cajas enfrentadas: lo que se esperaba y lo que se obtuvo. */
+.hg-contraste {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+}
+
+.hg-contraste > div {
+  display: grid;
+  gap: var(--e-1);
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: var(--e-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--fondo);
+}
+
+@media (min-width: 720px) {
+  .hg-contraste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Recorrido: los pasos de algo que tiene ciclo de vida ---------- */
+
+.hg-cadena {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-panel > .hg-cadena {
+  padding: var(--e-4);
+}
+
+.hg-eslabon {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: 1px 0 var(--e-4) 34px;
+}
+
+.hg-eslabon:last-child {
+  padding-bottom: 0;
+}
+
+/* La línea hacia el paso siguiente: sólida y del color del paso si está hecho; punteada si falta. */
+.hg-eslabon::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 26px;
+  bottom: 4px;
+  border-left: 2px solid var(--rol, var(--linea-fuerte));
+}
+
+.hg-eslabon:last-child::before {
+  display: none;
+}
+
+.hg-eslabon.es-pendiente::before {
+  border-left-style: dashed;
+  border-left-color: var(--linea-fuerte);
+}
+
+.hg-eslabon > .hg-marca-estado,
+.hg-eslabon > .hg-eslabon-marca {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.hg-eslabon .hg-marca-estado {
+  width: 22px;
+  height: 22px;
+}
+
+.hg-eslabon .hg-firma .hg-marca-estado,
+.hg-eslabon .hg-estado .hg-marca-estado {
+  width: 16px;
+  height: 16px;
+}
+
+.hg-eslabon-marca {
+  display: inline-flex;
+  color: var(--rol);
+}
+
+.hg-eslabon-titulo {
+  font-weight: 700;
+}
+
+.hg-eslabon.es-pendiente .hg-eslabon-titulo {
+  font-weight: 500;
+  color: var(--tinta-2);
+}
+
+@media (min-width: 720px) {
+  .hg-cadena-horizontal {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-columns: none;
+  }
+
+  .hg-cadena-horizontal > .hg-eslabon {
+    padding: 32px var(--e-4) 0 0;
+  }
+
+  .hg-cadena-horizontal > .hg-eslabon::before {
+    left: 30px;
+    right: var(--e-2);
+    top: 10px;
+    bottom: auto;
+    border-left: 0;
+    border-top: 2px solid var(--rol, var(--linea-fuerte));
+  }
+
+  .hg-cadena-horizontal > .hg-eslabon.es-pendiente::before {
+    border-top-style: dashed;
+    border-top-color: var(--linea-fuerte);
+  }
+}
+
+/* ---------- Matriz de prioridad de acción ---------- */
+
+.hg-matriz {
+  overflow-x: auto;
+}
+
+.hg-matriz table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-menor);
+}
+
+.hg-matriz caption {
+  padding-bottom: var(--e-2);
+  color: var(--tinta-2);
+  text-align: left;
+}
+
+/* Una palabra de la tabla nunca se parte: si no cabe, la tabla se reorganiza (abajo), no la palabra. */
+.hg-matriz th,
+.hg-matriz td {
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linea);
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+  overflow-wrap: normal;
+}
+
+.hg-matriz thead th {
+  background: var(--superficie-2);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tinta-2);
+}
+
+.hg-matriz tbody th {
+  min-width: 9rem;
+  max-width: 20rem;
+}
+
+.hg-matriz tbody th > span {
+  display: block;
+}
+
+.hg-cifra-menor {
+  font-size: var(--t-medio);
+  font-weight: 700;
+}
+
+.hg-matriz .hg-limite {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.hg-matriz td > .hg-menor {
+  display: block;
+}
+
+/* La casilla del hallazgo: marco de tinta, no solo color. */
+.hg-matriz td.es-esta {
+  outline: 2px solid var(--tinta);
+  outline-offset: -2px;
+  background: var(--superficie-2);
+  font-weight: 700;
+}
+
+.hg-matriz-leyenda {
+  display: none;
+  gap: var(--e-2);
+  margin: var(--e-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Teléfono: la fila se nombra con su número, el símbolo va sobre su texto y las anclas bajan a la leyenda. */
+@media (max-width: 719px) {
+  .hg-matriz .hg-matriz-ancla {
+    display: none;
+  }
+
+  .hg-matriz th,
+  .hg-matriz td {
+    padding: var(--e-2) var(--e-1);
+  }
+
+  .hg-matriz thead th {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .hg-matriz tbody th {
+    min-width: 0;
+  }
+
+  .hg-matriz td .hg-estado {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hg-matriz-leyenda {
+    display: grid;
+  }
+}
+
+/* Puntaje de severidad: la cifra grande con su nivel al lado. */
+.hg-puntaje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2) var(--e-3);
+}
+
+.hg-puntaje .hg-cifra {
+  font-size: 1.75rem;
+}
+
+.hg-metricas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-1) var(--e-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-menor);
+}
+
+.hg-metricas > li {
+  display: grid;
+  grid-template-columns: 3.75rem minmax(0, 1fr);
+  gap: var(--e-2);
+  align-items: baseline;
+  min-width: 0;
+}
+
+@media (min-width: 720px) {
+  .hg-metricas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Estados de pantalla: vacío, carga, error ---------- */
+
+.hg-aviso {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+  justify-items: center;
+  padding: var(--e-7) var(--e-4);
+  border: 1px dashed var(--linea-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  text-align: center;
+}
+
+/* En una pantalla de detalle sin datos, el aviso es el título de la página: h1 con el tamaño de un h2. */
+.hg-aviso > h1 {
+  font-size: var(--t-medio);
+}
+
+.hg-aviso > .hg-marca-estado {
+  width: 28px;
+  height: 28px;
+  margin-bottom: var(--e-1);
+}
+
+.hg-aviso > p {
+  max-width: 62ch;
+  color: var(--tinta-2);
+}
+
+.hg-aviso > .hg-sello,
+.hg-aviso > .hg-boton {
+  margin-top: var(--e-2);
+}
+
+.hg-aviso > .hg-sello {
+  max-width: 44rem;
+}
+
+/* Dentro de un panel (sin resultados tras filtrar) no lleva su propio borde. */
+.hg-panel > .hg-aviso {
+  border: 0;
+  background: none;
+}
+
+.hg-esqueleto {
+  display: grid;
+  gap: var(--e-3);
+  width: min(100%, 32rem);
+  margin-top: var(--e-3);
+}
+
+.hg-esqueleto > span {
+  display: block;
+  height: 14px;
+  border-radius: var(--radio-menor);
+  background: var(--superficie-2);
+}
+
+.hg-esqueleto > span:nth-child(2) {
+  width: 72%;
+}
+
+.hg-esqueleto > span:nth-child(3) {
+  width: 48%;
+}
+
+/* ---------- Texto destacado: la frase que no puede perderse ---------- */
+
+.hg-destacado {
+  max-width: 84ch;
+  padding-left: var(--e-3);
+  border-left: 3px solid var(--linea-fuerte);
+  font-size: var(--t-medio);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- Rejilla de cajas: varias piezas iguales dentro de un panel ---------- */
+
+.hg-rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-caja {
+  display: grid;
+  gap: var(--e-2);
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: var(--e-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--fondo);
+}
+
+.hg-caja > * {
+  max-width: 100%;
+}
+
+.hg-caja-titulo {
+  font-weight: 700;
+}
+
+@media (min-width: 720px) {
+  .hg-rejilla {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+}
+
+/* ---------- Propuesta: una fila de la bandeja, con su decisión al pie ---------- */
+
+.hg-propuestas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+}
+
+.hg-propuesta-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--e-2);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-decision {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+  padding: var(--e-3) var(--e-4);
+  border-top: 1px solid var(--linea);
+  border-radius: 0 0 var(--radio) var(--radio);
+  background: var(--superficie-2);
+}
+
+/* Decidida: la barra de la decisión pasa a tinta azul (la mano humana). */
+[data-propuesta]:not([data-decision=""]) > .hg-decision {
+  box-shadow: inset 3px 0 0 var(--acento);
+}
+
+@media (min-width: 720px) {
+  .hg-decision {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--e-2) var(--e-4);
+  }
+}
+
+/* ---------- Selector de objeto con nombre (no identificador) ---------- */
+
+.hg-opcion-nombre {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+/* ---------- Vocabulario de estados y muestras del kit ---------- */
+
+.hg-vocabulario {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4) var(--e-5);
+}
+
+.hg-vocabulario > div {
+  display: grid;
+  gap: var(--e-2);
+  align-content: start;
+  min-width: 0;
+}
+
+.hg-vocabulario ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .hg-vocabulario {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1240px) {
+  .hg-vocabulario {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.hg-muestras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-muestras > li {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hg-muestra-color {
+  display: block;
+  height: 44px;
+  margin-bottom: var(--e-1);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-menor);
+}
+
+@media (min-width: 720px) {
+  .hg-muestras {
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  }
+}
+
+.hg-escala {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hg-escala > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--e-3) 0;
+  border-top: 1px solid var(--linea);
+}
+
+.hg-escala > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ---------- Brecha: desglose, cuentas y pestañas dentro de un panel ---------- */
+
+/* Desglose de lo planeado: cada veredicto con su forma y su cifra, en una línea que se parte. */
+.hg-desglose {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-menor);
+}
+
+.hg-desglose .hg-estado {
+  font-weight: 500;
+}
+
+/* Cuentas: el rótulo con su forma a la izquierda y la cifra a la derecha, una por línea. */
+.hg-cuentas {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-cuentas > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  min-width: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-cuentas > li:first-child {
+  padding-top: 0;
+}
+
+.hg-cuentas > li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Hallazgos sin cerrar del tablero: uno bajo otro, con su plazo. */
+.hg-abiertos {
+  display: grid;
+  gap: var(--e-3);
+  margin: 0;
+  padding: var(--e-3) 0 0;
+  border-top: 1px solid var(--linea);
+  list-style: none;
+}
+
+.hg-abiertos > li {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Pestañas dentro de un panel: bajo su cabecera, con el margen del panel. */
+.hg-panel > .hg-pestanas {
+  padding: 0 var(--e-4);
+}
+
+/* ---------- Tablero: lo que pide acción a la izquierda, las cuentas a la derecha ---------- */
+
+.hg-tablero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4);
+  align-items: start;
+}
+
+@media (min-width: 1240px) {
+  .hg-tablero {
+    grid-template-columns: minmax(0, 1fr) var(--carril);
+  }
+}
+
+/* Un botón dentro de un sello no se estira al ancho del aviso. */
+.hg-sello > div > .hg-boton {
+  justify-self: start;
+}
+
+/* La banda de la validación lleva su tabla dentro, sin el margen de un panel. */
+.hg-sello .hg-revelado {
+  margin-top: var(--e-2);
+}
+
+.hg-sello .hg-tabla th:first-child,
+.hg-sello .hg-tabla td:first-child {
+  padding-left: 0;
+}
+
+.hg-sello .hg-tabla th {
+  background: none;
+}
+
+/* ---------- Informe: un documento dentro de la aplicación ---------- */
+
+.hg-informe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.hg-informe-cab {
+  display: grid;
+  gap: var(--e-1);
+  min-width: 0;
+  padding: var(--e-5) var(--e-4) var(--e-4);
+  border-bottom: 2px solid var(--tinta);
+}
+
+.hg-informe-seccion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  min-width: 0;
+  padding: var(--e-5) var(--e-4);
+}
+
+.hg-informe-seccion + .hg-informe-seccion {
+  border-top: 1px solid var(--linea);
+}
+
+.hg-informe-seccion h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+}
+
+.hg-informe-seccion h3 {
+  margin-top: var(--e-2);
+}
+
+.hg-informe-num {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-menor);
+  font-family: var(--fuente-dato);
+  font-size: var(--t-menor);
+}
+
+/* Dentro del informe la tabla no repite el margen de la sección. */
+.hg-informe-seccion .hg-tabla th:first-child,
+.hg-informe-seccion .hg-tabla td:first-child {
+  padding-left: 0;
+}
+
+.hg-informe-seccion .hg-tabla th:last-child,
+.hg-informe-seccion .hg-tabla td:last-child {
+  padding-right: 0;
+}
+
+@media (max-width: 859px) {
+  .hg-informe-seccion .hg-tabla tr,
+  .hg-sello .hg-tabla tr {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.hg-indice {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-menor);
+}
+
+/* ---------- Movimiento ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .hg-boton,
+  .hg-opcion,
+  .hg-pestana,
+  .hg-fila-boton,
+  .hg-nav a {
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out,
+      color 150ms ease-out,
+      box-shadow 150ms ease-out;
+  }
+}
+
+/* ---------- Hoja de impresión ---------- */
+
+/* Al imprimir sale solo el contenido de la pantalla: sin navegación, sin sala y sin carril, en papel
+   claro (tokens.css pasa la paleta a la del tema claro aunque la pantalla esté en oscuro: tinta clara
+   sobre papel blanco no se leería) y con las tablas como tablas. El resumen del informe ocupa la primera
+   hoja. Cada estado conserva su forma y su texto: sin color de fondo, sigue leyéndose. */
+@page {
+  margin: 14mm 12mm;
+}
+
+@media print {
+  html {
+    font-size: 12px;
+  }
+
+  body {
+    background: none;
+  }
+
+  .mq-salto,
+  .mq-franja,
+  .mq-pie,
+  .hg-lateral,
+  .hg-barra,
+  .hg-subnav,
+  .hg-carril,
+  button[data-controlador],
+  select[data-controlador] {
+    display: none !important;
+  }
+
+  .hg-app,
+  .hg-cuerpo,
+  .hg-trabajo {
+    display: block;
+    padding: 0;
+  }
+
+  .hg-principal {
+    padding: 0;
+  }
+
+  .hg-informe,
+  .hg-panel {
+    border-color: var(--linea-fuerte);
+    background: none;
+  }
+
+  .hg-informe {
+    border: 0;
+  }
+
+  .hg-informe-cab,
+  .hg-informe-seccion {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  #informe-resumen {
+    break-after: page;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  .hg-tabla tr,
+  .hg-caja,
+  .hg-sello,
+  .hg-resumen {
+    break-inside: avoid;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Las tablas vuelven a ser tablas aunque la hoja sea más estrecha que el corte de las tarjetas. */
+  .hg-tabla {
+    display: table;
+  }
+
+  .hg-tabla thead {
+    display: table-header-group;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .hg-tabla tbody {
+    display: table-row-group;
+  }
+
+  .hg-tabla tr,
+  .hg-tabla thead tr {
+    display: table-row;
+    width: auto;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .hg-tabla th,
+  .hg-tabla td,
+  .hg-tabla thead th,
+  .hg-tabla td:first-child,
+  .hg-tabla td:last-child {
+    display: table-cell;
+    width: auto;
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  /* En papel la cabecera de columna va en minúsculas y sin espaciado: en mayúsculas espaciadas, una
+     palabra («Hallazgo») no cabía en su columna. */
+  .hg-tabla th {
+    background: none;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* La esquina derecha es de la tarjeta de teléfono; en una tabla, el estado se alinea como su columna. */
+  .hg-tabla td[data-celda="estado"] {
+    text-align: left;
+  }
+}
+
+/* La tarjeta: los dos temas uno sobre otro, cada uno en un idioma. Sin maqueta.js, lo que el kit cambia al
+   pulsar queda en su estado inicial. */
+body {
+  display: grid;
+  gap: var(--e-5);
+  padding: var(--e-5);
+}
+.ds-tema {
+  display: grid;
+  gap: var(--e-4);
+  padding: var(--e-5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: var(--tinta);
+}
+.ds-tema[data-idioma="es"] [lang="en"],
+.ds-tema[data-idioma="en"] [lang="es"],
+[data-theme="oscuro"] [data-si-tema="claro"],
+[data-theme="claro"] [data-si-tema="oscuro"] {
+  display: none !important;
+}
+</style>
+</head>
+<body>
+<section class="ds-tema" data-theme="oscuro" data-idioma="es" aria-label="Tema oscuro, español">
+<p class="hg-rotulo">Tema oscuro · español</p>
+<section class="hg-panel" aria-labelledby="carril"><div class="hg-panel-cab"><h2 id="carril"><span lang="es">Propiedades, contraste y carril de acción</span><span lang="en">Properties, contrast and action rail</span></h2></div><div class="hg-panel-cuerpo"><div class="hg-trabajo">
+<div class="hg-pila">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+<div><dt><span lang="es">Propiedad</span><span lang="en">Property</span></dt><dd><span><span lang="es">Rótulo arriba, valor abajo</span><span lang="en">Label on top, value below</span></span></dd></div>
+<div><dt><span lang="es">Dato</span><span lang="en">Data</span></dt><dd><span class="hg-dato" data-neutro>tasa-de-fallo/v1</span></dd></div>
+<div><dt><span lang="es">Fechado</span><span lang="en">Dated</span></dt><dd><span class="hg-estado es-positivo"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="7.25" fill="currentColor"/><path d="M4.6 8.3l2.3 2.3 4.6-5" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Vigente</span><span lang="en">Current</span></span></span><span class="hg-menor"><span lang="es">Verificada hace 12 días</span><span lang="en">Verified 12 days ago</span></span></dd></div>
+<div><dt><span lang="es">Lista</span><span lang="en">List</span></dt><dd><ul class="hg-lista"><li><span lang="es">Texto libre</span><span lang="en">Free text</span></li><li><span lang="es">Archivos adjuntos</span><span lang="en">Attached files</span></li></ul></dd></div>
+</dl>
+<div class="hg-contraste">
+<div><p class="hg-rotulo"><span lang="es">Lo que se esperaba</span><span lang="en">What was expected</span></p><p><span lang="es">Contraste: dos cajas enfrentadas.</span><span lang="en">Contrast: two facing boxes.</span></p></div>
+<div><p class="hg-rotulo"><span lang="es">Lo que se obtuvo</span><span lang="en">What was obtained</span></p><p><span class="hg-chip es-falla"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="1" y="1" width="14" height="14" rx="2" fill="currentColor"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Fallida</span><span lang="en">Failed</span></span></span></p></div>
+</div>
+<p class="hg-destacado"><span lang="es">El texto destacado dice lo único que no puede perderse.</span><span lang="en">Highlighted text says the one thing that must not be missed.</span></p>
+</div>
+<div class="hg-carril">
+<section class="hg-tarjeta hg-tarjeta-accion" data-propuesta="KIT-1" data-decision="" aria-labelledby="kit-accion">
+<h3 class="hg-tarjeta-titulo" id="kit-accion"><span lang="es">Tarjeta de acción</span><span lang="en">Action card</span></h3>
+<ul class="hg-pendientes">
+<li class="es-falla"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="1" y="1" width="14" height="14" rx="2" fill="currentColor"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Qué falta, con su marca.</span><span lang="en">What is missing, with its mark.</span></span></li>
+<li class="es-acento"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 13.2c2.2-.2 2.6-3.4 4.3-3.4 1.5 0 .6 2.6 2 2.6 1.6 0 1.7-3.4 5.7-3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9.2 6.8l3.3-4 1.7 1.4-3.3 4-2.1.7z" fill="currentColor"/></svg><span><span lang="es">Lo que decide una persona.</span><span lang="en">What a person decides.</span></span></li>
+</ul>
+<div class="hg-acciones" role="group" aria-label="Decisión de muestra" data-aria-label-es="Decisión de muestra" data-aria-label-en="Sample decision">
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="decidir" data-valor="aprobar" aria-pressed="false"><span lang="es">Confirmar</span><span lang="en">Confirm</span></button>
+<button type="button" class="hg-boton" data-controlador="decidir" data-valor="separar" aria-pressed="false"><span lang="es">Revisar uno por uno</span><span lang="en">Review one by one</span></button>
+</div>
+<p class="hg-menor" data-si-decision=""><span lang="es">Antes de decidir: qué falta.</span><span lang="en">Before deciding: what is missing.</span></p>
+<p class="hg-consecuencia" data-si-decision="aprobar" hidden><span lang="es">Al decidir: qué ocurre.</span><span lang="en">On deciding: what happens.</span></p>
+<p class="hg-consecuencia" data-si-decision="separar" hidden><span lang="es">Cada decisión dice su consecuencia.</span><span lang="en">Each decision states its consequence.</span></p>
+</section>
+</div>
+</div></div></section>
+</section>
+<section class="ds-tema" data-theme="claro" data-idioma="en" lang="en" aria-label="Light theme, English">
+<p class="hg-rotulo">Light theme · English</p>
+<section class="hg-panel" aria-labelledby="carril-en"><div class="hg-panel-cab"><h2 id="carril-en"><span lang="es">Propiedades, contraste y carril de acción</span><span lang="en">Properties, contrast and action rail</span></h2></div><div class="hg-panel-cuerpo"><div class="hg-trabajo">
+<div class="hg-pila">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+<div><dt><span lang="es">Propiedad</span><span lang="en">Property</span></dt><dd><span><span lang="es">Rótulo arriba, valor abajo</span><span lang="en">Label on top, value below</span></span></dd></div>
+<div><dt><span lang="es">Dato</span><span lang="en">Data</span></dt><dd><span class="hg-dato" data-neutro>tasa-de-fallo/v1</span></dd></div>
+<div><dt><span lang="es">Fechado</span><span lang="en">Dated</span></dt><dd><span class="hg-estado es-positivo"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="7.25" fill="currentColor"/><path d="M4.6 8.3l2.3 2.3 4.6-5" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Vigente</span><span lang="en">Current</span></span></span><span class="hg-menor"><span lang="es">Verificada hace 12 días</span><span lang="en">Verified 12 days ago</span></span></dd></div>
+<div><dt><span lang="es">Lista</span><span lang="en">List</span></dt><dd><ul class="hg-lista"><li><span lang="es">Texto libre</span><span lang="en">Free text</span></li><li><span lang="es">Archivos adjuntos</span><span lang="en">Attached files</span></li></ul></dd></div>
+</dl>
+<div class="hg-contraste">
+<div><p class="hg-rotulo"><span lang="es">Lo que se esperaba</span><span lang="en">What was expected</span></p><p><span lang="es">Contraste: dos cajas enfrentadas.</span><span lang="en">Contrast: two facing boxes.</span></p></div>
+<div><p class="hg-rotulo"><span lang="es">Lo que se obtuvo</span><span lang="en">What was obtained</span></p><p><span class="hg-chip es-falla"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="1" y="1" width="14" height="14" rx="2" fill="currentColor"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Fallida</span><span lang="en">Failed</span></span></span></p></div>
+</div>
+<p class="hg-destacado"><span lang="es">El texto destacado dice lo único que no puede perderse.</span><span lang="en">Highlighted text says the one thing that must not be missed.</span></p>
+</div>
+<div class="hg-carril">
+<section class="hg-tarjeta hg-tarjeta-accion" data-propuesta="KIT-1" data-decision="" aria-labelledby="kit-accion-en">
+<h3 class="hg-tarjeta-titulo" id="kit-accion-en"><span lang="es">Tarjeta de acción</span><span lang="en">Action card</span></h3>
+<ul class="hg-pendientes">
+<li class="es-falla"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="1" y="1" width="14" height="14" rx="2" fill="currentColor"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="var(--fondo)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span><span lang="es">Qué falta, con su marca.</span><span lang="en">What is missing, with its mark.</span></span></li>
+<li class="es-acento"><svg class="hg-marca-estado" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 13.2c2.2-.2 2.6-3.4 4.3-3.4 1.5 0 .6 2.6 2 2.6 1.6 0 1.7-3.4 5.7-3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9.2 6.8l3.3-4 1.7 1.4-3.3 4-2.1.7z" fill="currentColor"/></svg><span><span lang="es">Lo que decide una persona.</span><span lang="en">What a person decides.</span></span></li>
+</ul>
+<div class="hg-acciones" role="group" aria-label="Sample decision" data-aria-label-es="Decisión de muestra" data-aria-label-en="Sample decision">
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="decidir" data-valor="aprobar" aria-pressed="false"><span lang="es">Confirmar</span><span lang="en">Confirm</span></button>
+<button type="button" class="hg-boton" data-controlador="decidir" data-valor="separar" aria-pressed="false"><span lang="es">Revisar uno por uno</span><span lang="en">Review one by one</span></button>
+</div>
+<p class="hg-menor" data-si-decision=""><span lang="es">Antes de decidir: qué falta.</span><span lang="en">Before deciding: what is missing.</span></p>
+<p class="hg-consecuencia" data-si-decision="aprobar" hidden><span lang="es">Al decidir: qué ocurre.</span><span lang="en">On deciding: what happens.</span></p>
+<p class="hg-consecuencia" data-si-decision="separar" hidden><span lang="es">Cada decisión dice su consecuencia.</span><span lang="en">Each decision states its consequence.</span></p>
+</section>
+</div>
+</div></div></section>
+</section>
+</body>
+</html>

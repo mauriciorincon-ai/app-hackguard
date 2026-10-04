@@ -1,0 +1,159 @@
+/* Hoja de SALA de la maqueta: lo que NO es producto — la franja de sala (nota de la mirada y estados de
+   la pantalla), los conmutadores de estado y la matriz «Qué revisar» del pie. Lo que sí es producto vive
+   en app.css. Todo lo de sala lleva borde discontinuo para que no se confunda con la pantalla. */
+
+html[data-theme="oscuro"] [data-si-tema="claro"],
+html[data-theme="claro"] [data-si-tema="oscuro"] {
+  display: none;
+}
+
+body:not([data-estado="datos"]) [data-si="datos"],
+body:not([data-estado="vacio"]) [data-si="vacio"],
+body:not([data-estado="carga"]) [data-si="carga"],
+body:not([data-estado="error"]) [data-si="error"] {
+  display: none;
+}
+
+.mq-salto {
+  position: absolute;
+  left: 16px;
+  top: -64px;
+  z-index: 10;
+  padding: 8px 12px;
+  background: var(--superficie);
+  color: var(--tinta);
+}
+
+.mq-salto:focus {
+  top: 8px;
+}
+
+/* Franja de sala: una sola línea sobre la aplicación, para que la pantalla se vea como aplicación. */
+.mq-franja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2) var(--e-4);
+  padding: var(--e-2) var(--e-4);
+  border-bottom: 1px dashed var(--linea-fuerte);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.mq-franja > * {
+  min-width: 0;
+}
+
+.mq-franja .hg-boton {
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: var(--t-menor);
+  font-weight: 500;
+}
+
+.mq-sala-rotulo {
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+/* Vuelta al recorrido de la maqueta: lo primero de la franja, porque es de la sala. */
+.mq-volver {
+  margin-right: var(--e-2);
+  font-weight: 700;
+}
+
+.mq-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2);
+}
+
+.mq-grupo > span:first-child {
+  margin-right: var(--e-1);
+}
+
+/* Matriz «Qué revisar y qué deberías ver», al pie de la columna de contenido. */
+.mq-pie {
+  padding: 0 var(--e-4) var(--e-5);
+}
+
+.mq-pie-caja {
+  padding: var(--e-4);
+  border: 1px dashed var(--linea-fuerte);
+  border-radius: var(--radio);
+}
+
+.mq-pie h2 {
+  font-size: var(--t-medio);
+}
+
+.mq-tabla {
+  overflow-x: auto;
+}
+
+.mq-tabla table {
+  width: 100%;
+  margin-top: var(--e-2);
+  border-collapse: collapse;
+  font-size: var(--t-menor);
+}
+
+.mq-tabla th,
+.mq-tabla td {
+  padding: var(--e-2) var(--e-3) var(--e-2) 0;
+  border-bottom: 1px solid var(--linea);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* En teléfono la matriz se apila: tres columnas estrechas partían las palabras por la mitad. Cada fila
+   pasa a ser un bloque (dónde, en negrita · qué hacer · qué deberías ver). */
+@media (max-width: 599px) {
+  .mq-tabla thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mq-tabla tr,
+  .mq-tabla td {
+    display: block;
+  }
+
+  .mq-tabla tr {
+    padding: var(--e-2) 0;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  .mq-tabla td {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .mq-tabla td:first-child {
+    font-weight: 700;
+  }
+
+  .mq-tabla td + td {
+    margin-top: var(--e-1);
+  }
+}
+
+@media (max-width: 1099px) {
+  .mq-franja .hg-boton {
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .mq-franja,
+  .mq-pie {
+    padding-left: var(--e-5);
+    padding-right: var(--e-5);
+  }
+}

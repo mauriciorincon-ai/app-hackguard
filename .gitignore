@@ -20,3 +20,10 @@ Thumbs.db
 # Un gate que grita en falso deja de leerse — y ahi se pierde la fuga real.
 .lighthouseci/
 .lh-*.json
+
+# Evidencia de activos reales (regla dura 8): alcances, reglas de enfrentamiento, sobres y hallazgos
+# jamás viajan al repo público. Respaldo en un repo privado solo de datos.
+datos/privado/
+
+# Maqueta copiada por scripts/copiar-maqueta.mjs en cada build: derivado de docs/diseno/.
+public/diseno/

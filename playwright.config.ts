@@ -2,6 +2,11 @@ import { defineConfig, devices } from "@playwright/test";
 
 // Config que el ci.yml del kit ya asume (job e2e: "pnpm test:e2e").
 // Patrón validado en app-nutri-kids S1. Móvil primero: las apps del pipeline son mobile-first.
+// Puerto del servidor de e2e. 3000 por defecto (el de CI y Lighthouse); E2E_PUERTO lo cambia cuando
+// otra app ocupa el 3000 en la máquina local — sin reuso de servidor, un puerto ocupado aborta la suite
+// en vez de probar contra el árbol de otro (regla 17-bis b).
+const PUERTO = Number(process.env.E2E_PUERTO ?? 3000);
+
 export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: true,
@@ -14,7 +19,7 @@ export default defineConfig({
   // de paso desmintió la razón original del cambio — ver CHANGELOG).
   reporter: process.env.CI ? [["github"], ["list"]] : "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: `http://localhost:${PUERTO}`,
     trace: "on-first-retry",
   },
   projects: [
@@ -33,8 +38,8 @@ export default defineConfig({
     // `eval()` de React dev. En una app con CSP estricta o gate de red eso produce rojos sobre
     // un árbol limpio — 5 en Velo S1 — y un suite que grita cuando no pasa nada acaba ignorado.
     // Cuesta el tiempo del build; compra que el e2e local afirme lo mismo que el de CI.
-    command: "pnpm build && pnpm start",
-    url: "http://localhost:3000",
+    command: `pnpm build && PORT=${PUERTO} pnpm start`,
+    url: `http://localhost:${PUERTO}`,
     // Sin reuso: un `pnpm dev` olvidado en :3000 secuestraría el suite entero en silencio.
     reuseExistingServer: false,
     timeout: 180_000,

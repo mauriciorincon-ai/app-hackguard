@@ -1,0 +1,282 @@
+// prueba-<id>.html — pantalla 3 (C1, C6). La ficha de una prueba: qué verifica, por qué importa,
+// resultado esperado, regla de veredicto con k y su cota, configuración de la corrida, marco con versión,
+// controles, cuándo aplica y fuentes. Hay UNA PÁGINA POR PRUEBA del catálogo: cada fila abre la suya, con
+// su vigencia, su regla y sus avisos (por revisar, vencida, marcada para revisión, sin control).
+// Dirección «consola» (mirada 4-ter): la vigencia en la cabecera, los avisos debajo, lo que se espera y
+// cómo se decide al centro, y en el carril el resumen, el marco con sus controles y las fuentes.
+import { CONTROLES, FAMILIAS, HERRAMIENTAS, MADUREZ, MARCOS, REGLAS, fichaDe } from "../datos/catalogo.mjs";
+import { cotaPorCiento } from "../nucleo/calculos.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, avisoPrincipal, chip, dato, fechado, firma, nombreDe, par, sello } from "../nucleo/componentes.mjs";
+import { atributo, neutro, t } from "../nucleo/html.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
+import { vigencia } from "../nucleo/calculos.mjs";
+
+const SIN_CONTROL = { rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } };
+const MARCADA = { rol: "atencion", simbolo: "aviso", nombre: { es: "Marcada para revisión", en: "Flagged for review" } };
+const SIN_EJECUCION = {
+  es: "Sin evidencia de ejecución el veredicto es «no ejecutada», nunca «superada».",
+  en: "Without evidence that it ran, the verdict is “not run”, never “passed”.",
+};
+const VERIFICADO = { es: "Verificado", en: "Verified" };
+
+
+// Los avisos de la ficha dicen el UMBRAL, no los días transcurridos: la cifra que envejece vive en un
+// solo lugar (la vigencia de la cabecera), que es la que vigila la matriz de envejecimiento.
+function avisos(p, estadoDeVigencia, umbrales) {
+  const { por_revisar, vencido } = umbrales.vigencia;
+  const lista = [];
+  if (estadoDeVigencia === "vencido") {
+    lista.push(
+      sello(
+        { rol: "falla", simbolo: "falla", nombre: { es: "Verificación vencida", en: "Verification overdue" } },
+        `<p>${t({
+          es: `Pasaron más de ${vencido} días sin que nadie la verifique de nuevo. Su marco o su herramienta pueden haber cambiado: pide al investigador que la revise contra sus fuentes y aprueba lo que proponga.`,
+          en: `More than ${vencido} days have passed without anyone verifying it again. Its framework or its tool may have changed: ask the researcher to check it against its sources and approve what it proposes.`,
+        })}</p>`,
+        'data-aviso-de-vigencia="vencido"',
+      ),
+    );
+  }
+  if (estadoDeVigencia === "por_revisar") {
+    lista.push(
+      sello(
+        { rol: "atencion", simbolo: "aviso", nombre: { es: "Toca revisarla", en: "Review is due" } },
+        `<p>${t({
+          es: `Pasaron más de ${por_revisar} días desde su última verificación. Sigue siendo válida; a los ${vencido} días queda vencida.`,
+          en: `More than ${por_revisar} days have passed since it was last verified. It is still valid; at ${vencido} days it becomes overdue.`,
+        })}</p>`,
+        'data-aviso-de-vigencia="por_revisar"',
+      ),
+    );
+  }
+  if (p.revision === "marcada_para_revision") {
+    lista.push(
+      sello(
+        { rol: "atencion", simbolo: "aviso", nombre: { es: "Marcada para revisión de contenido", en: "Flagged for content review" } },
+        `<p>${t({
+          es: "El filtro de contenido encontró en esta ficha un patrón que pide revisión. El filtro marca, no rechaza: una persona decide si la ficha se queda, se corrige o se retira.",
+          en: "The content filter found a pattern in this record that calls for review. The filter flags, it does not reject: a person decides whether the record stays, is corrected or is retired.",
+        })}</p>`,
+        "data-aviso-de-contenido",
+      ),
+    );
+  }
+  return lista.join("\n");
+}
+
+/** Devuelve el generador de la ficha de UNA prueba. */
+export const prueba = (id) => ({ consulta, umbrales, existentes }) => {
+  const p = fichaDe(id);
+  const marco = MARCOS[p.marco];
+  const herramienta = HERRAMIENTAS[p.herramienta];
+  const regla = REGLAS[p.regla];
+  const v = vigencia(p.verificada, consulta, umbrales);
+
+  const repeticiones = !p.k
+    ? `<span>${t({ es: "Determinista", en: "Deterministic" })}</span><span class="hg-menor">${t({
+        es: "La misma entrada da el mismo resultado: una corrida basta.",
+        en: "The same input gives the same result: one run is enough.",
+      })}</span>`
+    : `${dato(`k = ${p.k}`)}<span class="hg-menor">${t(
+        regla.cota
+          ? {
+              es: `Con 0 fallas en ${p.k}, la tasa real de fallo queda por debajo del ${cotaPorCiento(p.k)} %.`,
+              en: `With 0 failures in ${p.k}, the real failure rate stays below ${cotaPorCiento(p.k)}%.`,
+            }
+          : {
+              es: "Repeticiones idénticas, con la misma configuración, para medir cuánto cambia el modelo por sí solo.",
+              en: "Identical repetitions, with the same configuration, to measure how much the model changes on its own.",
+            },
+      )}</span>`;
+
+  const via = herramienta.adaptador
+    ? { es: "Adaptador: el resultado se lee del archivo que produce la herramienta.", en: "Adapter: the result is read from the file the tool produces." }
+    : { es: "Texto pegado o carga manual: esta herramienta no tiene adaptador.", en: "Pasted text or manual entry: this tool has no adapter." };
+
+  const controles = p.controles.length
+    ? p.controles.map((c) => par({ es: "Control", en: "Control" }, `${dato(c)}<span>${t(CONTROLES[c])}</span>`)).join("\n")
+    : par(
+        { es: "Control", en: "Control" },
+        `${chip(SIN_CONTROL)}<span class="hg-menor">${t({
+          es: "Todavía no da evidencia a ningún control. Queda a la vista como deuda hasta que una persona se lo asigne.",
+          en: "It does not yet give evidence to any control. It stays visible as a debt until a person assigns one.",
+        })}</span>`,
+      );
+
+  // Las fuentes salen del marco y de la herramienta de la prueba: cada una con su propio reloj.
+  const fuentes = [
+    { nombre: neutro(`${marco.nombre} ${marco.version} · ${p.ref}`), donde: neutro(marco.editor), verificada: marco.verificada },
+    ...(p.herramienta === "propia"
+      ? []
+      : [{ nombre: nombreDe(herramienta), donde: t({ es: "documentación oficial", en: "official documentation" }), verificada: herramienta.verificada }]),
+  ]
+    .map((f) => par({ es: "Fuente", en: "Source" }, `<span>${f.nombre} <span class="hg-menor">· ${f.donde}</span></span>${fechado(f.verificada, consulta, umbrales)}`))
+    .join("\n");
+
+  const contenido = `<div class="hg-pila" data-si="datos" data-ficha-de="${p.id}" data-ficha-vigencia="${v.estado}">
+<div class="hg-cabecera">
+<div>
+<p class="hg-cabecera-linea">${dato(p.id)}${fechado(p.verificada, consulta, umbrales)}${p.revision === "marcada_para_revision" ? chip(MARCADA) : ""}</p>
+<h1>${t(p.nombre)}</h1>
+<p class="hg-bajada">${t(p.que_verifica)}</p>
+</div>
+</div>
+${avisos(p, v.estado, umbrales)}
+
+<div class="hg-trabajo">
+<div class="hg-pila">
+<section class="hg-panel" aria-labelledby="esperado">
+<div class="hg-panel-cab"><h2 id="esperado">${t({ es: "Resultado esperado", en: "Expected result" })}</h2></div>
+<div class="hg-panel-cuerpo">
+<p class="hg-destacado">${t(p.resultado_esperado)}</p>
+</div>
+<div class="hg-panel-cuerpo">
+<p class="hg-rotulo">${t({ es: "Por qué importa", en: "Why it matters" })}</p>
+<p>${t(p.por_que_importa)}</p>
+</div>
+</section>
+
+<section class="hg-panel" aria-labelledby="veredicto">
+<div class="hg-panel-cab"><h2 id="veredicto">${t({ es: "Cómo se decide el veredicto", en: "How the verdict is decided" })}</h2>${dato(p.regla)}</div>
+<div class="hg-panel-cuerpo">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+${par({ es: "Repeticiones", en: "Repetitions" }, repeticiones)}
+${par({ es: "Cómo decide", en: "How it decides" }, `<span>${t(regla.decide)}</span>`)}
+${par({ es: "Si no corrió", en: "If it did not run" }, `<span>${t(regla.sin_ejecucion ?? SIN_EJECUCION)}</span>`)}
+</dl>
+</div>
+</section>
+
+<section class="hg-panel" aria-labelledby="arnes">
+<div class="hg-panel-cab"><h2 id="arnes">${t({ es: "Configuración de la corrida", en: "Run configuration" })}</h2><p class="hg-menor">${t(
+    p.k
+      ? { es: "La re-prueba de un hallazgo usa esta misma y al menos el mismo k.", en: "Retesting a finding uses this same one and at least the same k." }
+      : { es: "La re-prueba de un hallazgo usa esta misma.", en: "Retesting a finding uses this same one." },
+  )}</p></div>
+<div class="hg-panel-cuerpo">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+${par(
+  { es: "Herramienta", en: "Tool" },
+  `<span>${nombreDe(herramienta)}${herramienta.licencia === "—" ? "" : ` <span class="hg-menor">· ${neutro(herramienta.licencia)}</span>`}</span>${fechado(herramienta.verificada, consulta, umbrales)}`,
+)}
+${par({ es: "Vía de carga", en: "Intake route" }, `<span>${t(via)}</span>`)}
+${herramienta.version_minima ? par({ es: "Versión mínima", en: "Minimum version" }, dato(herramienta.version_minima)) : ""}
+${par(
+  { es: "Selector", en: "Selector" },
+  p.selector ? dato(p.selector) : `<span class="hg-menor">${t({ es: "Lo fija el paquete de ejecución de cada plan.", en: "Set by each plan's execution package." })}</span>`,
+)}
+${p.detectores ? par({ es: "Detectores", en: "Detectors" }, `${dato(p.detectores)}<span class="hg-menor">${t(p.agregacion)}</span>`) : ""}
+</dl>
+</div>
+</section>
+
+<section class="hg-panel" aria-labelledby="aplica">
+<div class="hg-panel-cab"><h2 id="aplica">${t({ es: "Cuándo aplica", en: "When it applies" })}</h2><p class="hg-menor">${t({ es: "El plan la incluye si el perfil del activo declara esto.", en: "The plan includes it if the asset's profile declares this." })}</p></div>
+<div class="hg-panel-cuerpo">
+<ul class="hg-lista">${p.aplicabilidad.map((a) => `<li>${t(a)}</li>`).join("")}</ul>
+</div>
+</section>
+</div>
+
+<aside class="hg-carril" ${atributo("aria-label", { es: `Resumen de ${p.id}`, en: `Summary of ${p.id}` })}>
+<section class="hg-tarjeta" aria-labelledby="resumen">
+<h2 class="hg-tarjeta-titulo" id="resumen">${t({ es: "Resumen", en: "Summary" })}</h2>
+<dl class="hg-propiedades">
+${par({ es: "Familia", en: "Family" }, `<span>${t(FAMILIAS[p.familia])}</span>`)}
+${par({ es: "Madurez", en: "Maturity" }, `<span>${t(MADUREZ[p.madurez])}</span>`)}
+${par({ es: "Prioridad base", en: "Base priority" }, `<span><strong data-neutro>${p.prioridad_base}</strong> <span class="hg-menor">${t({ es: "de 5", en: "of 5" })}</span></span>`)}
+${par({ es: "Aprobación", en: "Approval" }, firma(p.verificada))}
+</dl>
+</section>
+
+<section class="hg-tarjeta" aria-labelledby="marco">
+<h2 class="hg-tarjeta-titulo" id="marco">${t({ es: "Marco y controles", en: "Framework and controls" })}</h2>
+<dl class="hg-propiedades">
+${par({ es: "Marco", en: "Framework" }, `<span>${neutro(`${marco.nombre} · ${marco.version}`)}</span>${fechado(marco.verificada, consulta, umbrales, VERIFICADO)}`)}
+${par({ es: "Referencia", en: "Reference" }, dato(p.ref))}
+${controles}
+</dl>
+</section>
+
+<section class="hg-tarjeta" aria-labelledby="fuentes">
+<h2 class="hg-tarjeta-titulo" id="fuentes">${t({ es: "Fuentes", en: "Sources" })}</h2>
+<p class="hg-menor">${t({
+    es: "El código comprobó que cada fuente existe y que dice lo que aquí se cita.",
+    en: "Code checked that each source exists and says what is cited here.",
+  })}</p>
+<dl class="hg-propiedades">
+${fuentes}
+</dl>
+</section>
+</aside>
+</div>
+</div>
+
+${avisoPrincipal(
+  "vacio",
+  VACIO,
+  { es: "Esta prueba ya no está en el catálogo", en: "This test is no longer in the catalog" },
+  `<p>${t({
+    es: "Se retiró en una instantánea posterior. Los hallazgos que la citan siguen apuntando a la versión en que existía.",
+    en: "It was retired in a later snapshot. Findings that cite it still point to the version in which it existed.",
+  })}</p><p><a href="catalogo.html">${t({ es: "Volver al catálogo", en: "Back to the catalog" })}</a></p>`,
+)}
+
+${avisoPrincipal("carga", CARGA, { es: "Abriendo la ficha", en: "Opening the record" }, ESQUELETO)}
+
+${avisoPrincipal(
+  "error",
+  ERROR,
+  { es: "No se pudo abrir la ficha", en: "The record could not be opened" },
+  sello(
+    { rol: "falla", simbolo: "falla", nombre: { es: "La prueba no pasa su esquema", en: "The test does not pass its schema" } },
+    `<p>${t({
+      es: "Le falta el resultado esperado. Una prueba incompleta no se muestra ni se planea: complétala en su archivo y vuelve a cargar el catálogo.",
+      en: "It has no expected result. An incomplete test is neither shown nor planned: complete it in its file and load the catalog again.",
+    })}</p>`,
+  ),
+)}`;
+
+  return pagina({
+    titulo: { es: `HackGuard · ${p.id}`, en: `HackGuard · ${p.id}` },
+    seccion: { id: "catalogo", archivo: "catalogo.html" },
+    migas: [t({ es: "Catálogo", en: "Catalog" }), t({ es: "Pruebas", en: "Tests" }), dato(p.id)],
+    consulta,
+    existentes,
+    sala: {
+      nota: {
+        es: "Mirada 4-ter: la ficha de esta prueba con la interfaz nueva (aprobado en el segundo tramo). Cada fila del catálogo abre la suya, con su propio estado.",
+        en: "Review 4-ter: this test's record with the new interface (approved in the second stretch). Each catalog row opens its own, with its own status.",
+      },
+      grupos: [barraDeEstados()],
+    },
+    contenido,
+    revisar: [
+      {
+        donde: { es: "Cabecera", en: "Header" },
+        hacer: { es: "Lee el título, la frase de abajo y la línea de arriba", en: "Read the title, the sentence below and the line above" },
+        ver: { es: "En tres segundos sabes qué verifica esta prueba y si está al día", en: "In three seconds you know what this test verifies and whether it is up to date" },
+      },
+      {
+        donde: { es: "Bajo la cabecera", en: "Below the header" },
+        hacer: { es: "Abre desde el catálogo una prueba vencida y una vigente", en: "From the catalog, open an overdue test and a current one" },
+        ver: { es: "La vencida y la que toca revisar lo dicen en un aviso; la vigente no lleva aviso", en: "The overdue one and the one due for review say so in a notice; the current one has none" },
+      },
+      {
+        donde: { es: "Resultado esperado y veredicto", en: "Expected result and verdict" },
+        hacer: { es: "Lee la frase destacada y el panel de abajo", en: "Read the highlighted sentence and the panel below" },
+        ver: { es: "El resultado esperado destaca; cómo se decide y qué pasa si no corrió se entienden sin fórmulas", en: "The expected result stands out; how it is decided and what happens if it did not run are clear without formulas" },
+      },
+      {
+        donde: { es: "Carril de la derecha", en: "Right-hand rail" },
+        hacer: { es: "Compara la vigencia del marco y de las fuentes con la de la prueba", en: "Compare the framework's and the sources' freshness with the test's" },
+        ver: { es: "La prueba, su herramienta y su marco llevan cada uno su propio reloj", en: "The test, its tool and its framework each keep their own clock" },
+      },
+      {
+        donde: { es: "Toda la ficha", en: "The whole record" },
+        hacer: { es: "Busca cualquier instrucción de cómo atacar", en: "Look for any instruction on how to attack" },
+        ver: { es: "No hay ninguna: solo qué se verifica, con qué y qué se espera", en: "There is none: only what is verified, with what and what is expected" },
+      },
+    ],
+  });
+};

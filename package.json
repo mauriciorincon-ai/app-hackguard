@@ -4,13 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "serve out -l 3000",
+    "build": "node scripts/copiar-maqueta.mjs && next build",
+    "start": "serve out -l ${PORT:-3000} --config ../serve.json",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
-    "prepare": "git config core.hooksPath githooks"
+    "prepare": "git config core.hooksPath githooks",
+    "maqueta": "node scripts/maqueta/generar.mjs",
+    "capturas:maqueta": "node scripts/capturar-maqueta.mjs",
+    "tokens": "node scripts/paleta/generar-tokens.mjs",
+    "design-sync:bundle": "node scripts/design-sync/generar.mjs"
   },
   "dependencies": {
     "@sentry/nextjs": "^11.4.0",
