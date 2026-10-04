@@ -712,6 +712,63 @@ prioridad saturada) · barrido de promesas aplazadas sobre lo añadido en la fas
 ciertas hoy · lint y typecheck limpios · nada bajo `src/`. La e2e completa sobre el árbol final la corre
 la CI de este commit.
 
+## G-Diseño — veredicto y sello (2026-10-04)
+
+**Mirada 6 (G-Diseño), ronda 1**, sobre el preview del PR #4 en el commit `d25b21d` (tres checks en
+`success`). Se presentó con una matriz de una fila por pantalla y las filas nuevas de la fase 2 de la
+auditoría marcadas. Veredicto textual: «Todas estab muy bien y en orden muy buen trabajo, las abri y las
+apruebo». Es un «lo abrí y apruebo» explícito: **G-Diseño aprobado**, sin ajustes. Quedó registrado en
+`docs/diseno/README.md` (plan de miradas, registro de miradas y registro de G-Diseño) antes de construir
+el bundle.
+
+**Lo que cambió al aprobarlo:**
+
+- `design-system.md` pasa a **1.0.0**, sellado, sin cambios de forma desde 0.8.0. La sección
+  «Pendiente» pasa a «Después del sello»: lo que hereda el S2 (barrido de tintas vetadas, gate de
+  fidelidad y parada tras la primera pantalla), el texto «maquetado, no visto» que va al gate del MVP, y
+  el bundle.
+- **Portada:** la nota de sala dice que G-Diseño está aprobado y que desde aquí cada pantalla del producto
+  se compara con su página de la maqueta. Es el único HTML que cambia; `kit.html` sale con los mismos
+  bytes tras la refactorización de abajo.
+- **Bundle `design-sync/`** (regla 16), en el repo y **sin publicar**:
+  - `scripts/design-sync/generar.mjs` (`pnpm design-sync:bundle`) escribe `README.md`, `styles.css` y
+    una tarjeta por panel del kit: 3 de fundamentos y 9 de componentes.
+  - Para que tarjetas y kit salgan de la misma fuente, `kit.mjs` exporta `panelesDelKit()` y
+    `panelDelKit()`, y `kit.html` los dibuja en el mismo orden.
+  - Cada tarjeta lleva la primera línea `@dsCard`, `tokens.css` y `app.css` en línea sin las caras de
+    letra, y el panel dos veces: tema oscuro en español arriba, tema claro en inglés abajo. En la copia
+    inglesa los atributos y opciones van en su idioma y los id llevan sufijo.
+  - Los enlaces del kit se vuelven `#`. El generador falla si a las hojas les queda un `url()`.
+  - `project.json` lo escribo a mano (`projectId: null`). No lo regenera el generador: lo actualiza
+    `/design-sync` al publicar.
+  - `design-sync/` entra en `.prettierignore`: el formateador cambiaría los bytes del README generado.
+- **Pasada de capturas del bundle:** las 12 tarjetas abiertas como archivo, a 1280 px. Cero desborde,
+  cero id repetidos y ninguna petición fuera del archivo. Leí como imagen las tarjetas de color, de
+  botones y campos (en inglés el select dice «All» y lo elegido lleva su barra), del carril de acción y
+  de la matriz de prioridad (la casilla del objeto en su marco, en los dos temas). La letra es la del
+  sistema, como declara el README del bundle.
+
+**Gate nuevo y su demo en rojo (regla 15), en el mismo commit**
+
+| # | Gate | Demo | Resultado |
+|---|---|---|---|
+| G35a | `design-sync` · deriva | Un espacio al final de la tarjeta de color, a mano | «design-sync/components/fundamentos/color.html difiere de lo que genera scripts/design-sync (corre «pnpm design-sync:bundle»)» → verde |
+| G35b | `design-sync` · sobrantes | Una tarjeta `vieja.html` que el generador no produce | «no sobra ninguna tarjeta…: expected [ …(13) ] to deeply equal [ …(12) ]» → verde |
+| G35c | `design-sync` · contrato | El generador sin la línea `@dsCard`, regenerado (la deriva sigue verde: los dos lados coinciden) | Las 12 tarjetas en rojo por su primera línea → verde |
+| G35d | `design-sync` · id | La copia inglesa sin sufijo en los id, regenerada | «expected [ 'color' ] to deeply equal []» (y así en cada tarjeta) → verde |
+| G35e | `design-sync` · credencial | `apiToken` en `project.json` | «expected 'apiToken' not to match /token\|key\|secret\|clave\|password/i» → verde |
+| G35f | Guarda del generador | Sin quitar las caras de letra | «Error: design-sync: las hojas piden un archivo con url(); la tarjeta no lo tendría» → restaurado |
+| G35g | `design-sync` · sigue a `design-system.md` | Versión 1.0.1 en el documento sin regenerar | README, `styles.css` y las 12 tarjetas en rojo → verde |
+
+Todo restaurado y confirmado con `cmp` del generador y del documento, y con `diff -r` del bundle contra su
+respaldo. **¿Puede fallar?** Sí, cada aserción tiene su rojo. No hay una prueba de «una tarjeta por panel»:
+el generador recorre los paneles, así que esa prueba no podría fallar. Una tarjeta que falta en disco la
+nombra la deriva, y una que sobra, la prueba de sobrantes.
+
+**Verificación:** 701 unitarias en 19 archivos · lint y typecheck limpios · e2e de la portada (28: entrada
+por las tres rutas, enlace relativo, 380 px y escritorio en los dos idiomas, axe en los cuatro pares,
+interacción y reducir movimiento) en verde · nada bajo `src/`.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el

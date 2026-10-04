@@ -40,7 +40,8 @@ const grupo = (titulo, mapa) =>
     .map((e) => `<li>${estado(e)}</li>`)
     .join("")}</ul></div>`;
 
-export function kit({ consulta, existentes }) {
+/** Los paneles del kit, en su orden. kit.html los dibuja y el bundle de design-sync/ hace una tarjeta de cada uno. */
+export function panelesDelKit() {
   const tokens = JSON.parse(readFileSync(join(MAQUETA, "assets", "tokens.json"), "utf8"));
 
   const colores = `<div class="hg-panel-cuerpo"><ul class="hg-muestras">${Object.keys(tokens.oscuro)
@@ -219,6 +220,27 @@ ${sello(
   })}</p><div class="hg-esqueleto" aria-hidden="true"><span></span><span></span><span></span></div></div>
 </div>`;
 
+  // grupo: dónde va su tarjeta en design-sync/ (Fundamentos o Componentes, como design-system.md §§ 2–6).
+  return [
+    { id: "color", grupo: "Fundamentos", titulo: { es: "Color", en: "Color" }, cuerpo: colores, nota: { es: "Cambia de tema para ver el otro juego.", en: "Switch theme to see the other set." } },
+    { id: "tipografia", grupo: "Fundamentos", titulo: { es: "Tipografía", en: "Typography" }, cuerpo: tipografia, nota: { es: "Una letra para el texto y su variante mono para los datos; sin serifa.", en: "One typeface for text and its mono variant for data; no serif." } },
+    { id: "estados", grupo: "Fundamentos", titulo: { es: "Estados", en: "Statuses" }, cuerpo: estados, nota: { es: "Una forma por papel: se reconocen sin color.", en: "One shape per role: recognizable without color." } },
+    { id: "controles", grupo: "Componentes", titulo: { es: "Botones, filtros y campos", en: "Buttons, filters and fields" }, cuerpo: controles, nota: { es: "Un solo primario por tarjeta de acción.", en: "A single primary per action card." } },
+    { id: "cifras", grupo: "Componentes", titulo: { es: "Tira de cifras", en: "Figures strip" }, cuerpo: resumen },
+    { id: "tabla", grupo: "Componentes", titulo: { es: "Tabla", en: "Table" }, cuerpo: tabla },
+    { id: "recorrido", grupo: "Componentes", titulo: { es: "Recorrido", en: "Progress" }, cuerpo: recorrido, nota: { es: "Para lo que tiene ciclo de vida.", en: "For what has a life cycle." } },
+    { id: "carril", grupo: "Componentes", titulo: { es: "Propiedades, contraste y carril de acción", en: "Properties, contrast and action rail" }, cuerpo: carril },
+    { id: "pestanas", grupo: "Componentes", titulo: { es: "Pestañas y selector de objeto", en: "Tabs and object selector" }, cuerpo: pestanas },
+    { id: "matriz", grupo: "Componentes", titulo: { es: "Matriz de prioridad", en: "Priority matrix" }, cuerpo: matriz, nota: { es: "La casilla del objeto, en un marco de tinta.", en: "The object's cell, in an ink frame." } },
+    { id: "brecha", grupo: "Componentes", titulo: { es: "Brecha, tablero e informe", en: "Gap, dashboard and report" }, cuerpo: brecha, nota: { es: "Las piezas de la mirada 5.", en: "The pieces from review 5." } },
+    { id: "avisos", grupo: "Componentes", titulo: { es: "Estado de pantalla", en: "Screen state" }, cuerpo: avisos },
+  ];
+}
+
+/** El HTML de un panel del kit, tal como lo dibuja kit.html. */
+export const panelDelKit = (p) => panel(p.id, p.titulo, p.cuerpo, p.nota);
+
+export function kit({ consulta, existentes }) {
   const contenido = `<div class="hg-cabecera">
 <div>
 <h1>${t({ es: "Kit de componentes", en: "Component kit" })}</h1>
@@ -228,18 +250,7 @@ ${sello(
   })}</p>
 </div>
 </div>
-${panel("color", { es: "Color", en: "Color" }, colores, { es: "Cambia de tema para ver el otro juego.", en: "Switch theme to see the other set." })}
-${panel("tipografia", { es: "Tipografía", en: "Typography" }, tipografia, { es: "Una letra para el texto y su variante mono para los datos; sin serifa.", en: "One typeface for text and its mono variant for data; no serif." })}
-${panel("estados", { es: "Estados", en: "Statuses" }, estados, { es: "Una forma por papel: se reconocen sin color.", en: "One shape per role: recognizable without color." })}
-${panel("controles", { es: "Botones, filtros y campos", en: "Buttons, filters and fields" }, controles, { es: "Un solo primario por tarjeta de acción.", en: "A single primary per action card." })}
-${panel("cifras", { es: "Tira de cifras", en: "Figures strip" }, resumen)}
-${panel("tabla", { es: "Tabla", en: "Table" }, tabla)}
-${panel("recorrido", { es: "Recorrido", en: "Progress" }, recorrido, { es: "Para lo que tiene ciclo de vida.", en: "For what has a life cycle." })}
-${panel("carril", { es: "Propiedades, contraste y carril de acción", en: "Properties, contrast and action rail" }, carril)}
-${panel("pestanas", { es: "Pestañas y selector de objeto", en: "Tabs and object selector" }, pestanas)}
-${panel("matriz", { es: "Matriz de prioridad", en: "Priority matrix" }, matriz, { es: "La casilla del objeto, en un marco de tinta.", en: "The object's cell, in an ink frame." })}
-${panel("brecha", { es: "Brecha, tablero e informe", en: "Gap, dashboard and report" }, brecha, { es: "Las piezas de la mirada 5.", en: "The pieces from review 5." })}
-${panel("avisos", { es: "Estado de pantalla", en: "Screen state" }, avisos)}`;
+${panelesDelKit().map(panelDelKit).join("\n")}`;
 
   return pagina({
     titulo: { es: "HackGuard · kit", en: "HackGuard · kit" },

@@ -2,3 +2,6 @@
 # (tests/unit/maqueta-deriva.test.ts). Un formateador cambia bytes y rompe el gate.
 docs/diseno/
 public/diseno/
+# Bundle del design system: lo escribe scripts/design-sync/generar.mjs y tests/unit/design-sync.test.ts lo
+# compara byte a byte.
+design-sync/

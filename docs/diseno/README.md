@@ -36,6 +36,10 @@ Las cifras se **calculan**: la fecha de consulta es una entrada del generador
 Lighthouse no mide la maqueta (`lighthouse-urls.json` sigue en `["/"]`); la miden los e2e
 (`tests/e2e/maqueta-servida.spec.ts`) y el arnés de capturas (`pnpm capturas:maqueta`).
 
+El **bundle del design system** para Claude Design vive en la raíz del repo, en `design-sync/`: es
+salida de `scripts/design-sync/generar.mjs` (`pnpm design-sync:bundle`), con una tarjeta por panel del
+kit hecha con la misma hoja. Queda sin publicar hasta el gate ⭐⭐ del ciclo.
+
 ## Decisiones de diseño que la orden no escribió
 
 Aprobadas con el plan de la etapa (2026-10-03):
@@ -120,7 +124,7 @@ Aprobadas con el plan de la etapa (2026-10-03):
     (`scripts/maqueta/datos/validacion.mjs`; las dos cifras de CVSS son las del spike) y nacen de verdad
     en el S1.
 
-27. **Cierre de la etapa: lo que dejó la auditoría** (fase 2, 2026-10-04; se ve en la mirada 6):
+27. **Cierre de la etapa: lo que dejó la auditoría** (fase 2, 2026-10-04; vista y aprobada en la mirada 6):
     - **Vigencia por familia** (RF-01.5): panel en el catálogo; una familia está como su prueba más
       atrasada, con cuántas hay en cada estado.
     - **Controles equivalentes** (E-16): una equivalencia **ilustrativa** de `iso42001-A.6.2.4` con
@@ -169,7 +173,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 4-ter · tramo 1 | `design-system.md` 0.5.0 + `assets/app.css` + `catalogo` · `hallazgo-<id>` · `evidencia` con la dirección «consola» | **aprobada** (2026-10-04, ronda 1) — con ella queda vista y confirmada la dirección de la 4-bis |
 | 4-ter · tramo 2 | `prueba-<id>` · `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` · `kit` · `direccion` · `index` con la misma dirección; se retiran `hg.css`, `interfaz.css` e `interfaz-a/b/c` | **aprobada** (2026-10-04, ronda 1) |
 | 5 | `brecha` · `control` (lista y una página por control) · `informe` · `tablero` · `index` | **aprobada** (2026-10-04, ronda 1) |
-| 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
+| 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | **aprobada: G-Diseño** (2026-10-04, ronda 1) |
 
 ## Registro de miradas
 
@@ -187,6 +191,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-04 | `catalogo`, `hallazgo-<id>` y `evidencia` con la dirección «consola» (mirada 4-ter, tramo 1, ronda 1) | preview del PR #4 | «Muy muy bien excelente ahora si que realmente se ve como una aplicacion seria, el recorrido en hallazgos esta perfecto y se entiende y confirmar el lote esta claro, Los abri y los apruebo» — **tramo 1 aprobado**, sin ajustes; comenta el recorrido del hallazgo y la confirmación del lote (evidencia de mirada). Con esto la dirección «consola» queda vista en pantallas reales. El texto en ambos idiomas sigue «maquetado, no visto» | Mirada 4-ter, tramo 2: el resto de las pantallas con la misma dirección |
 | 2026-10-04 | fichas de prueba, `marcos`, `controles`, `propuestas`, `activo-<id>`, `plan-<id>`, `kit`, `direccion` e `index` con la dirección «consola» (mirada 4-ter, tramo 2, ronda 1) | preview del PR #4 | «Abri todas las paginas y estan buenismas muy claras y adecuadas, las abri y las apruebo continua» — **tramo 2 aprobado**, sin ajustes; dice haber abierto todas las páginas. Con esto toda la maqueta construida queda en la dirección «consola» y vista. El texto en ambos idiomas sigue «maquetado, no visto» | Mirada 5: brecha, vista por control, informe, tablero y portada |
 | 2026-10-04 | `tablero`, `brecha`, `control` y `control-<id>`, `informe` (también impreso) e `index` (mirada 5, ronda 1) | preview del PR #4 | «Muy buenas visuales y muy claras, las abri y las apruebo, continua» — **mirada 5 aprobada**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 6: cierre de la etapa (revisión propia, auditoría y mirada 6, G-Diseño) |
+| 2026-10-04 | Recorrido completo: las 47 páginas, en teléfono y escritorio, en los dos temas y los dos idiomas, con lo que cambió al pagar la auditoría de cierre marcado como nuevo (mirada 6, G-Diseño, ronda 1) | preview del PR #4 (commit `d25b21d`) | «Todas estab muy bien y en orden muy buen trabajo, las abri y las apruebo» — **G-Diseño aprobado**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto»: su veredicto viaja al gate del MVP | Cierre de la etapa: `design-system.md` 1.0.0, bundle `design-sync/` (sin publicar), resumen de la etapa y merge del PR #4 |
 
 ## Cobertura
 
@@ -232,6 +237,7 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Paleta | `tests/unit/paleta.test.ts` | Contraste por debajo de AA en texto o de 3:1 en marcas; dos estados que se confunden en visión normal o con daltonismo |
 | Sistema de diseño | `tests/unit/design-system.test.ts` | Que `design-system.md` diga un color y la maqueta pinte otro |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
+| Bundle del design system | `tests/unit/design-sync.test.ts` | Una tarjeta de `design-sync/` editada a mano, que sobra o que no sigue a `design-system.md`; sin su línea `@dsCard`; que pide algo a la red o a otro archivo; que repite un id entre sus dos copias; una credencial en `project.json` |
 | Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad, dato que pisa la columna vecina o contenido que se sale de su panel, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento»; un informe que se imprime con navegación, en tinta clara, con tablas hechas tarjetas o fuera de la hoja; un estado de pantalla (vacío, carga, error) que se sale a 380 px o falla axe; un botón pulsado que solo cambia de color |
 
 ## Tokens de reusables consumidos
@@ -257,16 +263,16 @@ usuario (2026-10-04, al aprobar la fase 2 de la auditoría): no es fuente de los
 Los resúmenes los redacta el S1 con palabras propias (regla 11); el agente puede consultarse solo para
 contrastar, en lectura desde la planeadora.
 
-## Registro de G-Diseño (se llena al cerrar la etapa)
+## Registro de G-Diseño
 
 | Campo | Valor |
 |---|---|
-| Veredicto | — |
-| Fecha | — |
-| Rondas | — |
-| Dónde se aprobó | preview del PR #— |
-| Decisiones selladas | — |
-| Notas | — |
+| Veredicto | **Aprobado.** Textual: «Todas estab muy bien y en orden muy buen trabajo, las abri y las apruebo» |
+| Fecha | 2026-10-04 |
+| Rondas | Once miradas registradas: la de la fase 0 (el preview abre), la 1, la 2 en dos rondas, la 3, la 4 (función aprobada, diseño rechazado: reabrió la interfaz), la 4-bis (elección de la interfaz sin evidencia de mirada, confirmada después sobre pantallas reales), la 4-ter en dos tramos, la 5 y la 6. Un solo rechazo; ninguna mirada aprobada se rehízo después salvo por el cambio de interfaz que pidió el usuario |
+| Dónde se aprobó | preview del PR #4 (commit `d25b21d`, con `quality`, `e2e` y `lighthouse` en `success`) |
+| Decisiones selladas | `design-system.md` 1.0.0: la dirección «consola» (armazón con barra lateral y barra de contexto, tablas densas, carril de acción a la derecha, recorrido para lo que tiene ciclo de vida), la paleta generada y medida en los dos temas, Atkinson Hyperlegible Next y Mono, los estados con símbolo + texto + color y su vocabulario como dato, y «una cuenta, un cálculo». Las decisiones 1 a 27 de este README. Las 47 páginas de la maqueta son la referencia de fidelidad del primer sprint con pantallas |
+| Notas | El texto en los dos idiomas queda «maquetado, no visto»: su veredicto viaja al gate del MVP. El agente «Experto ISO 42001» no es fuente de los resúmenes del Anexo A (decisión del usuario, 2026-10-04). El bundle `design-sync/` queda en el repo sin publicar: se publica después del gate ⭐⭐ del ciclo, cuando el usuario invoque `/design-sync`. El S2 se detiene tras su primera pantalla construida para el gate de FIDELIDAD contra esta maqueta |
 
 **Sin este registro lleno y sin el registro de miradas, G-Diseño no está aprobado y no existe orden de
 construcción con UI que ejecutar.**

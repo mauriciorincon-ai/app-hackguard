@@ -64,8 +64,8 @@ export function index({ consulta, existentes }) {
 
 <section class="hg-panel" aria-labelledby="pantallas">
 <div class="hg-panel-cab"><h2 id="pantallas">${t({ es: "Pantallas", en: "Screens" })}</h2><p class="hg-menor">${t({
-    es: `En el orden de la orden de diseño. Las ${PANTALLAS.length}, aprobadas una por una en las miradas 1 a 5.`,
-    en: `In the design order's sequence. All ${PANTALLAS.length}, approved one by one in reviews 1 to 5.`,
+    es: `En el orden de la orden de diseño. Las ${PANTALLAS.length}, aprobadas una por una en las miradas 1 a 5 y en conjunto en G-Diseño.`,
+    en: `In the design order's sequence. All ${PANTALLAS.length}, approved one by one in reviews 1 to 5 and as a whole at the design gate.`,
   })}</p></div>
 <table class="hg-tabla">
 <caption class="hg-oculto">${t({ es: "Pantallas de la maqueta", en: "Mockup screens" })}</caption>
@@ -97,8 +97,8 @@ ${filas}
     existentes,
     sala: {
       nota: {
-        es: "Mirada 6 (G-Diseño): el recorrido completo. Cada pantalla ya se aprobó en su mirada; ahora se mira el conjunto en teléfono y escritorio, en los dos temas, en español y en inglés.",
-        en: "Review 6 (design gate): the full walk-through. Each screen was approved in its own review; now the whole is reviewed on phone and desktop, in both themes, in Spanish and in English.",
+        es: "G-Diseño aprobado el 2026-10-04 (mirada 6): el recorrido completo, en teléfono y escritorio, en los dos temas, en español y en inglés. Desde aquí, cada pantalla del producto se compara con su página de esta maqueta.",
+        en: "Design gate approved on 2026-10-04 (review 6): the full walk-through, on phone and desktop, in both themes, in Spanish and in English. From here on, every product screen is compared with its page in this mockup.",
       },
     },
     contenido,

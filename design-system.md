@@ -1,6 +1,6 @@
 ---
-version: 0.8.0
-estado: dirección «consola» aprobada (mirada 4-ter, tramos 1 y 2) · miradas 1 a 5 aprobadas · se sella en G-Diseño (mirada 6)
+version: 1.0.0
+estado: sellado en G-Diseño (2026-10-04) · dirección «consola» · miradas 1 a 6 aprobadas
 ---
 
 # HackGuard — sistema de diseño
@@ -220,13 +220,23 @@ respuesta a todo · gradientes · sombras · emojis como iconos · color como ú
 primario a la vista · un carácter especial donde debía ir un trazo · una cifra escrita a mano · una
 animación de entrada.
 
-## 11. Pendiente
+## 11. Después del sello
 
-Mirada 6 (G-Diseño): el recorrido completo en teléfono y escritorio, en los dos temas y los dos idiomas.
-Después, el bundle `design-sync/` desde este documento.
+Sellado en G-Diseño el 2026-10-04: desde aquí se extiende por ADR y la maqueta es la referencia de
+fidelidad. Queda para el producto:
+
+- El primer sprint con UI añade el barrido de tintas vetadas y el gate de fidelidad (§ 9), y se detiene
+  tras su primera pantalla para compararla con su página de la maqueta.
+- El texto en los dos idiomas está «maquetado, no visto»: su veredicto es del gate del MVP.
+- El bundle `design-sync/` deriva de este documento y de la maqueta (`scripts/design-sync/generar.mjs`;
+  `tests/unit/design-sync.test.ts` exige los mismos bytes). Todo sprint que toque UI lo regenera en su
+  PR; se publica en Claude Design después del gate ⭐⭐ del ciclo, cuando el usuario invoque
+  `/design-sync`.
 
 ## 12. Registro de cambios
 
+- **1.0.0** — Sellado en G-Diseño (mirada 6, 2026-10-04), sin cambios de forma desde 0.8.0. Nace el
+  bundle `design-sync/`: una tarjeta por panel del kit, generada con la misma hoja que las pantallas.
 - **0.8.0** — Cierre de la etapa (fase 2 de la auditoría): lo elegido lleva además barra inferior y más
   peso (se reconoce sin color); el desglose sirve también para la vigencia por familia; la escala de
   prioridad de IA declara su piso y su techo en datos; un solo nombre para «Toca revisar».
