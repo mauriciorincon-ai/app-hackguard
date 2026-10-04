@@ -11,7 +11,8 @@ Fundación visual del H1 (entregas E1 a E4), **anterior a cualquier código de p
   hermanas la maqueta funcionaba como archivo y fallaba servida.
 
 Arriba a la derecha de cada página: conmutador de **tema** (oscuro por defecto) y de **idioma** (ES/EN).
-Al pie de cada página: la matriz «Qué revisar y qué deberías ver».
+Al pie de cada página: la matriz «Qué revisar y qué deberías ver». Sobre la aplicación, la franja de
+**sala de diseño** (línea discontinua) con la nota de la mirada y los estados de la pantalla: no es producto.
 
 ## Qué vive aquí
 
@@ -19,7 +20,9 @@ Al pie de cada página: la matriz «Qué revisar y qué deberías ver».
 |---|---|---|
 | `*.html` | Páginas de la maqueta | **Salida** de `scripts/maqueta/` (`pnpm maqueta`). No se editan a mano: el gate de deriva lo impide |
 | `assets/tokens.css`, `assets/tokens.json` | Tokens de color en ambos temas | **Salida** de `scripts/paleta/` (`pnpm tokens`) |
-| `assets/hg.css` | Hoja del sistema de diseño: lo que el producto obedecerá | A mano |
+| `assets/app.css` | Hoja del sistema de diseño, dirección «consola»: lo que el producto obedecerá | A mano |
+| `assets/hg.css` | Hoja de la dirección anterior («acta», rechazada). Solo la cargan las pantallas aún sin rehacer; se retira al terminar la mirada 4-ter | A mano |
+| `assets/interfaz.css` | Hoja de exploración de la mirada 4-bis (las tres direcciones); se retira con ellas | A mano |
 | `assets/maqueta.css`, `assets/maqueta.js` | Hoja y controlador de **sala**: lo que no es producto (nota de la mirada, botoneras, matriz del pie) | A mano |
 | `assets/fuentes/` | Tipografías OFL, subconjunto latino, con su licencia | Copiadas de `@fontsource-variable` 5.3.0 |
 | `README.md` | Este registro | A mano; no se publica (la copia al build excluye los `.md`) |
@@ -76,8 +79,20 @@ Aprobadas con el plan de la etapa (2026-10-03):
     cifras grandes y los lotes lado a lado). Comparten datos, paleta y vocabulario de estados; difieren
     en navegación, disposición, densidad y componentes. Viven en `assets/interfaz.css`, aparte de la hoja
     del sistema: la elegida pasa a `hg.css` y a `design-system.md`, y las otras dos se borran.
-8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
-   en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
+8. **Dirección «acta»** (mirada 1; **rechazada en la mirada 4**): títulos en Source Serif 4, texto en
+   Atkinson Hyperlegible Next, datos en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y
+   secciones numeradas. La reemplaza la decisión 16.
+16. **Dirección «consola»** (mirada 4-bis): la A, con dos piezas de la B — el **recorrido de pasos** para
+    lo que tiene ciclo de vida (lotes y hallazgos) y el **carril de acción** a la derecha en las pantallas
+    de detalle. Barra lateral con las secciones y sus páginas, barra de contexto, tablas densas, paneles
+    con borde, chips de estado, radio de 6 px, texto de 14 px, sin serifa. En teléfono: barra fija al pie
+    y tablas como tarjetas. Se conservan la paleta, el vocabulario de estados y el contenido aprobado.
+17. **La mirada 4-ter se hace en dos tramos.** Primero el sistema y tres pantallas tipo — una lista
+    (`catalogo`), un detalle (`hallazgo-<id>`) y un formulario (`evidencia`) — y, con su aprobación, el
+    resto. Mientras tanto conviven dos hojas (`app.css` y `hg.css`) y las pantallas sin rehacer conservan
+    el aspecto anterior; la franja de sala lo dice en cada página.
+18. **En la carga de evidencia cada sobre se puede seleccionar**: el identificador de la fila es un botón
+    y el carril muestra su regla, sus huellas y su hallazgo. La ficha del lote va bajo la tabla.
 
 ## Plan de miradas
 
@@ -87,6 +102,11 @@ Aprobadas con el plan de la etapa (2026-10-03):
 > misma pantalla en tres estructuras distintas) y **4-ter** (rehacer con ella lo ya construido). Lo que
 > se conserva de lo aprobado: el contenido y los estados de cada pantalla, el vocabulario de estados
 > (símbolo + texto + color), la paleta validada y todos los gates.
+
+> **Cambio de plan del 2026-10-04 (propuesto por el constructor, aprobado por el usuario: «Pues
+> iniciemos con el primer tramo»):** la mirada 4-ter pasa a tener **dos paradas**. Tramo 1: el sistema y
+> tres pantallas tipo (lista, detalle, formulario). Tramo 2: el resto de lo construido. Así, si la
+> interfaz no convence, se corrige sobre tres pantallas y no sobre cuarenta.
 
 Todas son de **forma** y abren parada. El **texto** (copy en ambos idiomas) queda «maquetado, no visto»
 y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige aprobación previa.
@@ -98,8 +118,9 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
 | 3 | `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` | **aprobada** (2026-10-04, ronda 1) |
 | 4 | `evidencia` · `hallazgo-<id>` | **función aprobada, diseño rechazado** (2026-10-04, ronda 1): reabre la dirección visual |
-| 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **en mirada** (ronda 1, 2026-10-04) |
-| 4-ter | Las pantallas de las miradas 1 a 4 rehechas con la dirección que se elija | pendiente |
+| 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **elegida: A «Consola» con el recorrido y el carril de B** (2026-10-04, ronda 1) — elegida sobre la recomendación; **sin evidencia de que el usuario abriera las tres** (ver registro) |
+| 4-ter · tramo 1 | `design-system.md` 0.5.0 + `assets/app.css` + `catalogo` · `hallazgo-<id>` · `evidencia` con la dirección «consola» | **en mirada** (ronda 1, 2026-10-04) |
+| 4-ter · tramo 2 | `prueba-<id>` · `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` · `kit` · `direccion` · `index` con la misma dirección; se retiran `hg.css`, `interfaz.css` e `interfaz-a/b/c` | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
 
@@ -115,6 +136,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-04 | `catalogo`, fichas de prueba y `kit.html` (mirada 2, ronda 2) | preview del PR #4 | «Los abri y los apruebo» — **mirada 2 aprobada**, sin más ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 3: marcos, controles, propuestas, activo y plan |
 | 2026-10-04 | `marcos`, `controles`, `propuestas`, `activo-<id>` y `plan-<id>` (mirada 3, ronda 1) | preview del PR #4 | «Lo abri y lo apruebo» — **mirada 3 aprobada**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 4: carga de evidencia y hallazgo |
 | 2026-10-04 | `evidencia` y `hallazgo-<id>` (mirada 4, ronda 1) | preview del PR #4 | «a nivel funcional considero que está bien el diseño de la evidencia con el tema de la carga y demás pero estoy sintiendo que el diseño no sé es un poco ordinario la verdad no me parece que sea elegante que sea ordenado siento que hay como vacíos es como si fuera un documento no es como si fuera realmente una interfaz de una aplicación así que yo creo que es bueno revisarlo completamente porque bueno tú me presentaste dos opciones pero eran dos opciones apenas de la letra yo siento que realmente le falta muchísimo al diseño» — **función aprobada; diseño rechazado**: pide revisar la interfaz completa. Alcanza a lo aprobado en las miradas 1 a 3 (misma estructura) | Mirada 4-bis: tres direcciones de interfaz sobre la misma pantalla, antes de tocar nada más |
+| 2026-10-04 | `interfaz-a`, `interfaz-b`, `interfaz-c` (mirada 4-bis, ronda 1) | preview del PR #4 (no consta que las abriera) | «Si de acuerdo con tu sugerencia "A · Consola, con dos piezas de B: el recorrido de pasos para lo que tiene ciclo de vida (lotes y hallazgos) y el carril de acción a la derecha en las pantallas de detalle. " podemos cambiar a opus? o debemos seguir con Fable» — **dirección elegida: A con el recorrido y el carril de B**, citando la recomendación. Se le repreguntó si había abierto las tres páginas; respondió: «Pues uniciemos con el primer tramo y avisame cuando cambiara opus en el segundo». **No hay evidencia de mirada**: la elección descansa en la recomendación del constructor. Riesgo acotado por el cambio de plan que aprobó en esa misma respuesta: el tramo 1 son tres pantallas y abre su propia parada | Mirada 4-ter, tramo 1: sistema «consola» y tres pantallas tipo |
 
 ## Cobertura (se llena durante la etapa)
 
@@ -128,7 +150,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | `propuestas` | C2 · C7 · C15 | con datos (fuente verificada · fuente sin verificar · marcada por el filtro · cambio de versión · herramienta · sobre con prueba dudosa y veredicto por regla · texto que mezcla dos pruebas; cada una sin decidir / aprobada / rechazada / separada) · filtro por quién propone · registro de la corrida · vacío · carga · error (propuesta que no cumple su esquema) |
 | `activo-<id>` | C8 | con datos (autorizado con proveedor y política leída · autorizado sin proveedor · **sin autorización**, con la plantilla para activos propios) · vacío · carga · error (perfil sin dueño) |
 | `plan-<id>` | C9 · C10 | con datos (planeadas con prioridad y razón · excluidas por perfil, por alcance y por el operador · control sin prueba · paquete de ejecución por herramienta) · **sin autorización: no hay plan** · vacío con «Emitir el plan» · carga · error (instantánea que no coincide con su huella) |
-| `evidencia` | C11 · C14 · C15 | con datos, por vía: **archivo de herramienta** (dos lotes por confirmar: sobres con veredicto sugerido fallida / superada / no ejecutada, revisión obligatoria o en la muestra, huellas, advertencias; lote sin decidir / confirmado / a revisión individual) · **texto pegado** (campo vacío / lleno / propuesto) · **sobre manual** (formulario con obligatorios por llenar / completo / guardado) · vacío · carga · error (versión de herramienta fuera del rango probado) |
+| `evidencia` | C11 · C14 · C15 | con datos, por vía: **archivo de herramienta** (dos lotes por confirmar: sobres con veredicto sugerido fallida / superada / no ejecutada, revisión obligatoria o en la muestra, huellas, advertencias; cada sobre seleccionable con su detalle en el carril; lote sin decidir / confirmado / a revisión individual, y el recorrido lo refleja) · **texto pegado** (campo vacío / lleno / propuesto) · **sobre manual** (formulario con obligatorios por llenar / completo / guardado) · vacío · carga · error (versión de herramienta fuera del rango probado) |
 | `hallazgo-<id>` | C12 · C13 | con datos: abierto con plazo vencido · corregido con re-prueba por confirmar · aceptado con riesgo y revisión programada (o vencida) · cerrado por re-prueba; severidad por tabla de prioridad de IA o por vector CVSS 4.0; salidas posibles con lo que exige cada una · vacío · carga · error (vector incompleto) |
 | `brecha` | C16 | — |
 | `control` | C17 | — |
@@ -150,7 +172,7 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
 | Evidencia | `tests/unit/maqueta-evidencia.test.ts` | Una fallida fuera de la revisión obligatoria de su lote; un hallazgo mostrado como cerrado sin su cadena completa; una tabla de prioridad cuya casilla no es la severidad declarada |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
-| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
+| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad o dato que pisa la columna vecina, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
 
 ## Tokens de reusables consumidos
 

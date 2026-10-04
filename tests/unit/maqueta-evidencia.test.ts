@@ -65,11 +65,12 @@ describe("maqueta: hallazgos", () => {
     }
     const marcadas = [...matriz.querySelectorAll("[data-esta-celda]")];
     expect(marcadas.length, `${archivo}: casillas marcadas en la tabla`).toBe(1);
-    const severidad = [...doc.querySelectorAll(".hg-encabezado .hg-ficha > div")].find((d) => d.querySelector('dt [lang="es"]')?.textContent === "Severidad");
+    // La severidad declarada es el chip de la cabecera del hallazgo (marcado data-severidad-declarada).
+    const declarada = doc.querySelector(".hg-cabecera [data-severidad-declarada]");
+    expect(declarada, `${archivo}: la cabecera no declara la severidad`).not.toBeNull();
     for (const idioma of ["es", "en"]) {
-      expect(texto(marcadas[0].querySelector(".hg-estado"), idioma), `${archivo}: la casilla marcada no es la severidad del encabezado (${idioma})`).toBe(
-        texto(severidad?.querySelector(".hg-estado"), idioma),
-      );
+      expect(texto(declarada, idioma), `${archivo}: la cabecera declara una severidad sin texto (${idioma})`).not.toBe("");
+      expect(texto(marcadas[0].querySelector(".hg-estado"), idioma), `${archivo}: la casilla marcada no es la severidad de la cabecera (${idioma})`).toBe(texto(declarada, idioma));
     }
   });
 });

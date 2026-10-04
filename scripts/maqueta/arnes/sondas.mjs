@@ -28,8 +28,9 @@ export async function desbordes(page) {
         fuera.push(`<${el.tagName.toLowerCase()} class="${el.className}">: derecha ${Math.round(caja.right)} > ${ancho}`);
       }
     }
-    // Dentro de una celda de libro nada sobresale de su columna (aunque quepa en la ventana).
-    for (const celda of document.body.querySelectorAll(".hg-celda")) {
+    // Dentro de una celda (de libro, o de una rejilla de propiedades) nada sobresale de su columna,
+    // aunque quepa en la ventana: lo que sobresale pisa a la celda vecina.
+    for (const celda of document.body.querySelectorAll(".hg-celda, .hg-propiedades > div")) {
       const limite = celda.getBoundingClientRect().right;
       if (limite === 0) continue;
       for (const el of celda.querySelectorAll("*")) {
@@ -74,9 +75,13 @@ export async function palabrasPartidas(page) {
       if (ancho <= 2) continue; // rótulo oculto a la vista (recortado a 1 px)
       const estilo = getComputedStyle(el);
       lienzo.font = `${estilo.fontStyle} ${estilo.fontWeight} ${estilo.fontSize} ${estilo.fontFamily}`;
+      // El lienzo no sabe de espaciado entre letras ni de mayúsculas forzadas: se aplican a mano (un
+      // rótulo en versalitas mide más que su texto, y un título con las letras apretadas, menos).
+      const interletra = parseFloat(estilo.letterSpacing) || 0;
+      const transformar = estilo.textTransform === "uppercase" ? (p) => p.toUpperCase() : (p) => p;
       for (const palabra of nodo.textContent.split(/\s+/)) {
         if (palabra.length < 2 || palabra.length > 24) continue;
-        const mide = lienzo.measureText(palabra).width;
+        const mide = lienzo.measureText(transformar(palabra)).width + interletra * palabra.length;
         if (mide > ancho + 1) {
           partidas.push(`«${palabra}» (${Math.round(mide)} px) no cabe en <${bloque.tagName.toLowerCase()} class="${bloque.className}"> (${Math.round(ancho)} px)`);
           break;
@@ -159,8 +164,18 @@ export async function pasadaDeInteraccion(page) {
       const estados = page.locator('.mq-sala [data-controlador="estado"]');
       const pestanas = page.locator('[data-controlador="pestana"]');
       const enAlgunaPestana = async () => {
-        for (let v = 0; v < (await pestanas.count()) && !(await control.isVisible()); v += 1) {
-          if (await pestanas.nth(v).isVisible()) await pestanas.nth(v).click();
+        const n = await pestanas.count();
+        for (let v = 0; v < n && !(await control.isVisible()); v += 1) {
+          if (!(await pestanas.nth(v).isVisible())) continue;
+          await pestanas.nth(v).click();
+          // El panel recién abierto puede traer OTRO grupo de pestañas (los lotes, bajo la vía de
+          // archivo): se recorren las de otros grupos, nunca las hermanas (cerrarían este panel).
+          const grupo = await pestanas.nth(v).evaluateHandle((el) => el.parentElement);
+          for (let w = 0; w < n && !(await control.isVisible()); w += 1) {
+            const otra = pestanas.nth(w);
+            if (!(await otra.isVisible()) || (await otra.evaluate((el, padre) => el.parentElement === padre, grupo))) continue;
+            await otra.click();
+          }
         }
         return control.isVisible();
       };
@@ -173,8 +188,18 @@ export async function pasadaDeInteraccion(page) {
     }
     // Un botón de grupo que volvió a quedar pulsado (p. ej. «Todas» tras «Quitar filtros»): se pulsa
     // antes un hermano para que activarlo tenga algo que cambiar.
-    const hermano = control.locator('xpath=../*[@aria-pressed="false"]').first();
-    if ((await hermano.count()) > 0) await hermano.click();
+    // Solo si quedó pulsado (si no, pulsarlo ya cambia algo; y «el hermano sin pulsar» sería él mismo).
+    if ((await control.getAttribute("aria-pressed")) === "true") {
+      const hermano = control.locator('xpath=../*[@aria-pressed="false"]').first();
+      if ((await hermano.count()) > 0) await hermano.click();
+      else {
+        // Un botón de selección no tiene hermanos (cada uno vive en su fila): se pulsa antes otro del
+        // mismo controlador que esté a la vista y sin pulsar.
+        const nombre = await control.getAttribute("data-controlador");
+        const otro = page.locator(`[data-controlador="${nombre}"][aria-pressed="false"]:visible`).first();
+        if ((await otro.count()) > 0) await otro.click();
+      }
+    }
     await activar(i);
   }
 

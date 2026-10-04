@@ -387,10 +387,81 @@ dos temas y los dos anchos leídas como imagen. En las capturas de teléfono la 
 a media página (así fotografía Playwright un elemento fijo en una captura de página entera); en un
 teléfono real queda abajo.
 
+### Mirada 4-bis — veredicto (2026-10-04)
+
+El usuario eligió **la A «Consola» con dos piezas de la B** (el recorrido de pasos y el carril de acción),
+citando mi recomendación palabra por palabra. Le repregunté si había abierto las tres páginas; respondió
+con la orden de empezar el primer tramo. **No hay evidencia de mirada** y así quedó registrado en el
+README de diseño: la elección descansa en mi recomendación. Lo que acota el riesgo es el cambio de plan
+que él mismo aprobó en esa respuesta: la 4-ter se hace en dos tramos y el primero (tres pantallas) abre
+su propia parada. Pidió además que le avise cuándo cambiar de modelo para el segundo tramo.
+
+### Mirada 4-ter, tramo 1 — sistema «consola» y tres pantallas tipo (2026-10-04)
+
+**Qué se construyó**
+
+- `docs/diseno/assets/app.css`: la hoja nueva, completa y autónoma (no depende de `hg.css`). Armazón
+  (barra lateral con secciones y páginas, barra de contexto, barra fija al pie en teléfono), cabecera de
+  página, tira de cifras, panel, tabla (tarjetas bajo 860 px), fila seleccionable, herramientas de tabla,
+  carril y tarjetas, recorrido, propiedades, pestañas, selector de objeto, botones, formulario, chip,
+  sello, matriz, contraste y estados de pantalla. Sin serifa.
+- `paginaDeApp()` en `nucleo/pagina.mjs`: el armazón, con la franja de sala arriba y la matriz «Qué
+  revisar» dentro de la columna de contenido. `pagina()` (dirección anterior) queda para lo no rehecho.
+- Tres pantallas tipo: `catalogo` (lista), `hallazgo-<id>` ×4 (detalle) y `evidencia` (formulario).
+  Mismo contenido, mismos estados y mismos datos que en las miradas 2 y 4.
+- Controlador nuevo `seleccionar` (fila → detalle en el carril) y `pestana` ahora oculta los paneles de
+  SU grupo con `hidden` (permite pestañas dentro de pestañas: los lotes bajo la vía de archivo).
+- `design-system.md` 0.5.0: personalidad, tipografía, forma, las tres presentaciones de un estado,
+  componentes canon y anti-patrones de la dirección nueva.
+
+**Decisiones de diseño**
+
+- El catálogo **no** lleva inspector: su trabajo es comparar 21 filas, y la tabla a todo el ancho con
+  «qué verifica» a la vista lo hace mejor. El inspector vive donde seleccionar importa (los sobres de un
+  lote).
+- «Lo que no es noticia no lleva chip»: una prueba vigente va en línea; «por revisar» y «vencido» van en
+  chip. Así la columna de vigencia no es una pared de recuadros.
+- En la carga de evidencia, la ficha del lote bajó del carril al cuerpo: con tres tarjetas el carril
+  medía el doble que la tabla y dejaba un hueco a la izquierda (justo lo que el usuario llamó «vacíos»).
+- La barra lateral aparece desde 1100 px (no 960): con ella, entre 960 y 1100 la tabla del catálogo no
+  cabía sin partir palabras.
+
+**Gates tocados y su demo en rojo (regla 15)**
+
+| # | Gate | Qué cambió | Demo | Resultado |
+|---|---|---|---|---|
+| G10 | Sonda `desbordes` | También mira las celdas de una rejilla de propiedades (`.hg-propiedades > div`) | Salió en rojo sola: el nombre del archivo del lote pisaba la columna vecina a 1280 px y ninguna prueba lo veía (lo vi en la captura) | «`<span class="hg-dato">` se sale de su columna por 36 px» → verde al dejar partir el nombre por sus puntos |
+| G11 | e2e «en escritorio nada se sale de su columna ni se parte» | Nuevo: `desbordes` y `palabrasPartidas` también a 1280 px, por página e idioma (antes solo a 380; el arnés sí miraba a 1280, la CI no) | La misma falla de G10, que solo existe en escritorio | Rojo con el defecto, verde al corregirlo |
+| G12 | Sonda `palabrasPartidas` | Mide con el espaciado entre letras y las mayúsculas forzadas (el lienzo los ignora): daba un falso rojo de 1 px en un título con letras apretadas y **no veía** un rótulo en versalitas que no cabe | `.hg-tarjeta-titulo { width: 60px }` | «`Propiedades` (89 px) no cabe en `<h2 class="hg-tarjeta-titulo">` (60 px)» → verde al revertir (`cmp`) |
+| G13 | `maqueta-evidencia` (severidad) | La severidad declarada se lee de `[data-severidad-declarada]` en la cabecera (ya no hay ficha de encabezado) | Cabecera con `SEVERIDAD.bajo` fijo | 3 rojos: «la casilla marcada no es la severidad de la cabecera: expected 'Alto' to be 'Bajo'» → verde (`cmp`) |
+| G14 | `maqueta-fichas` | La fila del catálogo es `[data-filtrable]` (ahora un `<tr>`) | Todas las filas enlazan a `PR-IA-PINJ-001` | 4 rojos («dos filas abren la misma ficha»…) → verde (`cmp`) |
+
+Las demos G12 a G14 se restauraron comparando byte a byte las 42 páginas y los tres archivos tocados.
+
+**Arnés**
+
+- `capturar-maqueta.mjs`: si el enlace de un tramo del camino no está a la vista (vive bajo la pestaña de
+  otro lote), busca otro camino en vez de esperar 30 s y abortar.
+- `pasadaDeInteraccion`: busca un control oculto también bajo pestañas anidadas (sin pulsar las hermanas,
+  que cerrarían el panel) y sabe activar un botón de selección que nació pulsado. De paso corrigió un
+  defecto propio: «pulsar antes un hermano sin pulsar» tomaba al propio control por su hermano.
+
+**Verificación** (local): 540 unitarias en 13 archivos · 850 e2e (42 páginas; 84 son la comprobación
+nueva en escritorio, que también pasan las pantallas sin rehacer) · arnés de capturas sin fallas sobre las
+seis páginas rehechas (192 capturas: 2 temas × 2 idiomas × 380 y 1280 px × 4 estados) · capturas leídas
+como imagen: catálogo, carga de evidencia (los dos lotes, lote confirmado, formulario manual, error) y los
+hallazgos abierto, corregido y cerrado, en oscuro y claro, escritorio y teléfono · lint y typecheck
+limpios · nada bajo `src/`. Las 36 páginas no rehechas salen byte a byte iguales del generador.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
   usuario; registrado en el plan de miradas del README de diseño antes de construir.
+- **La mirada 4-ter se parte en dos tramos** (tres pantallas tipo primero, el resto después). Propuesto
+  por el constructor y aprobado por el usuario antes de construir («iniciemos con el primer tramo»).
+- **La mirada 4-bis se dio por decidida sin evidencia de mirada** (el usuario aceptó la recomendación y,
+  repreguntado, ordenó empezar). Queda registrado tal cual; el tramo 1 es la parada donde la dirección
+  se ve de verdad.
 
 - **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba
   (`prueba-<id>.html`). Es un ajuste pedido por el usuario en la mirada 2, no cambia el plan de miradas.

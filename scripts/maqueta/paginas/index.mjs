@@ -9,99 +9,99 @@ import { pagina } from "../nucleo/pagina.mjs";
 
 const PAGINAS = [
   {
+    archivo: "catalogo.html",
+    nombre: { es: "Catálogo de pruebas, con la interfaz nueva", en: "Test catalog, with the new interface" },
+    que: {
+      es: "Mirada 4-ter, primer tramo: la que toca ahora. Una lista: barra lateral, cifras, filtros y tabla densa.",
+      en: "Review 4-ter, first stretch: the current one. A list: sidebar, figures, filters and a dense table.",
+    },
+  },
+  {
+    archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]),
+    nombre: { es: "Hallazgo, con la interfaz nueva", en: "Finding, with the new interface" },
+    que: {
+      es: "Mirada 4-ter, primer tramo. Un detalle: el recorrido de cierre arriba y el carril de acción a la derecha. Cuatro hallazgos.",
+      en: "Review 4-ter, first stretch. A detail page: the closure progress on top and the action rail on the right. Four findings.",
+    },
+  },
+  {
+    archivo: "evidencia.html",
+    nombre: { es: "Carga de evidencia, con la interfaz nueva", en: "Evidence intake, with the new interface" },
+    que: {
+      es: "Mirada 4-ter, primer tramo. Un formulario: las tres vías como pestañas, el lote con su recorrido y el carril para confirmar.",
+      en: "Review 4-ter, first stretch. A form: the three routes as tabs, the batch with its progress and the rail to confirm.",
+    },
+  },
+  {
     archivo: "interfaz-a.html",
     nombre: { es: "Tres direcciones de interfaz", en: "Three interface directions" },
     que: {
-      es: "Mirada 4-bis, la que toca ahora. La misma pantalla como consola, como expediente y como tablero.",
-      en: "Review 4-bis, the current one. The same screen as a console, as a case file and as a dashboard.",
+      es: "Mirada 4-bis. La misma pantalla como consola, como expediente y como tablero. Elegida: la consola, con el recorrido y el carril del expediente.",
+      en: "Review 4-bis. The same screen as a console, as a case file and as a dashboard. Chosen: the console, with the case file's progress and rail.",
     },
   },
   {
     archivo: "direccion.html",
     nombre: { es: "Dirección", en: "Direction" },
     que: {
-      es: "Mirada 1, aprobada. La identidad sobre un corte real de la vista por control: tipografía, color, estados y la cadena de cierre.",
-      en: "Review 1, approved. The identity on a real slice of the control view: type, color, statuses and the closure chain.",
+      es: "Mirada 1, aspecto anterior. La identidad sobre un corte real de la vista por control: tipografía, color, estados y la cadena de cierre.",
+      en: "Review 1, previous look. The identity on a real slice of the control view: type, color, statuses and the closure chain.",
     },
   },
   {
     archivo: "kit.html",
     nombre: { es: "Kit de componentes", en: "Component kit" },
     que: {
-      es: "Mirada 2. Cada token y cada componente del sistema de diseño.",
-      en: "Review 2. Every token and component of the design system.",
-    },
-  },
-  {
-    archivo: "catalogo.html",
-    nombre: { es: "Catálogo de pruebas", en: "Test catalog" },
-    que: {
-      es: "Mirada 2. Las pruebas de las cuatro familias, con filtros que funcionan.",
-      en: "Review 2. Tests for the four families, with working filters.",
+      es: "Mirada 2, aspecto anterior. Cada token y cada componente del sistema de diseño.",
+      en: "Review 2, previous look. Every token and component of the design system.",
     },
   },
   {
     archivo: archivoDeFicha("PR-IA-PINJ-001"),
     nombre: { es: "Ficha de prueba", en: "Test record" },
     que: {
-      es: "Mirada 2. Qué verifica, resultado esperado, regla de veredicto, marco y controles. Cada prueba del catálogo tiene la suya.",
-      en: "Review 2. What it verifies, expected result, verdict rule, framework and controls. Every test in the catalog has its own.",
+      es: "Mirada 2, aspecto anterior. Qué verifica, resultado esperado, regla de veredicto, marco y controles. Cada prueba del catálogo tiene la suya.",
+      en: "Review 2, previous look. What it verifies, expected result, verdict rule, framework and controls. Every test in the catalog has its own.",
     },
   },
   {
     archivo: "marcos.html",
     nombre: { es: "Marcos y versiones", en: "Frameworks and versions" },
     que: {
-      es: "Mirada 3. Versión vigente de cada marco, aviso de versión nueva y mapa de equivalencias.",
-      en: "Review 3. Each framework's current version, new-version notice and equivalence map.",
+      es: "Mirada 3, aspecto anterior. Versión vigente de cada marco, aviso de versión nueva y mapa de equivalencias.",
+      en: "Review 3, previous look. Each framework's current version, new-version notice and equivalence map.",
     },
   },
   {
     archivo: "controles.html",
     nombre: { es: "Controles", en: "Controls" },
     que: {
-      es: "Mirada 3. Las áreas del Anexo A, las pruebas que dan evidencia a cada control y las que no dan a ninguno.",
-      en: "Review 3. The Annex A areas, the tests that give evidence to each control and those that give to none.",
+      es: "Mirada 3, aspecto anterior. Las áreas del Anexo A, las pruebas que dan evidencia a cada control y las que no dan a ninguno.",
+      en: "Review 3, previous look. The Annex A areas, the tests that give evidence to each control and those that give to none.",
     },
   },
   {
     archivo: "propuestas.html",
     nombre: { es: "Bandeja de propuestas", en: "Proposal inbox" },
     que: {
-      es: "Mirada 3. Lo que proponen el investigador y el extractor, para aprobar, rechazar o separar.",
-      en: "Review 3. What the researcher and the extractor propose, to approve, reject or split.",
+      es: "Mirada 3, aspecto anterior. Lo que proponen el investigador y el extractor, para aprobar, rechazar o separar.",
+      en: "Review 3, previous look. What the researcher and the extractor propose, to approve, reject or split.",
     },
   },
   {
     archivo: archivoDeActivo(ACTIVO),
     nombre: { es: "Activo", en: "Asset" },
     que: {
-      es: "Mirada 3. Dueño y proveedor, perfil, alcance autorizado y reglas de enfrentamiento. Tres activos demo.",
-      en: "Review 3. Owner and provider, profile, authorized scope and rules of engagement. Three demo assets.",
+      es: "Mirada 3, aspecto anterior. Dueño y proveedor, perfil, alcance autorizado y reglas de enfrentamiento. Tres activos demo.",
+      en: "Review 3, previous look. Owner and provider, profile, authorized scope and rules of engagement. Three demo assets.",
     },
   },
   {
     archivo: archivoDePlan(ACTIVO),
     nombre: { es: "Plan", en: "Plan" },
     que: {
-      es: "Mirada 3. Pruebas planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.",
-      en: "Review 3. Planned and excluded tests with their reasons, coverage by control and execution package.",
-    },
-  },
-  {
-    archivo: "evidencia.html",
-    nombre: { es: "Carga de evidencia", en: "Evidence intake" },
-    que: {
-      es: "Mirada 4. Las tres vías de carga y la confirmación por lote, con todas las fallas a la vista.",
-      en: "Review 4. The three intake routes and batch confirmation, with every failure in plain view.",
-    },
-  },
-  {
-    archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]),
-    nombre: { es: "Hallazgo", en: "Finding" },
-    que: {
-      es: "Mirada 4. Cadena de cierre, severidad, plazo y salidas posibles. Cuatro hallazgos, uno por momento del ciclo.",
-      en: "Review 4. Closure chain, severity, deadline and possible outcomes. Four findings, one per moment of the life cycle.",
+      es: "Mirada 3, aspecto anterior. Pruebas planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.",
+      en: "Review 3, previous look. Planned and excluded tests with their reasons, coverage by control and execution package.",
     },
   },
 ];

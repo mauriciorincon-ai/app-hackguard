@@ -164,3 +164,51 @@ body:not([data-estado="error"]) [data-si="error"] {
     align-items: baseline;
   }
 }
+
+/* ---------- Sala en las páginas con armazón de aplicación (dirección «consola») ---------- */
+
+/* Franja de sala: una sola línea sobre la aplicación, para que la pantalla se vea como aplicación. */
+.mq-franja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2) var(--e-4);
+  max-width: none;
+  margin: 0;
+  padding: var(--e-2) var(--e-4);
+  border-bottom: 1px dashed var(--linea-fuerte);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.mq-franja > * {
+  min-width: 0;
+}
+
+.mq-franja .hg-boton {
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: var(--t-menor);
+  font-weight: 500;
+}
+
+.hg-cuerpo > .mq-pie {
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--e-4) var(--e-5);
+}
+
+@media (max-width: 1099px) {
+  .mq-franja .hg-boton {
+    min-height: 40px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .mq-franja,
+  .hg-cuerpo > .mq-pie {
+    padding-left: var(--e-5);
+    padding-right: var(--e-5);
+  }
+}

@@ -93,7 +93,9 @@ async function capturar(hoja, etiqueta) {
 const enlacesDe = (pagina) =>
   [...readFileSync(join(MAQUETA, pagina), "utf8").matchAll(/<a\b[^>]*\bhref="([^"#?:/]+\.html)"/g)].map((m) => m[1]);
 
-function caminoHasta(destino) {
+// `vetados` son tramos «origen>destino» cuyo enlace existe en el HTML pero no está a la vista (vive bajo
+// una pestaña o una selección): se busca otro camino antes de dar la página por inalcanzable.
+function caminoHasta(destino, vetados = new Set()) {
   const previo = new Map([["index.html", null]]);
   const cola = ["index.html"];
   while (cola.length) {
@@ -101,7 +103,7 @@ function caminoHasta(destino) {
     if (actual === destino) break;
     if (!existsSync(join(MAQUETA, actual))) continue;
     for (const siguiente of enlacesDe(actual)) {
-      if (previo.has(siguiente)) continue;
+      if (previo.has(siguiente) || vetados.has(`${actual}>${siguiente}`)) continue;
       previo.set(siguiente, actual);
       cola.push(siguiente);
     }
@@ -116,21 +118,33 @@ async function abrir(contexto, pagina) {
   const hoja = await contexto.newPage();
   hoja.on("console", (m) => m.type() === "error" && registro.fallas.push(`${pagina}: error en consola: ${m.text()}`));
   hoja.on("pageerror", (e) => registro.fallas.push(`${pagina}: excepción: ${e.message}`));
-  const respuesta = await hoja.goto(`${base}/diseno`);
-  if (respuesta.status() !== 200) registro.fallas.push(`el índice respondió ${respuesta.status()}`);
-  if (pagina === "index.html") return hoja;
-  const camino = caminoHasta(pagina);
-  if (!camino) {
-    registro.fallas.push(`${pagina}: ningún enlace lleva a esta página desde el índice (no se llega caminando)`);
-    await hoja.goto(`${base}/diseno/${pagina}`);
-    return hoja;
+  const vetados = new Set();
+  for (;;) {
+    const respuesta = await hoja.goto(`${base}/diseno`);
+    if (respuesta.status() !== 200) registro.fallas.push(`el índice respondió ${respuesta.status()}`);
+    if (pagina === "index.html") return hoja;
+    const camino = caminoHasta(pagina, vetados);
+    if (!camino) {
+      registro.fallas.push(`${pagina}: ningún enlace visible lleva a esta página desde el índice (no se llega caminando)`);
+      await hoja.goto(`${base}/diseno/${pagina}`);
+      return hoja;
+    }
+    let llego = true;
+    let desde = "index.html";
+    for (const paso of camino) {
+      // El primer enlace VISIBLE: un enlace dentro de una frase existe dos veces (una por idioma).
+      const enlace = hoja.locator(`a[href="${paso}"]:visible`).first();
+      if ((await enlace.count()) === 0) {
+        vetados.add(`${desde}>${paso}`);
+        llego = false;
+        break;
+      }
+      await enlace.click();
+      await hoja.waitForURL(`**/diseno/${paso}`);
+      desde = paso;
+    }
+    if (llego) return hoja;
   }
-  for (const paso of camino) {
-    // El primer enlace VISIBLE: un enlace dentro de una frase existe dos veces (una por idioma).
-    await hoja.locator(`a[href="${paso}"]:visible`).first().click();
-    await hoja.waitForURL(`**/diseno/${paso}`);
-  }
-  return hoja;
 }
 
 try {

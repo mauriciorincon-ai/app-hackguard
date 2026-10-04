@@ -64,6 +64,17 @@ for (const pagina of PAGINAS) {
       expect(await palabrasPartidas(page)).toEqual([]);
     });
 
+    // En escritorio tampoco: una columna de tabla o de rejilla puede partir una palabra o pisar a su
+    // vecina aunque la ventana sea ancha (así se partían los chips de la mirada 4-bis).
+    test(`${pagina} [${idioma}]: en escritorio nada se sale de su columna ni se parte`, async ({ page }) => {
+      await page.addInitScript(([clave, valor]) => localStorage.setItem(clave, valor), [`${PREFERENCIA}idioma`, idioma]);
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.goto(`/diseno/${pagina}`);
+      await expect(page.locator("html")).toHaveAttribute("lang", idioma);
+      expect(await desbordes(page)).toEqual([]);
+      expect(await palabrasPartidas(page)).toEqual([]);
+    });
+
     for (const tema of ["oscuro", "claro"] as const) {
       test(`${pagina} [${tema} · ${idioma}]: sin violaciones de accesibilidad`, async ({ page }) => {
         await page.addInitScript(

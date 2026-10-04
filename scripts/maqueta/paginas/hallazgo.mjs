@@ -2,14 +2,16 @@
 // corrección → re-prueba → cierre), su severidad (vector CVSS 4.0 en software; tabla de prioridad de
 // acción, con el impacto primero, en IA), su plazo, su evidencia y lo que se puede hacer con él. Hay UNA
 // PÁGINA POR HALLAZGO. La ausencia de un hallazgo en un escaneo posterior nunca lo cierra.
+// Dirección «consola» (mirada 4-ter): cabecera con chips, el recorrido de cierre a todo el ancho, paneles
+// de severidad y control a la izquierda, y a la derecha el carril: qué puedes hacer y las propiedades.
 import { CONTROLES, FAMILIAS, PRUEBAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
 import { ACTIVOS, CVSS, ESCALA_IA, HALLAZGOS, LOTES, ORDEN_DE_HALLAZGOS, SOBRES, archivoDeActivo, archivoDeHallazgo } from "../datos/mundo.mjs";
 import { diasEntre, sumarDias } from "../nucleo/fecha.mjs";
 import { huellaDe, plazo } from "../nucleo/calculos.mjs";
-import { dato, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
-import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
+import { barraDeEstados, paginaDeApp } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 
 const sobreDe = (id) => SOBRES.find((s) => s.id === id);
@@ -21,15 +23,15 @@ const conteoDe = (sobre) =>
     ? { es: `${sobre.fallidas} de ${sobre.evaluadas} salidas fallaron`, en: `${sobre.fallidas} of ${sobre.evaluadas} outputs failed` }
     : { es: `0 de ${sobre.evaluadas} salidas fallaron`, en: `0 of ${sobre.evaluadas} outputs failed` });
 
-function conmutador(actual, existentes) {
+function selector(actual, existentes) {
   const items = ORDEN_DE_HALLAZGOS.map((id) => {
     const h = HALLAZGOS.find((x) => x.id === id);
     const archivo = archivoDeHallazgo(id);
-    const texto = `${dato(id)} <span class="hg-menor">${t(ESTADO_DE_HALLAZGO[h.estado].nombre)}</span>`;
-    if (!existentes.includes(archivo)) return `<li><span>${texto}</span></li>`;
-    return `<li><a href="${archivo}"${id === actual ? ' aria-current="true"' : ""}>${texto}</a></li>`;
+    const texto = `<span class="hg-opcion-titulo" data-neutro>${id}</span><span>${t(ESTADO_DE_HALLAZGO[h.estado].nombre)}</span>`;
+    if (!existentes.includes(archivo)) return `<li><span class="hg-opcion">${texto}</span></li>`;
+    return `<li><a class="hg-opcion" href="${archivo}"${id === actual ? ' aria-current="true"' : ""}>${texto}</a></li>`;
   }).join("");
-  return `<nav class="hg-conmutador" ${atributo("aria-label", { es: "Hallazgos", en: "Findings" })}><span class="hg-menor">${t({ es: "Hallazgo", en: "Finding" })}</span><ul>${items}</ul></nav>\n`;
+  return `<nav ${atributo("aria-label", { es: "Hallazgos", en: "Findings" })}><ul class="hg-selector">${items}</ul></nav>`;
 }
 
 function eslabon({ rol, simbolo, pendiente }, titulo, cuerpo = "") {
@@ -69,7 +71,8 @@ function severidadIA(h, origen) {
     })
     .join("");
 
-  return `<p class="hg-intro">${t({
+  return `<div class="hg-panel-cuerpo">
+<p class="hg-menor">${t({
     es: "Escala propia y provisional para hallazgos de IA. No es una suma: el impacto manda, y la tabla dice el nivel. Vive en datos.",
     en: "In-house, provisional scale for AI findings. It is not a sum: impact leads, and the table gives the level. It lives in data.",
   })}</p>
@@ -83,16 +86,17 @@ ${filas}
 </table>
 <ul class="hg-matriz-leyenda hg-menor">${leyenda}</ul>
 </div>
-<dl class="hg-ficha">
-${par({ es: "Impacto", en: "Impact" }, `${neutro(String(h.escala.impacto))} <span class="hg-menor">${t({ es: "de 4", en: "of 4" })}</span><p>${t(ESCALA_IA.impacto[h.escala.impacto])}</p>`)}
+</div>
+<div class="hg-panel-cuerpo">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+${par({ es: "Impacto", en: "Impact" }, `<p><strong data-neutro>${h.escala.impacto}</strong> <span class="hg-menor">${t({ es: "de 4", en: "of 4" })}</span></p><p class="hg-menor">${t(ESCALA_IA.impacto[h.escala.impacto])}</p>`)}
 ${par(
   { es: "Frecuencia observada", en: "Observed frequency" },
-  `${neutro(`${f.porCiento} %`)}<p class="hg-menor">${tHtml(
+  `<p><strong data-neutro>${f.porCiento} %</strong></p><p class="hg-menor">${tHtml(
     { es: "{f} de {k} en el sobre {s}. No es una opinión: sale de la evidencia.", en: "{f} of {k} in envelope {s}. It is not an opinion: it comes from the evidence." },
     { f: neutro(String(origen.fallidas)), k: neutro(String(origen.evaluadas)), s: dato(origen.id) },
   )}</p>`,
 )}
-${par({ es: "Nivel", en: "Level" }, estado(SEVERIDAD[nivel]))}
 ${par({ es: "Alcance", en: "Reach" }, `<p>${t(ESCALA_IA.alcance[h.escala.alcance])}</p>`)}
 ${par(
   { es: "Detectabilidad", en: "Detectability" },
@@ -101,7 +105,8 @@ ${par(
     en: "Reach and detectability do not change the level: they order findings within the same level.",
   })}</p>`,
 )}
-</dl>`;
+</dl>
+</div>`;
 }
 
 function severidadCVSS(h) {
@@ -110,25 +115,27 @@ function severidadCVSS(h) {
     .map(([clave, valor]) => {
       const m = CVSS.metricas[clave];
       const nombre = (m.valores ?? CVSS.impacto)[valor];
-      return `<li>${dato(`${clave}:${valor}`)} ${t(m.nombre)}: ${t(nombre)}</li>`;
+      return `<li>${dato(`${clave}:${valor}`)}<span>${t(m.nombre)}: ${t(nombre)}</span></li>`;
     })
     .join("");
-  return `<p class="hg-intro">${t({
+  return `<div class="hg-panel-cuerpo">
+<p class="hg-menor">${t({
     es: "Para software se usa CVSS 4.0, con el vector completo guardado y el puntaje calculado por la referencia oficial.",
     en: "Software uses CVSS 4.0, with the full vector stored and the score computed by the official reference.",
   })}</p>
-<dl class="hg-ficha">
-${par({ es: "Puntaje y nivel", en: "Score and level" }, `<span class="hg-cifra-menor" data-neutro>${h.cvss.puntaje}</span> ${estado(SEVERIDAD[h.severidad])}`)}
+<div class="hg-puntaje"><span class="hg-cifra" data-neutro>${h.cvss.puntaje}</span><span>${estado({ rol: "positivo", simbolo: "ok", nombre: { es: "Vector válido y completo", en: "Valid, complete vector" } })}</span></div>
+<dl class="hg-propiedades">
 ${par({ es: "Vector", en: "Vector" }, `<span class="hg-dato hg-vector" data-neutro>${h.cvss.vector.replaceAll("/", "/<wbr>")}</span>`)}
-${par({ es: "Métricas base", en: "Base metrics" }, `<ul class="hg-lista hg-lista-datos">${metricas}</ul>`)}
+${par({ es: "Métricas base", en: "Base metrics" }, `<ul class="hg-metricas">${metricas}</ul>`)}
 ${par(
   { es: "Cómo se calculó", en: "How it was computed" },
-  `<p>${estado({ rol: "positivo", simbolo: "ok", nombre: { es: "Vector válido y completo", en: "Valid, complete vector" } })}</p><p class="hg-menor">${t({ es: "Referencia fijada:", en: "Pinned reference:" })} <span class="hg-dato hg-vector" data-neutro>${CVSS.referencia.replace("/", "/<wbr>").replace("@", "<wbr>@")}</span></p><p class="hg-menor">${t({
+  `<p class="hg-menor">${t({ es: "Referencia fijada:", en: "Pinned reference:" })} <span class="hg-dato hg-vector" data-neutro>${CVSS.referencia.replace("/", "/<wbr>").replace("@", "<wbr>@")}</span></p><p class="hg-menor">${t({
     es: "Un vector incompleto se rechaza, no se completa solo.",
     en: "An incomplete vector is rejected, not completed automatically.",
   })}</p>`,
 )}
-</dl>`;
+</dl>
+</div>`;
 }
 
 export const hallazgo = (id) => ({ consulta, umbrales, existentes }) => {
@@ -150,7 +157,7 @@ export const hallazgo = (id) => ({ consulta, umbrales, existentes }) => {
         : { es: `vence el ${p.vence}`, en: `due on ${p.vence}` };
     plazoHtml = `<span data-fechado="plazo" data-desde="${h.apertura}" data-plazo="${p.total}" data-severidad="${h.severidad}" data-dias="${p.dias}" data-atraso="${p.atraso}" data-estado-fechado="${p.estado}">${estado(
       p.estado === "vencido" ? { rol: "falla", simbolo: "falla", nombre: { es: "Vencido", en: "Overdue" } } : { rol: "neutro", simbolo: "reloj", nombre: { es: "En plazo", en: "On time" } },
-    )} <span class="hg-menor">· ${t({ es: `plazo de ${p.total} días:`, en: `${p.total}-day deadline:` })} <span data-frase-plazo>${t(frase)}</span></span></span>`;
+    )} <span class="hg-menor">${t({ es: `Plazo de ${p.total} días:`, en: `${p.total}-day deadline:` })} <span data-frase-plazo>${t(frase)}</span></span></span>`;
   }
   let revision = "";
   let tocaRevisar = false;
@@ -162,17 +169,18 @@ export const hallazgo = (id) => ({ consulta, umbrales, existentes }) => {
       { es: "Revisión del riesgo", en: "Risk review" },
       `<span data-fechado="revision" data-desde="${h.aceptacion.fecha}" data-plazo="${h.aceptacion.revision_en_dias}" data-dias="${d}" data-estado-fechado="${tocaRevisar ? "toca_revisar" : "vigente"}">${estado(
         tocaRevisar ? { rol: "falla", simbolo: "falla", nombre: { es: "Toca revisarlo", en: "Review is due" } } : { rol: "neutro", simbolo: "reloj", nombre: { es: "Revisión programada", en: "Review scheduled" } },
-      )} <span class="hg-menor">· ${t({ es: "aceptado", en: "accepted" })} <span data-frase-dias>${t(dias(d))}</span>, ${t({ es: "se revisa el", en: "to be reviewed on" })} ${dato(sumarDias(h.aceptacion.fecha, h.aceptacion.revision_en_dias))}</span></span>`,
+      )} <span class="hg-menor">${t({ es: "Aceptado", en: "Accepted" })} <span data-frase-dias>${t(dias(d))}</span>, ${t({ es: "se revisa el", en: "to be reviewed on" })} ${dato(sumarDias(h.aceptacion.fecha, h.aceptacion.revision_en_dias))}</span></span>`,
     );
   }
 
-  const resumen = `<dl class="hg-ficha">
-${par({ es: "Estado", en: "Status" }, estado(ESTADO_DE_HALLAZGO[h.estado]))}
-${par({ es: "Severidad", en: "Severity" }, `${estado(SEVERIDAD[h.severidad])} <span class="hg-menor">· ${h.cvss ? neutro(`CVSS 4.0 · ${h.cvss.puntaje}`) : t({ es: "escala de IA", en: "AI scale" })}</span>`)}
+  const escala = h.cvss ? neutro(`CVSS 4.0 · ${h.cvss.puntaje}`) : t({ es: "escala de IA", en: "AI scale" });
+  const propiedades = `<dl class="hg-propiedades">
 ${par({ es: "Plazo", en: "Deadline" }, plazoHtml)}
 ${revision}
+${par({ es: "Abierto", en: "Opened" }, dato(h.apertura))}
 ${par({ es: "Activo", en: "Asset" }, enlace(archivoDeActivo(h.activo), t(ACTIVOS[h.activo].nombre), existentes))}
-${par({ es: "Prueba", en: "Test" }, `${enlace(archivoDeFicha(h.prueba), dato(h.prueba), existentes)} <span class="hg-menor">· ${t(FAMILIAS[prueba.familia])}</span>`)}
+${par({ es: "Prueba", en: "Test" }, `<span>${enlace(archivoDeFicha(h.prueba), t(prueba.nombre), existentes)}</span><span>${dato(h.prueba)} <span class="hg-menor">· ${t(FAMILIAS[prueba.familia])}</span></span>`)}
+${par({ es: "Severidad", en: "Severity" }, `<span>${estado(SEVERIDAD[h.severidad])} <span class="hg-menor">· ${escala}</span></span>`)}
 </dl>`;
 
   // ---- Avisos bajo el encabezado: dicen el umbral y qué hacer; la cifra que envejece está en la ficha.
@@ -207,7 +215,7 @@ ${par({ es: "Prueba", en: "Test" }, `${enlace(archivoDeFicha(h.prueba), dato(h.p
   const abierto = eslabon(
     { rol: "falla", simbolo: "falla" },
     { es: "Hallazgo abierto", en: "Finding opened" },
-    `<p>${dato(h.apertura)}</p><p class="hg-menor">${t(conteoDe(origen))}</p><p>${dato(origen.id)} ${huella(huellaDe(origen))}</p><p>${firma(origen.confirmado)}</p>`,
+    `<p>${dato(h.apertura)}</p><p class="hg-menor">${t(conteoDe(origen))}</p><p>${dato(origen.id)}</p><p>${huella(huellaDe(origen))}</p><p>${firma(origen.confirmado)}</p>`,
   );
   let segundo;
   let tercero;
@@ -231,7 +239,7 @@ ${par({ es: "Prueba", en: "Test" }, `${enlace(archivoDeFicha(h.prueba), dato(h.p
           `<p>${dato(reprueba.fecha)}</p><p class="hg-menor">${t(conteoDe(reprueba))}</p><p class="hg-menor">${t({
             es: `Misma configuración, k = ${reprueba.evaluadas} (el original usó ${kOriginal}).`,
             en: `Same configuration, k = ${reprueba.evaluadas} (the original used ${kOriginal}).`,
-          })}</p><p>${dato(reprueba.id)} ${huella(huellaDe(reprueba))}</p><p>${firma(reprueba.confirmado)}</p>`,
+          })}</p><p>${dato(reprueba.id)}</p><p>${huella(huellaDe(reprueba))}</p><p>${firma(reprueba.confirmado)}</p>`,
         )
       : porConfirmar
         ? eslabon(
@@ -259,12 +267,12 @@ ${par({ es: "Prueba", en: "Test" }, `${enlace(archivoDeFicha(h.prueba), dato(h.p
   // ---- Qué se puede hacer, según el estado. Cada salida dice lo que exige.
   const cerrado = h.estado === "cerrado";
   const acciones = cerrado
-    ? `<p>${t({
+    ? `<p class="hg-menor">${t({
         es: "Nada: la evidencia confirmada es inmutable. Si una re-prueba posterior vuelve a fallar, el hallazgo se reabre y queda marcado como reabierto.",
         en: "Nothing: confirmed evidence is immutable. If a later retest fails again, the finding is reopened and flagged as reopened.",
       })}</p>`
-    : `<div class="hg-propuesta-decision" data-propuesta="${h.id}" data-decision="">
-<div class="hg-grupo" role="group" ${atributo("aria-label", { es: `Qué hacer con ${h.id}`, en: `What to do with ${h.id}` })}>
+    : `<div class="hg-pila" data-propuesta="${h.id}" data-decision="">
+<div class="hg-acciones" role="group" ${atributo("aria-label", { es: `Qué hacer con ${h.id}`, en: `What to do with ${h.id}` })}>
 ${[
   h.correccion || h.aceptacion ? null : ["corregir", { es: "Registrar la corrección", en: "Record the fix" }],
   h.aceptacion ? ["reabrir", { es: "Reabrir", en: "Reopen" }] : ["aceptar", { es: "Aceptar el riesgo", en: "Accept the risk" }],
@@ -272,27 +280,27 @@ ${[
   ["no_reproducible", { es: "No se reproduce", en: "Cannot reproduce" }],
 ]
   .filter(Boolean)
-  .map(([valor, nombre]) => `<button type="button" class="hg-boton" data-controlador="decidir" data-valor="${valor}" aria-pressed="false">${t(nombre)}</button>`)
+  .map(([valor, nombre]) => `<button type="button" class="hg-boton${valor === "corregir" ? " hg-boton-primario" : ""}" data-controlador="decidir" data-valor="${valor}" aria-pressed="false">${t(nombre)}</button>`)
   .join("\n")}
 </div>
 <p class="hg-menor" data-si-decision="">${t({ es: "Elige una salida para ver qué exige.", en: "Pick an outcome to see what it requires." })}</p>
-<p data-si-decision="corregir" hidden>${t({
+<p class="hg-consecuencia" data-si-decision="corregir" hidden>${t({
         es: "Pide qué se hizo y cuándo. El hallazgo pasa a «corregido», pero no se cierra: falta la re-prueba, con la misma configuración.",
         en: "It asks what was done and when. The finding moves to “fixed”, but it does not close: the retest is still needed, with the same configuration.",
       })}</p>
-<p data-si-decision="aceptar" hidden>${t({
+<p class="hg-consecuencia" data-si-decision="aceptar" hidden>${t({
         es: "Exige una justificación y una fecha de revisión. No lo cierra: sigue contando como falla del control hasta que se corrija.",
         en: "It requires a justification and a review date. It does not close it: it keeps counting as a control failure until it is fixed.",
       })}</p>
-<p data-si-decision="reabrir" hidden>${t({
+<p class="hg-consecuencia" data-si-decision="reabrir" hidden>${t({
         es: "Vuelve a «abierto» y su plazo corre otra vez desde la fecha de apertura original.",
         en: "It goes back to “open” and its deadline runs again from the original opening date.",
       })}</p>
-<p data-si-decision="eliminar" hidden>${t({
+<p class="hg-consecuencia" data-si-decision="eliminar" hidden>${t({
         es: "Solo si el componente o el activo ya no existe. Exige justificación, y en la brecha se muestra aparte de los cierres por re-prueba.",
         en: "Only if the component or the asset no longer exists. It requires a justification, and the gap view shows it apart from closures by retest.",
       })}</p>
-<p data-si-decision="no_reproducible" hidden>${t(
+<p class="hg-consecuencia" data-si-decision="no_reproducible" hidden>${t(
         kOriginal
           ? {
               es: "Exige justificación y los intentos registrados que la frecuencia original pide; dos intentos no bastan en una prueba que varía entre corridas.",
@@ -302,24 +310,30 @@ ${[
       )}</p>
 </div>`;
 
-  const contenido = `<div data-si="datos" data-hallazgo="${id}" data-estado-hallazgo="${h.estado}">
-<div class="hg-encabezado">
-<div>
-<p>${dato(h.id)}</p>
-<h1>${t(h.titulo)}</h1>
-<p class="hg-entrada">${t(h.descripcion)}</p>
-</div>
-${resumen}
-</div>
-${avisos.length ? `<div class="hg-avisos">${avisos.join("\n")}</div>` : ""}
+  const control = ficha.controles.length
+    ? ficha.controles.map((c) => `<div class="hg-junto"><p>${dato(c)}</p><p><strong>${t(CONTROLES[c])}</strong></p></div>`).join("")
+    : `<div class="hg-junto"><p>${chip({ rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } })}</p><p class="hg-menor">${t({
+        es: "La prueba todavía no da evidencia a ningún control: el hallazgo cuenta para el activo, pero no para la vista por control.",
+        en: "The test does not yet give evidence to any control: the finding counts for the asset, but not for the control view.",
+      })}</p></div>`;
 
-<section class="hg-seccion" aria-labelledby="cadena">
-<h2 id="cadena">${t({ es: "Cadena de cierre", en: "Closure chain" })}</h2>
-<p class="hg-intro">${t({
-    es: "Un hallazgo solo se cierra con una re-prueba superada y confirmada. Que no aparezca en un escaneo posterior no lo cierra.",
-    en: "A finding only closes with a passed, confirmed retest. Not showing up in a later scan does not close it.",
-  })}</p>
-<ol class="hg-cadena">
+  const contenido = `<div class="hg-pila" data-si="datos" data-hallazgo="${id}" data-estado-hallazgo="${h.estado}">
+${selector(id, existentes)}
+<div class="hg-cabecera">
+<div>
+<p class="hg-cabecera-linea">${dato(h.id)}${chip(ESTADO_DE_HALLAZGO[h.estado])}<span data-severidad-declarada>${chip(SEVERIDAD[h.severidad])}</span><span class="hg-menor">${escala}</span></p>
+<h1>${t(h.titulo)}</h1>
+<p class="hg-bajada">${t(h.descripcion)}</p>
+</div>
+</div>
+${avisos.join("\n")}
+
+<section class="hg-panel" aria-labelledby="cadena">
+<div class="hg-panel-cab"><h2 id="cadena">${t({ es: "Cadena de cierre", en: "Closure chain" })}</h2><p class="hg-menor">${t({
+    es: "Solo se cierra con una re-prueba superada y confirmada. Que no aparezca en un escaneo posterior no lo cierra.",
+    en: "It only closes with a passed, confirmed retest. Not showing up in a later scan does not close it.",
+  })}</p></div>
+<ol class="hg-cadena hg-cadena-horizontal">
 ${abierto}
 ${segundo}
 ${tercero}
@@ -327,98 +341,106 @@ ${cuarto}
 </ol>
 </section>
 
-<section class="hg-seccion" aria-labelledby="severidad">
-<h2 id="severidad">${t({ es: "Severidad", en: "Severity" })}</h2>
+<div class="hg-trabajo">
+<div class="hg-pila">
+<section class="hg-panel" aria-labelledby="severidad">
+<div class="hg-panel-cab"><h2 id="severidad">${t({ es: "Severidad", en: "Severity" })}</h2>${chip(SEVERIDAD[h.severidad])}</div>
 ${h.cvss ? severidadCVSS(h) : severidadIA(h, origen)}
 </section>
 
-<section class="hg-seccion" aria-labelledby="control">
-<h2 id="control">${t({ es: "Qué control falla", en: "Which control fails" })}</h2>
-<p class="hg-intro">${t({
-    es: "Un hallazgo no es una vulnerabilidad suelta: es evidencia de que un control no está funcionando.",
-    en: "A finding is not a stray vulnerability: it is evidence that a control is not working.",
-  })}</p>
-<dl class="hg-ficha">
-${
-  ficha.controles.length
-    ? ficha.controles.map((c) => par({ es: "Control", en: "Control" }, `${dato(c)}<p>${t(CONTROLES[c])}</p>`)).join("\n")
-    : par(
-        { es: "Control", en: "Control" },
-        `${estado({ rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } })}<p class="hg-menor">${t({
-          es: "La prueba todavía no da evidencia a ningún control: el hallazgo cuenta para el activo, pero no para la vista por control.",
-          en: "The test does not yet give evidence to any control: the finding counts for the asset, but not for the control view.",
-        })}</p>`,
-      )
-}
-${par({ es: "Lo que se esperaba", en: "What was expected" }, `<p>${t(ficha.resultado_esperado)}</p>`)}
-${par({ es: "Lo que se obtuvo", en: "What was obtained" }, `${estado(VEREDICTO[origen.veredicto])}<p>${t(conteoDe(origen))}</p>`)}
-</dl>
+<section class="hg-panel" aria-labelledby="control">
+<div class="hg-panel-cab"><h2 id="control">${t({ es: "Qué control falla", en: "Which control fails" })}</h2><p class="hg-menor">${t({
+    es: "Un hallazgo es evidencia de que un control no está funcionando.",
+    en: "A finding is evidence that a control is not working.",
+  })}</p></div>
+<div class="hg-panel-cuerpo">
+${control}
+<div class="hg-contraste">
+<div><p class="hg-rotulo">${t({ es: "Lo que se esperaba", en: "What was expected" })}</p><p>${t(ficha.resultado_esperado)}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Lo que se obtuvo", en: "What was obtained" })}</p><p>${chip(VEREDICTO[origen.veredicto])}</p><p>${t(conteoDe(origen))}</p></div>
+</div>
+</div>
 </section>
+</div>
 
-<section class="hg-seccion" aria-labelledby="acciones">
-<h2 id="acciones">${t({ es: "Qué puedes hacer", en: "What you can do" })}</h2>
+<aside class="hg-carril" ${atributo("aria-label", { es: `Acciones y propiedades de ${h.id}`, en: `Actions and properties of ${h.id}` })}>
+<section class="hg-tarjeta hg-tarjeta-accion" aria-labelledby="acciones">
+<h2 class="hg-tarjeta-titulo" id="acciones">${t({ es: "Qué puedes hacer", en: "What you can do" })}</h2>
 ${acciones}
 </section>
+<section class="hg-tarjeta" aria-labelledby="propiedades">
+<h2 class="hg-tarjeta-titulo" id="propiedades">${t({ es: "Propiedades", en: "Properties" })}</h2>
+${propiedades}
+</section>
+</aside>
+</div>
 </div>
 
-<div class="hg-aviso" data-si="vacio">
-<h2>${t({ es: "No hay hallazgos", en: "No findings" })}</h2>
-<p>${t({
+${aviso(
+  "vacio",
+  VACIO,
+  { es: "No hay hallazgos", en: "No findings" },
+  `<p>${t({
     es: "Ningún sobre confirmado tiene veredicto «fallida» o «parcial». Eso no dice que todo esté bien: dice que nada falló entre lo que se probó. Mira la brecha para ver lo que falta por probar.",
     en: "No confirmed envelope has a “failed” or “partial” verdict. That does not say everything is fine: it says nothing failed among what was tested. Check the gap view for what is still untested.",
-  })}</p>
-</div>
-
-<div class="hg-aviso" data-si="carga">
-<h2>${t({ es: "Abriendo el hallazgo", en: "Opening the finding" })}</h2>
-<div class="hg-esqueleto" aria-hidden="true"><span></span><span></span><span></span></div>
-</div>
-
-<div class="hg-aviso" data-si="error">
-<h2>${t({ es: "El hallazgo no se pudo abrir", en: "The finding could not be opened" })}</h2>
-${sello(
-  { rol: "falla", simbolo: "falla", nombre: { es: "El vector de severidad está incompleto", en: "The severity vector is incomplete" } },
-  `<p>${tHtml(
-    {
-      es: "Al vector le falta la métrica {m}. Un vector incompleto no se completa solo ni se puntúa: corrígelo en el archivo del hallazgo.",
-      en: "The vector is missing metric {m}. An incomplete vector is neither completed automatically nor scored: fix it in the finding's file.",
-    },
-    { m: dato("SA") },
-  )}</p>`,
+  })}</p>`,
 )}
-</div>`;
 
-  return pagina({
+${aviso("carga", CARGA, { es: "Abriendo el hallazgo", en: "Opening the finding" }, ESQUELETO)}
+
+${aviso(
+  "error",
+  ERROR,
+  { es: "El hallazgo no se pudo abrir", en: "The finding could not be opened" },
+  sello(
+    { rol: "falla", simbolo: "falla", nombre: { es: "El vector de severidad está incompleto", en: "The severity vector is incomplete" } },
+    `<p>${tHtml(
+      {
+        es: "Al vector le falta la métrica {m}. Un vector incompleto no se completa solo ni se puntúa: corrígelo en el archivo del hallazgo.",
+        en: "The vector is missing metric {m}. An incomplete vector is neither completed automatically nor scored: fix it in the finding's file.",
+      },
+      { m: dato("SA") },
+    )}</p>`,
+  ),
+)}`;
+
+  return paginaDeApp({
     titulo: { es: `HackGuard · ${h.id}`, en: `HackGuard · ${h.id}` },
     seccion: { id: "evidencia", archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]) },
+    migas: [t({ es: "Evidencia", en: "Evidence" }), t({ es: "Hallazgos", en: "Findings" }), dato(h.id)],
+    consulta,
     existentes,
-    antes: conmutador(id, existentes),
     sala: {
       nota: {
-        es: "Mirada 4. Un hallazgo. Hay cuatro, uno por cada momento del ciclo; la escala de IA es ilustrativa y provisional.",
-        en: "Review 4. A finding. There are four, one for each moment of the life cycle; the AI scale is illustrative and provisional.",
+        es: "Mirada 4-ter, primer tramo: la interfaz nueva sobre un hallazgo. Hay cuatro, uno por cada momento del ciclo; la escala de IA es ilustrativa y provisional.",
+        en: "Review 4-ter, first stretch: the new interface on a finding. There are four, one for each moment of the life cycle; the AI scale is illustrative and provisional.",
       },
       grupos: [barraDeEstados()],
     },
     contenido,
     revisar: [
       {
-        donde: { es: "Fila «Hallazgo» de arriba", en: "The “Finding” row at the top" },
-        hacer: { es: "Abre los cuatro hallazgos", en: "Open all four findings" },
-        ver: { es: "Abierto y vencido, corregido, aceptado con riesgo y cerrado: cada uno se reconoce por su estado y su cadena", en: "Open and overdue, fixed, accepted with risk and closed: each is recognized by its status and its chain" },
+        donde: { es: "Toda la pantalla", en: "The whole screen" },
+        hacer: { es: "Mírala unos segundos sin leer", en: "Look at it for a few seconds without reading" },
+        ver: { es: "Se lee de arriba abajo: qué es, en qué paso va, y a la derecha qué puedes hacer", en: "It reads top to bottom: what it is, which step it is at, and on the right what you can do" },
       },
       {
-        donde: { es: "1. Cadena de cierre", en: "1. Closure chain" },
+        donde: { es: "Selector de arriba", en: "The selector at the top" },
+        hacer: { es: "Abre los cuatro hallazgos", en: "Open all four findings" },
+        ver: { es: "Abierto y vencido, corregido, aceptado con riesgo y cerrado: cada uno se reconoce por su estado y su recorrido", en: "Open and overdue, fixed, accepted with risk and closed: each is recognized by its status and its progress" },
+      },
+      {
+        donde: { es: "Cadena de cierre", en: "Closure chain" },
         hacer: { es: "Compárala entre el abierto y el cerrado", en: "Compare it between the open one and the closed one" },
         ver: { es: "Lo que falta se ve punteado; lo hecho lleva fecha, sobre y firma", en: "What is missing shows dotted; what is done carries a date, an envelope and a signature" },
       },
       {
-        donde: { es: "2. Severidad", en: "2. Severity" },
+        donde: { es: "Severidad", en: "Severity" },
         hacer: { es: "Mira la tabla en un hallazgo de IA y el vector en el de software", en: "Look at the table on an AI finding and the vector on the software one" },
         ver: { es: "En la tabla se ve en qué casilla cae y por qué; el vector se lee métrica por métrica", en: "The table shows which cell it lands in and why; the vector reads metric by metric" },
       },
       {
-        donde: { es: "4. Qué puedes hacer", en: "4. What you can do" },
+        donde: { es: "Carril de la derecha", en: "Right-hand rail" },
         hacer: { es: "Pulsa cada salida", en: "Press each outcome" },
         ver: { es: "Cada una dice qué exige; ninguna cierra el hallazgo sin justificación o sin re-prueba", en: "Each one says what it requires; none closes the finding without a justification or a retest" },
       },

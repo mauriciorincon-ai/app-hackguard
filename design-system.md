@@ -1,30 +1,41 @@
 ---
-version: 0.2.0
-estado: dirección «acta» elegida en la mirada 1 · sistema completo propuesto en la mirada 2 · se sella en G-Diseño
+version: 0.5.0
+estado: dirección «consola» elegida en la mirada 4-bis · en aplicación (mirada 4-ter, primer tramo) · se sella en G-Diseño
 ---
 
 # HackGuard — sistema de diseño
 
-Fuente de verdad visual de la app. La maqueta de `docs/diseno/` lo demuestra (`kit.html` dibuja cada
-pieza); el producto lo obedece. Se extiende por ADR, nunca se contradice en silencio.
+Fuente de verdad visual de la app. La maqueta de `docs/diseno/` lo demuestra; el producto lo obedece. Se
+extiende por ADR, nunca se contradice en silencio.
+
+> **En transición (mirada 4-ter).** La dirección «acta» de la mirada 1 (un documento: una columna,
+> secciones numeradas, serifa y regla doble) fue rechazada en la mirada 4: no era la interfaz de una
+> aplicación. Este documento describe la dirección que la reemplaza. Su hoja es
+> `docs/diseno/assets/app.css`; `assets/hg.css` es la hoja anterior y solo la cargan las pantallas aún
+> sin rehacer. Al terminar la mirada 4-ter queda una sola hoja y este aviso se retira.
 
 ## 1. Personalidad
 
-**Un acta de evidencia: papel, tinta y firma.**
+**Una consola de evidencia: se trabaja en ella, no se lee como un informe.**
 
-- Es: **sobrio, forense, legible**.
+- Es: **sobria, densa, ordenada**.
 - Jamás será: **estética «hacker»** (verde terminal, calaveras, neón), **tablero de alarmas**
-  (todo rojo, todo urgente), **gris corporativo** (plantilla de cumplimiento sin carácter).
+  (todo rojo, todo urgente), **documento** (una columna de texto con secciones), **gris corporativo**
+  (plantilla de cumplimiento sin carácter).
 
-Cuatro ideas sostienen todo lo demás:
+Cinco ideas sostienen todo lo demás:
 
-1. **Se lee como un acta.** Títulos con serifa, secciones numeradas y una regla doble que abre cada
-   libro. La página es un documento que alguien podría imprimir y firmar.
-2. **Filas de libro mayor antes que tarjetas.** La evidencia va en renglones con líneas finas entre
-   asientos, y el identificador en su propia columna, como un folio.
-3. **La tinta azul es la mano humana.** El único acento de la app se reserva a lo que una persona
-   confirma o acciona: firmas, enlaces, foco, selección. La IA propone en gris; lo confirmado va en azul.
-4. **Forma antes que color.** Cada estado se reconoce por su símbolo y su texto. El color acompaña.
+1. **Es una aplicación.** Navegación fija a la izquierda, barra de contexto arriba y el contenido en
+   paneles con borde. La pantalla ocupa el ancho; no hay columna centrada ni media pantalla vacía.
+2. **Tabla densa antes que lista de fichas.** Lo que se repite va en filas de tabla; lo que se decide
+   sobre una fila, a su derecha.
+3. **A la derecha se actúa.** En toda pantalla de detalle hay un carril con lo que una persona puede
+   hacer y lo que falta para hacerlo. La acción no se busca al final de la página.
+4. **Lo que tiene ciclo de vida muestra su recorrido.** Un lote y un hallazgo dicen en qué paso van, qué
+   ya se hizo y qué falta, antes que cualquier otro dato.
+5. **La tinta azul es la mano humana, y la forma va antes que el color.** El único acento se reserva a
+   lo que una persona firma, elige o acciona; la IA propone en gris. Cada estado se reconoce por su
+   símbolo y su texto; el color acompaña.
 
 ## 2. Color
 
@@ -32,37 +43,38 @@ Los tokens **se generan**: la fuente es `scripts/paleta/tokens.mjs` (OKLCH) y `p
 `docs/diseno/assets/tokens.css` y `tokens.json`. `tests/unit/paleta.test.ts` mide contraste y separación
 bajo daltonismo; `tests/unit/design-system.test.ts` exige que esta tabla diga lo mismo que los tokens.
 
-Neutros cálidos (papel en claro, grafito en oscuro), un acento y cuatro papeles de estado. El tema por
+Neutros cálidos (grafito en oscuro, papel en claro), un acento y cuatro papeles de estado. El tema por
 defecto es el oscuro; el claro se diseña y se mira con el mismo cuidado.
 
 | Token | Oscuro | Claro | Uso |
 |---|---|---|---|
-| `--fondo` | `#12100e` | `#f6f3eb` | Fondo de la página |
-| `--superficie` | `#1b1916` | `#fefcf9` | Superficie elevada (campos, menús) |
-| `--superficie-2` | `#25221f` | `#ede9e0` | Superficie hundida, hover, esqueletos |
+| `--fondo` | `#12100e` | `#f6f3eb` | Fondo de la aplicación |
+| `--superficie` | `#1b1916` | `#fefcf9` | Paneles, tarjetas y barra lateral |
+| `--superficie-2` | `#25221f` | `#ede9e0` | Cabecera de tabla, fila seleccionada, hover, esqueletos |
 | `--linea` | `#3a3833` | `#d4d1c8` | Separador entre filas — **vetada como texto** |
 | `--linea-fuerte` | `#78746e` | `#7e7a71` | Borde de controles y reglas de cabecera — **vetada como texto** |
-| `--tinta` | `#ece9e4` | `#1f1c18` | Texto principal y reglas gruesas |
+| `--tinta` | `#ece9e4` | `#1f1c18` | Texto principal |
 | `--tinta-2` | `#bbb7af` | `#544f48` | Texto secundario, rótulos, datos |
 | `--acento` | `#89b1fa` | `#1b419f` | La tinta azul: enlaces, foco, firma de una persona |
-| `--acento-tinte` | `#1c2a43` | `#dae7fe` | Fondo de lo firmado o seleccionado |
+| `--acento-tinte` | `#1c2a43` | `#dae7fe` | Fondo de lo firmado, elegido o seleccionado |
 | `--positivo` | `#5acdc4` | `#017273` | Marca y borde de lo que está bien |
-| `--positivo-tinte` | `#0b2e2b` | `#c9efeb` | Fondo del sello positivo |
+| `--positivo-tinte` | `#0b2e2b` | `#c9efeb` | Fondo del chip y del sello positivos |
 | `--atencion` | `#efc558` | `#a77b0f` | Marca y borde de lo que pide atención |
-| `--atencion-tinte` | `#352a0e` | `#f9eecd` | Fondo del sello de atención |
+| `--atencion-tinte` | `#352a0e` | `#f9eecd` | Fondo del chip y del sello de atención |
 | `--falla` | `#f7755a` | `#a9170a` | Marca y borde de lo que falló o venció |
-| `--falla-tinte` | `#431e16` | `#ffe0da` | Fondo del sello de falla |
+| `--falla-tinte` | `#431e16` | `#ffe0da` | Fondo del chip y del sello de falla |
 | `--neutro` | `#a29e96` | `#848078` | Marca de lo ausente o no aplicable |
-| `--neutro-tinte` | `#25221f` | `#ede9e0` | Fondo del sello neutro |
+| `--neutro-tinte` | `#25221f` | `#ede9e0` | Fondo del chip y del sello neutros |
 
 **Reglas de color**
 
-- **El texto va siempre en tinta** (`--tinta`, `--tinta-2`), nunca en el color de un estado ni sobre un
-  relleno saturado. Únicas excepciones: la firma y los enlaces, en `--acento`.
+- **El texto va siempre en tinta** (`--tinta`, `--tinta-2`), nunca en el color de un estado. Excepciones:
+  la firma y los enlaces, en `--acento`; y el botón primario, que es el único relleno de acento y lleva
+  el texto en `--fondo`.
 - **Tintas vetadas como texto:** `--linea` y `--linea-fuerte`. Son para separar y bordear. El primer
   sprint con UI añade el barrido que lo hace fallar en `pnpm lint`.
-- **El acento se gasta con avaricia.** Si algo es azul y no es una firma, un enlace, el foco o la opción
-  elegida, sobra.
+- **El acento se gasta con avaricia.** Si algo es azul y no es una firma, un enlace, el foco, la acción
+  principal o lo que una persona eligió (página abierta, pestaña, fila, filtro, campo lleno), sobra.
 - Umbrales medidos en ambos temas: tinta ≥ 7:1 sobre toda superficie y todo tinte; tinta secundaria y
   acento ≥ 4,5:1; marcas y bordes de control ≥ 3:1; los cinco papeles separados entre sí en visión normal
   (ΔE OKLab ≥ 0,10) y bajo protanopía, deuteranopía y tritanopía (≥ 0,05).
@@ -71,26 +83,35 @@ defecto es el oscuro; el claro se diseña y se mira con el mismo cuidado.
 
 | Papel | Familia | Uso |
 |---|---|---|
-| Título | **Source Serif 4** (variable), peso 600 | Títulos de página y de sección, cifras grandes, texto destacado |
-| Texto | **Atkinson Hyperlegible Next** (variable) | Todo lo demás que se lee |
+| Texto y títulos | **Atkinson Hyperlegible Next** (variable) | Todo lo que se lee. Títulos en peso 700 |
 | Dato | **Atkinson Hyperlegible Mono** (variable) | Identificadores, fechas, huellas, selectores, versiones |
 
-Las tres son OFL y viven en el repo (`docs/diseno/assets/fuentes/`, subconjunto latino). Atkinson
+Las dos son OFL y viven en el repo (`docs/diseno/assets/fuentes/`, subconjunto latino). Atkinson
 distingue cada carácter del vecino (0/O, 1/l/I), que es lo que una huella o un identificador necesitan.
+La serifa de la dirección anterior (Source Serif 4) se retira con la hoja anterior.
 
-- **Mínimo de lectura: 15 px.** Escala: 15 · 16 · 18 · 24 · 32 (40 en escritorio).
+- **Escala:** 12 (rótulos) · 13 (datos y texto secundario) · **14 (texto de interfaz)** · 16 (título de
+  panel destacado) · 22 (título de página y cifras).
+- **Rótulos** de tarjeta, de columna y de propiedad: 12 px, peso 600, en `--tinta-2`; los de tarjeta y
+  de columna, en versalitas con espaciado.
 - Cifras siempre tabulares. Fechas, identificadores y huellas no se parten por dentro.
+- **Ninguna palabra se parte por la mitad**: si no cabe, cambia la disposición (la tabla pasa a
+  tarjetas, la rejilla pierde una columna).
 - **Solo caracteres del subconjunto latino.** Flechas, vistos y símbolos se dibujan como trazos SVG
   (`tests/unit/maqueta-cobertura-de-fuente.test.ts`).
 
 ## 4. Espacio y forma
 
-- Espaciado en pasos de 4: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 72.
-- **Esquinas rectas** (radio de 1 px). Sin sombras: la profundidad la dan las reglas y las superficies.
-- **Regla doble** en tinta para abrir un libro, una ficha o una línea de cifras; línea de 1 px entre filas.
-- Las secciones de una página se **numeran** (1., 2., 3.).
-- Ancho máximo de página: 1120 px. A 380 px nada se desplaza en horizontal y nada se sale de su columna.
-- Objetivo táctil mínimo: 44 px.
+- Espaciado en pasos de 4: 4 · 8 · 12 · 16 · 24 · 32 · 48.
+- **Radio de 6 px** en paneles, tarjetas, botones y campos; 4 px en chips; píldora solo en los filtros y
+  las cuentas. Sin sombras: la profundidad la dan el borde de 1 px y las dos superficies.
+- **Barra lateral de 224 px** y **carril de acción de 304 px**; el contenido ocupa el resto, sin ancho
+  máximo.
+- Tres anchos: bajo 860 px las tablas pasan a tarjetas; bajo 1100 px la navegación baja a una barra fija
+  al pie y las páginas de la sección van como pestañas; desde 1240 px el carril va a la derecha (antes,
+  debajo del contenido).
+- A 380 px nada se desplaza en horizontal y nada se sale de su columna; en escritorio tampoco.
+- Objetivo táctil: 36 px con ratón, 44 px bajo 1100 px.
 
 ## 5. Estados: símbolo + texto + color
 
@@ -99,62 +120,61 @@ Una forma por papel, para que se aprenda sin color:
 | Papel | Forma | Token |
 |---|---|---|
 | Bien | Círculo relleno con visto | `--positivo` |
-| Atención | Triángulo con admiración; reloj para lo antiguo; medio círculo para lo parcial | `--atencion` |
+| Atención | Triángulo con admiración; reloj para lo que espera; medio círculo para lo parcial | `--atencion` |
 | Falla | Cuadrado relleno con aspa | `--falla` |
 | Ausente | Círculo punteado; círculo con raya para «no aplica» | `--neutro` |
 | Mano humana | Trazo de firma | `--acento` |
 | Severidad | Cuatro barras ascendentes, rellenas según el nivel | el papel del nivel |
 
-El vocabulario completo (veredicto, vigencia, estado de control, severidad, confirmación) es **dato**:
-vive en `scripts/maqueta/nucleo/estados.mjs` y una pantalla nunca decide cómo se ve un estado.
+El vocabulario completo (veredicto, vigencia, estado de control, severidad, confirmación, ciclo de un
+activo y de un hallazgo) es **dato**: vive en `scripts/maqueta/nucleo/estados.mjs` y una pantalla nunca
+decide cómo se ve un estado.
 
-Dos presentaciones:
+Tres presentaciones, de menos a más peso:
 
-- **Estado en línea:** marca + texto en tinta. Para filas.
-- **Sello:** tinte de fondo + borde sólido + barra lateral + marca + texto. Para el estado que resume
-  un objeto entero (un control, un cierre, un error de carga). Uno por pantalla, como mucho dos.
+- **Estado en línea:** marca + texto en tinta. Para lo que no es noticia (una prueba vigente), para las
+  casillas de una matriz y para las cifras.
+- **Chip:** marca + texto sobre el tinte del papel, con su borde. Para el estado que decide algo en una
+  fila o en una cabecera: un veredicto, el estado de un hallazgo, una vigencia que ya no es vigente.
+- **Sello:** franja con tinte, borde, marca, título y qué hacer. Para lo que el lector debe saber antes
+  de seguir (plazo vencido, error de carga, advertencia de un lote). Uno por pantalla, como mucho dos.
 
-Lo que no es noticia no lleva marca: una evidencia reciente dice solo su fecha; la marca aparece cuando
-envejece. Una deuda («sin control asignado») es atención, no falla.
+Lo que no es noticia no lleva chip. Una deuda («sin control asignado») es atención, no falla.
 
 ## 6. Componentes canon
 
-`kit.html` dibuja cada uno con la misma hoja (`assets/hg.css`) que usan las pantallas.
-
 | Componente | Qué es |
 |---|---|
-| Cabecera y navegación | Marca, cinco secciones (Tablero · Catálogo · Activos · Evidencia · Brecha) y los botones de tema e idioma. La sección actual lleva subrayado azul y negrita |
-| Subnavegación | Las páginas de la sección, sobre una línea fina |
-| Encabezado de página | Identificador en dato, título, frase de entrada; a la derecha, el sello o la ficha que la resume |
-| Cifras | Línea de conteos con su estado bajo regla doble; no son tarjetas |
-| Libro | Filas con cabecera, columna de folio y celdas. En teléfono, folio y descripción a todo el ancho y el resto de dos en dos, cada celda con su rótulo |
-| Ficha | Pares rótulo–valor en renglones, bajo regla doble |
-| Estado y sello | Los de la sección 5 |
+| Armazón | Barra lateral (marca, cinco secciones con icono y cuenta; la sección abierta despliega sus páginas; al pie, la instantánea del catálogo y la fecha de consulta) + barra de contexto (ruta y botones de tema e idioma) + contenido. En teléfono: barra fija al pie con las cinco secciones y pestañas con las páginas de la sección |
+| Cabecera de página | Título, una frase y una línea de datos; a la derecha, la tira de cifras. En un objeto: identificador y chips de estado sobre el título |
+| Tira de cifras | Cuatro celdas pegadas con su cifra y su estado. No son tarjetas sueltas |
+| Panel | Superficie con borde: cabecera (título y nota o chip), cuerpo y pie opcional |
+| Tabla | Cabecera en versalitas sobre superficie hundida, filas compactas con línea fina, la fila bajo el cursor resaltada. El nombre de la fila abre su objeto. Bajo 860 px cada fila es una tarjeta: identificador y estado arriba, el resto debajo |
+| Fila seleccionable | El identificador de la fila es un botón; la fila elegida lleva fondo y barra de tinta azul, y el carril muestra su detalle |
+| Herramientas de tabla | Píldoras para la faceta principal, listas para las demás, contador «se muestran N de M» y «Quitar filtros» solo cuando hay alguno |
+| Carril de acción | Columna derecha de las pantallas de detalle. Arriba, la tarjeta de acción (filo de tinta azul): qué falta, los botones y, al decidir, qué ocurre. Debajo, tarjetas de detalle y de propiedades |
+| Recorrido | Pasos de algo que tiene ciclo de vida, unidos por una línea: sólida y del color del paso si está hecho, punteada si falta. Horizontal en un panel ancho; vertical en teléfono y dentro del carril |
+| Propiedades | Pares de rótulo arriba y valor abajo. En el carril, uno bajo otro con línea fina; en un panel ancho, en dos o tres columnas |
+| Pestañas | Eligen un panel de la misma pantalla (las vías de carga); subrayado azul en la abierta |
+| Selector de objeto | Tarjetas pequeñas con identificador y estado que dicen cuál objeto de una serie está abierto (un lote, un hallazgo) |
+| Botón | Con borde, sobre superficie. **Primario**: relleno de tinta azul, uno por tarjeta de acción. **Discreto**: sin fondo, para ajustes. Lo elegido lleva borde y tinte azules |
+| Formulario | Campos en una o dos columnas dentro de un panel: rótulo arriba, ayuda debajo. Un campo lleno lleva base azul. El contador de obligatorios y el botón de guardar van en la tarjeta de acción; el botón avisa si falta alguno en vez de estar deshabilitado |
+| Chip, estado y sello | Los de la sección 5 |
 | Dato y huella | Texto en la fuente de dato; la huella se abrevia a 8 + 4 caracteres |
 | Firma | Marca de firma + «Confirmada» + fecha, en tinta azul |
-| Texto destacado | La frase que no puede perderse: serifa, barra de tinta a la izquierda |
-| Filtros | Botones de grupo para la faceta principal, listas para las demás, contador «se muestran N de M» y «Quitar filtros» solo cuando hay alguno |
-| Botón | Borde de `--linea-fuerte`, sin relleno. Activo: borde y base azules, negrita |
-| Cadena de cierre | Hallazgo → corrección → re-prueba → cierre; horizontal en escritorio, vertical en teléfono; lo pendiente en línea punteada |
-| Aviso de pantalla | Vacío, carga y error con título propio y qué hacer. El error nombra cada falla |
-| Libro de tres, cuatro o cinco columnas | El mismo libro con menos columnas (`hg-cols-3`, `hg-cols-4`); `hg-folio-ancho` cuando el identificador es largo. En teléfono siempre igual: folio y descripción arriba, el resto de dos en dos |
-| Conmutador de objeto | Fila de enlaces con borde que dice cuál objeto está abierto (un activo). Va encima de la subnavegación, porque las páginas de debajo son de ese objeto. El abierto lleva base azul y negrita |
-| Propuesta | Fila de bandeja: a la izquierda quién propone, qué y con qué fuente; a la derecha, tras una barra, los botones de decisión y la frase que dice qué pasa con cada una. Al decidir, la barra pasa a tinta azul (la mano humana) |
-| Revelado | Contenido que abre el botón que lo precede (la plantilla para activos propios) |
-| Pestañas | Grupo de botones que elige un panel de la misma pantalla (las tres vías de carga). Mismo aspecto que los botones de grupo |
-| Formulario | Campos en una columna bajo regla doble: rótulo arriba, ayuda debajo, 44 px de alto mínimo. Un campo lleno lleva base azul. Bajo los campos, cuántos obligatorios faltan; el botón de guardar avisa si falta alguno en vez de estar deshabilitado |
-| Lote | Fila de bandeja con su cabecera (archivo, adaptador, huellas, advertencias), su decisión a la derecha y, a todo el ancho, el libro de sus sobres |
-| Matriz de prioridad | Tabla de impacto por frecuencia con el nivel en cada casilla (barras + texto) y la casilla del objeto en un marco de tinta. Una palabra de la tabla nunca se parte: en teléfono la tabla se reorganiza |
-| Avisos de un objeto | Bajo el encabezado de una ficha, un sello por cada cosa que su lector debe saber antes de leerla (verificación vencida, toca revisarla, marcada para revisión). Del más grave al más leve; dice el umbral y qué hacer, no repite la cifra que ya está en la ficha. Un objeto sin nada que avisar no lleva sello |
+| Barra de proporción | Parte sobre total (fallas sobre repeticiones), bajo su cifra |
+| Matriz de prioridad | Tabla de impacto por frecuencia con el nivel en cada casilla (barras + texto) y la casilla del objeto en un marco de tinta. En teléfono la tabla se reorganiza y las anclas bajan a una leyenda |
+| Contraste | Dos cajas enfrentadas: lo que se esperaba y lo que se obtuvo |
+| Estado de pantalla | Vacío, carga y error: caja centrada con marca, título y qué hacer. El error nombra cada falla en un sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
 filtros) se diseñan; ninguno es un texto gris de relleno.
 
 ## 7. Movimiento
 
-Casi ninguno, a propósito: un acta no se mueve.
+Casi ninguno, a propósito: es una herramienta de trabajo.
 
-- Solo transiciones de color y borde en controles, 150 ms, salida suave.
+- Solo transiciones de color, fondo y borde en controles y enlaces de navegación, 150 ms, salida suave.
 - Nada entra animado, nada se desplaza solo, las filas no se animan al filtrar.
 - Todo movimiento vive dentro de `@media (prefers-reduced-motion: no-preference)`: con «reducir
   movimiento» no hay ninguno. En el producto, la forma del árbol jamás depende de esa preferencia.
@@ -162,7 +182,7 @@ Casi ninguno, a propósito: un acta no se mueve.
 ## 8. Idioma
 
 Español e inglés en todo. Cada texto nace como par `{ es, en }`, redactado en cada idioma. El conmutador
-está en la cabecera. Identificadores, fechas, huellas y nombres propios no cambian con el idioma.
+está en la barra de contexto. Identificadores, fechas, huellas y nombres propios no cambian con el idioma.
 
 ## 9. Contrato con el código
 
@@ -175,19 +195,25 @@ está en la cabecera. Identificadores, fechas, huellas y nombres propios no camb
 
 ## 10. Anti-patrones
 
-Rejilla de tarjetas idénticas como respuesta a todo · gradientes · sombras · emojis como iconos · color
-como única señal · verde y rojo como único contraste entre dos estados · texto sobre color saturado ·
-esquinas redondeadas · un carácter especial donde debía ir un trazo · una cifra escrita a mano · una
+Una columna de texto centrada con media pantalla vacía · secciones numeradas como en un informe · listas
+de rótulo y valor a todo el ancho · la acción al final de la página · rejilla de tarjetas idénticas como
+respuesta a todo · gradientes · sombras · emojis como iconos · color como única señal · verde y rojo como
+único contraste entre dos estados · un chip en cada fila cuando nada es noticia · más de un botón
+primario a la vista · un carácter especial donde debía ir un trazo · una cifra escrita a mano · una
 animación de entrada.
 
 ## 11. Pendiente
 
-Hoja de impresión del informe (mirada 5) · llevar al `kit.html` los componentes de las miradas 3 y 4
-(conmutador de objeto, propuesta, revelado, pestañas, formulario, lote, matriz de prioridad): hoy solo se
-ven en sus pantallas (se paga en la mirada 5).
+Segundo tramo de la mirada 4-ter: rehacer con esta dirección fichas de prueba, marcos, controles,
+propuestas, activo, plan, `kit.html`, `direccion.html` e `index.html`, y retirar `hg.css`, la serifa y las
+tres páginas de exploración (`interfaz-a/b/c`). Mirada 5: hoja de impresión del informe.
 
 ## 12. Registro de cambios
 
+- **0.5.0** — Dirección «consola» (elegida en la mirada 4-bis: la A, con el recorrido y el carril de la
+  B). Armazón de aplicación, tabla, carril de acción, recorrido, chip, propiedades, selector de objeto,
+  botón primario, tarjetas en teléfono. Se retiran: serifa, regla doble, secciones numeradas, libro de
+  filas y ficha a todo el ancho. Primer tramo: catálogo, hallazgo y carga de evidencia.
 - **0.4.0** — Mirada 4: pestañas, formulario, lote, matriz de prioridad de acción y cadena de cierre con
   sus variantes (riesgo aceptado, re-prueba por confirmar). Regla nueva: ninguna palabra se parte por la
   mitad; si no cabe, cambia la disposición.
@@ -195,7 +221,6 @@ ven en sus pantallas (se paga en la mirada 5).
   de decisión, revelado y título menor.
 - **0.2.1** — Avisos de un objeto (sellos bajo el encabezado de la ficha). Regla de maqueta: una pantalla
   de detalle muestra siempre el estado de su propio objeto.
-- **0.2.0** — Dirección «acta» (elegida por el usuario en la mirada 1): Source Serif 4 en títulos, regla
-  doble, esquinas rectas, secciones numeradas. Navegación, filtros, ficha, texto destacado, movimiento,
-  idioma y contrato con el código.
+- **0.2.0** — Dirección «acta» (elegida por el usuario en la mirada 1; rechazada en la 4): Source Serif 4
+  en títulos, regla doble, esquinas rectas, secciones numeradas.
 - **0.1.0** — Propuesta de la mirada 1: color, tipografía, espacio, estados y primeros componentes.

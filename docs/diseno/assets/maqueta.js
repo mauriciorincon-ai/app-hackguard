@@ -159,8 +159,34 @@
   // (la hoja muestra solo el panel de esa vía).
   registrar("pestana", function (control) {
     var contenedor = control.closest("[data-pestanas]");
-    if (contenedor) contenedor.setAttribute("data-via", control.getAttribute("data-valor"));
+    var valor = control.getAttribute("data-valor");
+    if (contenedor) {
+      contenedor.setAttribute("data-via", valor);
+      // Solo los paneles de ESTE grupo: un panel puede traer dentro otro grupo de pestañas.
+      var paneles = contenedor.querySelectorAll("[data-si-via]");
+      for (var i = 0; i < paneles.length; i++) {
+        if (paneles[i].closest("[data-pestanas]") === contenedor) paneles[i].hidden = paneles[i].getAttribute("data-si-via") !== valor;
+      }
+    }
     marcarGrupo(control, "pestana");
+  });
+
+  // Selección de una fila: el botón de la fila marca cuál está abierta y el ámbito [data-seleccion]
+  // muestra solo el panel de detalle de esa fila (el carril de la derecha).
+  registrar("seleccionar", function (control) {
+    var ambito = control.closest("[data-seleccion]");
+    if (!ambito) return;
+    var valor = control.getAttribute("data-valor");
+    ambito.setAttribute("data-seleccion", valor);
+    var botones = ambito.querySelectorAll('[data-controlador="seleccionar"]');
+    for (var i = 0; i < botones.length; i++) {
+      var elegido = botones[i] === control;
+      botones[i].setAttribute("aria-pressed", String(elegido));
+      var fila = botones[i].closest("[data-fila]");
+      if (fila) fila.setAttribute("data-seleccionada", String(elegido));
+    }
+    var paneles = ambito.querySelectorAll("[data-si-seleccion]");
+    for (var j = 0; j < paneles.length; j++) paneles[j].hidden = paneles[j].getAttribute("data-si-seleccion") !== valor;
   });
 
   // Campo de formulario: marca si está lleno y recuenta los obligatorios que faltan en su formulario.

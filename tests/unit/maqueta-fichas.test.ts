@@ -16,7 +16,7 @@ afterAll(() => rmSync(futuro, { recursive: true, force: true }));
 
 function filasDe(dir: string) {
   const catalogo = documentoDe(leerPagina(dir, "catalogo.html"));
-  return [...catalogo.querySelectorAll("li[data-filtrable]")].map((fila) => ({
+  return [...catalogo.querySelectorAll("[data-filtrable]")].map((fila) => ({
     id: fila.getAttribute("data-prueba"),
     vigencia: fila.getAttribute("data-vigencia"),
     destino: fila.querySelector("a")?.getAttribute("href") ?? null,
