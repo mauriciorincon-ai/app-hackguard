@@ -31,6 +31,10 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test            # vitest run --coverage (umbral 70% en vitest.config)
+      # HackGuard S1 — el catálogo de datos/ es válido: sale 0 (ok) o 1 (con advertencias); 2 (inválido) o 3
+      # (error de uso o de lectura) dejan la CI en rojo.
+      - name: Catálogo válido (pnpm catalogo:validar sale 0 o 1)
+        run: pnpm catalogo:validar || [ $? -eq 1 ]
       - run: pnpm build
       # kit v1.39.0 — lo que el proveedor publica no es lo que el build escribe (Big-D S2, S2-AUD-32): en el perfil
       # --estatico hace `vercel build` sin conexion con el adapter de Next y exige que cada pagina publicada sea

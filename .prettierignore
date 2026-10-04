@@ -12,3 +12,5 @@ AGENTS.md
 CHANGELOG.md
 .claude/
 docs/*.plantilla.*
+# Instantáneas del catálogo: las escribe `pnpm catalogo:instantanea` y su nombre lleva su huella.
+datos/instantaneas/
