@@ -140,10 +140,10 @@ export const PROPUESTAS = [
   },
   {
     id: "PROP-0037", origen: "extractor", tipo: "sobre", fecha: "2026-10-03", contenido: "limpia", activo: "ACT-DEMO-ASISTENTE", separable: true,
-    titulo: { es: "Un texto pegado con resultados de dos pruebas", en: "One pasted text with results for two tests" },
+    titulo: { es: "Un texto pegado con resultados de más de una prueba", en: "One pasted text with results for more than one test" },
     resumen: {
-      es: "El texto trae resultados de dos pruebas distintas del plan. Un sobre cuenta para una sola prueba: sepáralo antes de aprobar.",
-      en: "The text carries results for two different tests in the plan. An envelope counts for one test only: split it before approving.",
+      es: "El texto trae resultados de varias pruebas distintas del plan. Un sobre cuenta para una sola prueba: sepáralo antes de aprobar.",
+      en: "The text carries results for several different tests in the plan. An envelope counts for one test only: split it before approving.",
     },
     candidatas: ["PR-AG-PERM-001", "PR-AG-LIM-001"],
     citas: 4,
@@ -154,7 +154,7 @@ export const PROPUESTAS = [
 export const CORRIDA = {
   id: "INV-2026-10-02-01",
   fecha: "2026-10-02",
-  alcance: { es: "Todas las familias y los cuatro marcos", en: "All families and the four frameworks" },
+  alcance: { es: "Todas las familias y todos los marcos del catálogo", en: "All families and every framework in the catalog" },
   consultadas: 14,
   no_accesibles: [
     { nombre: "arXiv 2609.32160 · anexo", razon: { es: "El sitio no permitió el acceso del agente.", en: "The site did not allow the agent to access it." } },

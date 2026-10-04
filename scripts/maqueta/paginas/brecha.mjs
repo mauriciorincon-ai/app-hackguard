@@ -290,8 +290,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: la brecha de todos los activos. Las cifras salen de los planes y de los sobres confirmados; datos sintéticos.",
-        en: "Review 5: the gap across all assets. Figures come from the plans and the confirmed envelopes; synthetic data.",
+        es: "Mirada 5 (aprobada): la brecha de todos los activos. Las cifras salen de los planes y de los sobres confirmados; datos sintéticos.",
+        en: "Review 5 (approved): the gap across all assets. Figures come from the plans and the confirmed envelopes; synthetic data.",
       },
       grupos: [barraDeEstados()],
     },

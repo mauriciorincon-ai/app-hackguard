@@ -5,10 +5,10 @@
 // Dirección «consola» (mirada 4-ter): cabecera con chips, el recorrido de cierre a todo el ancho, paneles
 // de severidad y control a la izquierda, y a la derecha el carril: qué puedes hacer y las propiedades.
 import { CONTROLES, FAMILIAS, PRUEBAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
-import { ACTIVOS, CVSS, ESCALA_IA, HALLAZGOS, LOTES, ORDEN_DE_HALLAZGOS, SOBRES, archivoDeActivo, archivoDeHallazgo } from "../datos/mundo.mjs";
+import { ACTIVOS, CVSS, ESCALA_IA, HALLAZGOS, IMPACTOS_DE_IA, LOTES, ORDEN_DE_HALLAZGOS, SOBRES, archivoDeActivo, archivoDeHallazgo } from "../datos/mundo.mjs";
 import { diasEntre, sumarDias } from "../nucleo/fecha.mjs";
 import { huellaDe, plazo } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, destino, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -28,8 +28,7 @@ function selector(actual, existentes) {
     const h = HALLAZGOS.find((x) => x.id === id);
     const archivo = archivoDeHallazgo(id);
     const texto = `<span class="hg-opcion-titulo" data-neutro>${id}</span><span>${t(ESTADO_DE_HALLAZGO[h.estado].nombre)}</span>`;
-    if (!existentes.includes(archivo)) return `<li><span class="hg-opcion">${texto}</span></li>`;
-    return `<li><a class="hg-opcion" href="${archivo}"${id === actual ? ' aria-current="true"' : ""}>${texto}</a></li>`;
+    return `<li><a class="hg-opcion" href="${destino(archivo, existentes)}"${id === actual ? ' aria-current="true"' : ""}>${texto}</a></li>`;
   }).join("");
   return `<nav ${atributo("aria-label", { es: "Hallazgos", en: "Findings" })}><ul class="hg-selector">${items}</ul></nav>`;
 }
@@ -45,13 +44,23 @@ function facilidadDe(sobre) {
   return { porCiento, nivel: banda.nivel, nombre: banda.nombre };
 }
 
+// El piso o el techo de una fila de la tabla, si los datos le declaran uno.
+function limiteDe(impacto) {
+  const l = ESCALA_IA.limites.find((x) => x.impacto === impacto);
+  if (!l) return null;
+  const nivel = SEVERIDAD[l.nivel].nombre;
+  return l.tipo === "piso"
+    ? { es: `Piso: nunca menos de ${nivel.es.toLowerCase()}`, en: `Floor: never below ${nivel.en.toLowerCase()}` }
+    : { es: `Techo: nunca más de ${nivel.es.toLowerCase()}`, en: `Ceiling: never above ${nivel.en.toLowerCase()}` };
+}
+
 function severidadIA(h, origen) {
   const f = facilidadDe(origen);
   const nivel = ESCALA_IA.tabla[h.escala.impacto][f.nivel - 1];
   if (nivel !== h.severidad) throw new Error(`${h.id}: la tabla da «${nivel}» y el hallazgo declara «${h.severidad}»`);
 
   const cabecera = ESCALA_IA.facilidad.map((b) => `<th scope="col">${t(b.nombre)}</th>`).join("");
-  const filas = [4, 3, 2, 1]
+  const filas = IMPACTOS_DE_IA
     .map((impacto) => {
       const celdas = ESCALA_IA.tabla[impacto]
         .map((n, i) => {
@@ -59,15 +68,15 @@ function severidadIA(h, origen) {
           return `<td${esta ? ' class="es-esta" data-esta-celda' : ""}>${estado(SEVERIDAD[n])}${esta ? `<span class="hg-menor">${t({ es: "este hallazgo", en: "this finding" })}</span>` : ""}</td>`;
         })
         .join("");
-      const limite = impacto === 4 ? { es: "Piso: nunca menos de alto", en: "Floor: never below high" } : impacto === 1 ? { es: "Techo: nunca más de medio", en: "Ceiling: never above medium" } : null;
+      const limite = limiteDe(impacto);
       return `<tr><th scope="row"><span class="hg-cifra-menor" data-neutro>${impacto}</span> <span class="hg-menor hg-matriz-ancla">${t(ESCALA_IA.impacto[impacto])}</span>${limite ? `<span class="hg-menor hg-limite hg-matriz-ancla">${t(limite)}</span>` : ""}</th>${celdas}</tr>`;
     })
     .join("\n");
   // En teléfono las anclas del impacto no caben en la tabla: van debajo, como leyenda.
-  const leyenda = [4, 3, 2, 1]
+  const leyenda = IMPACTOS_DE_IA
     .map((impacto) => {
-      const limite = impacto === 4 ? { es: " Piso: nunca menos de alto.", en: " Floor: never below high." } : impacto === 1 ? { es: " Techo: nunca más de medio.", en: " Ceiling: never above medium." } : null;
-      return `<li><strong data-neutro>${impacto}</strong> ${t(ESCALA_IA.impacto[impacto])}.${limite ? `<strong>${t(limite)}</strong>` : ""}</li>`;
+      const limite = limiteDe(impacto);
+      return `<li><strong data-neutro>${impacto}</strong> ${t(ESCALA_IA.impacto[impacto])}.${limite ? `<strong>${t({ es: ` ${limite.es}.`, en: ` ${limite.en}.` })}</strong>` : ""}</li>`;
     })
     .join("");
 
@@ -89,7 +98,7 @@ ${filas}
 </div>
 <div class="hg-panel-cuerpo">
 <dl class="hg-propiedades hg-propiedades-en-columnas">
-${par({ es: "Impacto", en: "Impact" }, `<p><strong data-neutro>${h.escala.impacto}</strong> <span class="hg-menor">${t({ es: "de 4", en: "of 4" })}</span></p><p class="hg-menor">${t(ESCALA_IA.impacto[h.escala.impacto])}</p>`)}
+${par({ es: "Impacto", en: "Impact" }, `<p><strong data-neutro>${h.escala.impacto}</strong> <span class="hg-menor">${t({ es: `de ${IMPACTOS_DE_IA[0]}`, en: `of ${IMPACTOS_DE_IA[0]}` })}</span></p><p class="hg-menor">${t(ESCALA_IA.impacto[h.escala.impacto])}</p>`)}
 ${par(
   { es: "Frecuencia observada", en: "Observed frequency" },
   `<p><strong data-neutro>${f.porCiento} %</strong></p><p class="hg-menor">${tHtml(
@@ -426,7 +435,7 @@ ${aviso(
       },
       {
         donde: { es: "Selector de arriba", en: "The selector at the top" },
-        hacer: { es: "Abre los cuatro hallazgos", en: "Open all four findings" },
+        hacer: { es: `Abre los ${HALLAZGOS.length} hallazgos`, en: `Open all ${HALLAZGOS.length} findings` },
         ver: { es: "Abierto y vencido, corregido, aceptado con riesgo y cerrado: cada uno se reconoce por su estado y su recorrido", en: "Open and overdue, fixed, accepted with risk and closed: each is recognized by its status and its progress" },
       },
       {

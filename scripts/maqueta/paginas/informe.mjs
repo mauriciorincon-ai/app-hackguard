@@ -344,8 +344,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: el informe de brecha con las ocho secciones de la especificación. Se lee aquí y se imprime; imprímelo para ver la hoja.",
-        en: "Review 5: the gap report with the specification's eight sections. It reads here and it prints; print it to see the sheet.",
+        es: "Mirada 5 (aprobada): el informe de brecha con las ocho secciones de la especificación. Se lee aquí y se imprime; imprímelo para ver la hoja.",
+        en: "Review 5 (approved): the gap report with the specification's eight sections. It reads here and it prints; print it to see the sheet.",
       },
       grupos: [barraDeEstados()],
     },
@@ -368,7 +368,7 @@ ${aviso(
       },
       {
         donde: { es: "Sección 4", en: "Section 4" },
-        hacer: { es: "Recorre los cuatro hallazgos", en: "Go through the four findings" },
+        hacer: { es: `Recorre los ${HALLAZGOS.length} hallazgos`, en: `Go through the ${HALLAZGOS.length} findings` },
         ver: { es: "Abiertos primero; cada uno con su plazo, su revisión o la re-prueba que lo cerró", en: "Open ones first; each with its deadline, its review or the retest that closed it" },
       },
     ],

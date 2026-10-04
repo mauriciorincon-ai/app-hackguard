@@ -14,7 +14,7 @@ const AUTORIZADO = { rol: "positivo", simbolo: "ok", nombre: { es: "Alcance y re
 const SIN_AUTORIZAR = { rol: "falla", simbolo: "falla", nombre: { es: "Sin autorización no hay plan", en: "No authorization, no plan" } };
 const SIN_DECLARAR = { rol: "falla", simbolo: "falla", nombre: { es: "Sin declarar", en: "Not declared" } };
 
-/** Selector de los tres activos: va arriba, porque «Activo» y «Plan» son del activo abierto. */
+/** Selector de los activos: va arriba, porque «Activo» y «Plan» son del activo abierto. */
 export function selectorDeActivos(actual, archivoDe, existentes) {
   return selectorDeObjetos(
     { es: "Activos registrados", en: "Registered assets" },
@@ -217,8 +217,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter: un activo con la interfaz nueva (aprobado en el segundo tramo). Los tres activos son demos ficticios; el tercero no tiene autorización, para que se vea ese estado.",
-        en: "Review 4-ter: an asset with the new interface (approved in the second stretch). All three assets are fictional demos; the third has no authorization, to show that state.",
+        es: "Mirada 4-ter: un activo con la interfaz nueva (aprobado en el segundo tramo). Los activos son demos ficticios; el portal no tiene autorización, para que se vea ese estado.",
+        en: "Review 4-ter: an asset with the new interface (approved in the second stretch). The assets are fictional demos; the portal has no authorization, to show that state.",
       },
       grupos: [barraDeEstados()],
     },
@@ -226,7 +226,7 @@ ${aviso(
     revisar: [
       {
         donde: { es: "Selector de arriba", en: "The selector at the top" },
-        hacer: { es: "Abre los tres activos", en: "Open all three assets" },
+        hacer: { es: `Abre los ${Object.keys(ACTIVOS).length} activos`, en: `Open all ${Object.keys(ACTIVOS).length} assets` },
         ver: { es: "Cada uno muestra lo suyo; el portal dice arriba que sin autorización no hay plan", en: "Each one shows its own data; the portal says at the top that without authorization there is no plan" },
       },
       {

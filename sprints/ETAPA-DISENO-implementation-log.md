@@ -637,6 +637,42 @@ nada bajo `src/`.
 `6b4b6fb`: `quality`, `e2e` y `lighthouse` en `success`. Con esto las trece pantallas del H1 están
 construidas y vistas; lo siguiente es el cierre de la etapa (fase 6).
 
+## Cierre de la etapa — revisión propia y auditoría (2026-10-04)
+
+**Revisión propia (`/self-review`, sobre el generador, los tests y la configuración).** Los criterios de
+producto (endpoints, base de datos, Sentry, eventos) no aplican: no hay producto. Sin `console.log`, `any`,
+`@ts-ignore`, temporizadores en tests ni archivos bajo `src/`. Hallazgo: **duplicación en el generador**:
+`eslabon` y `sobreDe` idénticas en `hallazgo.mjs` y `control.mjs`; `plural` en `hallazgo.mjs` y
+`piezas-de-brecha.mjs`; `nombreDe` en `catalogo.mjs`, `prueba.mjs` y `plan.mjs`; y el conteo de un sobre
+escrito de dos maneras (`conteoDe` en `evidencia.mjs` y `hallazgo.mjs`, `conteo` en la brecha, con la cota).
+Se paga con la fase 2 de la auditoría. Las funciones de página pasan de 50 líneas porque son plantillas
+de una pantalla entera; no se parten (el S1 no hereda el generador).
+
+**Auditoría, fase 1** (`/audita-sprint`, auditor independiente: un subagente que no construyó la etapa,
+con el diff delante). Veredicto «requiere ajustes»: 0 críticos, 3 altos, 16 medios y 17 bajos, cada uno con
+su `archivo:línea`, en `sprints/ETAPA-DISENO-auditoria.md`. Las reglas duras se cumplen. Verifiqué en el
+código M8, M10, M16 y A2 antes de presentarla: los cuatro son reales.
+
+**Aprobación de la fase 2** (textual): «Si arregla los 36 hallazgos, Si registra que el agente «Experto ISO
+42001» no será fuente de los resúmenes del Anexo A». Modelo: Opus (recomendado: la fase añade estados
+visibles).
+
+**Fase 2 — pagos, por bloque**
+
+| Bloque | Hallazgos | Qué se hizo |
+|---|---|---|
+| 1 · Altos | A1 · A2 · A3 (+ M13 en parte) | Portada, notas de sala y frontmatter dicen que la mirada 5 está aprobada; la portada abre la mirada 6. La escala de IA declara su piso y su techo en datos y la vista lee de ahí los impactos, el «de N» y los límites (mismos bytes). Toda cifra de datos en el texto sale de su arreglo o se dice sin número |
+| 2 · Cálculos latentes | M8 · M9 · M10 · M12 · M14 (+ M7 en parte) | Huella sobre JSON canónico en todos los niveles. Un solo predicado `estaCerrado`: el riesgo aceptado no está cerrado y sigue siendo falla de su control; «pide trabajo» es otra cosa, y el tablero lo dice. Un sobre «no ejecutada» deja la prueba sin evidencia (E-6). Un enlace a una página que no se genera hace fallar el generador; se retiran las ramas y los estilos de respaldo. El umbral de la evidencia antigua se lee de los datos. Se retira `brecha().cerrados`, sin lector |
+
+**Gates nuevos de la fase 2 y su demo en rojo (regla 15)**
+
+| # | Gate | Qué impide | Demo | Resultado |
+|---|---|---|---|---|
+| G22 | `maqueta-escala` (nuevo) | Una tabla de prioridad de IA que rompe su piso o su techo, que baja de nivel al subir la frecuencia o el impacto, o que no tiene una casilla por banda | `tabla[4][0]` = «medio» | «impacto 4: «medio» rompe el piso («alto»)» → verde (`cmp`) |
+| G23 | `maqueta-cifras` (nuevo) | Una cifra en letras pegada al nombre de una entidad de datos («cuatro familias», «the two envelopes») en el texto de cualquier página | «cuatro familias» de vuelta en la portada y regenerar | «index.html: cifras en letras que deberían salir de los datos: expected [ 'cuatro familias' ] to deeply equal []» → verde (`cmp` de la fuente y de la página) |
+| G24 | `maqueta-calculos` (nuevo) | Una huella que ignora lo anidado; un «no ejecutada» contado como evidencia de un control; un riesgo aceptado tratado como cerrado | (a) la huella de antes; (b) sin la regla de E-6; (c) `estaCerrado` acepta el riesgo aceptado | (a) «expected 'sha256:73c8…' not to be 'sha256:73c8…'»; (b) «la fila de la prueba: expected 'con_evidencia_vigente' to be 'sin_evidencia'»; (c) «aceptado_con_riesgo: expected true to be false» y «expected undefined to be 'HZ-X'» → verde (`cmp`) |
+| G25 | Guarda de enlaces del generador (`destino()` en `nucleo/componentes.mjs`) | Un enlace a una página que la maqueta no genera, que antes se volvía texto en silencio | El botón del plan apunta a `evidenca.html` | «Error: enlace a una página que la maqueta no genera: evidenca.html» → verde (`cmp`) |
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el

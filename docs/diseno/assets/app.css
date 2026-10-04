@@ -476,8 +476,7 @@ a.hg-boton {
   list-style: none;
 }
 
-.hg-nav a,
-.hg-nav-pendiente {
+.hg-nav a {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -513,8 +512,7 @@ a.hg-boton {
   border-left: 1px solid var(--linea);
 }
 
-.hg-nav-sub a,
-.hg-nav-sub .hg-nav-pendiente {
+.hg-nav-sub a {
   min-height: 32px;
   font-size: var(--t-menor);
 }
@@ -630,8 +628,7 @@ a.hg-boton {
     gap: 0;
   }
 
-  .hg-nav a,
-  .hg-nav-pendiente {
+  .hg-nav a {
     flex-direction: column;
     justify-content: center;
     gap: 2px;

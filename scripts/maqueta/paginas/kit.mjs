@@ -3,7 +3,7 @@
 // pantallas. Es la referencia de fidelidad del primer sprint con UI; no es una pantalla del producto.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { ESCALA_IA } from "../datos/mundo.mjs";
+import { ESCALA_IA, IMPACTOS_DE_IA } from "../datos/mundo.mjs";
 import { chip, dato, estado, firma, huella, lista, par, proporcion, sello } from "../nucleo/componentes.mjs";
 import { CONFIRMACION, ESTADO_DE_CONTROL, ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, neutro, t } from "../nucleo/html.mjs";
@@ -180,7 +180,7 @@ ${par({ es: "Lista", en: "List" }, lista([{ es: "Texto libre", en: "Free text" }
 <caption>${t({ es: "Prioridad de acción: impacto (filas) por frecuencia observada (columnas)", en: "Action priority: impact (rows) by observed frequency (columns)" })}</caption>
 <thead><tr><th scope="col">${t({ es: "Impacto", en: "Impact" })}</th>${ESCALA_IA.facilidad.map((b) => `<th scope="col">${t(b.nombre)}</th>`).join("")}</tr></thead>
 <tbody>
-${[4, 3, 2, 1]
+${IMPACTOS_DE_IA
   .map(
     (impacto) =>
       `<tr><th scope="row"><span class="hg-cifra-menor" data-neutro>${impacto}</span></th>${ESCALA_IA.tabla[impacto]
@@ -229,7 +229,7 @@ ${sello(
 </div>
 </div>
 ${panel("color", { es: "Color", en: "Color" }, colores, { es: "Cambia de tema para ver el otro juego.", en: "Switch theme to see the other set." })}
-${panel("tipografia", { es: "Tipografía", en: "Typography" }, tipografia, { es: "Dos familias; sin serifa.", en: "Two families; no serif." })}
+${panel("tipografia", { es: "Tipografía", en: "Typography" }, tipografia, { es: "Una letra para el texto y su variante mono para los datos; sin serifa.", en: "One typeface for text and its mono variant for data; no serif." })}
 ${panel("estados", { es: "Estados", en: "Statuses" }, estados, { es: "Una forma por papel: se reconocen sin color.", en: "One shape per role: recognizable without color." })}
 ${panel("controles", { es: "Botones, filtros y campos", en: "Buttons, filters and fields" }, controles, { es: "Un solo primario por tarjeta de acción.", en: "A single primary per action card." })}
 ${panel("cifras", { es: "Tira de cifras", en: "Figures strip" }, resumen)}

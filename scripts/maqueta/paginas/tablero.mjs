@@ -124,8 +124,8 @@ ${comprobaciones}
     .join("");
   const aceptados = b.aceptados.length
     ? `<p class="hg-menor">${t({
-        es: `Además, ${b.aceptados.length} con el riesgo aceptado: no cuenta${b.aceptados.length === 1 ? "" : "n"} como sin cerrar y se revisa${b.aceptados.length === 1 ? "" : "n"} en su fecha.`,
-        en: `Also, ${b.aceptados.length} with the risk accepted: ${b.aceptados.length === 1 ? "it does" : "they do"} not count as open and ${b.aceptados.length === 1 ? "is" : "are"} reviewed on ${b.aceptados.length === 1 ? "its" : "their"} date.`,
+        es: `Además, ${b.aceptados.length} con el riesgo aceptado: no ${b.aceptados.length === 1 ? "está cerrado, pero no pide" : "están cerrados, pero no piden"} trabajo; se ${b.aceptados.length === 1 ? "revisa" : "revisan"} en su fecha.`,
+        en: `Also, ${b.aceptados.length} with the risk accepted: not closed, but asking for no work; ${b.aceptados.length === 1 ? "it is" : "they are"} reviewed on ${b.aceptados.length === 1 ? "its" : "their"} date.`,
       })}</p>`
     : "";
 
@@ -239,8 +239,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: el tablero, la portada de la aplicación. Resume todo lo anterior con las mismas cuentas; datos sintéticos.",
-        en: "Review 5: the dashboard, the application's home. It sums up everything before it with the same counts; synthetic data.",
+        es: "Mirada 5 (aprobada): el tablero, la portada de la aplicación. Resume todo lo anterior con las mismas cuentas; datos sintéticos.",
+        en: "Review 5 (approved): the dashboard, the application's home. It sums up everything before it with the same counts; synthetic data.",
       },
       grupos: [barraDeEstados()],
     },
@@ -254,7 +254,7 @@ ${aviso(
       {
         donde: { es: "Banda verde", en: "Green band" },
         hacer: { es: "Pulsa «Ver las comprobaciones»", en: "Press “See the checks”" },
-        ver: { es: "Las cinco comprobaciones con lo sembrado y lo obtenido; si una fallara, nada se publica", en: "The five checks with what was seeded and what was obtained; if one failed, nothing would be published" },
+        ver: { es: `Las ${VALIDACION.length} comprobaciones con lo sembrado y lo obtenido; si una fallara, nada se publica`, en: `The ${VALIDACION.length} checks with what was seeded and what was obtained; if one failed, nothing would be published` },
       },
       {
         donde: { es: "Franja de sala · Error", en: "Room strip · Error" },

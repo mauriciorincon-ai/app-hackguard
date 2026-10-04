@@ -8,7 +8,7 @@
 import { CONTROLES, ENTORNOS, HERRAMIENTAS, INSTANTANEA, PRUEBAS, REGLAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
 import { ACTIVOS, PRIORIDAD, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
 import { huellaDe, planDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, aviso, chip, dato, enlace, estado, fechado, huella, lista, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, aviso, chip, dato, destino, enlace, estado, fechado, huella, lista, par, sello } from "../nucleo/componentes.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { seccionDeActivo, selectorDeActivos } from "./activo.mjs";
@@ -277,7 +277,7 @@ ${lista(a.reglas)}
     es: "Corre las pruebas con tus herramientas, dentro de estos límites. Los resultados vuelven por la carga de evidencia.",
     en: "Run the tests with your tools, within these limits. Results come back through evidence intake.",
   })}</p>
-${existentes.includes("evidencia.html") ? `<a class="hg-boton hg-boton-primario" href="evidencia.html">${t({ es: "Ir a la carga de evidencia", en: "Go to evidence intake" })}</a>` : ""}
+<a class="hg-boton hg-boton-primario" href="${destino("evidencia.html", existentes)}">${t({ es: "Ir a la carga de evidencia", en: "Go to evidence intake" })}</a>
 </div>
 </section>
 </div>

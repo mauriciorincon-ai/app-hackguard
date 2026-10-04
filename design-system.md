@@ -1,6 +1,6 @@
 ---
 version: 0.7.0
-estado: dirección «consola» aprobada (mirada 4-ter, tramos 1 y 2) · mirada 5 en curso (tablero, brecha, vista por control, informe y portada) · se sella en G-Diseño
+estado: dirección «consola» aprobada (mirada 4-ter, tramos 1 y 2) · miradas 1 a 5 aprobadas · se sella en G-Diseño (mirada 6)
 ---
 
 # HackGuard — sistema de diseño

@@ -6,15 +6,16 @@
 import { FAMILIAS, MARCOS, PRUEBAS, fichaDe } from "../datos/catalogo.mjs";
 import { PROPUESTAS } from "../datos/gobierno.mjs";
 import { ACTIVOS, HALLAZGOS, LOTES, PRIORIDAD, SOBRES } from "../datos/mundo.mjs";
-import { antiguedad, planDe, plazo, veredictoSugerido, vigencia, vistaPorControl } from "./calculos.mjs";
+import { antiguedad, estaCerrado, planDe, plazo, veredictoSugerido, vigencia, vistaPorControl } from "./calculos.mjs";
 import { diasEntre, sumarDias } from "./fecha.mjs";
 
 export const FICHAS = PRUEBAS.map((p) => fichaDe(p.id));
 const EJECUTADA = new Set(["superada", "fallida", "parcial"]);
 const SIN_CERRAR = new Set(["abierto", "corregido", "re_probado"]);
 
-/** Un hallazgo sin cerrar sigue pidiendo acción; el riesgo aceptado se revisa aparte. */
-export const sinCerrar = (h) => SIN_CERRAR.has(h.estado);
+/** Lo que pide trabajo: abierto, corregido o re-probado. El riesgo aceptado no está cerrado (sigue siendo
+ *  falla de su control, ver estaCerrado), pero no pide trabajo: se revisa en su fecha. */
+const pideTrabajo = (h) => SIN_CERRAR.has(h.estado);
 
 /** Las cuentas de cobertura de RF-05.2 sobre un grupo de filas. «Fallidas» incluye las parciales. */
 export function totales(filas) {
@@ -66,7 +67,7 @@ export function brecha(consulta, umbrales) {
         edad: ultimo ? antiguedad(ultimo.fecha, consulta, umbrales) : null,
         catalogo: vigencia(ficha.verificada, consulta, umbrales),
         propuesto: propuesto ? { ...propuesto, sugerido: veredictoSugerido(propuesto, ficha.regla) } : null,
-        hallazgo: HALLAZGOS.find((h) => h.prueba === ficha.id && !h.cierre) ?? null,
+        hallazgo: HALLAZGOS.find((h) => h.prueba === ficha.id && !estaCerrado(h)) ?? null,
       });
     }
   }
@@ -93,11 +94,11 @@ export function brecha(consulta, umbrales) {
       ultima,
       edad: ultima ? antiguedad(ultima, consulta, umbrales) : null,
       hallazgos: HALLAZGOS.filter((h) => suyas.some((f) => f.ficha.id === h.prueba)),
-      fallas: HALLAZGOS.filter((h) => sinCerrar(h) && suyas.some((f) => f.ficha.id === h.prueba)),
+      fallas: HALLAZGOS.filter((h) => !estaCerrado(h) && suyas.some((f) => f.ficha.id === h.prueba)),
     };
   });
 
-  const abiertos = HALLAZGOS.filter(sinCerrar).map((h) => ({ h, p: umbrales.plazo_por_severidad[h.severidad] ? plazo(h, consulta, umbrales) : null }));
+  const abiertos = HALLAZGOS.filter(pideTrabajo).map((h) => ({ h, p: umbrales.plazo_por_severidad[h.severidad] ? plazo(h, consulta, umbrales) : null }));
   const aceptados = HALLAZGOS.filter((h) => h.estado === "aceptado_con_riesgo").map((h) => ({ h, r: revision(h, consulta) }));
 
   return {
@@ -110,7 +111,6 @@ export function brecha(consulta, umbrales) {
     abiertos,
     vencidos: abiertos.filter(({ p }) => p?.estado === "vencido").sort((x, y) => y.p.atraso - x.p.atraso),
     aceptados,
-    cerrados: HALLAZGOS.filter((h) => h.cierre),
     alertas: {
       // RF-05.5: pruebas del plan cuya entrada del catálogo está vencida, marcos con versión nueva y
       // evidencia más vieja que el umbral.

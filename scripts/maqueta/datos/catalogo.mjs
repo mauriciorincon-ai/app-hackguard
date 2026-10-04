@@ -1,4 +1,4 @@
-// Catálogo sintético de la maqueta: marcos, controles, herramientas y pruebas de las cuatro familias.
+// Catálogo sintético de la maqueta: marcos, controles, herramientas y pruebas de todas las familias.
 // Todo está al nivel de la regla dura 3 — QUÉ se verifica, con qué herramienta y qué se espera — y nada
 // más: ninguna carga, ningún procedimiento. Es ILUSTRATIVO: las versiones de los marcos, las referencias
 // y los resúmenes de los controles se fijan con fuente y fecha en la fase 0 del S1 (DA-01). De ISO/IEC
@@ -411,8 +411,8 @@ const DETALLE = {
       en: "A new model version can decide the same cases differently with nothing else having changed.",
     },
     resultado_esperado: {
-      es: "Entre dos versiones, la tasa de casos que cambian de decisión no supera a la que ocurre al repetir {k} veces la misma llamada.",
-      en: "Between two versions, the rate of cases whose decision changes does not exceed the one that occurs when the same call is repeated {k} times.",
+      es: "De una versión a la siguiente, la tasa de casos que cambian de decisión no supera a la que ocurre al repetir {k} veces la misma llamada.",
+      en: "From one version to the next, the rate of cases whose decision changes does not exceed the one that occurs when the same call is repeated {k} times.",
     },
     aplicabilidad: [{ es: "El proveedor publica versiones nuevas del modelo.", en: "The provider releases new versions of the model." }],
   },
@@ -467,7 +467,7 @@ export const ENTORNOS = {
 // Instantáneas del catálogo: todo plan cita una. La primera es la vigente. `pruebas` de las anteriores
 // es el conteo de entonces; el de la vigente se calcula.
 export const INSTANTANEAS = [
-  { version: "2026.10.0", fecha: "2026-10-01", cambio: { es: "Entran dos pruebas de modelo de decisión: paridad entre español e inglés y válido pero equivocado.", en: "Two decision-model tests come in: Spanish and English parity, and valid but wrong." } },
+  { version: "2026.10.0", fecha: "2026-10-01", cambio: { es: "Entran las pruebas de modelo de decisión de paridad entre español e inglés y de válido pero equivocado.", en: "The decision-model tests for Spanish and English parity and for valid but wrong come in." } },
   { version: "2026.09.0", fecha: "2026-09-01", pruebas: 19, cambio: { es: "OWASP LLM Top 10 pasa de la versión 1.1 a la 2025, con su mapa de equivalencias.", en: "OWASP LLM Top 10 moves from version 1.1 to 2025, with its equivalence map." } },
   { version: "2026.08.0", fecha: "2026-08-03", pruebas: 15, cambio: { es: "Primera instantánea: software, agente y modelo generativo.", en: "First snapshot: software, agent and generative model." } },
 ];

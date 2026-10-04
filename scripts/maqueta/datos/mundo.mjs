@@ -5,7 +5,7 @@
 // identificador y un resumen con palabras propias (regla 11).
 import { CONTROLES, HERRAMIENTAS, PRUEBAS as CATALOGO } from "./catalogo.mjs";
 
-// Tres activos demo FICTICIOS que cubren las cuatro familias. Nunca las apps reales del operador
+// Activos demo FICTICIOS que cubren todas las familias. Nunca las apps reales del operador
 // (regla dura 8). El tercero no tiene alcance autorizado: muestra el estado «sin autorización no hay plan».
 // `rasgos` es lo que el perfil declara; de ahí sale la aplicabilidad de cada prueba (su `requiere`).
 export const ACTIVOS = {
@@ -33,7 +33,7 @@ export const ACTIVOS = {
       politica_verificada: "2026-09-20",
     },
     perfil: {
-      pila: { es: "Aplicación web, agente con dos herramientas y un modelo generativo por API.", en: "Web application, agent with two tools and a generative model over an API." },
+      pila: { es: "Aplicación web, agente que llama a herramientas propias y un modelo generativo por API.", en: "Web application, agent that calls its own tools and a generative model over an API." },
       exposicion: "publica",
       autenticacion: { es: "Sin cuentas: cualquiera puede escribirle.", en: "No accounts: anyone can write to it." },
       datos: "publicos",
@@ -56,7 +56,7 @@ export const ACTIVOS = {
     alcance: {
       incluye: [
         { es: "La aplicación web del demo y sus páginas.", en: "The demo web application and its pages." },
-        { es: "El agente y sus dos herramientas, en el entorno de pruebas.", en: "The agent and its two tools, in the test environment." },
+        { es: "El agente y sus herramientas, en el entorno de pruebas.", en: "The agent and its tools, in the test environment." },
         { es: "El comportamiento del modelo, por la API pública del proveedor.", en: "The model's behavior, through the provider's public API." },
       ],
       excluye: [
@@ -347,7 +347,7 @@ export const LOTES = [
     id: "LOTE-0008", activo: "ACT-DEMO-ASISTENTE", herramienta: "zap", version: "2.16.0", adaptador: "zap-traditional-json 1.0.0",
     archivo: "zap.2026-10-02.report.json", ejecutado_por: { es: "Operador demo", en: "Demo operator" },
     fecha: "2026-10-02", hora: "15:05", zona: "America/Bogota",
-    advertencias: [{ es: "El plan de automatización adjunto cubre dos de las tres reglas del plan.", en: "The attached automation plan covers two of the three rules in the plan." }],
+    advertencias: [{ es: "El plan de automatización adjunto cubre 2 de las 3 reglas del plan.", en: "The attached automation plan covers 2 of the 3 rules in the plan." }],
     sobres: [
       { id: "SOB-0034", prueba: "PR-SW-TS-001", corrio: true, alertas: 1, razon: { es: "1 alerta de riesgo medio y confianza alta", en: "1 alert at medium risk and high confidence" } },
       { id: "SOB-0035", prueba: "PR-SW-XSS-001", corrio: false, alertas: 0, razon: { es: "Sin alertas, pero no hay constancia de que la regla corrió", en: "No alerts, but there is no proof that the rule ran" } },
@@ -383,13 +383,19 @@ export const ESCALA_IA = {
     { nivel: 3, desde: 20, nombre: { es: "Del 20 al 49 %", en: "20 to 49%" } },
     { nivel: 4, desde: 50, nombre: { es: "50 % o más", en: "50% or more" } },
   ],
-  // tabla[impacto][facilidad - 1]. Piso: impacto 4 nunca baja de «alto». Techo: impacto 1 nunca pasa de «medio».
+  // tabla[impacto][facilidad - 1].
   tabla: {
     4: ["alto", "alto", "critico", "critico"],
     3: ["medio", "alto", "alto", "critico"],
     2: ["bajo", "medio", "medio", "alto"],
     1: ["bajo", "bajo", "medio", "medio"],
   },
+  // Piso y techo de la tabla (E-12), como dato: la vista los lee de aquí y tests/unit/maqueta-escala los
+  // verifica contra la tabla.
+  limites: [
+    { impacto: 4, tipo: "piso", nivel: "alto" },
+    { impacto: 1, tipo: "techo", nivel: "medio" },
+  ],
   alcance: {
     1: { es: "Un componente aislado", en: "One isolated component" },
     2: { es: "Un activo completo", en: "One whole asset" },
@@ -403,6 +409,9 @@ export const ESCALA_IA = {
     4: { es: "No se detecta hasta que ocurre el daño", en: "Not detected until the harm occurs" },
   },
 };
+
+/** Los impactos de la escala, del mayor al menor: las filas de la tabla. */
+export const IMPACTOS_DE_IA = Object.keys(ESCALA_IA.tabla).map(Number).sort((a, b) => b - a);
 
 // Métricas base de CVSS 4.0: nombre de cada una y de sus valores (identificadores del estándar).
 export const CVSS = {

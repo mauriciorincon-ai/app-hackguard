@@ -1,23 +1,22 @@
-// index.html — la entrada a la maqueta (mirada 5): las trece pantallas del H1 en el orden de la orden de
+// index.html — la entrada a la maqueta: las pantallas del H1 en el orden de la orden de
 // diseño, con lo que muestra cada una, sus funcionalidades y el estado de su mirada, y la puerta a la
 // aplicación (el tablero). Es una página de la sala, no del producto: el logo de la aplicación lleva al
 // tablero, y la franja de sala de cada pantalla trae de vuelta aquí.
 import { archivoDeFicha } from "../datos/catalogo.mjs";
-import { ACTIVOS, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
-import { chip, estado } from "../nucleo/componentes.mjs";
+import { ACTIVOS, HALLAZGOS, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
+import { estado } from "../nucleo/componentes.mjs";
 import { atributo, neutro, t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
 
 const ACTIVO = Object.keys(ACTIVOS)[0];
-const EN_MIRADA = { rol: "acento", simbolo: "firma", nombre: { es: "Mírala ahora", en: "Review it now" } };
 const APROBADA = { rol: "positivo", simbolo: "ok", nombre: { es: "Aprobada", en: "Approved" } };
 
-// Las trece pantallas de la orden de diseño, en su orden, y el kit del sistema al final.
+// Las pantallas de la orden de diseño, en su orden. El kit del sistema va aparte, al pie.
 const PANTALLAS = [
-  { archivo: "tablero.html", nombre: { es: "Tablero", en: "Dashboard" }, c: "C16 · C18", nueva: true,
+  { archivo: "tablero.html", nombre: { es: "Tablero", en: "Dashboard" }, c: "C16 · C18",
     que: { es: "Lo que pide atención hoy, cómo va cada activo y la validación del instrumento.", en: "What needs attention today, how each asset is doing and the instrument validation." } },
   { archivo: "catalogo.html", nombre: { es: "Catálogo", en: "Catalog" }, c: "C1 · C3",
-    que: { es: "Las pruebas de las cuatro familias, con filtros que funcionan.", en: "Tests for the four families, with working filters." } },
+    que: { es: "Las pruebas de todas las familias, con filtros que funcionan.", en: "Tests for every family, with working filters." } },
   { archivo: archivoDeFicha("PR-IA-PINJ-001"), nombre: { es: "Ficha de prueba", en: "Test record" }, c: "C1 · C6",
     que: { es: "Qué verifica, resultado esperado, regla de veredicto, marco y controles; una por prueba.", en: "What it verifies, expected result, verdict rule, framework and controls; one per test." } },
   { archivo: "marcos.html", nombre: { es: "Marcos y versiones", en: "Frameworks and versions" }, c: "C4",
@@ -33,12 +32,12 @@ const PANTALLAS = [
   { archivo: "evidencia.html", nombre: { es: "Carga y confirmación", en: "Intake and confirmation" }, c: "C11 · C14",
     que: { es: "Las tres vías de carga y la confirmación por lote, con todas las fallas a la vista.", en: "The three intake routes and batch confirmation, with every failure in plain view." } },
   { archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]), nombre: { es: "Hallazgo", en: "Finding" }, c: "C12 · C13",
-    que: { es: "Recorrido de cierre, severidad, plazo y salidas posibles; cuatro, uno por momento.", en: "Closure progress, severity, deadline and possible outcomes; four, one per moment." } },
-  { archivo: "brecha.html", nombre: { es: "Brecha", en: "Gap" }, c: "C16", nueva: true,
+    que: { es: `Recorrido de cierre, severidad, plazo y salidas posibles; ${HALLAZGOS.length}, uno por momento.`, en: `Closure progress, severity, deadline and possible outcomes; ${HALLAZGOS.length}, one per moment.` } },
+  { archivo: "brecha.html", nombre: { es: "Brecha", en: "Gap" }, c: "C16",
     que: { es: "Esperado contra obtenido y cobertura por activo, familia y control.", en: "Expected against obtained and coverage by asset, family and control." } },
-  { archivo: "control.html", nombre: { es: "Vista por control", en: "Control view" }, c: "C17", nueva: true,
+  { archivo: "control.html", nombre: { es: "Vista por control", en: "Control view" }, c: "C17",
     que: { es: "Los cuatro estados de un control y la cadena de cierre de sus hallazgos.", en: "A control's four statuses and the closure chain of its findings." } },
-  { archivo: "informe.html", nombre: { es: "Informe", en: "Report" }, c: "C16", nueva: true,
+  { archivo: "informe.html", nombre: { es: "Informe", en: "Report" }, c: "C16",
     que: { es: "Las ocho secciones de la especificación; se lee aquí y se imprime.", en: "The specification's eight sections; it reads here and it prints." } },
 ];
 
@@ -48,17 +47,16 @@ export function index({ consulta, existentes }) {
 <td data-celda="id"><span class="hg-dato" data-neutro>${String(i + 1).padStart(2, "0")}</span></td>
 <td data-celda="principal"><p><a class="hg-enlace-fila" href="${p.archivo}">${t(p.nombre)}</a></p><p class="hg-menor">${t(p.que)}</p></td>
 <td><p class="hg-menor">${neutro(p.c)}</p></td>
-<td data-celda="estado">${p.nueva ? chip(EN_MIRADA) : estado(APROBADA)}</td>
+<td data-celda="estado">${estado(APROBADA)}</td>
 </tr>`,
   ).join("\n");
-  const nuevas = PANTALLAS.filter((p) => p.nueva).length;
 
   const contenido = `<div class="hg-cabecera">
 <div>
 <h1>${t({ es: "Maqueta de HackGuard", en: "HackGuard mockup" })}</h1>
 <p class="hg-bajada">${t({
-    es: "Las trece pantallas del primer horizonte, con datos sintéticos. Entra por el tablero como entraría el operador, o abre cada pantalla desde esta lista.",
-    en: "The thirteen screens of the first horizon, with synthetic data. Come in through the dashboard as the operator would, or open each screen from this list.",
+    es: `Las ${PANTALLAS.length} pantallas del primer horizonte, con datos sintéticos. Entra por el tablero como entraría el operador, o abre cada pantalla desde esta lista.`,
+    en: `The ${PANTALLAS.length} screens of the first horizon, with synthetic data. Come in through the dashboard as the operator would, or open each screen from this list.`,
   })}</p>
 </div>
 <div><a class="hg-boton hg-boton-primario" href="tablero.html">${t({ es: "Entrar a la aplicación", en: "Enter the application" })}</a></div>
@@ -66,8 +64,8 @@ export function index({ consulta, existentes }) {
 
 <section class="hg-panel" aria-labelledby="pantallas">
 <div class="hg-panel-cab"><h2 id="pantallas">${t({ es: "Pantallas", en: "Screens" })}</h2><p class="hg-menor">${t({
-    es: `En el orden de la orden de diseño. ${nuevas} por mirar ahora.`,
-    en: `In the design order's sequence. ${nuevas} to review now.`,
+    es: `En el orden de la orden de diseño. Las ${PANTALLAS.length}, aprobadas una por una en las miradas 1 a 5.`,
+    en: `In the design order's sequence. All ${PANTALLAS.length}, approved one by one in reviews 1 to 5.`,
   })}</p></div>
 <table class="hg-tabla">
 <caption class="hg-oculto">${t({ es: "Pantallas de la maqueta", en: "Mockup screens" })}</caption>
@@ -99,8 +97,8 @@ ${filas}
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: la portada del recorrido. Las cuatro pantallas nuevas van marcadas; las otras nueve ya están aprobadas.",
-        en: "Review 5: the tour's home. The four new screens are marked; the other nine are already approved.",
+        es: "Mirada 6 (G-Diseño): el recorrido completo. Cada pantalla ya se aprobó en su mirada; ahora se mira el conjunto en teléfono y escritorio, en los dos temas, en español y en inglés.",
+        en: "Review 6 (design gate): the full walk-through. Each screen was approved in its own review; now the whole is reviewed on phone and desktop, in both themes, in Spanish and in English.",
       },
     },
     contenido,
@@ -113,7 +111,7 @@ ${filas}
       {
         donde: { es: "Tabla de pantallas", en: "Screens table" },
         hacer: { es: "Recórrela de arriba abajo", en: "Go through it top to bottom" },
-        ver: { es: "Las trece de la orden de diseño en su orden; las cuatro nuevas dicen «Mírala ahora»", en: "The thirteen from the design order in sequence; the four new ones say “Review it now”" },
+        ver: { es: `Las ${PANTALLAS.length} de la orden de diseño en su orden, todas «Aprobada»`, en: `All ${PANTALLAS.length} from the design order in sequence, each “Approved”` },
       },
       {
         donde: { es: "Cualquier pantalla", en: "Any screen" },

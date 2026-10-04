@@ -58,10 +58,17 @@ function lista(campo, rotulo, opciones) {
   return `<label class="hg-campo" for="${id}"><span>${t(rotulo)}</span><select id="${id}" data-controlador="filtro" data-campo="${campo}">${items}</select></label>`;
 }
 
+// Lo que el estado de error muestra rechazado al cargar: pruebas que no pasan su esquema.
+const RECHAZADAS = [
+  { id: "PR-IA-NUEVA-003", razon: { es: "cita su marco sin versión.", en: "cites its framework without a version." } },
+  { id: "PR-AG-NUEVA-004", razon: { es: "es de una familia que varía entre corridas y no declara repeticiones.", en: "belongs to a family that varies between runs and declares no repetitions." } },
+];
+
 export function catalogo({ consulta, umbrales, existentes }) {
   const vigencias = PRUEBAS.map((p) => vigencia(p.verificada, consulta, umbrales).estado);
   const cuenta = (e) => vigencias.filter((v) => v === e).length;
   const sinControl = PRUEBAS.filter((p) => p.controles.length === 0).length;
+  const deDecision = PRUEBAS.filter((p) => p.familia === "modelo_decision").length;
   const total = PRUEBAS.length;
   const huellaDelCatalogo = huellaDe({ version: INSTANTANEA.version, pruebas: PRUEBAS.map((p) => p.id).join(",") });
 
@@ -166,13 +173,10 @@ ${aviso(
   ERROR,
   { es: "El catálogo no se cargó", en: "The catalog did not load" },
   sello(
-    { rol: "falla", simbolo: "falla", nombre: { es: "2 pruebas rechazadas al cargar", en: "2 tests rejected on load" } },
-    `<ul class="hg-lista"><li>${dato("PR-IA-NUEVA-003")} ${t({ es: "cita su marco sin versión.", en: "cites its framework without a version." })}</li><li>${dato("PR-AG-NUEVA-004")} ${t({
-      es: "es de una familia que varía entre corridas y no declara repeticiones.",
-      en: "belongs to a family that varies between runs and declares no repetitions.",
-    })}</li></ul><p>${t({
-      es: "Nada entra a medias: corrige esas dos y vuelve a cargar. El resto del catálogo no se muestra hasta entonces.",
-      en: "Nothing gets in half-done: fix those two and load again. The rest of the catalog is not shown until then.",
+    { rol: "falla", simbolo: "falla", nombre: { es: `${RECHAZADAS.length} pruebas rechazadas al cargar`, en: `${RECHAZADAS.length} tests rejected on load` } },
+    `<ul class="hg-lista">${RECHAZADAS.map((r) => `<li>${dato(r.id)} ${t(r.razon)}</li>`).join("")}</ul><p>${t({
+      es: "Nada entra a medias: corrige esas pruebas y vuelve a cargar. El resto del catálogo no se muestra hasta entonces.",
+      en: "Nothing gets in half-done: fix those tests and load again. The rest of the catalog is not shown until then.",
     })}</p>`,
   ),
 )}`;
@@ -200,7 +204,7 @@ ${aviso(
       {
         donde: { es: "Píldoras de familia", en: "Family pills" },
         hacer: { es: "Pulsa «Modelo de decisión»", en: "Press “Decision model”" },
-        ver: { es: "Quedan 6 filas y el contador lo dice", en: "6 rows remain and the counter says so" },
+        ver: { es: `Quedan ${deDecision} filas y el contador lo dice`, en: `${deDecision} rows remain and the counter says so` },
       },
       {
         donde: { es: "Lista «Vigencia»", en: "“Freshness” list" },

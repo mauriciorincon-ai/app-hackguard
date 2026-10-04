@@ -8,7 +8,7 @@ import { AREAS, NORMA, areaDe } from "../datos/gobierno.mjs";
 import { ACTIVOS, SOBRES, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 import { brecha as calcular } from "../nucleo/brecha.mjs";
 import { huellaDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, firma, huella, par, sello, selectorDeObjetos } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, destino, enlace, estado, firma, huella, par, sello, selectorDeObjetos } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_CONTROL, SEVERIDAD } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -137,8 +137,8 @@ ${errorDelLibro()}`;
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: la vista por control completa. Cada control abre su página; la de la mirada 1 (`direccion`) se retira porque esta la reemplaza.",
-        en: "Review 5: the complete control view. Each control opens its own page; the review 1 page (`direccion`) is retired because this one replaces it.",
+        es: "Mirada 5 (aprobada): la vista por control completa. Cada control abre su página; la de la mirada 1 (direccion) se retiró porque esta la reemplaza.",
+        en: "Review 5 (approved): the complete control view. Each control opens its own page; the review 1 page (direccion) was retired because this one replaces it.",
       },
       grupos: [barraDeEstados()],
     },
@@ -170,7 +170,7 @@ ${errorDelLibro()}`;
 
 // ---------- La página de un control ----------
 
-function fraseDeControl(c, plazos) {
+function fraseDeControl(c, plazos, umbrales) {
   const total = c.vista.filas.length;
   const fallas = c.vista.cuenta("con_fallas");
   if (total === 0) {
@@ -188,7 +188,10 @@ function fraseDeControl(c, plazos) {
   if (c.vista.estado === "sin_evidencia") {
     return { es: `Ninguna de sus ${total} pruebas tiene resultado confirmado.`, en: `None of its ${total} tests has a confirmed result.` };
   }
-  if (c.vista.estado === "evidencia_antigua") return { es: "Toda su evidencia tiene más de 180 días.", en: "All its evidence is more than 180 days old." };
+  if (c.vista.estado === "evidencia_antigua") {
+    const n = umbrales.evidencia_antigua;
+    return { es: `Toda su evidencia tiene ${n} días o más.`, en: `All its evidence is ${n} days old or more.` };
+  }
   const sin = c.vista.cuenta("sin_evidencia");
   return sin
     ? { es: `Hay evidencia reciente y ninguna prueba falló; ${sin} de ${total} todavía no tienen resultado.`, en: `There is recent evidence and no test failed; ${sin} of ${total} have no result yet.` }
@@ -256,7 +259,7 @@ ${cierre}
 
 /** Lo que una persona puede hacer por este control, según su estado: una sola acción principal. */
 function accion(c, existentes) {
-  const boton = (archivo, texto) => (existentes.includes(archivo) ? `<a class="hg-boton hg-boton-primario" href="${archivo}">${t(texto)}</a>` : "");
+  const boton = (archivo, texto) => `<a class="hg-boton hg-boton-primario" href="${destino(archivo, existentes)}">${t(texto)}</a>`;
   if (c.vista.estado === "con_fallas") {
     const h = c.fallas[0];
     if (!h) return `<p>${t({ es: "Sus fallas tienen el riesgo aceptado: se revisan en la fecha que cada una declara.", en: "Its failures have their risk accepted: each is reviewed on the date it declares." })}</p>`;
@@ -340,7 +343,7 @@ ${cerradosPrimero.map((h) => cadena(h, plazosPorHallazgo[h.id], existentes)).joi
 
 <div class="hg-trabajo" data-si="datos">
 <div class="hg-pila">
-${sello(ESTADO_DE_CONTROL[c.vista.estado], `<p>${t(fraseDeControl(c, plazos))}</p>`, `data-control="${id}" data-control-estado="${c.vista.estado}" data-por-filas`)}
+${sello(ESTADO_DE_CONTROL[c.vista.estado], `<p>${t(fraseDeControl(c, plazos, umbrales))}</p>`, `data-control="${id}" data-control-estado="${c.vista.estado}" data-por-filas`)}
 ${tabla}
 ${cadenas}
 </div>
@@ -396,8 +399,8 @@ ${errorDelLibro()}`;
     existentes,
     sala: {
       nota: {
-        es: "Mirada 5: la página de un control, con lo aprobado en la mirada 1. Hay una por cada control aplicable; el selector de arriba las recorre.",
-        en: "Review 5: a control's page, with what was approved in review 1. There is one per applicable control; the selector at the top goes through them.",
+        es: "Mirada 5 (aprobada): la página de un control, con lo aprobado en la mirada 1. Hay una por cada control aplicable; el selector de arriba las recorre.",
+        en: "Review 5 (approved): a control's page, with what was approved in review 1. There is one per applicable control; the selector at the top goes through them.",
       },
       grupos: [barraDeEstados()],
     },
@@ -405,8 +408,8 @@ ${errorDelLibro()}`;
     revisar: [
       {
         donde: { es: "Selector de arriba", en: "The selector at the top" },
-        hacer: { es: "Abre los cinco controles", en: "Open all five controls" },
-        ver: { es: "Cada uno en un estado distinto, y su aviso dice por qué", en: "Each in a different status, and its notice says why" },
+        hacer: { es: `Abre los ${b.controles.length} controles`, en: `Open all ${b.controles.length} controls` },
+        ver: { es: "Cada uno con su estado y un aviso que dice por qué; entre todos aparecen los cuatro estados", en: "Each with its status and a notice saying why; together they show all four statuses" },
       },
       {
         donde: { es: "Tabla de pruebas", en: "Test table" },
@@ -415,7 +418,7 @@ ${errorDelLibro()}`;
       },
       {
         donde: { es: "Cadena de cierre (control con fallas)", en: "Closure chain (control with failures)" },
-        hacer: { es: "Compara los dos hallazgos", en: "Compare the two findings" },
+        hacer: { es: "Compara sus hallazgos", en: "Compare its findings" },
         ver: { es: "Uno cerrado por re-prueba y otro abierto con sus pasos pendientes en línea punteada", en: "One closed by retest and one open with its pending steps on a dashed line" },
       },
       {

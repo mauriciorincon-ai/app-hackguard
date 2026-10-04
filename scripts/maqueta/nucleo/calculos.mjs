@@ -4,11 +4,24 @@
 import { createHash } from "node:crypto";
 import { diasEntre, sumarDias } from "./fecha.mjs";
 
-/** Huella sha256 de un registro sintético (claves ordenadas): estable entre corridas. */
-export function huellaDe(registro) {
-  const canonico = JSON.stringify(registro, Object.keys(registro).sort());
-  return "sha256:" + createHash("sha256").update(canonico).digest("hex");
+/** JSON canónico: claves ordenadas en TODOS los niveles, así lo anidado también cuenta para la huella. */
+function canonico(valor) {
+  if (Array.isArray(valor)) return `[${valor.map(canonico).join(",")}]`;
+  if (valor && typeof valor === "object") {
+    const claves = Object.keys(valor).filter((k) => valor[k] !== undefined).sort();
+    return `{${claves.map((k) => `${JSON.stringify(k)}:${canonico(valor[k])}`).join(",")}}`;
+  }
+  return JSON.stringify(valor);
 }
+
+/** Huella sha256 de un registro sintético, sobre su JSON canónico: estable entre corridas. */
+export function huellaDe(registro) {
+  return "sha256:" + createHash("sha256").update(canonico(registro)).digest("hex");
+}
+
+/** Un hallazgo solo está cerrado cuando su estado lo dice. Aceptar el riesgo no lo cierra: sigue siendo
+ *  falla de su control (y no pide trabajo hasta su fecha de revisión). */
+export const estaCerrado = (h) => h.estado === "cerrado";
 
 /** Semáforo de vigencia (RF-01.5): días desde la última verificación y su estado. */
 export function vigencia(verificada, consulta, umbrales) {
@@ -54,10 +67,11 @@ export function vistaPorControl({ pruebas, sobres, hallazgos }, consulta, umbral
   const filas = pruebas.map((prueba) => {
     const suyos = sobres.filter((s) => s.prueba === prueba.id).sort((a, b) => a.fecha.localeCompare(b.fecha));
     const ultimo = suyos.at(-1) ?? null;
-    const abierto = hallazgos.find((h) => h.prueba === prueba.id && !h.cierre) ?? null;
+    const abierto = hallazgos.find((h) => h.prueba === prueba.id && !estaCerrado(h)) ?? null;
     const edad = ultimo ? antiguedad(ultimo.fecha, consulta, umbrales) : null;
     const veredicto = ultimo ? ultimo.veredicto : "no_ejecutada";
-    const estado = !ultimo
+    // «No detectado» no es evidencia (E-6): un sobre «no ejecutada» deja la prueba sin evidencia.
+    const estado = !ultimo || veredicto === "no_ejecutada"
       ? "sin_evidencia"
       : veredicto === "fallida" || veredicto === "parcial"
         ? "con_fallas"

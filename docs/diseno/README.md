@@ -201,6 +201,10 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, o que fila y ficha digan vigencias distintas (hoy y 45 días después) |
 | Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
 | Evidencia | `tests/unit/maqueta-evidencia.test.ts` | Una fallida fuera de la revisión obligatoria de su lote; un hallazgo mostrado como cerrado sin su cadena completa; una tabla de prioridad cuya casilla no es la severidad declarada |
+| Escala de IA | `tests/unit/maqueta-escala.test.ts` | Una tabla de prioridad que rompe el piso o el techo declarados en sus datos, o que baja de nivel al subir la frecuencia o el impacto |
+| Cifras | `tests/unit/maqueta-cifras.test.ts` | Una cifra de datos escrita a mano en letras («cuatro familias») en el texto de cualquier página |
+| Cálculos | `tests/unit/maqueta-calculos.test.ts` | Una huella que ignora lo anidado; un «no ejecutada» contado como evidencia de un control; un riesgo aceptado tratado como cerrado |
+| Enlaces del generador | `scripts/maqueta/nucleo/componentes.mjs` (`destino()`) | Un enlace a una página que no se genera: el generador falla en vez de dibujar texto |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
 | Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad, dato que pisa la columna vecina o contenido que se sale de su panel, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento»; un informe que se imprime con navegación, en tinta clara, con tablas hechas tarjetas o fuera de la hoja |
 

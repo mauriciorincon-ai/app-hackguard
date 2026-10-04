@@ -32,7 +32,7 @@ function consecuencias(p) {
   return `<div>
 <p class="hg-consecuencia" data-si-decision="aprobar" hidden>${t(aprobada)}</p>
 <p class="hg-consecuencia" data-si-decision="rechazar" hidden>${t({ es: "Rechazada. Sale de la bandeja y queda en el registro con tu motivo.", en: "Rejected. It leaves the inbox and stays in the log with your reason." })}</p>
-${p.separable ? `<p class="hg-consecuencia" data-si-decision="separar" hidden>${t({ es: "Separada. Vuelve a la bandeja como dos propuestas, una por prueba.", en: "Split. It returns to the inbox as two proposals, one per test." })}</p>` : ""}
+${p.separable ? `<p class="hg-consecuencia" data-si-decision="separar" hidden>${t({ es: `Separada. Vuelve a la bandeja como ${p.candidatas.length} propuestas, una por prueba.`, en: `Split. It returns to the inbox as ${p.candidatas.length} proposals, one per test.` })}</p>` : ""}
 <p class="hg-menor" data-si-decision="">${t({ es: "Sin decidir: no está en el catálogo ni cuenta como evidencia.", en: "Not decided: it is not in the catalog and does not count as evidence." })}</p>
 </div>`;
 }
@@ -81,7 +81,7 @@ function sobre(p, existentes) {
       `${candidatas.map((c) => `<span>${enlace(archivoDeFicha(c.id), dato(c.id), existentes)} ${t(c.nombre)}</span>`).join("")}${
         p.separable
           ? ""
-          : `<span class="hg-menor">${t({ es: "Hay dos pruebas parecidas en el plan. Se propone la primera; tú eliges.", en: "There are two similar tests in the plan. The first is proposed; you choose." })}</span>`
+          : `<span class="hg-menor">${t({ es: `Hay ${p.candidatas.length} pruebas parecidas en el plan. Se propone la primera; tú eliges.`, en: `There are ${p.candidatas.length} similar tests in the plan. The first is proposed; you choose.` })}</span>`
       }`,
     ),
   ];
@@ -131,6 +131,7 @@ export function propuestas({ consulta, existentes }) {
   const cuenta = (f) => PROPUESTAS.filter(f).length;
   const sinVerificar = cuenta((p) => p.fuentes?.some((f) => f.verificacion !== "verificada"));
   const marcadas = cuenta((p) => p.contenido === "marcada_para_revision");
+  const delExtractor = cuenta((p) => p.origen === "extractor");
 
   const origenes = [{ valor: "", nombre: { es: "Todas", en: "All" } }, ...Object.entries(ORIGENES).map(([valor, nombre]) => ({ valor, nombre }))]
     .map(
@@ -260,7 +261,7 @@ ${aviso(
       {
         donde: { es: "Píldoras de arriba", en: "Pills on top" },
         hacer: { es: "Pulsa «Extractor»", en: "Press “Extractor”" },
-        ver: { es: "Quedan los dos sobres y el contador lo dice", en: "The two envelopes remain and the counter says so" },
+        ver: { es: `Quedan las ${delExtractor} del extractor y el contador lo dice`, en: `The extractor's ${delExtractor} remain and the counter says so` },
       },
     ],
   });

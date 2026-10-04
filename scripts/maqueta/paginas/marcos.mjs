@@ -246,7 +246,7 @@ ${aviso(
       },
       {
         donde: { es: "Avisos de versión", en: "Version notices" },
-        hacer: { es: "Lee los dos avisos", en: "Read the two notices" },
+        hacer: { es: "Lee cada aviso", en: "Read each notice" },
         ver: { es: "Uno ya tiene propuesta en la bandeja; el otro dice qué pedir. Ninguno cambia el catálogo solo", en: "One already has a proposal in the inbox; the other says what to ask for. Neither changes the catalog by itself" },
       },
       {

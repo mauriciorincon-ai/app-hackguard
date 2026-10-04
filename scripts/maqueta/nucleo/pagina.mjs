@@ -6,6 +6,7 @@
 // scripts en línea: la política de contenido de /diseno/ solo admite 'self').
 import { INSTANTANEA, PRUEBAS as PRUEBAS_DEL_CATALOGO } from "../datos/catalogo.mjs";
 import { ACTIVOS, LOTES, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
+import { destino } from "./componentes.mjs";
 import { atributo, esc, neutro, t } from "./html.mjs";
 
 const PRIMER_ACTIVO = Object.keys(ACTIVOS)[0];
@@ -145,19 +146,13 @@ function lateral(seccion, existentes, consulta) {
     const abierta = s.id === seccion?.id;
     const dentro = `${icono(s.icono)}<span>${t(s.nombre)}</span>${s.cuenta ? `<span class="hg-cuenta" data-neutro>${s.cuenta}</span>` : ""}`;
     const paginas = abierta ? paginasDe(seccion) : s.paginas;
-    const destino = paginas[0].archivo;
+    const primera = paginas[0].archivo;
     const actual = abierta ? (paginas.length > 1 ? "true" : "page") : "";
-    const cabeza = existentes.includes(destino)
-      ? `<a href="${destino}"${actual ? ` aria-current="${actual}"` : ""}>${dentro}</a>`
-      : `<span class="hg-nav-pendiente">${dentro}</span>`;
+    const cabeza = `<a href="${destino(primera, existentes)}"${actual ? ` aria-current="${actual}"` : ""}>${dentro}</a>`;
     const sub =
       abierta && paginas.length > 1
         ? `<ul class="hg-nav-sub">${paginas
-            .map((pg) =>
-              existentes.includes(pg.archivo)
-                ? `<li><a href="${pg.archivo}"${pg.archivo === seccion.archivo ? ' aria-current="page"' : ""}>${t(pg.nombre)}</a></li>`
-                : `<li><span class="hg-nav-pendiente">${t(pg.nombre)}</span></li>`,
-            )
+            .map((pg) => `<li><a href="${destino(pg.archivo, existentes)}"${pg.archivo === seccion.archivo ? ' aria-current="page"' : ""}>${t(pg.nombre)}</a></li>`)
             .join("")}</ul>`
         : "";
     return `<li>${cabeza}${sub}</li>`;
@@ -179,11 +174,7 @@ function pestanasDeSeccion(seccion, existentes) {
   if (paginas.length < 2) return "";
   const grupo = NAVEGACION.find((s) => s.id === seccion.id);
   const items = paginas
-    .map((pg) =>
-      existentes.includes(pg.archivo)
-        ? `<li><a href="${pg.archivo}"${pg.archivo === seccion.archivo ? ' aria-current="page"' : ""}>${t(pg.nombre)}</a></li>`
-        : `<li><span>${t(pg.nombre)}</span></li>`,
-    )
+    .map((pg) => `<li><a href="${destino(pg.archivo, existentes)}"${pg.archivo === seccion.archivo ? ' aria-current="page"' : ""}>${t(pg.nombre)}</a></li>`)
     .join("");
   return `<nav class="hg-subnav" ${atributo("aria-label", grupo.nombre)}><ul>${items}</ul></nav>\n`;
 }
