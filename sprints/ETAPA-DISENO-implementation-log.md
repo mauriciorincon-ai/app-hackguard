@@ -769,6 +769,19 @@ nombra la deriva, y una que sobra, la prueba de sobrantes.
 por las tres rutas, enlace relativo, 380 px y escritorio en los dos idiomas, axe en los cuatro pares,
 interacción y reducir movimiento) en verde · nada bajo `src/`.
 
+**Cierre de la etapa.**
+
+- **Summary:** `sprints/ETAPA-DISENO-summary.md` registra la auditoría y sus pagos, las decisiones, la
+  deuda y las sugerencias al método.
+- **Frases caducadas:** la segunda pasada corrió sobre todo lo versionado (sin las páginas generadas, la
+  auditoría ni esta bitácora) e incluyó el summary. No quedó ninguna frase que diga que G-Diseño está
+  pendiente o que la etapa sigue abierta. El `README.md` raíz del estampado queda como deuda del S1.
+- **CI:** la de `4ec0850` (bundle y registro de G-Diseño) dio `quality` (1 min 59 s), `e2e` (10 min) y `lighthouse` (1 min 25 s) en `success`, y Vercel ✓. El commit de este párrafo se verifica igual antes del merge.
+- **Barrido de cero enlaces:** sin resultados después del último `git add` de cada commit.
+- **Merge del PR #4:** con commit de merge, no squash. Esta bitácora y el README de diseño citan commits
+  de la rama (`d25b21d`), y la regla 15 ata cada gate al commit que lo introduce; un squash los sacaría de
+  la historia de `main`.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
