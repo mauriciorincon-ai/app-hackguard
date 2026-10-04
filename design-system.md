@@ -1,6 +1,6 @@
 ---
-version: 0.6.0
-estado: dirección «consola» aprobada en todas las pantallas construidas (mirada 4-ter, tramos 1 y 2) · se sella en G-Diseño
+version: 0.7.0
+estado: dirección «consola» aprobada (mirada 4-ter, tramos 1 y 2) · mirada 5 en curso (tablero, brecha, vista por control, informe y portada) · se sella en G-Diseño
 ---
 
 # HackGuard — sistema de diseño
@@ -75,6 +75,9 @@ defecto es el oscuro; el claro se diseña y se mira con el mismo cuidado.
   sprint con UI añade el barrido que lo hace fallar en `pnpm lint`.
 - **El acento se gasta con avaricia.** Si algo es azul y no es una firma, un enlace, el foco, la acción
   principal o lo que una persona eligió (página abierta, pestaña, fila, filtro, campo lleno), sobra.
+- **Al imprimir, el papel es claro:** `tokens.css` aplica la paleta del tema claro en los dos temas
+  dentro de `@media print` (tinta clara sobre papel blanco no se leería). Lo vigila el e2e de la hoja de
+  impresión.
 - Umbrales medidos en ambos temas: tinta ≥ 7:1 sobre toda superficie y todo tinte; tinta secundaria y
   acento ≥ 4,5:1; marcas y bordes de control ≥ 3:1; los cinco papeles separados entre sí en visión normal
   (ΔE OKLab ≥ 0,10) y bajo protanopía, deuteranopía y tritanopía (≥ 0,05).
@@ -147,7 +150,7 @@ Lo que no es noticia no lleva chip. Una deuda («sin control asignado») es aten
 
 | Componente | Qué es |
 |---|---|
-| Armazón | Barra lateral (marca, cinco secciones con icono y cuenta; la sección abierta despliega sus páginas; al pie, la instantánea del catálogo y la fecha de consulta) + barra de contexto (ruta y botones de tema e idioma) + contenido. En teléfono: barra fija al pie con las cinco secciones y pestañas con las páginas de la sección |
+| Armazón | Barra lateral (marca, que lleva al tablero; cinco secciones con icono y cuenta; la sección abierta despliega sus páginas; al pie, la instantánea del catálogo y la fecha de consulta) + barra de contexto (ruta y botones de tema e idioma) + contenido. En teléfono: barra fija al pie con las cinco secciones y pestañas con las páginas de la sección |
 | Cabecera de página | Título, una frase y una línea de datos; a la derecha, la tira de cifras. En un objeto: identificador y chips de estado sobre el título |
 | Tira de cifras | Cuatro celdas pegadas con su cifra y su estado. No son tarjetas sueltas |
 | Panel | Superficie con borde: cabecera (título y nota o chip), cuerpo y pie opcional |
@@ -157,20 +160,26 @@ Lo que no es noticia no lleva chip. Una deuda («sin control asignado») es aten
 | Carril de acción | Columna derecha de las pantallas de detalle. Arriba, la tarjeta de acción (filo de tinta azul): qué falta, los botones y, al decidir, qué ocurre. Debajo, tarjetas de detalle y de propiedades |
 | Recorrido | Pasos de algo que tiene ciclo de vida, unidos por una línea: sólida y del color del paso si está hecho, punteada si falta. Horizontal en un panel ancho; vertical en teléfono y dentro del carril |
 | Propiedades | Pares de rótulo arriba y valor abajo. En el carril, uno bajo otro con línea fina; en un panel ancho, en dos o tres columnas |
-| Pestañas | Eligen un panel de la misma pantalla (las vías de carga); subrayado azul en la abierta |
+| Pestañas | Eligen un panel de la misma pantalla (las vías de carga) o agrupan de otra manera la misma cuenta dentro de un panel (cobertura por activo, familia o control); subrayado azul en la abierta |
 | Selector de objeto | Tarjetas pequeñas con identificador y estado que dicen cuál objeto de una serie está abierto (un lote, un hallazgo) |
 | Botón | Con borde, sobre superficie. **Primario**: relleno de tinta azul, uno por tarjeta de acción. **Discreto**: sin fondo, para ajustes. Lo elegido lleva borde y tinte azules |
 | Formulario | Campos en una o dos columnas dentro de un panel: rótulo arriba, ayuda debajo. Un campo lleno lleva base azul. El contador de obligatorios y el botón de guardar van en la tarjeta de acción; el botón avisa si falta alguno en vez de estar deshabilitado |
 | Chip, estado y sello | Los de la sección 5 |
 | Dato y huella | Texto en la fuente de dato; la huella se abrevia a 8 + 4 caracteres |
 | Firma | Marca de firma + «Confirmada» + fecha, en tinta azul |
-| Barra de proporción | Parte sobre total (fallas sobre repeticiones), bajo su cifra |
+| Barra de proporción | Parte sobre total, bajo su cifra. En el color de la falla cuando cuenta fallas (fallas sobre repeticiones); **en tinta cuando mide avance** (ejecutadas de las planeadas): cuánto se ejecutó no es un veredicto |
+| Desglose | Los veredictos de un grupo en una línea que se parte, cada uno con su forma y su cifra («3 superadas · 3 fallidas · 4 sin ejecutar»); los ceros no se dibujan |
+| Cuentas | Lista de rótulos con su forma y su cifra a la derecha, una por línea (hallazgos por severidad, controles por estado, catálogo por vigencia) |
+| Banda de validación | Sello al pie de la cabecera del tablero que dice si el instrumento pasó su validación (C18), con un botón que revela las comprobaciones. En rojo, nada se publica y el tablero no muestra cifras |
+| Tablero | Dos columnas desde 1240 px: a la izquierda lo que pide acción (una tabla «objeto · qué pasa · tipo», lo más urgente primero) y los activos; a la derecha, del ancho del carril, las cuentas |
+| Informe | Un documento dentro de la aplicación: un panel con cabecera de informe (rótulo, título, fecha, instantánea y huella) y secciones numeradas separadas por una línea. Carril con la acción de imprimir y el índice |
+| Hoja de impresión | Al imprimir sale solo el contenido: sin navegación, sin sala y sin carril; papel claro; las tablas como tablas (aunque la hoja sea más estrecha que el corte de las tarjetas), cabeceras de columna en minúscula; el resumen del informe en su propia hoja |
 | Matriz de prioridad | Tabla de impacto por frecuencia con el nivel en cada casilla (barras + texto) y la casilla del objeto en un marco de tinta. En teléfono la tabla se reorganiza y las anclas bajan a una leyenda |
 | Contraste | Dos cajas enfrentadas: lo que se esperaba y lo que se obtuvo; dueño y proveedor; lo que se puede probar y lo que no |
 | Rejilla de cajas | Varias piezas iguales dentro de un panel (una por herramienta del paquete de ejecución, un aviso por marco) |
 | Propuesta | Un panel por propuesta de la bandeja: quién propone, qué y su fuente arriba; al pie, sobre superficie hundida, los botones de decisión y qué ocurre con cada uno. Decidida, el pie lleva la barra de tinta azul. Sin botón primario: hay varias a la vista |
 | Texto destacado | La frase que no puede perderse (el resultado esperado de una prueba): 16 px, peso 600, barra a la izquierda en `--linea-fuerte` |
-| Vocabulario | Los estados de cada familia en columnas, cada uno en línea (kit y vista por control) |
+| Vocabulario | Los estados de cada familia en columnas, cada uno en línea (en el kit) |
 | Estado de pantalla | Vacío, carga y error: caja centrada con marca, título y qué hacer. El error nombra cada falla en un sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
@@ -196,12 +205,15 @@ está en la barra de contexto. Identificadores, fechas, huellas y nombres propio
   la maqueta y en el producto; el producto las expone a Tailwind con `@theme inline`.
 - `scripts/paleta/` sigue siendo la fuente: cambiar un color es cambiar `tokens.mjs` y regenerar.
 - El vocabulario de estados se carga como dato; ningún componente lleva un color de estado escrito.
+- **Una cuenta, un cálculo.** Lo que varias pantallas muestran (la cobertura, el estado de un control, los
+  vencidos) sale de un solo cálculo, y dice lo mismo en cada pantalla y en cada fecha. En la maqueta lo
+  vigilan `maqueta-brecha` y la matriz de envejecimiento.
 - El primer sprint con UI añade: el barrido de tintas vetadas en `pnpm lint`, y la comparación de cada
   pantalla construida contra su página de la maqueta (gate de fidelidad).
 
 ## 10. Anti-patrones
 
-Una columna de texto centrada con media pantalla vacía · secciones numeradas como en un informe · listas
+Una columna de texto centrada con media pantalla vacía · secciones numeradas fuera del informe · listas
 de rótulo y valor a todo el ancho · la acción al final de la página · rejilla de tarjetas idénticas como
 respuesta a todo · gradientes · sombras · emojis como iconos · color como única señal · verde y rojo como
 único contraste entre dos estados · un chip en cada fila cuando nada es noticia · más de un botón
@@ -210,11 +222,16 @@ animación de entrada.
 
 ## 11. Pendiente
 
-Mirada 5: brecha, vista por control (completa), informe con su hoja de impresión, tablero y la portada
-real (`index`).
+Mirada 6 (G-Diseño): el recorrido completo en teléfono y escritorio, en los dos temas y los dos idiomas.
+Después, el bundle `design-sync/` desde este documento.
 
 ## 12. Registro de cambios
 
+- **0.7.0** — Mirada 5: tablero, brecha, vista por control (lista y una página por control), informe y la
+  portada del recorrido. Componentes nuevos: desglose, cuentas, barra de avance en tinta, banda de
+  validación, tablero de dos columnas, informe y hoja de impresión (con la paleta clara al imprimir).
+  Pestañas también dentro de un panel. Regla nueva: una cuenta, un cálculo. El logo lleva al tablero;
+  la franja de sala vuelve al recorrido. Se retira la página `direccion`.
 - **0.6.0** — Mirada 4-ter, tramo 2: todas las pantallas con la dirección «consola» (fichas de prueba,
   marcos, controles, propuestas, activo, plan, kit, vista por control e índice). Componentes nuevos:
   propuesta, rejilla de cajas, texto destacado, vocabulario; el kit dibuja ya todos los de § 6. Las

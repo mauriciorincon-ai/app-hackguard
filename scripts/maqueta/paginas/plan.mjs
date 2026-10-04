@@ -63,8 +63,8 @@ ${sello(
       ...base,
       sala: {
         nota: {
-          es: "Mirada 4-ter, segundo tramo: el plan de un activo sin autorización. No existe, y la página lo explica.",
-          en: "Review 4-ter, second stretch: the plan of an asset with no authorization. It does not exist, and the page explains why.",
+          es: "Mirada 4-ter: el plan de un activo sin autorización (aprobado en el segundo tramo). No existe, y la página lo explica.",
+          en: "Review 4-ter: the plan of an asset with no authorization (approved in the second stretch). It does not exist, and the page explains why.",
         },
       },
       contenido,
@@ -315,8 +315,8 @@ ${aviso(
     ...base,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: el plan de un activo con la interfaz nueva. La fórmula de prioridad es ilustrativa; la definitiva se fija en el sprint del planificador.",
-        en: "Review 4-ter, second stretch: an asset's plan with the new interface. The priority formula is illustrative; the final one is set in the planner's sprint.",
+        es: "Mirada 4-ter: el plan de un activo con la interfaz nueva (aprobado en el segundo tramo). La fórmula de prioridad es ilustrativa; la definitiva se fija en el sprint del planificador.",
+        en: "Review 4-ter: an asset's plan with the new interface (approved in the second stretch). The priority formula is illustrative; the final one is set in the planner's sprint.",
       },
       grupos: [barraDeEstados()],
     },

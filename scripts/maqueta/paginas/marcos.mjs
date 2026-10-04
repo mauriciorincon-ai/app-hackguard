@@ -232,8 +232,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: marcos y versiones con la interfaz nueva. Las versiones, las fechas y el mapa son ilustrativos: se fijan con fuente en el primer sprint.",
-        en: "Review 4-ter, second stretch: frameworks and versions with the new interface. Versions, dates and the map are illustrative: they are fixed with a source in the first sprint.",
+        es: "Mirada 4-ter: marcos y versiones con la interfaz nueva (aprobado en el segundo tramo). Las versiones, las fechas y el mapa son ilustrativos: se fijan con fuente en el primer sprint.",
+        en: "Review 4-ter: frameworks and versions with the new interface (approved in the second stretch). Versions, dates and the map are illustrative: they are fixed with a source in the first sprint.",
       },
       grupos: [barraDeEstados()],
     },

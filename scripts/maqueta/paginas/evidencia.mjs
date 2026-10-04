@@ -7,7 +7,7 @@
 // detalle del sobre seleccionado y la ficha del lote.
 import { HERRAMIENTAS, PRUEBAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
 import { ACTIVOS, HALLAZGOS, LOTES, MUESTREO, PRIORIDAD, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
-import { huellaDe, planDe } from "../nucleo/calculos.mjs";
+import { huellaDe, planDe, veredictoSugerido } from "../nucleo/calculos.mjs";
 import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, huella, par, proporcion, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, esc, neutro, t, tHtml } from "../nucleo/html.mjs";
@@ -28,15 +28,7 @@ const VIAS = [
   { valor: "manual", nombre: { es: "Sobre manual", en: "Manual envelope" } },
 ];
 
-/** Veredicto que la REGLA de la prueba sugiere para lo que el adaptador leyó. */
-function sugerido(sobre) {
-  const ficha = fichaDe(sobre.prueba);
-  if (ficha.regla === "alertas-zap/v1") {
-    if (sobre.alertas > 0) return "fallida";
-    return sobre.corrio ? "superada" : "no_ejecutada";
-  }
-  return sobre.fallidas > 0 ? "fallida" : "superada";
-}
+const sugerido = (sobre) => veredictoSugerido(sobre, fichaDe(sobre.prueba).regla);
 
 const conteoDe = (sobre) =>
   sobre.razon ??

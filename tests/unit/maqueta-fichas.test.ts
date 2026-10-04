@@ -55,7 +55,8 @@ describe.each([
       const aviso = ficha.querySelector("[data-aviso-de-vigencia]")?.getAttribute("data-aviso-de-vigencia") ?? "vigente";
       expect(aviso, `${fila.id}: el aviso de vigencia de la ficha`).toBe(fila.vigencia);
     }
-  });
+    // Lee y analiza 21 fichas: con la máquina cargada pasaba de los 5 s por defecto (2026-10-04).
+  }, 30_000);
 });
 
 it("la matriz de fichas vio los tres estados de vigencia", () => {

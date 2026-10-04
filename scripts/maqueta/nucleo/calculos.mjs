@@ -37,6 +37,18 @@ export function plazo(hallazgo, consulta, umbrales) {
 /** Cota superior aproximada de la tasa de fallo con 0 fallas en k repeticiones: 3/k (E-2). */
 export const cotaPorCiento = (k) => Math.round((3 / k) * 100);
 
+/**
+ * Veredicto que la REGLA de la prueba sugiere para lo que un adaptador leyó. En ZAP, sin constancia de
+ * que la regla corrió, «no ejecutada»: no detectado no es verificado (E-6).
+ */
+export function veredictoSugerido(sobre, regla) {
+  if (regla === "alertas-zap/v1") {
+    if (sobre.alertas > 0) return "fallida";
+    return sobre.corrio ? "superada" : "no_ejecutada";
+  }
+  return sobre.fallidas > 0 ? "fallida" : "superada";
+}
+
 /** Vista por control: una fila por prueba con su último sobre, y el estado del control. */
 export function vistaPorControl({ pruebas, sobres, hallazgos }, consulta, umbrales) {
   const filas = pruebas.map((prueba) => {

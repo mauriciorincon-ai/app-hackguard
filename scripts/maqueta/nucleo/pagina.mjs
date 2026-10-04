@@ -130,8 +130,9 @@ const ICONO = {
 };
 const icono = (n) => `<svg class="hg-icono" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${ICONO[n]}</svg>`;
 
+// El logo lleva a la portada de la aplicación (el tablero); el recorrido de la maqueta es de la sala.
 const marca = () =>
-  `<a class="hg-marca" href="index.html"><svg class="hg-marca-signo" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l8 3v6.1c0 4.6-3.2 8.4-8 9.7-4.8-1.3-8-5.1-8-9.7V5.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.3 12.1l2.6 2.6 4.8-5.3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-neutro>HackGuard</span></a>`;
+  `<a class="hg-marca" href="tablero.html"><svg class="hg-marca-signo" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l8 3v6.1c0 4.6-3.2 8.4-8 9.7-4.8-1.3-8-5.1-8-9.7V5.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.3 12.1l2.6 2.6 4.8-5.3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-neutro>HackGuard</span></a>`;
 
 /** Las páginas de una sección: las del objeto abierto (`seccion.paginas`) o las de la navegación. */
 const paginasDe = (seccion) => {
@@ -187,18 +188,20 @@ function pestanasDeSeccion(seccion, existentes) {
   return `<nav class="hg-subnav" ${atributo("aria-label", grupo.nombre)}><ul>${items}</ul></nav>\n`;
 }
 
-function franja({ nota, grupos = [] }) {
-  return `<aside class="mq-sala mq-franja" ${atributo("aria-label", SALA)}><p><span class="mq-sala-rotulo">${t(SALA)}.</span> ${t(nota)}</p>${grupos.join("")}</aside>`;
+function franja({ nota, grupos = [] }, indice) {
+  const volver = indice ? "" : `<a class="mq-volver" href="index.html">${t({ es: "Recorrido", en: "Tour" })}</a> `;
+  return `<aside class="mq-sala mq-franja" ${atributo("aria-label", SALA)}><p>${volver}<span class="mq-sala-rotulo">${t(SALA)}.</span> ${t(nota)}</p>${grupos.join("")}</aside>`;
 }
 
 /**
  * Página con el armazón de aplicación. `seccion` = { id, archivo [, paginas] } dice qué sección y qué
  * página están abiertas (sin `seccion`, ninguna: el índice y el kit son de la sala, no del producto);
- * `migas` es la ruta (piezas de HTML; la última es la página actual).
+ * `migas` es la ruta (piezas de HTML; la última es la página actual). `indice` marca la entrada a la
+ * maqueta: su franja no enlaza al recorrido, porque es el recorrido.
  */
-export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion = null, migas, consulta, existentes = [], contenido, revisar }) {
+export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion = null, migas, consulta, existentes = [], contenido, revisar, indice = false }) {
   const ruta = migas.map((m, i) => (i === migas.length - 1 ? `<strong>${m}</strong>` : `<span>${m}</span>`)).join('<span aria-hidden="true">/</span>');
-  const cuerpo = `${franja(datosDeSala)}
+  const cuerpo = `${franja(datosDeSala, indice)}
 <div class="hg-app">
 ${lateral(seccion, existentes, consulta)}
 <div class="hg-cuerpo">

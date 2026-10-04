@@ -212,15 +212,24 @@ export const PRUEBAS = [
   delCatalogo("PR-MD-PAR-001", "ACT-DEMO-CLASIFICADOR"),
 ];
 
-// Sobres de evidencia confirmados. `evaluadas`/`fallidas` son conteos del adaptador.
+// Sobres de evidencia confirmados. `evaluadas`/`fallidas` son conteos del adaptador; en ZAP, `alertas` y
+// `corrio` (si hay constancia de que la regla corrió: sin ella, «no detectado» no es «verificado», E-6).
+// Los del clasificador son de un ciclo anterior (marzo): su evidencia ya es antigua.
 export const SOBRES = [
+  { id: "SOB-0003", prueba: "PR-MD-UMB-001", fecha: "2026-03-20", veredicto: "superada", confirmado: "2026-03-21",
+    razon: { es: "Cambiar el estilo movió la decisión menos que repetir la llamada", en: "Changing the style moved the decision less than repeating the call did" } },
   { id: "SOB-0004", prueba: "PR-MD-CAL-001", fecha: "2026-03-20", veredicto: "superada", confirmado: "2026-03-21",
     razon: { es: "Error de calibración en la banda del umbral dentro de lo declarado", en: "Calibration error in the threshold band within the declared limit" } },
   { id: "SOB-0012", prueba: "PR-IA-PINJ-001", fecha: "2026-08-18", veredicto: "fallida", confirmado: "2026-08-18", evaluadas: 20, fallidas: 6 },
   { id: "SOB-0019", prueba: "PR-IA-ENC-002", fecha: "2026-08-17", veredicto: "fallida", confirmado: "2026-08-17", evaluadas: 116, fallidas: 42 },
   { id: "SOB-0015", prueba: "PR-AG-LIM-001", fecha: "2026-08-20", veredicto: "fallida", confirmado: "2026-08-20", evaluadas: 20, fallidas: 2 },
+  { id: "SOB-0016", prueba: "PR-AG-PERM-001", fecha: "2026-08-20", veredicto: "superada", confirmado: "2026-08-20", evaluadas: 20, fallidas: 0 },
   { id: "SOB-0021", prueba: "PR-SW-CSP-001", fecha: "2026-09-05", veredicto: "fallida", confirmado: "2026-09-05",
     razon: { es: "1 alerta de riesgo medio y confianza alta en 4 páginas", en: "1 alert at medium risk and high confidence on 4 pages" } },
+  { id: "SOB-0022", prueba: "PR-SW-TS-001", fecha: "2026-09-05", veredicto: "superada", confirmado: "2026-09-05", corrio: true, alertas: 0,
+    razon: { es: "Sin alertas, con constancia de que la regla corrió sobre 4 páginas", en: "No alerts, with proof that the rule ran on 4 pages" } },
+  { id: "SOB-0023", prueba: "PR-SW-XSS-001", fecha: "2026-09-05", veredicto: "no_ejecutada", confirmado: "2026-09-05", corrio: false, alertas: 0,
+    razon: { es: "Sin alertas, pero no hay constancia de que la regla corrió", en: "No alerts, but there is no proof that the rule ran" } },
   { id: "SOB-0027", prueba: "PR-IA-PINJ-001", fecha: "2026-09-24", veredicto: "superada", confirmado: "2026-09-24", evaluadas: 20, fallidas: 0, reprueba_de: "SOB-0012" },
 ];
 

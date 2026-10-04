@@ -246,8 +246,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: la ficha de esta prueba con la interfaz nueva. Cada fila del catálogo abre la suya, con su propio estado.",
-        en: "Review 4-ter, second stretch: this test's record with the new interface. Each catalog row opens its own, with its own status.",
+        es: "Mirada 4-ter: la ficha de esta prueba con la interfaz nueva (aprobado en el segundo tramo). Cada fila del catálogo abre la suya, con su propio estado.",
+        en: "Review 4-ter: this test's record with the new interface (approved in the second stretch). Each catalog row opens its own, with its own status.",
       },
       grupos: [barraDeEstados()],
     },

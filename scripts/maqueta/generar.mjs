@@ -10,24 +10,29 @@ import { fechaDeConsulta } from "./nucleo/fecha.mjs";
 import { ACTIVOS, HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "./datos/mundo.mjs";
 import { activo } from "./paginas/activo.mjs";
 import { catalogo } from "./paginas/catalogo.mjs";
+import { brecha } from "./paginas/brecha.mjs";
+import { archivoDeControl, control, controlDetalle } from "./paginas/control.mjs";
 import { controles } from "./paginas/controles.mjs";
-import { direccion } from "./paginas/direccion.mjs";
 import { evidencia } from "./paginas/evidencia.mjs";
 import { hallazgo } from "./paginas/hallazgo.mjs";
 import { index } from "./paginas/index.mjs";
+import { informe } from "./paginas/informe.mjs";
 import { kit } from "./paginas/kit.mjs";
 import { marcos } from "./paginas/marcos.mjs";
 import { plan } from "./paginas/plan.mjs";
 import { propuestas } from "./paginas/propuestas.mjs";
 import { prueba } from "./paginas/prueba.mjs";
+import { tablero } from "./paginas/tablero.mjs";
 import { MAQUETA, salida } from "./rutas.mjs";
+import { brecha as calcularBrecha } from "./nucleo/brecha.mjs";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
+const UMBRALES = JSON.parse(readFileSync(join(AQUI, "datos", "umbrales.json"), "utf8"));
 
 export const PAGINAS = [
   { archivo: "index.html", generar: index },
-  { archivo: "direccion.html", generar: direccion },
   { archivo: "kit.html", generar: kit },
+  { archivo: "tablero.html", generar: tablero },
   { archivo: "catalogo.html", generar: catalogo },
   ...PRUEBAS.map((p) => ({ archivo: archivoDeFicha(p.id), generar: prueba(p.id) })),
   { archivo: "marcos.html", generar: marcos },
@@ -37,12 +42,17 @@ export const PAGINAS = [
   ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDePlan(id), generar: plan(id) })),
   { archivo: "evidencia.html", generar: evidencia },
   ...HALLAZGOS.map((h) => ({ archivo: archivoDeHallazgo(h.id), generar: hallazgo(h.id) })),
+  { archivo: "brecha.html", generar: brecha },
+  { archivo: "control.html", generar: control },
+  // Una página por control aplicable: los que la brecha encuentra en los planes (no dependen de la fecha).
+  ...calcularBrecha(fechaDeConsulta(), UMBRALES).controles.map((c) => ({ archivo: archivoDeControl(c.id), generar: controlDetalle(c.id) })),
+  { archivo: "informe.html", generar: informe },
 ];
 
 const destino = salida();
 const contexto = {
   consulta: fechaDeConsulta(),
-  umbrales: JSON.parse(readFileSync(join(AQUI, "datos", "umbrales.json"), "utf8")),
+  umbrales: UMBRALES,
   existentes: PAGINAS.map((p) => p.archivo),
 };
 

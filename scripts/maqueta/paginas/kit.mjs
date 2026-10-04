@@ -8,6 +8,7 @@ import { chip, dato, estado, firma, huella, lista, par, proporcion, sello } from
 import { CONFIRMACION, ESTADO_DE_CONTROL, ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, neutro, t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
+import { desglose, ejecutadas } from "../nucleo/piezas-de-brecha.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 import { MAQUETA } from "../rutas.mjs";
 
@@ -194,6 +195,23 @@ ${[4, 3, 2, 1]
 </table>
 </div></div>`;
 
+  // Mirada 5: las piezas de la brecha, el tablero y el informe.
+  const tot = { planeadas: 10, ejecutadas: 6, superadas: 3, fallidas: 3, no_ejecutadas: 4 };
+  const brecha = `<div class="hg-panel-cuerpo">
+<div class="hg-rejilla">
+<div class="hg-caja"><p class="hg-caja-titulo">${t({ es: "Avance", en: "Progress" })}</p>${ejecutadas(tot)}<p class="hg-menor">${t({ es: "En tinta: cuánto se ejecutó no es un veredicto.", en: "In ink: how much was run is not a verdict." })}</p></div>
+<div class="hg-caja"><p class="hg-caja-titulo">${t({ es: "Desglose", en: "Breakdown" })}</p>${desglose(tot)}<p class="hg-menor">${t({ es: "Cada veredicto con su forma; los ceros no se dibujan.", en: "Each verdict with its shape; zeros are not drawn." })}</p></div>
+<div class="hg-caja"><p class="hg-caja-titulo">${t({ es: "Cuentas", en: "Counts" })}</p><ul class="hg-cuentas">${["alto", "medio", "bajo"]
+    .map((s, i) => `<li>${estado(SEVERIDAD[s])}<span class="hg-cifra-menor" data-neutro>${[1, 1, 0][i]}</span></li>`)
+    .join("")}</ul></div>
+</div>
+${sello(
+  { rol: "positivo", simbolo: "ok", nombre: { es: "Banda de validación", en: "Validation band" } },
+  `<p>${t({ es: "Un sello que resume si el instrumento pasó su validación; si falla, pasa a rojo y nada se publica.", en: "A seal that sums up whether the instrument passed its validation; if it fails, it turns red and nothing is published." })}</p>`,
+)}
+<div class="hg-informe-seccion"><h2><span class="hg-informe-num" data-neutro>1</span>${t({ es: "Sección del informe", en: "Report section" })}</h2><p class="hg-menor">${t({ es: "Numerada, separada por una línea; al imprimir, en papel claro y con las tablas como tablas.", en: "Numbered, separated by a line; when printed, on light paper with tables as tables." })}</p></div>
+</div>`;
+
   const avisos = `<div class="hg-panel-cuerpo">
 <div class="hg-aviso es-neutro">${SIMBOLO.vacio}<h3>${t({ es: "Todavía no hay nada aquí", en: "Nothing here yet" })}</h3><p>${t({
     es: "Un estado de pantalla dice qué pasa y qué hacer. Vacío, carga y error tienen cada uno el suyo.",
@@ -220,6 +238,7 @@ ${panel("recorrido", { es: "Recorrido", en: "Progress" }, recorrido, { es: "Para
 ${panel("carril", { es: "Propiedades, contraste y carril de acción", en: "Properties, contrast and action rail" }, carril)}
 ${panel("pestanas", { es: "Pestañas y selector de objeto", en: "Tabs and object selector" }, pestanas)}
 ${panel("matriz", { es: "Matriz de prioridad", en: "Priority matrix" }, matriz, { es: "La casilla del objeto, en un marco de tinta.", en: "The object's cell, in an ink frame." })}
+${panel("brecha", { es: "Brecha, tablero e informe", en: "Gap, dashboard and report" }, brecha, { es: "Las piezas de la mirada 5.", en: "The pieces from review 5." })}
 ${panel("avisos", { es: "Estado de pantalla", en: "Screen state" }, avisos)}`;
 
   return pagina({
@@ -229,8 +248,8 @@ ${panel("avisos", { es: "Estado de pantalla", en: "Screen state" }, avisos)}`;
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: el kit con la interfaz nueva. Es la referencia de fidelidad para el primer sprint con pantallas, no una pantalla del producto.",
-        en: "Review 4-ter, second stretch: the kit with the new interface. It is the fidelity reference for the first sprint with screens, not a product screen.",
+        es: "Mirada 4-ter: el kit con la interfaz nueva (aprobado en el segundo tramo). Es la referencia de fidelidad para el primer sprint con pantallas, no una pantalla del producto.",
+        en: "Review 4-ter: the kit with the new interface (approved in the second stretch). It is the fidelity reference for the first sprint with screens, not a product screen.",
       },
     },
     contenido,

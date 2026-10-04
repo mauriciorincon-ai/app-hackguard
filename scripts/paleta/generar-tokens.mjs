@@ -24,7 +24,16 @@ export function tokensCss(hex) {
   return `/* GENERADO por scripts/paleta/generar-tokens.mjs desde scripts/paleta/tokens.mjs — no editar a mano
    (tests/unit/paleta.test.ts compara byte a byte). Tema por defecto: oscuro. */
 ${bloque(':root,\n[data-theme="oscuro"]', hex.oscuro, "dark")}
-${bloque('[data-theme="claro"]', hex.claro, "light")}`;
+${bloque('[data-theme="claro"]', hex.claro, "light")}
+/* Al imprimir, la paleta del tema claro en los dos temas: el papel es claro. */
+@media print {
+${bloque(':root,\n[data-theme="oscuro"],\n[data-theme="claro"]', hex.claro, "light")
+  .trimEnd()
+  .split("\n")
+  .map((linea) => `  ${linea}`)
+  .join("\n")}
+}
+`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

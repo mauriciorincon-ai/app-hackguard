@@ -57,6 +57,12 @@ body:not([data-estado="error"]) [data-si="error"] {
   color: var(--tinta);
 }
 
+/* Vuelta al recorrido de la maqueta: lo primero de la franja, porque es de la sala. */
+.mq-volver {
+  margin-right: var(--e-2);
+  font-weight: 700;
+}
+
 .mq-grupo {
   display: flex;
   flex-wrap: wrap;

@@ -1,125 +1,125 @@
-// index.html: el recorrido de la maqueta. Provisional hasta la mirada 5 (la portada real): lista las
-// páginas que ya existen, primero las que toca mirar ahora, con el estado de su mirada.
+// index.html — la entrada a la maqueta (mirada 5): las trece pantallas del H1 en el orden de la orden de
+// diseño, con lo que muestra cada una, sus funcionalidades y el estado de su mirada, y la puerta a la
+// aplicación (el tablero). Es una página de la sala, no del producto: el logo de la aplicación lleva al
+// tablero, y la franja de sala de cada pantalla trae de vuelta aquí.
 import { archivoDeFicha } from "../datos/catalogo.mjs";
 import { ACTIVOS, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 import { chip, estado } from "../nucleo/componentes.mjs";
-import { t } from "../nucleo/html.mjs";
+import { atributo, neutro, t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
 
 const ACTIVO = Object.keys(ACTIVOS)[0];
 const EN_MIRADA = { rol: "acento", simbolo: "firma", nombre: { es: "Mírala ahora", en: "Review it now" } };
 const APROBADA = { rol: "positivo", simbolo: "ok", nombre: { es: "Aprobada", en: "Approved" } };
 
-const PAGINAS = [
-  {
-    archivo: archivoDeFicha("PR-IA-PINJ-001"),
-    nombre: { es: "Ficha de prueba", en: "Test record" },
-    que: { es: "Qué verifica, resultado esperado, regla de veredicto, marco y controles. Cada prueba del catálogo tiene la suya.", en: "What it verifies, expected result, verdict rule, framework and controls. Every test in the catalog has its own." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "marcos.html",
-    nombre: { es: "Marcos y versiones", en: "Frameworks and versions" },
-    que: { es: "Versión vigente de cada marco, aviso de versión nueva y mapa de equivalencias.", en: "Each framework's current version, new-version notice and equivalence map." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "controles.html",
-    nombre: { es: "Controles", en: "Controls" },
-    que: { es: "Las áreas del Anexo A, las pruebas que dan evidencia a cada control y las que no dan a ninguno.", en: "The Annex A areas, the tests that give evidence to each control and those that give to none." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "propuestas.html",
-    nombre: { es: "Bandeja de propuestas", en: "Proposal inbox" },
-    que: { es: "Lo que proponen el investigador y el extractor, para aprobar, rechazar o separar.", en: "What the researcher and the extractor propose, to approve, reject or split." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: archivoDeActivo(ACTIVO),
-    nombre: { es: "Activo", en: "Asset" },
-    que: { es: "Dueño y proveedor, perfil, alcance autorizado y reglas de enfrentamiento. Tres activos demo.", en: "Owner and provider, profile, authorized scope and rules of engagement. Three demo assets." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: archivoDePlan(ACTIVO),
-    nombre: { es: "Plan", en: "Plan" },
-    que: { es: "Pruebas planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.", en: "Planned and excluded tests with their reasons, coverage by control and execution package." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "kit.html",
-    nombre: { es: "Kit de componentes", en: "Component kit" },
-    que: { es: "Cada token y cada componente del sistema de diseño.", en: "Every token and component of the design system." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "direccion.html",
-    nombre: { es: "Vista por control (adelanto)", en: "Control view (preview)" },
-    que: { es: "La página de la mirada 1, rehecha: el estado de un control con sus pruebas, su evidencia y sus hallazgos.", en: "The review 1 page, rebuilt: a control's status with its tests, evidence and findings." },
-    mirada: EN_MIRADA,
-  },
-  {
-    archivo: "catalogo.html",
-    nombre: { es: "Catálogo de pruebas", en: "Test catalog" },
-    que: { es: "Las pruebas de las cuatro familias, con filtros que funcionan.", en: "Tests for the four families, with working filters." },
-    mirada: APROBADA,
-  },
-  {
-    archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]),
-    nombre: { es: "Hallazgo", en: "Finding" },
-    que: { es: "Recorrido de cierre, severidad, plazo y salidas posibles. Cuatro hallazgos, uno por momento del ciclo.", en: "Closure progress, severity, deadline and possible outcomes. Four findings, one per moment of the life cycle." },
-    mirada: APROBADA,
-  },
-  {
-    archivo: "evidencia.html",
-    nombre: { es: "Carga de evidencia", en: "Evidence intake" },
-    que: { es: "Las tres vías de carga y la confirmación por lote, con todas las fallas a la vista.", en: "The three intake routes and batch confirmation, with every failure in plain view." },
-    mirada: APROBADA,
-  },
+// Las trece pantallas de la orden de diseño, en su orden, y el kit del sistema al final.
+const PANTALLAS = [
+  { archivo: "tablero.html", nombre: { es: "Tablero", en: "Dashboard" }, c: "C16 · C18", nueva: true,
+    que: { es: "Lo que pide atención hoy, cómo va cada activo y la validación del instrumento.", en: "What needs attention today, how each asset is doing and the instrument validation." } },
+  { archivo: "catalogo.html", nombre: { es: "Catálogo", en: "Catalog" }, c: "C1 · C3",
+    que: { es: "Las pruebas de las cuatro familias, con filtros que funcionan.", en: "Tests for the four families, with working filters." } },
+  { archivo: archivoDeFicha("PR-IA-PINJ-001"), nombre: { es: "Ficha de prueba", en: "Test record" }, c: "C1 · C6",
+    que: { es: "Qué verifica, resultado esperado, regla de veredicto, marco y controles; una por prueba.", en: "What it verifies, expected result, verdict rule, framework and controls; one per test." } },
+  { archivo: "marcos.html", nombre: { es: "Marcos y versiones", en: "Frameworks and versions" }, c: "C4",
+    que: { es: "Versión vigente, aviso de versión nueva y mapa de equivalencias.", en: "Current version, new-version notice and equivalence map." } },
+  { archivo: "controles.html", nombre: { es: "Controles", en: "Controls" }, c: "C5",
+    que: { es: "El Anexo A con resumen propio y las pruebas que dan evidencia a cada control.", en: "Annex A with in-house summaries and the tests that give evidence to each control." } },
+  { archivo: "propuestas.html", nombre: { es: "Bandeja de propuestas", en: "Proposal inbox" }, c: "C2 · C7 · C15",
+    que: { es: "Lo que proponen el investigador y el extractor, para aprobar, rechazar o separar.", en: "What the researcher and the extractor propose, to approve, reject or split." } },
+  { archivo: archivoDeActivo(ACTIVO), nombre: { es: "Activo", en: "Asset" }, c: "C8",
+    que: { es: "Dueño y proveedor, perfil, alcance autorizado y reglas de enfrentamiento.", en: "Owner and provider, profile, authorized scope and rules of engagement." } },
+  { archivo: archivoDePlan(ACTIVO), nombre: { es: "Plan", en: "Plan" }, c: "C9 · C10",
+    que: { es: "Planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.", en: "Planned and excluded with their reasons, coverage by control and execution package." } },
+  { archivo: "evidencia.html", nombre: { es: "Carga y confirmación", en: "Intake and confirmation" }, c: "C11 · C14",
+    que: { es: "Las tres vías de carga y la confirmación por lote, con todas las fallas a la vista.", en: "The three intake routes and batch confirmation, with every failure in plain view." } },
+  { archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]), nombre: { es: "Hallazgo", en: "Finding" }, c: "C12 · C13",
+    que: { es: "Recorrido de cierre, severidad, plazo y salidas posibles; cuatro, uno por momento.", en: "Closure progress, severity, deadline and possible outcomes; four, one per moment." } },
+  { archivo: "brecha.html", nombre: { es: "Brecha", en: "Gap" }, c: "C16", nueva: true,
+    que: { es: "Esperado contra obtenido y cobertura por activo, familia y control.", en: "Expected against obtained and coverage by asset, family and control." } },
+  { archivo: "control.html", nombre: { es: "Vista por control", en: "Control view" }, c: "C17", nueva: true,
+    que: { es: "Los cuatro estados de un control y la cadena de cierre de sus hallazgos.", en: "A control's four statuses and the closure chain of its findings." } },
+  { archivo: "informe.html", nombre: { es: "Informe", en: "Report" }, c: "C16", nueva: true,
+    que: { es: "Las ocho secciones de la especificación; se lee aquí y se imprime.", en: "The specification's eight sections; it reads here and it prints." } },
 ];
 
 export function index({ consulta, existentes }) {
-  const filas = PAGINAS.map(
-    (p) => `<tr>
-<td data-celda="id"><a class="hg-enlace-fila" href="${p.archivo}">${t(p.nombre)}</a></td>
-<td><p class="hg-menor">${t(p.que)}</p></td>
-<td data-celda="estado">${p.mirada === EN_MIRADA ? chip(p.mirada) : estado(p.mirada)}</td>
+  const filas = PANTALLAS.map(
+    (p, i) => `<tr>
+<td data-celda="id"><span class="hg-dato" data-neutro>${String(i + 1).padStart(2, "0")}</span></td>
+<td data-celda="principal"><p><a class="hg-enlace-fila" href="${p.archivo}">${t(p.nombre)}</a></p><p class="hg-menor">${t(p.que)}</p></td>
+<td><p class="hg-menor">${neutro(p.c)}</p></td>
+<td data-celda="estado">${p.nueva ? chip(EN_MIRADA) : estado(APROBADA)}</td>
 </tr>`,
   ).join("\n");
+  const nuevas = PANTALLAS.filter((p) => p.nueva).length;
 
   const contenido = `<div class="hg-cabecera">
 <div>
 <h1>${t({ es: "Maqueta de HackGuard", en: "HackGuard mockup" })}</h1>
 <p class="hg-bajada">${t({
-    es: "Recorrido provisional: crece con cada mirada. Los datos son sintéticos. La portada real llega en la mirada 5.",
-    en: "Temporary tour: it grows with each review. All data is synthetic. The real home page arrives in review 5.",
+    es: "Las trece pantallas del primer horizonte, con datos sintéticos. Entra por el tablero como entraría el operador, o abre cada pantalla desde esta lista.",
+    en: "The thirteen screens of the first horizon, with synthetic data. Come in through the dashboard as the operator would, or open each screen from this list.",
   })}</p>
 </div>
+<div><a class="hg-boton hg-boton-primario" href="tablero.html">${t({ es: "Entrar a la aplicación", en: "Enter the application" })}</a></div>
 </div>
-<section class="hg-panel" aria-labelledby="paginas">
-<div class="hg-panel-cab"><h2 id="paginas">${t({ es: "Páginas", en: "Pages" })}</h2><p class="hg-menor">${t({ es: "Primero las que toca mirar ahora.", en: "The ones to review now come first." })}</p></div>
+
+<section class="hg-panel" aria-labelledby="pantallas">
+<div class="hg-panel-cab"><h2 id="pantallas">${t({ es: "Pantallas", en: "Screens" })}</h2><p class="hg-menor">${t({
+    es: `En el orden de la orden de diseño. ${nuevas} por mirar ahora.`,
+    en: `In the design order's sequence. ${nuevas} to review now.`,
+  })}</p></div>
 <table class="hg-tabla">
-<caption class="hg-oculto">${t({ es: "Páginas de la maqueta", en: "Mockup pages" })}</caption>
-<thead><tr><th scope="col">${t({ es: "Página", en: "Page" })}</th><th scope="col">${t({ es: "Qué es", en: "What it is" })}</th><th scope="col">${t({ es: "Mirada", en: "Review" })}</th></tr></thead>
+<caption class="hg-oculto">${t({ es: "Pantallas de la maqueta", en: "Mockup screens" })}</caption>
+<thead><tr><th scope="col">${t({ es: "N.º", en: "No." })}</th><th scope="col">${t({ es: "Pantalla", en: "Screen" })}</th><th scope="col">${t({ es: "Funciones", en: "Features" })}</th><th scope="col">${t({ es: "Mirada", en: "Review" })}</th></tr></thead>
 <tbody>
 ${filas}
 </tbody>
 </table>
+<p class="hg-panel-pie">${t({ es: "El sistema de diseño completo, pieza por pieza:", en: "The full design system, piece by piece:" })} <a href="kit.html">${t({ es: "kit de componentes", en: "component kit" })}</a>.</p>
+</section>
+
+<section class="hg-panel" aria-labelledby="como">
+<div class="hg-panel-cab"><h2 id="como">${t({ es: "Cómo recorrerla", en: "How to go through it" })}</h2></div>
+<div class="hg-panel-cuerpo">
+<ol class="hg-lista" ${atributo("aria-label", { es: "Pasos del recorrido", en: "Tour steps" })}>
+<li>${t({ es: "Ábrela en el teléfono y en el escritorio: en el teléfono la navegación baja al pie y las tablas se vuelven tarjetas.", en: "Open it on the phone and on the desktop: on the phone the navigation drops to the bottom and tables turn into cards." })}</li>
+<li>${t({ es: "Cambia de tema y de idioma con los botones de arriba a la derecha; la elección se recuerda entre pantallas.", en: "Switch theme and language with the buttons at the top right; the choice is remembered across screens." })}</li>
+<li>${t({ es: "La franja de sala, arriba con borde punteado, no es producto: dice qué se mira y deja ver cada pantalla vacía, cargando o con error.", en: "The room strip, at the top with a dashed border, is not product: it says what is being reviewed and shows each screen empty, loading or with an error." })}</li>
+<li>${t({ es: "Al pie de cada pantalla, «Qué revisar y qué deberías ver» dice qué hacer y qué resultado esperar.", en: "At the foot of each screen, “What to check and what you should see” says what to do and what result to expect." })}</li>
+</ol>
+</div>
 </section>`;
 
   return pagina({
     titulo: { es: "HackGuard · maqueta", en: "HackGuard · mockup" },
+    indice: true,
     migas: [t({ es: "Sala de diseño", en: "Design room" }), t({ es: "Recorrido", en: "Tour" })],
     consulta,
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: todas las pantallas construidas ya tienen la interfaz nueva.",
-        en: "Review 4-ter, second stretch: every screen built so far now has the new interface.",
+        es: "Mirada 5: la portada del recorrido. Las cuatro pantallas nuevas van marcadas; las otras nueve ya están aprobadas.",
+        en: "Review 5: the tour's home. The four new screens are marked; the other nine are already approved.",
       },
     },
     contenido,
+    revisar: [
+      {
+        donde: { es: "Botón «Entrar a la aplicación»", en: "“Enter the application” button" },
+        hacer: { es: "Púlsalo", en: "Press it" },
+        ver: { es: "Se abre el tablero, la portada del operador", en: "The dashboard opens, the operator's home" },
+      },
+      {
+        donde: { es: "Tabla de pantallas", en: "Screens table" },
+        hacer: { es: "Recórrela de arriba abajo", en: "Go through it top to bottom" },
+        ver: { es: "Las trece de la orden de diseño en su orden; las cuatro nuevas dicen «Mírala ahora»", en: "The thirteen from the design order in sequence; the four new ones say “Review it now”" },
+      },
+      {
+        donde: { es: "Cualquier pantalla", en: "Any screen" },
+        hacer: { es: "Pulsa «Recorrido» en la franja de sala", en: "Press “Tour” in the room strip" },
+        ver: { es: "Vuelves aquí; el logo de la aplicación, en cambio, lleva al tablero", en: "You come back here; the application logo, instead, goes to the dashboard" },
+      },
+    ],
   });
 }
-

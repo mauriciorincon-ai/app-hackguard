@@ -201,6 +201,14 @@
     formulario.setAttribute("data-completo", String(faltan === 0));
   });
 
+  // Imprimir el informe: dice qué esperar del diálogo del navegador y lo abre. La hoja de impresión
+  // (app.css y tokens.css) deja solo el informe, en papel claro.
+  registrar("imprimir", function () {
+    var avisos = document.querySelectorAll("[data-aviso-impresion]");
+    for (var i = 0; i < avisos.length; i++) avisos[i].hidden = false;
+    if (typeof window.print === "function") window.print();
+  });
+
   var tema = leer("tema");
   if (tema === "claro" || tema === "oscuro") raiz.setAttribute("data-theme", tema);
   var idioma = leer("idioma");

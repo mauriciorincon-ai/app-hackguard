@@ -343,6 +343,11 @@ a {
   fill: var(--rol, var(--falla));
 }
 
+/* Avance (ejecutadas de las planeadas): en tinta. Cuánto se ejecutó no es un veredicto. */
+.hg-proporcion-avance .hg-proporcion-parte {
+  fill: var(--tinta-2);
+}
+
 /* ---------- Botones ---------- */
 
 .hg-boton {
@@ -1929,6 +1934,186 @@ a.hg-boton {
   border-top: 0;
 }
 
+/* ---------- Brecha: desglose, cuentas y pestañas dentro de un panel ---------- */
+
+/* Desglose de lo planeado: cada veredicto con su forma y su cifra, en una línea que se parte. */
+.hg-desglose {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-menor);
+}
+
+.hg-desglose .hg-estado {
+  font-weight: 500;
+}
+
+/* Cuentas: el rótulo con su forma a la izquierda y la cifra a la derecha, una por línea. */
+.hg-cuentas {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-cuentas > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  min-width: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-cuentas > li:first-child {
+  padding-top: 0;
+}
+
+.hg-cuentas > li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Hallazgos sin cerrar del tablero: uno bajo otro, con su plazo. */
+.hg-abiertos {
+  display: grid;
+  gap: var(--e-3);
+  margin: 0;
+  padding: var(--e-3) 0 0;
+  border-top: 1px solid var(--linea);
+  list-style: none;
+}
+
+.hg-abiertos > li {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Pestañas dentro de un panel: bajo su cabecera, con el margen del panel. */
+.hg-panel > .hg-pestanas {
+  padding: 0 var(--e-4);
+}
+
+/* ---------- Tablero: lo que pide acción a la izquierda, las cuentas a la derecha ---------- */
+
+.hg-tablero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4);
+  align-items: start;
+}
+
+@media (min-width: 1240px) {
+  .hg-tablero {
+    grid-template-columns: minmax(0, 1fr) var(--carril);
+  }
+}
+
+/* Un botón dentro de un sello no se estira al ancho del aviso. */
+.hg-sello > div > .hg-boton {
+  justify-self: start;
+}
+
+/* La banda de la validación lleva su tabla dentro, sin el margen de un panel. */
+.hg-sello .hg-revelado {
+  margin-top: var(--e-2);
+}
+
+.hg-sello .hg-tabla th:first-child,
+.hg-sello .hg-tabla td:first-child {
+  padding-left: 0;
+}
+
+.hg-sello .hg-tabla th {
+  background: none;
+}
+
+/* ---------- Informe: un documento dentro de la aplicación ---------- */
+
+.hg-informe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.hg-informe-cab {
+  display: grid;
+  gap: var(--e-1);
+  min-width: 0;
+  padding: var(--e-5) var(--e-4) var(--e-4);
+  border-bottom: 2px solid var(--tinta);
+}
+
+.hg-informe-seccion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  min-width: 0;
+  padding: var(--e-5) var(--e-4);
+}
+
+.hg-informe-seccion + .hg-informe-seccion {
+  border-top: 1px solid var(--linea);
+}
+
+.hg-informe-seccion h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+}
+
+.hg-informe-seccion h3 {
+  margin-top: var(--e-2);
+}
+
+.hg-informe-num {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-menor);
+  font-family: var(--fuente-dato);
+  font-size: var(--t-menor);
+}
+
+/* Dentro del informe la tabla no repite el margen de la sección. */
+.hg-informe-seccion .hg-tabla th:first-child,
+.hg-informe-seccion .hg-tabla td:first-child {
+  padding-left: 0;
+}
+
+.hg-informe-seccion .hg-tabla th:last-child,
+.hg-informe-seccion .hg-tabla td:last-child {
+  padding-right: 0;
+}
+
+@media (max-width: 859px) {
+  .hg-informe-seccion .hg-tabla tr,
+  .hg-sello .hg-tabla tr {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.hg-indice {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-menor);
+}
+
 /* ---------- Movimiento ---------- */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1942,5 +2127,135 @@ a.hg-boton {
       border-color 150ms ease-out,
       color 150ms ease-out,
       box-shadow 150ms ease-out;
+  }
+}
+
+/* ---------- Hoja de impresión ---------- */
+
+/* Al imprimir sale solo el contenido de la pantalla: sin navegación, sin sala y sin carril, en papel
+   claro (tokens.css pasa la paleta a la del tema claro aunque la pantalla esté en oscuro: tinta clara
+   sobre papel blanco no se leería) y con las tablas como tablas. El resumen del informe ocupa la primera
+   hoja. Cada estado conserva su forma y su texto: sin color de fondo, sigue leyéndose. */
+@page {
+  margin: 14mm 12mm;
+}
+
+@media print {
+  html {
+    font-size: 12px;
+  }
+
+  body {
+    background: none;
+  }
+
+  .mq-salto,
+  .mq-franja,
+  .mq-pie,
+  .hg-lateral,
+  .hg-barra,
+  .hg-subnav,
+  .hg-carril,
+  button[data-controlador],
+  select[data-controlador] {
+    display: none !important;
+  }
+
+  .hg-app,
+  .hg-cuerpo,
+  .hg-trabajo {
+    display: block;
+    padding: 0;
+  }
+
+  .hg-principal {
+    padding: 0;
+  }
+
+  .hg-informe,
+  .hg-panel {
+    border-color: var(--linea-fuerte);
+    background: none;
+  }
+
+  .hg-informe {
+    border: 0;
+  }
+
+  .hg-informe-cab,
+  .hg-informe-seccion {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  #informe-resumen {
+    break-after: page;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  .hg-tabla tr,
+  .hg-caja,
+  .hg-sello,
+  .hg-resumen {
+    break-inside: avoid;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Las tablas vuelven a ser tablas aunque la hoja sea más estrecha que el corte de las tarjetas. */
+  .hg-tabla {
+    display: table;
+  }
+
+  .hg-tabla thead {
+    display: table-header-group;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .hg-tabla tbody {
+    display: table-row-group;
+  }
+
+  .hg-tabla tr,
+  .hg-tabla thead tr {
+    display: table-row;
+    width: auto;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .hg-tabla th,
+  .hg-tabla td,
+  .hg-tabla thead th,
+  .hg-tabla td:first-child,
+  .hg-tabla td:last-child {
+    display: table-cell;
+    width: auto;
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--linea);
+  }
+
+  /* En papel la cabecera de columna va en minúsculas y sin espaciado: en mayúsculas espaciadas, una
+     palabra («Hallazgo») no cabía en su columna. */
+  .hg-tabla th {
+    background: none;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* La esquina derecha es de la tarjeta de teléfono; en una tabla, el estado se alinea como su columna. */
+  .hg-tabla td[data-celda="estado"] {
+    text-align: left;
   }
 }

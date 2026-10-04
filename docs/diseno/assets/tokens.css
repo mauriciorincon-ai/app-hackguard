@@ -42,3 +42,29 @@
   --neutro-tinte: #ede9e0;
   color-scheme: light;
 }
+
+/* Al imprimir, la paleta del tema claro en los dos temas: el papel es claro. */
+@media print {
+  :root,
+  [data-theme="oscuro"],
+  [data-theme="claro"] {
+    --fondo: #f6f3eb;
+    --superficie: #fefcf9;
+    --superficie-2: #ede9e0;
+    --linea: #d4d1c8;
+    --linea-fuerte: #7e7a71;
+    --tinta: #1f1c18;
+    --tinta-2: #544f48;
+    --acento: #1b419f;
+    --acento-tinte: #dae7fe;
+    --positivo: #017273;
+    --positivo-tinte: #c9efeb;
+    --atencion: #a77b0f;
+    --atencion-tinte: #f9eecd;
+    --falla: #a9170a;
+    --falla-tinte: #ffe0da;
+    --neutro: #848078;
+    --neutro-tinte: #ede9e0;
+    color-scheme: light;
+  }
+}

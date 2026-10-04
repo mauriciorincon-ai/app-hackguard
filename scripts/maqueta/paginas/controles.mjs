@@ -177,8 +177,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: controles con la interfaz nueva. Los resúmenes son propios e ilustrativos: se validan contra la norma en el primer sprint.",
-        en: "Review 4-ter, second stretch: controls with the new interface. The summaries are our own and illustrative: they are validated against the standard in the first sprint.",
+        es: "Mirada 4-ter: controles con la interfaz nueva (aprobado en el segundo tramo). Los resúmenes son propios e ilustrativos: se validan contra la norma en el primer sprint.",
+        en: "Review 4-ter: controls with the new interface (approved in the second stretch). The summaries are our own and illustrative: they are validated against the standard in the first sprint.",
       },
       grupos: [barraDeEstados()],
     },

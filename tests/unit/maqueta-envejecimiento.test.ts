@@ -5,7 +5,8 @@
 // ve lo que el calendario toca (Big-D S1: el atlas se habría roto solo 27 días después).
 //
 // Protocolo en el HTML: todo dato fechado lleva data-fechado="<clase>", data-desde, data-dias y
-// data-estado-fechado. Los umbrales están LITERALES aquí a propósito: si datos/umbrales.json cambia,
+// data-estado-fechado. Y todo estado de un control, data-control y data-control-estado (mismo estado en
+// cada pantalla y en cada fecha). Los umbrales están LITERALES aquí a propósito: si datos/umbrales.json cambia,
 // este test lo nombra en vez de seguirlo en silencio.
 //   vigencia  (RF-01.5): por revisar desde 30 días, vencido desde 60.
 //   evidencia (DA-04):   antigua desde 180 días.
@@ -44,13 +45,33 @@ const REGLA: Record<string, Regla> = {
 
 const hoy: string = JSON.parse(readFileSync("scripts/maqueta/datos/consulta.json", "utf8")).fecha;
 
-function fechados(dir: string) {
-  return paginasDe(dir).flatMap((pagina) =>
-    [...documentoDe(leerPagina(dir, pagina)).querySelectorAll("[data-fechado]")].map((el) => ({ pagina, el })),
-  );
+// Cada página se lee y se analiza UNA vez por fecha: con 47 páginas y medio centenar de fechas, el
+// análisis del DOM es casi todo el tiempo del gate.
+function documentos(dir: string) {
+  return paginasDe(dir).map((pagina) => {
+    const html = leerPagina(dir, pagina);
+    return { pagina, html, doc: documentoDe(html) };
+  });
 }
 
-const versionados = fechados(RAIZ_MAQUETA);
+const fechados = (docs: ReturnType<typeof documentos>) =>
+  docs.flatMap(({ pagina, doc }) => [...doc.querySelectorAll("[data-fechado]")].map((el) => ({ pagina, el })));
+
+const versionados = fechados(documentos(RAIZ_MAQUETA));
+
+// Qué datos fechados hay, por página, clase y fecha de origen. Los que viven en una fila de ALERTA
+// (vencidos, fichas vencidas, evidencia antigua) se acumulan con el tiempo; los demás son fijos.
+type Fechado = { pagina: string; el: Element };
+function inventario(datos: Fechado[]) {
+  const cuenta = new Map<string, number>();
+  for (const { pagina, el } of datos) {
+    const lugar = el.closest("[data-alerta]") ? "alerta" : "fijo";
+    const clave = `${pagina} · ${el.getAttribute("data-fechado")} desde ${el.getAttribute("data-desde")} · ${lugar}`;
+    cuenta.set(clave, (cuenta.get(clave) ?? 0) + 1);
+  }
+  return cuenta;
+}
+const deHoy = inventario(versionados);
 const fechas = [
   ...new Set([
     hoy,
@@ -84,12 +105,20 @@ describe("maqueta: matriz de envejecimiento", () => {
   it.each(fechas)("fecha de consulta %s: genera sin avisos y cada estado es el que mandan los umbrales", (fecha) => {
     const dir = generarEnTemporal(fecha);
     temporales.push(dir);
-    for (const pagina of paginasDe(dir)) {
-      const html = leerPagina(dir, pagina);
+    const docs = documentos(dir);
+    for (const { pagina, html } of docs) {
       expect(/\bNaN\b|\bundefined\b|Invalid Date|\[object Object\]/.test(html), `${pagina} @ ${fecha}: aviso en el HTML`).toBe(false);
     }
-    const datos = fechados(dir);
-    expect(datos.length).toBe(versionados.length);
+    const datos = fechados(docs);
+    // Ningún dato fechado desaparece con el calendario, y fuera de una alerta ninguno aparece: solo las
+    // alertas se acumulan (una ficha que vence, una evidencia que envejece).
+    const enFecha = inventario(datos);
+    for (const [clave, n] of deHoy) {
+      expect(enFecha.get(clave) ?? 0, `@ ${fecha}: ${clave} (hoy hay ${n})`).toBeGreaterThanOrEqual(n);
+    }
+    for (const [clave, n] of enFecha) {
+      if (clave.endsWith("· fijo")) expect(deHoy.get(clave) ?? 0, `@ ${fecha}: ${clave} aparece fuera de una alerta`).toBe(n);
+    }
     for (const { pagina, el } of datos) {
       const clase = el.getAttribute("data-fechado")!;
       const desde = el.getAttribute("data-desde")!;
@@ -122,21 +151,36 @@ describe("maqueta: matriz de envejecimiento", () => {
       }
     }
 
-    // El estado del control es el que mandan sus filas (la evidencia envejece y el control cambia).
-    for (const pagina of paginasDe(dir)) {
-      const doc = documentoDe(leerPagina(dir, pagina));
-      const control = doc.querySelector("[data-control-estado]");
-      if (!control) continue;
-      const filas = [...doc.querySelectorAll("[data-fila-control]")].map((f) => f.getAttribute("data-fila-control"));
-      const hay = (estado: string) => filas.includes(estado);
-      const esperado = hay("con_fallas")
-        ? "con_fallas"
-        : filas.every((f) => f === "sin_evidencia")
-          ? "sin_evidencia"
-          : hay("con_evidencia_vigente")
-            ? "con_evidencia_vigente"
-            : "evidencia_antigua";
-      expect(control.getAttribute("data-control-estado"), `${pagina} @ ${fecha}: estado del control`).toBe(esperado);
+    // El estado de un control es el que mandan sus filas (la evidencia envejece y el control cambia), y
+    // es el MISMO en cada pantalla que lo muestra: el tablero, la brecha, la vista por control, su página
+    // y el informe no pueden contradecirse en ninguna fecha. Protocolo: data-control + data-control-estado;
+    // el sello con data-por-filas se deduce de las filas [data-fila-control][data-de-control] de su página.
+    const dice = new Map<string, Map<string, string[]>>();
+    for (const { pagina, doc } of docs) {
+      for (const el of doc.querySelectorAll("[data-control-estado]")) {
+        const control = el.getAttribute("data-control");
+        const estado = el.getAttribute("data-control-estado")!;
+        expect(control, `${pagina} @ ${fecha}: un estado de control sin data-control`).toBeTruthy();
+        const porEstado = dice.get(control!) ?? new Map<string, string[]>();
+        porEstado.set(estado, [...(porEstado.get(estado) ?? []), pagina]);
+        dice.set(control!, porEstado);
+        if (!el.hasAttribute("data-por-filas")) continue;
+        const filas = [...doc.querySelectorAll(`[data-fila-control][data-de-control="${control}"]`)].map((f) => f.getAttribute("data-fila-control"));
+        const hay = (e: string) => filas.includes(e);
+        const esperado = hay("con_fallas")
+          ? "con_fallas"
+          : filas.every((f) => f === "sin_evidencia")
+            ? "sin_evidencia"
+            : hay("con_evidencia_vigente")
+              ? "con_evidencia_vigente"
+              : "evidencia_antigua";
+        expect(estado, `${pagina} @ ${fecha}: estado de ${control} frente a sus filas`).toBe(esperado);
+      }
+    }
+    expect(dice.size, `@ ${fecha}: ninguna pantalla dice el estado de un control`).toBeGreaterThan(0);
+    for (const [control, porEstado] of dice) {
+      const resumen = [...porEstado].map(([e, ps]) => `${e} en ${ps.join(", ")}`).join(" · ");
+      expect(porEstado.size, `${control} @ ${fecha}: las pantallas no dicen el mismo estado (${resumen})`).toBe(1);
     }
     // Cada fecha genera y lee TODAS las páginas: el tiempo crece con la maqueta, no es un cuelgue.
   }, 30_000);

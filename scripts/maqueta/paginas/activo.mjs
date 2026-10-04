@@ -217,8 +217,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: un activo con la interfaz nueva. Los tres activos son demos ficticios; el tercero no tiene autorización, para que se vea ese estado.",
-        en: "Review 4-ter, second stretch: an asset with the new interface. All three assets are fictional demos; the third has no authorization, to show that state.",
+        es: "Mirada 4-ter: un activo con la interfaz nueva (aprobado en el segundo tramo). Los tres activos son demos ficticios; el tercero no tiene autorización, para que se vea ese estado.",
+        en: "Review 4-ter: an asset with the new interface (approved in the second stretch). All three assets are fictional demos; the third has no authorization, to show that state.",
       },
       grupos: [barraDeEstados()],
     },

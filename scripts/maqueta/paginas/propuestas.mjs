@@ -230,8 +230,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, segundo tramo: la bandeja de propuestas con la interfaz nueva. Los botones funcionan en la maqueta, pero no guardan nada.",
-        en: "Review 4-ter, second stretch: the proposal inbox with the new interface. The buttons work in the mockup, but they save nothing.",
+        es: "Mirada 4-ter: la bandeja de propuestas con la interfaz nueva (aprobado en el segundo tramo). Los botones funcionan en la maqueta, pero no guardan nada.",
+        en: "Review 4-ter: the proposal inbox with the new interface (approved in the second stretch). The buttons work in the mockup, but they save nothing.",
       },
       grupos: [barraDeEstados()],
     },

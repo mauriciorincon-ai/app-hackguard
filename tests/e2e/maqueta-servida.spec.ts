@@ -12,14 +12,16 @@ const MAQUETA = "docs/diseno";
 const PAGINAS = readdirSync(MAQUETA).filter((f) => f.endsWith(".html"));
 const PREFERENCIA = "hg-maqueta-v0:"; // misma clave que assets/maqueta.js
 
-/** Color de fondo de un tema, leído de los tokens: si la paleta cambia, este spec la sigue. */
-function fondoDe(tema: "oscuro" | "claro") {
+/** Un color de un tema, leído de los tokens: si la paleta cambia, este spec la sigue. */
+function colorDe(tema: "oscuro" | "claro", token: string) {
   const tokens = readFileSync(`${MAQUETA}/assets/tokens.css`, "utf8");
   const bloque = tokens.slice(tokens.indexOf(`[data-theme="${tema}"]`));
-  const hex = /--fondo:\s*#([0-9a-f]{6})/i.exec(bloque)![1];
+  const hex = new RegExp(`--${token}:\\s*#([0-9a-f]{6})`, "i").exec(bloque)![1];
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
   return `rgb(${r}, ${g}, ${b})`;
 }
+
+const fondoDe = (tema: "oscuro" | "claro") => colorDe(tema, "fondo");
 
 for (const entrada of ["/diseno/index.html", "/diseno/", "/diseno"]) {
   test(`la maqueta abre con estilos desde ${entrada}`, async ({ page }) => {
@@ -33,8 +35,8 @@ for (const entrada of ["/diseno/index.html", "/diseno/", "/diseno"]) {
 
 test("un enlace relativo del índice abre otra página con estilos y con sus fuentes", async ({ page }) => {
   await page.goto("/diseno");
-  await page.locator('a[href="direccion.html"]').first().click();
-  await expect(page).toHaveURL(/\/diseno\/direccion\.html$/);
+  await page.locator('main a[href="tablero.html"]').first().click();
+  await expect(page).toHaveURL(/\/diseno\/tablero\.html$/);
   await expect(page.locator("body")).toHaveCSS("background-color", fondoDe("oscuro"));
   const caras = await page.evaluate(async () => {
     await document.fonts.ready;
@@ -42,6 +44,24 @@ test("un enlace relativo del índice abre otra página con estilos y con sus fue
   });
   expect(caras).toContain("Atkinson Hyperlegible Next");
   expect(caras).toContain("Atkinson Hyperlegible Mono");
+});
+
+// HOJA DE IMPRESIÓN del informe (RF-05.6). Impreso sale solo el informe: sin navegación, sin sala y sin
+// carril; en tinta oscura aunque la pantalla esté en oscuro (tinta clara sobre papel blanco no se lee);
+// con las tablas como tablas y sin salirse del área útil de una hoja A4 (unos 700 px con sus márgenes).
+test("informe.html impreso: solo el informe, en tinta oscura y dentro de una hoja", async ({ page }) => {
+  await page.setViewportSize({ width: 700, height: 1000 });
+  await page.goto("/diseno/informe.html");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "oscuro");
+  await page.emulateMedia({ media: "print" });
+  for (const fuera of [".mq-franja", ".mq-pie", ".hg-lateral", ".hg-barra", ".hg-subnav", ".hg-carril"]) {
+    await expect(page.locator(fuera).first(), `${fuera} no debe imprimirse`).toBeHidden();
+  }
+  await expect(page.locator("#informe h1")).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("color", colorDe("claro", "tinta"));
+  await expect(page.locator("#informe .hg-tabla thead").first()).toHaveCSS("display", "table-header-group");
+  expect(await desbordes(page)).toEqual([]);
+  expect(await palabrasPartidas(page)).toEqual([]);
 });
 
 for (const pagina of PAGINAS) {

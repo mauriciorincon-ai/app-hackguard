@@ -59,9 +59,9 @@ export const enlace = (archivo, contenido, existentes) =>
 export const chip = ({ rol, simbolo, nombre }, atributos = "") =>
   `<span class="hg-chip es-${rol}"${atributos ? ` ${atributos}` : ""}>${SIMBOLO[simbolo]}<span>${t(nombre)}</span></span>`;
 
-/** Barra de proporción (parte sobre total) como SVG: sin estilos en línea. */
-export const proporcion = (parte, total) =>
-  `<svg class="hg-proporcion" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="hg-proporcion-fondo" width="100" height="6" rx="1"/><rect class="hg-proporcion-parte" width="${Math.max(parte > 0 ? 3 : 0, Math.round((parte / total) * 100))}" height="6" rx="1"/></svg>`;
+/** Barra de proporción (parte sobre total) como SVG: sin estilos en línea. `clase` la modula (avance). */
+export const proporcion = (parte, total, clase = "") =>
+  `<svg class="hg-proporcion${clase ? ` ${clase}` : ""}" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="hg-proporcion-fondo" width="100" height="6" rx="1"/><rect class="hg-proporcion-parte" width="${Math.max(parte > 0 ? 3 : 0, Math.round((parte / total) * 100))}" height="6" rx="1"/></svg>`;
 
 /** Estado de pantalla (vacío, carga, error): marca, título y qué hacer. `si` es el estado de sala. */
 export const aviso = (si, { rol, simbolo }, titulo, cuerpo) =>

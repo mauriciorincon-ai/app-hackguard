@@ -554,6 +554,83 @@ ajustes; dice haber abierto todas las páginas de la matriz. Con este veredicto 
 queda en la dirección «consola» y vista. CI del commit `911bb67`: `quality`, `e2e` y `lighthouse` en
 `success`. Lo siguiente es la mirada 5.
 
+## Mirada 5 — tablero, brecha, vista por control, informe y portada (2026-10-04)
+
+Tras la aprobación del tramo 2 («continúa» con el veredicto), con Opus. El plan de miradas no cambia: la
+mirada 5 son `brecha` · `control` · `informe` · `tablero` · `index`.
+
+**Qué se construyó**
+
+- **Un solo cálculo para cuatro pantallas** (`scripts/maqueta/nucleo/brecha.mjs`): cruza los planes con
+  los sobres CONFIRMADOS y da la fila de cada prueba planeada (último sobre, veredicto, desviación, sobre
+  propuesto que no cuenta, hallazgo), la cobertura por activo, familia y control, los controles
+  aplicables con su vista, los hallazgos sin cerrar, vencidos, riesgos aceptados y las alertas de
+  RF-05.5. Las piezas que comparten las pantallas (desviación, plazo, revisión, estado de un control,
+  avance, desglose, alertas) viven en `nucleo/piezas-de-brecha.mjs`. La regla del veredicto sugerido
+  pasó de `evidencia.mjs` a `calculos.mjs` (misma salida).
+- **`tablero`** (pantalla 1, C16 y C18): cifras de lo que espera acción, banda de la validación del
+  instrumento con sus cinco comprobaciones, «Pide tu atención» (vencido, lotes, propuestas y alertas),
+  activos con su avance y, a la derecha, hallazgos por severidad, controles por estado y catálogo por
+  vigencia. Su error es la validación en rojo.
+- **`brecha`** (pantalla 11, C16): cifras, aviso de lo que espera confirmación, cobertura en pestañas
+  (activo, familia, control), «esperado contra obtenido» filtrable con su desviación, y vencidos y
+  alertas.
+- **`control`** y **`control-<id>`** (pantalla 12, C17): la lista de los cinco controles aplicables y una
+  página por control con su sello, sus pruebas, la cadena de cierre y un carril con la acción que pide
+  su estado, propiedades y controles equivalentes. Reemplaza a `direccion`, que se retira.
+- **`informe`** (pantalla 13, C16): las ocho secciones de § 12 con su huella y la validación del
+  instrumento; carril con «Imprimir o guardar como PDF» (controlador nuevo `imprimir`) y el índice. Hoja
+  de impresión en `app.css` y paleta clara para imprimir en `tokens.css` (generada).
+- **`index`**: la portada de la sala, con las trece pantallas en el orden de la orden de diseño y la
+  puerta a la aplicación. El logo lleva ahora al tablero y la franja de sala trae de vuelta con
+  «Recorrido» (cambia el armazón de todas las páginas: solo esos enlaces).
+- Datos: cuatro sobres confirmados más (`SOB-0003`, `SOB-0016`, `SOB-0022`, `SOB-0023`) y las semillas
+  ilustrativas de la validación (`datos/validacion.mjs`). Kit con las piezas nuevas; `design-system.md`
+  0.7.0. La maqueta pasa de 39 a 47 páginas.
+
+**Decisiones de diseño**
+
+- **Avance no es veredicto:** la barra de «ejecutadas de las planeadas» va en tinta; en rojo se leía como
+  falla.
+- **En la página de un control, el hallazgo va con su resultado:** con el carril, la tabla de cinco
+  columnas se salía de su panel por 72 px a 1280 (lo nombró la sonda de desbordes en la primera pasada).
+- **En papel, las cabeceras de columna van en minúscula y sin espaciado:** en mayúsculas espaciadas,
+  «Hallazgo» no cabía en su columna (lo nombró el gate de impresión en su primera corrida).
+- **Un botón dentro de un sello no se estira** (la banda de validación lo estiraba a todo el ancho).
+- **El nombre del archivo de un control no lleva puntos** (`control-iso42001-a-6-2-4.html`): el gate de
+  enlaces solo admite letras, cifras y guiones, y se prefirió no aflojarlo.
+
+**Gates nuevos o tocados y su demo en rojo (regla 15)**
+
+| # | Gate | Qué cambió | Demo | Resultado |
+|---|---|---|---|---|
+| G18 | `maqueta-envejecimiento` | Un control dice el mismo estado en cada pantalla y en cada fecha (`data-control` + `data-control-estado`); el sello con `data-por-filas` se compara con SUS filas (`data-de-control`). Cada página se analiza una vez por fecha | (a) la lista calcula el estado sin mirar la antigüedad; (b) las filas pierden `data-de-control` | (a) «iso42001-A.6.2.6 @ 2026-10-03: las pantallas no dicen el mismo estado (evidencia_antigua en brecha.html, control-iso42001-a-6-2-6.html, informe.html · con_evidencia_vigente en control.html)»; (b) «control-iso42001-a-6-2-4.html @ 2026-10-03: estado de iso42001-A.6.2.4 frente a sus filas: expected 'con_fallas' to be 'sin_evidencia'» → verde (`cmp`) |
+| G19 | `maqueta-brecha` (nuevo) | Cifras = tabla; cada fila dice el veredicto de su último sobre confirmado, re-deducido de los DATOS; un «no detectado» con sobre cuenta como no ejecutada; tablero, brecha e informe dicen las mismas cifras | (a) el veredicto toma el del sobre propuesto; (b) un sobre sin constancia cuenta como ejecutada | (a) «PR-AG-HERR-001: la fila no dice lo que su último sobre confirmado: expected 'superada' to be 'no_ejecutada'»; (b) «expected '9 / 15' to be '8 / 15'», «por activo: ejecutadas: expected 9 to be 8», «tablero: ejecutadas por activo: expected 9 to be 8» → verde (`cmp`) |
+| G20 | e2e «informe.html impreso» (nuevo) | Impreso a 700 px: sin franja, matriz, barra lateral, barra, pestañas ni carril; tinta del tema claro con la pantalla en oscuro; tablas como tablas; sin desbordes ni palabras partidas | (a) rojo sobre un defecto real en su primera corrida; (b) `tokens.css` sin el bloque de impresión | (a) ««Hallazgo» (49 px) no cabe en `<th>` (46 px)» → corregido; (b) «Expected: "rgb(31, 28, 24)" · Received: "rgb(236, 233, 228)"» → verde (`cmp`) |
+| G21 | `maqueta-envejecimiento` (inventario) | Antes exigía el mismo número de datos fechados en cada fecha; las alertas crecen con el calendario (fichas que vencen, evidencia que envejece) y lo rompían en 48 fechas. Ahora: ninguno desaparece, y fuera de una fila de alerta ninguno aparece | (a) la página de un control oculta la fecha de la evidencia cuando envejece; (b) el tablero muestra el plazo de un hallazgo solo cuando vence | (a) «@ 2027-02-13: control-iso42001-a-6-2-4.html · evidencia desde 2026-08-17 · fijo (hoy hay 1): expected 0 to be greater than or equal to 1»; (b) «@ 2026-12-05: tablero.html · plazo desde 2026-09-05 · fijo aparece fuera de una alerta» → verde (`cmp`) |
+| — | `controladores-maqueta` | Sin cambios: nombró los enlaces a `control-iso42001-a.6.2.4.html` como no relativos | No es un gate nuevo | Se renombraron los archivos |
+| — | e2e «un enlace relativo del índice…» | Ahora entra al tablero (ya no existe `direccion`), por el botón visible de `main` | No es un gate nuevo; en teléfono el primer enlace al tablero era el logo oculto de la barra lateral | Verde en los dos proyectos |
+
+**Bugs y resoluciones**
+
+- La primera corrida de la suite tardó 418 s (antes, 65 s) con la máquina en carga 37 (otra compilación
+  y otros procesos ajenos) y la matriz analizando cada página dos veces por fecha; `maqueta-fichas`
+  excedió sus 5 s. La matriz ahora analiza una vez por página y fecha.
+- La huella de `SOB-0021` cambió al añadirle campos de ZAP: se retiraron (no hacían falta) para no tocar
+  páginas aprobadas.
+
+**Verificación** (local): 598 unitarias en 14 archivos · 952 e2e sobre 47 páginas: 948 en la corrida
+completa y 4 que excedieron sus 30 s en axe (`marcos` y `plan-act-demo-asistente`, páginas que esta
+mirada no cambió, con la máquina en carga 35) pasaron al repetirlas junto con la de impresión (9 de 9) ·
+arnés de capturas sin fallas: 1432 capturas de las 47 páginas (2 temas × 2 idiomas × 380 y 1280 px ×
+estados de pantalla) y la pasada de interacción activó cada control de cada página · las diez páginas
+nuevas, además, a 900, 1100 y 1440 px: 444 capturas, sin desbordes ni palabras partidas · capturas
+leídas como imagen: tablero (escritorio oscuro, 1100 y teléfono), brecha (escritorio y 900 en claro e
+inglés), lista de controles, `control-iso42001-a-6-2-4` (claro), `control-iso42001-a-7-4`, informe
+(escritorio y 1440 en claro) e índice · el informe impreso a PDF: papel claro, el resumen en su propia
+hoja, cabeceras de tabla repetidas en cada hoja · deriva cero al regenerar · lint y typecheck limpios ·
+nada bajo `src/`.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
@@ -565,6 +642,11 @@ queda en la dirección «consola» y vista. CI del commit `911bb67`: `quality`, 
 - **La mirada 4-bis se dio por decidida sin evidencia de mirada** (el usuario aceptó la recomendación y,
   repreguntado, ordenó empezar). Queda registrado tal cual; el tramo 1 es la parada donde la dirección
   se ve de verdad.
+
+- **`direccion.html` se retira y `control` pasa a ser lista más una página por control** (mirada 5): el
+  plan nombraba `direccion` y una sola página `control`. La vista por control completa reemplaza al corte
+  de la mirada 1, y cada control aplicable tiene su página (`control-<id>.html`), como las fichas de
+  prueba. No cambia el plan de miradas; está en la decisión 23 del README de diseño.
 
 - **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba
   (`prueba-<id>.html`). Es un ajuste pedido por el usuario en la mirada 2, no cambia el plan de miradas.
