@@ -28,6 +28,13 @@
     }
   }
 
+  function marcarGrupo(control, nombre) {
+    var grupo = control.parentElement.querySelectorAll('[data-controlador="' + nombre + '"]');
+    for (var i = 0; i < grupo.length; i++) {
+      grupo[i].setAttribute("aria-pressed", String(grupo[i] === control));
+    }
+  }
+
   function aplicarIdioma(idioma) {
     raiz.setAttribute("data-lang", idioma);
     raiz.setAttribute("lang", idioma);
@@ -53,12 +60,16 @@
     guardar("idioma", idioma);
   });
 
+  registrar("direccion", function (control) {
+    var direccion = control.getAttribute("data-valor");
+    raiz.setAttribute("data-direccion", direccion);
+    guardar("direccion", direccion);
+    marcarGrupo(control, "direccion");
+  });
+
   registrar("estado", function (control) {
     document.body.setAttribute("data-estado", control.getAttribute("data-valor"));
-    var grupo = control.parentElement.querySelectorAll('[data-controlador="estado"]');
-    for (var i = 0; i < grupo.length; i++) {
-      grupo[i].setAttribute("aria-pressed", String(grupo[i] === control));
-    }
+    marcarGrupo(control, "estado");
   });
 
   var tema = leer("tema");
@@ -69,8 +80,18 @@
     raiz.setAttribute("lang", idioma);
   }
 
+  var direccion = leer("direccion");
+  if (direccion === "a" || direccion === "b") raiz.setAttribute("data-direccion", direccion);
+
   document.addEventListener("DOMContentLoaded", function () {
     aplicarIdioma(raiz.getAttribute("data-lang"));
+    var botones = document.querySelectorAll('[data-controlador="direccion"]');
+    for (var i = 0; i < botones.length; i++) {
+      botones[i].setAttribute(
+        "aria-pressed",
+        String(botones[i].getAttribute("data-valor") === raiz.getAttribute("data-direccion")),
+      );
+    }
   });
 
   document.addEventListener("click", function (evento) {

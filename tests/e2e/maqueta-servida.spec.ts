@@ -31,6 +31,19 @@ for (const entrada of ["/diseno/index.html", "/diseno/", "/diseno"]) {
   });
 }
 
+test("un enlace relativo del índice abre otra página con estilos y con sus fuentes", async ({ page }) => {
+  await page.goto("/diseno");
+  await page.locator('a[href="direccion.html"]').first().click();
+  await expect(page).toHaveURL(/\/diseno\/direccion\.html$/);
+  await expect(page.locator("body")).toHaveCSS("background-color", fondoDe("oscuro"));
+  const caras = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, ""));
+  });
+  expect(caras).toContain("Atkinson Hyperlegible Next");
+  expect(caras).toContain("Atkinson Hyperlegible Mono");
+});
+
 for (const pagina of PAGINAS) {
   test(`${pagina}: cada control dibujado cambia algo al activarlo`, async ({ page }) => {
     await page.goto(`/diseno/${pagina}`);

@@ -18,8 +18,10 @@ Al pie de cada página: la matriz «Qué revisar y qué deberías ver».
 | Ruta | Qué es | Quién la escribe |
 |---|---|---|
 | `*.html` | Páginas de la maqueta | **Salida** de `scripts/maqueta/` (`pnpm maqueta`). No se editan a mano: el gate de deriva lo impide |
-| `assets/tokens.css` | Tokens de color en ambos temas | Provisional en la fase 0; desde la mirada 1, salida de `scripts/paleta/` |
-| `assets/maqueta.css`, `assets/maqueta.js` | Hoja y controlador de sala | A mano |
+| `assets/tokens.css`, `assets/tokens.json` | Tokens de color en ambos temas | **Salida** de `scripts/paleta/` (`pnpm tokens`) |
+| `assets/hg.css` | Hoja del sistema de diseño: lo que el producto obedecerá | A mano |
+| `assets/maqueta.css`, `assets/maqueta.js` | Hoja y controlador de **sala**: lo que no es producto (nota de la mirada, botoneras, matriz del pie) | A mano |
+| `assets/fuentes/` | Tipografías OFL, subconjunto latino, con su licencia | Copiadas de `@fontsource-variable` 5.3.0 |
 | `README.md` | Este registro | A mano; no se publica (la copia al build excluye los `.md`) |
 
 La maqueta es **autocontenida**: cero red, cero scripts en línea (la política de contenido de `/diseno/`
@@ -58,8 +60,8 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 
 | # | Artefacto | Estado |
 |---|---|---|
-| 0 | Fase 0: el preview del PR abre la maqueta provisional | pendiente |
-| 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | pendiente |
+| 0 | Fase 0: el preview del PR abre la maqueta provisional | **abre** (2026-10-03) |
+| 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **en mirada** (ronda 1) |
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba` | pendiente |
 | 3 | `marcos` · `controles` · `propuestas` · `activo` · `plan` | pendiente |
 | 4 | `evidencia` · `hallazgo` | pendiente |
@@ -72,7 +74,7 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 
 | Fecha | Artefacto | Dónde se miró | Veredicto del usuario (textual) | Qué se construyó encima |
 |---|---|---|---|---|
-| | | | | |
+| 2026-10-03 | `index.html` provisional (fase 0, tubería) | preview del PR #4, escritorio, tema oscuro | Captura de pantalla del preview con la página con estilos, las tres filas de vigencia y el estado «Cargando» activo con su mensaje; texto: «Esto aparece que se supone que debo hacer». No pidió ajustes. Antes había respondido «continúa» sin comentar la página y se le repreguntó | Fase 1: dirección |
 
 ## Cobertura (se llena durante la etapa)
 

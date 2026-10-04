@@ -64,7 +64,7 @@ const servidor = createServer((peticion, respuesta) => {
 await new Promise((listo) => servidor.listen(0, "127.0.0.1", listo));
 const base = `http://127.0.0.1:${servidor.address().port}`;
 
-const registro = { arbol: MAQUETA, capturas: 0, interacciones: {}, fallas: [] };
+const registro = { arbol: MAQUETA, capturas: 0, interacciones: {}, fuentes: {}, fallas: [] };
 const navegador = await chromium.launch();
 
 async function abrir(contexto, pagina) {
@@ -114,6 +114,50 @@ try {
           await contexto.close();
         }
       }
+    }
+
+    // Variantes de dirección (solo las páginas que la ofrecen): la alternativa también se fotografía.
+    for (const tema of TEMAS) {
+      for (const ancho of anchos) {
+        const contexto = await navegador.newContext({ viewport: { width: ancho, height: 900 }, deviceScaleFactor: 2 });
+        await contexto.addInitScript((t) => localStorage.setItem("hg-maqueta-v0:tema", t), tema);
+        const hoja = await abrir(contexto, pagina);
+        const otras = await hoja.locator('[data-controlador="direccion"][aria-pressed="false"]').evaluateAll((els) => els.map((el) => el.getAttribute("data-valor")));
+        for (const direccion of otras) {
+          await hoja.locator(`[data-controlador="direccion"][data-valor="${direccion}"]`).click();
+          const etiqueta = [nombre, tema, "es", ancho, `direccion-${direccion}`].join("__");
+          for (const d of await desbordes(hoja)) registro.fallas.push(`${etiqueta}: desborde → ${d}`);
+          await hoja.screenshot({ path: join(salida, `${etiqueta}.png`), fullPage: true, animations: "disabled" });
+          registro.capturas += 1;
+        }
+        await contexto.close();
+      }
+    }
+
+    // Fuentes: toda familia declarada en la hoja tiene que haber CARGADO (document.fonts.check() miente
+    // con familias de respaldo; se exige status === "loaded" de cada @font-face que la página usa).
+    {
+      const contexto = await navegador.newContext({ viewport: { width: 1280, height: 900 } });
+      const hoja = await abrir(contexto, pagina);
+      const fuentes = await hoja.evaluate(async () => {
+        await document.fonts.ready;
+        return [...document.fonts].map((f) => ({ familia: f.family.replace(/"/g, ""), estado: f.status }));
+      });
+      const usadas = await hoja.evaluate(() => {
+        const familias = new Set();
+        for (const el of document.body.querySelectorAll("*")) {
+          if (el.getClientRects().length === 0 || !el.textContent.trim()) continue;
+          familias.add(getComputedStyle(el).fontFamily.split(",")[0].trim().replace(/"/g, ""));
+        }
+        return [...familias];
+      });
+      for (const familia of usadas) {
+        const cara = fuentes.find((f) => f.familia === familia);
+        if (!cara) registro.fallas.push(`${pagina}: la familia «${familia}» no tiene @font-face en la maqueta`);
+        else if (cara.estado !== "loaded") registro.fallas.push(`${pagina}: la fuente «${familia}» quedó en «${cara.estado}»`);
+      }
+      registro.fuentes = { ...(registro.fuentes ?? {}), [pagina]: usadas };
+      await contexto.close();
     }
 
     const contexto = await navegador.newContext({ viewport: { width: 380, height: 900 } });

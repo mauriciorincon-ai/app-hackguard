@@ -6,12 +6,16 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fechaDeConsulta } from "./nucleo/fecha.mjs";
+import { direccion } from "./paginas/direccion.mjs";
 import { index } from "./paginas/index.mjs";
 import { MAQUETA, salida } from "./rutas.mjs";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
-export const PAGINAS = [{ archivo: "index.html", generar: index }];
+export const PAGINAS = [
+  { archivo: "index.html", generar: index },
+  { archivo: "direccion.html", generar: direccion },
+];
 
 const destino = salida();
 const contexto = {

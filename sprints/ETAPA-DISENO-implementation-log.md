@@ -74,12 +74,83 @@ dependabot: se abrió el PR #5 desde `main` con los mismos dos bumps y el lockfi
 (`verificar-dependencias`: 653 paquetes, ninguno por debajo de `main`; `pnpm peers check` limpio), tres
 checks en `success`, mergeado, y el #2 se cerró como reemplazado.
 
+## Fase 1 — Dirección (2026-10-03 / 04)
+
+**Mirada 0 registrada** antes de empezar: el usuario abrió el preview del PR #4 y envió la captura con la
+página servida con estilos y un estado activo. Su primer «continúa» llegó sin comentar la página y se le
+repreguntó (gate de mirada); además no supo dónde abrirla, así que desde ahora cada mirada lleva el
+enlace directo del preview en el chat.
+
+### Qué se construyó
+
+- **Dirección A «libro de evidencia»** (recomendada) y **B «acta»** (alternativa), conmutables en
+  `direccion.html` sobre el mismo HTML: un corte real de la vista por control (pantalla 12).
+- **Paleta** en `scripts/paleta/` (OKLCH → hex): neutros cálidos, un acento —la tinta azul, reservada a
+  la mano humana— y cuatro papeles de estado. `tokens.css` y `tokens.json` son salida de `pnpm tokens`.
+- **Tipografía:** Atkinson Hyperlegible Next y Mono (A) y Source Serif 4 para los títulos de B; OFL,
+  subconjunto latino, en `docs/diseno/assets/fuentes/` con su licencia.
+- **Hoja del sistema** `assets/hg.css` separada de la hoja de sala `assets/maqueta.css`.
+- **Generador:** vocabulario de estados como dato (`nucleo/estados.mjs`), componentes canon
+  (`nucleo/componentes.mjs`), trazos SVG (`nucleo/simbolos.mjs`), mundo sintético (`datos/mundo.mjs`) y
+  cifras derivadas (`nucleo/calculos.mjs`): antigüedad de evidencia, plazo y atraso por severidad, cota
+  3/k, estado del control, huellas SHA-256 reales de cada registro sintético.
+- **`design-system.md` 0.1.0** (personalidad, color, tipografía, espacio, estados, componentes canon).
+- **Arnés:** variantes de dirección y comprobación de fuente cargada (`status === "loaded"`).
+
+### Decisiones
+
+- **La forma se asigna por papel, no por concepto.** Círculo relleno con visto = bien; triángulo =
+  atención; cuadrado relleno con aspa = falla; círculo punteado = ausente. «Vigente», «superada» y «con
+  evidencia vigente» comparten forma porque comparten papel: menos formas, más fáciles de aprender sin
+  color.
+- **La severidad no se codifica por tono** sino con cuatro barras ascendentes: la forma lleva el orden.
+- **Lo que no es noticia no lleva marca:** una evidencia reciente junto a un veredicto fallido no muestra
+  un visto verde (confundía); la marca aparece solo cuando la evidencia envejece.
+- **Columna de folio:** en escritorio el identificador de cada fila tiene su propia columna.
+- **Regla 11 en la maqueta:** del control solo se usa el identificador `iso42001-A.6.2.4` y un resumen
+  con palabras propias; es ilustrativo hasta el S1.
+
+### Demos en rojo de esta fase (confirmadas con `cmp`)
+
+| # | Gate | Cambio deliberado | Rojo que dio |
+|---|---|---|---|
+| F1 | cobertura de fuente | una flecha en un texto | «caracteres fuera de la cobertura de las fuentes: ['→ U+2192']» |
+| F2 | envejecimiento · evidencia | umbral de 180 días corrido un día | «@ 2027-02-13 (evidencia desde 2026-08-17): estado a los 180 días: expected 'vigente' to be 'antigua'» |
+| F3 | envejecimiento · plazo | atraso contado con un día de más | rojo en las cinco fechas en que el hallazgo está vencido |
+| F4 | envejecimiento · control | una sola falla deja de dominar el estado del control | rojo en las fechas con una prueba fallida |
+| F5 | paleta · contraste | tinta secundaria más clara en el tema claro | «tinta-2 sobre fondo: expected 3.30 to be greater than or equal to 4.5» |
+| F6 | paleta · separación | el papel positivo llevado hacia el gris | rojo en visión normal y en las tres dicromacias |
+| F7 | paleta · deriva | `tokens.css` editado a mano | «tokens.css: difiere de lo que genera scripts/paleta» |
+| F8 | design-system | un color cambiado en la tabla del documento | «expected ['#000000', '#f6f3eb'] to deeply equal ['#12100e', '#f6f3eb']» |
+
+### Bugs y resoluciones
+
+- **El tema claro confundía dos pares de papeles bajo daltonismo** en la primera paleta (positivo con
+  neutro en protanopía, ΔE 0,012; atención con falla en deuteranopía, 0,023). Lo encontró la medición, no
+  la vista. Se separaron por luminosidad además de por tono; peor par actual 0,072.
+- **Fechas partidas por el guion** en columnas estrechas: identificadores y fechas ya no se parten.
+- **Regla doble duplicada** en la dirección B (la especificidad del selector de dirección ganaba a la
+  regla que la quitaba).
+
+- **El puerto 3000 lo ocupaba otra app de la casa** (un servidor de desarrollo de `app-ds`). Playwright
+  abortó en vez de probar contra el árbol ajeno —la configuración sin reuso de servidor hizo su trabajo—.
+  No se tocó ese proceso: `E2E_PUERTO` permite correr los e2e en otro puerto (3000 sigue siendo el de CI).
+
+### Pasada de capturas
+
+44 capturas (380 y 1280 × tema × idioma × estado, más la dirección B), leídas como imagen: oscuro y
+claro en escritorio, teléfono en oscuro, dirección B y estado de error. Sin desbordes, 8 controles
+activados en `direccion.html` y 2 en `index.html`, fuentes en `loaded`.
+
 ## Desviación del plan
+
+- **La paleta se eligió a mano y se validó por código**, no se «buscó» por código como decía el plan:
+  con cinco papeles bastó ajustar luminosidades hasta pasar los umbrales. Los umbrales son literales en
+  `tests/unit/paleta.test.ts`.
 
 - **`--coverage` no entra al script `test` en esta etapa.** El plan lo listaba, pero la constitución lo
   fija para «los primeros tests del S1»: los umbrales cubren `src/lib` y `src/engine`, y en esta etapa no
   se escribe producto ni sus tests. Activarlo ahora pondría la CI en rojo por `src/lib/observability.ts`
   o empujaría a escribir producto antes de G-Diseño. Lo activa el S1.
-- **El e2e de «enlace relativo abre otra página con estilos»** llega con la fase 1: hoy la maqueta tiene
-  una sola página. El gate unitario ya impide enlaces a páginas inexistentes (D2c).
-- **La comprobación de fuente cargada del arnés** llega con las fuentes, en la fase 1.
+- **El e2e de «enlace relativo abre otra página con estilos»** y **la comprobación de fuente cargada**
+  se difirieron de la fase 0 a la fase 1 (no había segunda página ni fuentes). Pagados en la fase 1.
