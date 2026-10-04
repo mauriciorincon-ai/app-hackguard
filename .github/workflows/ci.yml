@@ -17,9 +17,9 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm peers check     # unico gate que ve un peer insatisfecho (kit v1.24.0 — caso @supabase/ssr)
@@ -38,16 +38,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: quality
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e        # incluye scans axe (@axe-core/playwright)
       # El primer reintento graba trace (playwright.config `trace: on-first-retry`) con
       # consola, errores y DOM — se sube SOLO cuando algo falla (kit v1.26.0).
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-test-results
@@ -59,9 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: quality
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6   # SIN `version`: la lee de "packageManager" del package.json (fuente unica, kit v1.10.2)
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
