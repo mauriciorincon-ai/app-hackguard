@@ -10,7 +10,7 @@ import { VALIDACION, pasa } from "../datos/validacion.mjs";
 import { brecha as calcular } from "../nucleo/brecha.mjs";
 import { veredictoSugerido, vigencia } from "../nucleo/calculos.mjs";
 import { fichaDe } from "../datos/catalogo.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, columnas, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_ACTIVO, ESTADO_DE_CONTROL, ESTADO_DE_HALLAZGO, SEVERIDAD, VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -19,7 +19,6 @@ import { alertas, ejecutadas, plazoFechado, plural, tablaDeAlertas } from "../nu
 const POR_CONFIRMAR = { rol: "atencion", simbolo: "reloj", nombre: { es: "Por confirmar", en: "To confirm" } };
 const POR_DECIDIR = { rol: "acento", simbolo: "firma", nombre: { es: "Por decidir", en: "To decide" } };
 const SIN_PLAN = { rol: "neutro", simbolo: "vacio", nombre: { es: "Sin plan", en: "No plan" } };
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 
 /** Lista de cuentas: un rótulo con su forma y su cifra a la derecha. Los enlaces van en el pie del panel. */
 const cuentas = (filas, rotulo) =>

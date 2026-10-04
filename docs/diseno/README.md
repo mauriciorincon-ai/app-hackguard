@@ -53,20 +53,23 @@ Aprobadas con el plan de la etapa (2026-10-03):
    de reproducibilidad en `informe`.
 6. **Toda marca de estado es un trazo SVG**, nunca un carácter de una fuente.
 7. **Tema por defecto: oscuro.** El claro se diseña y se mira con el mismo cuidado.
+8. **Dirección «acta»** (mirada 1; **rechazada en la mirada 4**): títulos en Source Serif 4, texto en
+   Atkinson Hyperlegible Next, datos en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y
+   secciones numeradas. La reemplaza la decisión 16.
 9. **Navegación:** cinco secciones (Tablero · Catálogo · Activos · Evidencia · Brecha) y, dentro de cada
-   una, sus páginas. Una página que la maqueta aún no tiene se dibuja como texto, no como enlace roto.
-10. **Cada fila del catálogo abre la ficha de SU prueba** (`prueba-<id>.html`, una página por prueba;
-    21 hoy). Reemplaza la decisión anterior —todas las filas abrían la ficha de `PR-IA-PINJ-001`—, que
+   una, sus páginas. Todo enlace apunta a una página que la maqueta genera; si no, el generador falla
+   (auditoría de cierre, M12: antes se dibujaba como texto y ningún gate lo veía).
+10. **Cada fila del catálogo abre la ficha de SU prueba** (`prueba-<id>.html`, una página por prueba). Reemplaza la decisión anterior —todas las filas abrían la ficha de `PR-IA-PINJ-001`—, que
     el usuario encontró rota en la mirada 2: una prueba vencida se leía «Vigente» al abrirla. Una
     pantalla de detalle de la maqueta jamás muestra el estado de otro objeto.
-11. **Una página por activo, y su plan con él** (`activo-<id>.html`, `plan-<id>.html`; tres activos demo
-    ficticios que cubren las cuatro familias). Arriba, un conmutador dice qué activo está abierto; debajo,
-    «Activo» y «Plan» son de ese activo. El tercero no tiene alcance ni reglas: muestra «sin autorización
+11. **Una página por activo, y su plan con él** (`activo-<id>.html`, `plan-<id>.html`; activos demo
+    ficticios que cubren todas las familias). Arriba, un conmutador dice qué activo está abierto; debajo,
+    «Activo» y «Plan» son de ese activo. El portal no tiene alcance ni reglas: muestra «sin autorización
     no hay plan» en las dos páginas. El plan lo calcula el generador desde el perfil y el catálogo
     (aritmética de maqueta, no el planificador del producto); la fórmula de prioridad es ilustrativa.
 12. **Los botones de la bandeja de propuestas funcionan pero no guardan nada**: marcan la decisión, dicen
     su consecuencia y descuentan la cifra «por decidir». Pulsar otra vez la misma decisión la deshace.
-13. **Una página por hallazgo** (`hallazgo-<id>.html`; cuatro, uno por momento del ciclo: abierto y
+13. **Una página por hallazgo** (`hallazgo-<id>.html`; uno por momento del ciclo: abierto y
     vencido, corregido con re-prueba por confirmar, aceptado con riesgo y cerrado por re-prueba), con el
     mismo conmutador de objeto que los activos.
 14. **La carga de evidencia muestra un solo activo** (el asistente demo) con dos lotes por confirmar; las
@@ -78,9 +81,6 @@ Aprobadas con el plan de la etapa (2026-10-03):
     en navegación, disposición, densidad y componentes. Viven en `assets/interfaz.css`, aparte de la hoja
     del sistema: la elegida pasó a `app.css` y a `design-system.md`; las tres páginas y su hoja se
     retiraron en la 4-ter (tramo 2).
-8. **Dirección «acta»** (mirada 1; **rechazada en la mirada 4**): títulos en Source Serif 4, texto en
-   Atkinson Hyperlegible Next, datos en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y
-   secciones numeradas. La reemplaza la decisión 16.
 16. **Dirección «consola»** (mirada 4-bis): la A, con dos piezas de la B — el **recorrido de pasos** para
     lo que tiene ciclo de vida (lotes y hallazgos) y el **carril de acción** a la derecha en las pantallas
     de detalle. Barra lateral con las secciones y sus páginas, barra de contexto, tablas densas, paneles
@@ -89,13 +89,13 @@ Aprobadas con el plan de la etapa (2026-10-03):
 17. **La mirada 4-ter se hace en dos tramos.** Primero el sistema y tres pantallas tipo — una lista
     (`catalogo`), un detalle (`hallazgo-<id>`) y un formulario (`evidencia`) — y, con su aprobación, el
     resto. Mientras duró el tramo 1 convivieron dos hojas; desde el tramo 2 queda solo `app.css`.
+18. **En la carga de evidencia cada sobre se puede seleccionar**: el identificador de la fila es un botón
+    y el carril muestra su regla, sus huellas y su hallazgo. La ficha del lote va bajo la tabla.
 19. **Las listas van a todo el ancho; el carril es de las pantallas de detalle.** El plan se diseñó al
     principio con carril y su tabla de pruebas no cabía: se montaba encima del carril sin salirse de la
     ventana. La sonda de desbordes mide ahora que ningún panel deje salir su contenido.
 20. **La página `direccion`** (mirada 1) se conserva rehecha como adelanto de la vista por control; la
     página `control` de la mirada 5 la reemplaza.
-18. **En la carga de evidencia cada sobre se puede seleccionar**: el identificador de la fila es un botón
-    y el carril muestra su regla, sus huellas y su hallazgo. La ficha del lote va bajo la tabla.
 21. **La brecha es una sola, de todos los activos**, con la cobertura agrupada por activo, por familia y
     por control en pestañas; no hay una página de brecha por activo. La tabla «esperado contra obtenido»
     se filtra por activo y por veredicto. Lo que espera confirmación se nombra en su fila, pero no mueve
@@ -105,20 +105,41 @@ Aprobadas con el plan de la etapa (2026-10-03):
     `SOB-0023`), para que la brecha y la vista por control muestren lo que tienen que mostrar: un control
     en cada uno de los cuatro estados y, en la misma corrida de ZAP, una regla «no detectada» (sin
     constancia de que corrió: no ejecutada) junto a otra «verificada» (superada).
-23. **La vista por control es una lista y una página por control aplicable** (`control-<id>.html`, cinco,
-    con el selector de objeto). La página `direccion` de la mirada 1 se retira, como anunció la decisión
+23. **La vista por control es una lista y una página por control aplicable** (`control-<id>.html`, con el
+    selector de objeto). La página `direccion` de la mirada 1 se retira, como anunció la decisión
     20: lo que se aprobó en ella vive en la página del control con fallas. En la página de un control, el
     hallazgo abierto va junto a su resultado: con el carril, cinco columnas no cabían.
 24. **El informe es global e imprimible.** Las ocho secciones de § 12, la validación del instrumento en la
     ficha de reproducibilidad y su propia huella. Al imprimir sale solo el informe, en papel claro aunque
     la pantalla esté en oscuro, con las tablas como tablas y el resumen en su propia hoja.
 25. **El tablero es la portada de la aplicación**: el logo lleva a él. El índice (`index.html`) es la
-    portada de la sala: las trece pantallas en el orden de la orden de diseño, con el estado de su mirada;
+    portada de la sala: las pantallas en el orden de la orden de diseño, con el estado de su mirada;
     la franja de sala de cada pantalla trae de vuelta con «Recorrido».
 26. **La validación del instrumento (C18) es una banda en el tablero**, con sus comprobaciones a la vista,
     y su rojo es el estado de error del tablero y del informe. Las semillas son ilustrativas
     (`scripts/maqueta/datos/validacion.mjs`; las dos cifras de CVSS son las del spike) y nacen de verdad
     en el S1.
+
+27. **Cierre de la etapa: lo que dejó la auditoría** (fase 2, 2026-10-04; se ve en la mirada 6):
+    - **Vigencia por familia** (RF-01.5): panel en el catálogo; una familia está como su prueba más
+      atrasada, con cuántas hay en cada estado.
+    - **Controles equivalentes** (E-16): una equivalencia **ilustrativa** de `iso42001-A.6.2.4` con
+      NIST AI RMF 1.0 · MEASURE 2.3, con su fuente y la marca «mapa incompleto»; el mapa real se carga en
+      el S1. Los demás controles dicen que el mapa no trae equivalente.
+    - **El operador agrega pruebas** (RF-03.7): una prueba que el perfil no pide entra al plan con su
+      justificación y la marca «Agregada por ti»; nunca una fuera del alcance autorizado. En la maqueta,
+      `PR-SW-CLK-001` en el plan del asistente: la brecha pasa a 16 planeadas.
+    - **Prioridad con capacidad de acción** (RF-03.2) y «plan gratuito de un servicio» entre los entornos
+      (RF-03.3). Los ajustes suben la prioridad base **un punto como mucho**, y la fila dice cuáles
+      aplicaron: sin ese tope, el plan entero del asistente quedaba en «5 de 5» y la prioridad no ordenaba
+      nada.
+    - **Lo elegido se ve sin color:** el botón pulsado lleva además una barra inferior y más peso.
+    - **Aceptar el riesgo no cierra un hallazgo:** sigue siendo falla de su control; lo que «pide
+      trabajo» es otra cosa, y el tablero lo dice así.
+    - **Un «no ejecutada» no es evidencia de un control** (E-6), y el umbral de la evidencia antigua se lee
+      de los datos.
+    - **Las áreas del Anexo A** llevan nombre con palabras propias, como sus resúmenes (regla 11).
+    - **Un solo conteo de un sobre** en todas las pantallas, con la cota cuando no falla nada.
 
 ## Plan de miradas
 
@@ -167,23 +188,24 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-04 | fichas de prueba, `marcos`, `controles`, `propuestas`, `activo-<id>`, `plan-<id>`, `kit`, `direccion` e `index` con la dirección «consola» (mirada 4-ter, tramo 2, ronda 1) | preview del PR #4 | «Abri todas las paginas y estan buenismas muy claras y adecuadas, las abri y las apruebo continua» — **tramo 2 aprobado**, sin ajustes; dice haber abierto todas las páginas. Con esto toda la maqueta construida queda en la dirección «consola» y vista. El texto en ambos idiomas sigue «maquetado, no visto» | Mirada 5: brecha, vista por control, informe, tablero y portada |
 | 2026-10-04 | `tablero`, `brecha`, `control` y `control-<id>`, `informe` (también impreso) e `index` (mirada 5, ronda 1) | preview del PR #4 | «Muy buenas visuales y muy claras, las abri y las apruebo, continua» — **mirada 5 aprobada**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto» | Fase 6: cierre de la etapa (revisión propia, auditoría y mirada 6, G-Diseño) |
 
-## Cobertura (se llena durante la etapa)
+## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |
 |---|---|---|
 | `tablero` | C16 · C18 | con datos (pide tu atención: plazo vencido, lotes por confirmar, propuestas por decidir, fichas del plan vencidas, marcos con versión nueva, evidencia antigua · activos con su avance · hallazgos sin cerrar por severidad · controles por estado · catálogo por vigencia · banda de validación en verde, con sus comprobaciones) · vacío · carga · error (validación del instrumento en rojo: no se publica nada) |
-| `catalogo` | C1 · C3 | con datos · sin resultados (filtros) · vacío · carga · error (pruebas rechazadas al cargar) |
+| `catalogo` | C1 · C3 | con datos, con la vigencia por familia · sin resultados (filtros) · vacío · carga · error (pruebas rechazadas al cargar) |
 | `prueba-<id>` | C1 · C3 · C6 | con datos, en sus variantes: vigente · por revisar · vencida (sello bajo el encabezado) · marcada para revisión de contenido · sin control asignado · con repeticiones y cota · determinista · con adaptador o por carga manual — y vacío (prueba retirada) · carga · error (no pasa su esquema) |
 | `marcos` | C3 · C4 | con datos (versión al día · versión más nueva con propuesta · versión más nueva sin propuesta · mapa de equivalencias con entrada sin equivalente y entradas nuevas · instantáneas) · vacío · carga · error (referencia sin versión) |
-| `controles` | C5 | con datos (áreas con y sin pruebas · controles con las pruebas que les dan evidencia · pruebas sin control asignado) · vacío · carga · error (control inexistente) |
+| `controles` | C5 | con datos (áreas con y sin pruebas · controles con las pruebas que les dan evidencia · un control con su equivalente en otro marco, su fuente y «mapa incompleto» · pruebas sin control asignado) · vacío · carga · error (control inexistente) |
 | `propuestas` | C2 · C7 · C15 | con datos (fuente verificada · fuente sin verificar · marcada por el filtro · cambio de versión · herramienta · sobre con prueba dudosa y veredicto por regla · texto que mezcla dos pruebas; cada una sin decidir / aprobada / rechazada / separada) · filtro por quién propone · registro de la corrida · vacío · carga · error (propuesta que no cumple su esquema) |
 | `activo-<id>` | C8 | con datos (autorizado con proveedor y política leída · autorizado sin proveedor · **sin autorización**, con la plantilla para activos propios) · vacío · carga · error (perfil sin dueño) |
-| `plan-<id>` | C9 · C10 | con datos (planeadas con prioridad y razón · excluidas por perfil, por alcance y por el operador · control sin prueba · paquete de ejecución por herramienta) · **sin autorización: no hay plan** · vacío con «Emitir el plan» · carga · error (instantánea que no coincide con su huella) |
+| `plan-<id>` | C9 · C10 | con datos (planeadas con prioridad y razón · agregada por el operador, con su justificación · excluidas por perfil, por alcance y por el operador · control sin prueba · paquete de ejecución por herramienta) · **sin autorización: no hay plan** · vacío con «Emitir el plan» · carga · error (instantánea que no coincide con su huella) |
 | `evidencia` | C11 · C14 · C15 | con datos, por vía: **archivo de herramienta** (dos lotes por confirmar: sobres con veredicto sugerido fallida / superada / no ejecutada, revisión obligatoria o en la muestra, huellas, advertencias; cada sobre seleccionable con su detalle en el carril; lote sin decidir / confirmado / a revisión individual, y el recorrido lo refleja) · **texto pegado** (campo vacío / lleno / propuesto) · **sobre manual** (formulario con obligatorios por llenar / completo / guardado) · vacío · carga · error (versión de herramienta fuera del rango probado) |
 | `hallazgo-<id>` | C12 · C13 | con datos: abierto con plazo vencido · corregido con re-prueba por confirmar · aceptado con riesgo y revisión programada (o vencida) · cerrado por re-prueba; severidad por tabla de prioridad de IA o por vector CVSS 4.0; salidas posibles con lo que exige cada una · vacío · carga · error (vector incompleto) |
 | `brecha` | C16 | con datos (cifras de cobertura · evidencia por confirmar que no cuenta · cobertura por activo, familia y control · esperado contra obtenido con su desviación, «no detectado» frente a «verificado» y sobres propuestos que no cuentan · vencidos y alertas) · sin resultados (filtros) · vacío · carga · error (plan cuya instantánea no está) |
-| `control` y `control-<id>` | C17 | lista: los cuatro estados · control sin prueba en los planes · pruebas del plan sin control; cada control: con fallas (con la cadena de cierre de sus dos hallazgos) · evidencia antigua · sin evidencia · sin prueba en los planes · con evidencia vigente y pruebas sin resultado; una sola acción, la que pide su estado · vacío · carga · error (una huella que no coincide) |
+| `control` y `control-<id>` | C17 | lista: los cuatro estados · control sin prueba en los planes · pruebas del plan sin control; cada control: con fallas (con la cadena de cierre de sus dos hallazgos) · evidencia antigua · sin evidencia · sin prueba en los planes · con evidencia vigente y pruebas sin resultado; una sola acción, la que pide su estado; controles equivalentes, con su fuente o sin equivalente · vacío · carga · error (una huella que no coincide) |
 | `informe` | C16 · C18 | con datos (las ocho secciones de § 12, con su huella y la validación del instrumento) · hoja de impresión · vacío · carga · error (validación del instrumento en rojo) |
+| Fuera de la maqueta | C19 · C20 | La vitrina pública y el paquete para hoja-de-vida con su ficha técnica son del H2 (S4): no tienen pantalla en el H1 |
 
 ## Gates de esta etapa y su demo en rojo
 
@@ -194,19 +216,23 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 |---|---|---|
 | Deriva | `tests/unit/maqueta-deriva.test.ts` | HTML editado a mano o datos cambiados sin regenerar |
 | Controladores | `tests/unit/controladores-maqueta.test.ts` | Control sin controlador registrado, script ausente, enlace roto |
-| Autocontención | `tests/unit/maqueta-autocontenida.test.ts` | Cualquier petición a la red |
-| Bilingüe | `tests/unit/maqueta-bilingue.test.ts` | Texto o atributo en un solo idioma |
-| Envejecimiento | `tests/unit/maqueta-envejecimiento.test.ts` | Estado equivocado en una fecha umbral; un control que dice estados distintos en dos pantallas, o un estado que no es el de sus filas, en cualquier fecha |
+| Autocontención | `tests/unit/maqueta-autocontenida.test.ts` | Cualquier petición a la red, también por `srcset`, `meta refresh` o `import()` |
+| Bilingüe | `tests/unit/maqueta-bilingue.test.ts` | Texto o atributo en un solo idioma; un atributo de texto que `assets/maqueta.js` no cambia de idioma |
+| Envejecimiento | `tests/unit/maqueta-envejecimiento.test.ts` | Estado equivocado en una fecha umbral; un control que dice estados distintos en dos pantallas, o un estado que no es el de sus filas, en cualquier fecha; una matriz que nunca recorre un estado (vigencia, evidencia, plazo en plazo y vencido, revisión) |
 | Brecha | `tests/unit/maqueta-brecha.test.ts` | Cifras que no son las de su tabla; un sobre sin confirmar que mueve un veredicto; «no detectado» contado como ejecutada; tablero, brecha e informe con cifras distintas |
-| Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, o que fila y ficha digan vigencias distintas (hoy y 45 días después) |
-| Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
+| Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, que fila y ficha digan vigencias distintas, o que una familia no diga la vigencia de su prueba más atrasada (hoy y 45 días después) |
+| Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón; una prueba agregada sin su justificación |
 | Evidencia | `tests/unit/maqueta-evidencia.test.ts` | Una fallida fuera de la revisión obligatoria de su lote; un hallazgo mostrado como cerrado sin su cadena completa; una tabla de prioridad cuya casilla no es la severidad declarada |
 | Escala de IA | `tests/unit/maqueta-escala.test.ts` | Una tabla de prioridad que rompe el piso o el techo declarados en sus datos, o que baja de nivel al subir la frecuencia o el impacto |
 | Cifras | `tests/unit/maqueta-cifras.test.ts` | Una cifra de datos escrita a mano en letras («cuatro familias») en el texto de cualquier página |
 | Cálculos | `tests/unit/maqueta-calculos.test.ts` | Una huella que ignora lo anidado; un «no ejecutada» contado como evidencia de un control; un riesgo aceptado tratado como cerrado |
 | Enlaces del generador | `scripts/maqueta/nucleo/componentes.mjs` (`destino()`) | Un enlace a una página que no se genera: el generador falla en vez de dibujar texto |
+| Mapa de funciones | `tests/unit/maqueta-mapa.test.ts` | Que la portada y este README digan funciones distintas para una pantalla |
+| Cobertura de fuente | `tests/unit/maqueta-cobertura-de-fuente.test.ts` | Un carácter que el subconjunto latino de las fuentes no tiene (se pintaría con la fuente del sistema) |
+| Paleta | `tests/unit/paleta.test.ts` | Contraste por debajo de AA en texto o de 3:1 en marcas; dos estados que se confunden en visión normal o con daltonismo |
+| Sistema de diseño | `tests/unit/design-system.test.ts` | Que `design-system.md` diga un color y la maqueta pinte otro |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
-| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad, dato que pisa la columna vecina o contenido que se sale de su panel, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento»; un informe que se imprime con navegación, en tinta clara, con tablas hechas tarjetas o fuera de la hoja |
+| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad, dato que pisa la columna vecina o contenido que se sale de su panel, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento»; un informe que se imprime con navegación, en tinta clara, con tablas hechas tarjetas o fuera de la hoja; un estado de pantalla (vacío, carga, error) que se sale a 380 px o falla axe; un botón pulsado que solo cambia de color |
 
 ## Tokens de reusables consumidos
 
@@ -225,6 +251,11 @@ tabla en datos, nunca una suma de dimensiones), dibujado con los tokens propios 
   bajan a una leyenda bajo la tabla.
 - La tabla y sus bandas son **ilustrativas y provisionales** (mirada 4); la definitiva se fija con el
   sprint del libro de evidencia.
+
+**Agente «Experto ISO 42001» de hoja-de-vida** (el brief deja la decisión a esta etapa). **Decisión del
+usuario (2026-10-04, al aprobar la fase 2 de la auditoría): no es fuente de los resúmenes del Anexo A.**
+Los resúmenes los redacta el S1 con palabras propias (regla 11); el agente puede consultarse solo para
+contrastar, en lectura desde la planeadora.
 
 ## Registro de G-Diseño (se llena al cerrar la etapa)
 

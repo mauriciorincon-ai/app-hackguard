@@ -3,9 +3,10 @@
 // a los que el catálogo da evidencia con las pruebas que los cubren, y la deuda a la vista: pruebas sin
 // control asignado. Todo conteo sale del catálogo.
 // Dirección «consola» (mirada 4-ter): tira de cifras y tres paneles con su tabla.
-import { CONTROLES, PRUEBAS, archivoDeFicha } from "../datos/catalogo.mjs";
+import { CONTROLES, EQUIVALENTES, PRUEBAS, archivoDeFicha } from "../datos/catalogo.mjs";
 import { AREAS, NORMA, areaDe } from "../datos/gobierno.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, columnas, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
+import { MAPA_INCOMPLETO } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 
@@ -15,7 +16,13 @@ const SIN_PRUEBAS = { rol: "neutro", simbolo: "vacio", nombre: { es: "Sin prueba
 const CON_PRUEBAS = { rol: "positivo", simbolo: "ok" };
 
 const cubren = (control) => PRUEBAS.filter((p) => p.controles.includes(control));
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
+
+/** Con qué control de otro marco equivale, y si el mapa lo cubre entero. */
+function equivalentesDe(control) {
+  const suyos = EQUIVALENTES[control] ?? [];
+  if (!suyos.length) return `<p class="hg-menor">${t({ es: "Ninguno registrado", en: "None recorded" })}</p>`;
+  return suyos.map((e) => `<p>${dato(`${e.marco} ${e.version} · ${e.control}`)}</p>${e.incompleto ? `<p>${chip(MAPA_INCOMPLETO)}</p>` : ""}`).join("");
+}
 
 export function controles({ consulta, existentes }) {
   const ids = Object.keys(CONTROLES);
@@ -49,7 +56,7 @@ export function controles({ consulta, existentes }) {
 <td><p>${t(CONTROLES[c])}</p></td>
 <td><p>${pruebas.map(fichaDe).join(" · ")}</p></td>
 <td data-celda="estado">${estado({ ...CON_PRUEBAS, nombre: { es: pruebas.length === 1 ? "1 prueba" : `${pruebas.length} pruebas`, en: pruebas.length === 1 ? "1 test" : `${pruebas.length} tests` } })}</td>
-<td><p class="hg-menor">${t({ es: "Ninguno registrado", en: "None recorded" })}</p></td>
+<td>${equivalentesDe(c)}</td>
 </tr>`;
     })
     .join("\n");
@@ -184,6 +191,11 @@ ${aviso(
     },
     contenido,
     revisar: [
+      {
+        donde: { es: "Columna «Equivalentes», fila de iso42001-A.6.2.4", en: "“Equivalents” column, iso42001-A.6.2.4 row" },
+        hacer: { es: "Léela", en: "Read it" },
+        ver: { es: "Con qué control de otro marco equivale y, en su forma, que el mapa es incompleto", en: "Which control in another framework it matches and, by its shape, that the map is incomplete" },
+      },
       {
         donde: { es: "Áreas del Anexo A", en: "Annex A areas" },
         hacer: { es: "Recorre la columna de la derecha", en: "Scan the right-hand column" },

@@ -7,6 +7,7 @@
   var CLAVE = "hg-maqueta-v0:";
   var raiz = document.documentElement;
   var controladores = {};
+  var ATRIBUTOS_DE_TEXTO = ["aria-label", "title", "placeholder", "alt"];
 
   function registrar(nombre, accion) {
     controladores[nombre] = accion;
@@ -44,9 +45,13 @@
     }
     var opciones = document.querySelectorAll("option[data-" + idioma + "]");
     for (var o = 0; o < opciones.length; o++) opciones[o].textContent = opciones[o].getAttribute("data-" + idioma);
-    var conEtiqueta = document.querySelectorAll("[data-aria-label-" + idioma + "]");
-    for (var i = 0; i < conEtiqueta.length; i++) {
-      conEtiqueta[i].setAttribute("aria-label", conEtiqueta[i].getAttribute("data-aria-label-" + idioma));
+    // Los mismos atributos de texto que acepta el gate bilingüe (tests/unit/maqueta-bilingue).
+    for (var a = 0; a < ATRIBUTOS_DE_TEXTO.length; a++) {
+      var atributo = ATRIBUTOS_DE_TEXTO[a];
+      var conTexto = document.querySelectorAll("[data-" + atributo + "-" + idioma + "]");
+      for (var i = 0; i < conTexto.length; i++) {
+        conTexto[i].setAttribute(atributo, conTexto[i].getAttribute("data-" + atributo + "-" + idioma));
+      }
     }
   }
 

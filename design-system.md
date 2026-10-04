@@ -1,5 +1,5 @@
 ---
-version: 0.7.0
+version: 0.8.0
 estado: dirección «consola» aprobada (mirada 4-ter, tramos 1 y 2) · miradas 1 a 5 aprobadas · se sella en G-Diseño (mirada 6)
 ---
 
@@ -162,13 +162,13 @@ Lo que no es noticia no lleva chip. Una deuda («sin control asignado») es aten
 | Propiedades | Pares de rótulo arriba y valor abajo. En el carril, uno bajo otro con línea fina; en un panel ancho, en dos o tres columnas |
 | Pestañas | Eligen un panel de la misma pantalla (las vías de carga) o agrupan de otra manera la misma cuenta dentro de un panel (cobertura por activo, familia o control); subrayado azul en la abierta |
 | Selector de objeto | Tarjetas pequeñas con identificador y estado que dicen cuál objeto de una serie está abierto (un lote, un hallazgo) |
-| Botón | Con borde, sobre superficie. **Primario**: relleno de tinta azul, uno por tarjeta de acción. **Discreto**: sin fondo, para ajustes. Lo elegido lleva borde y tinte azules |
+| Botón | Con borde, sobre superficie. **Primario**: relleno de tinta azul, uno por tarjeta de acción. **Discreto**: sin fondo, para ajustes. Lo elegido lleva borde y tinte azules, y además una barra inferior y más peso: se reconoce sin color |
 | Formulario | Campos en una o dos columnas dentro de un panel: rótulo arriba, ayuda debajo. Un campo lleno lleva base azul. El contador de obligatorios y el botón de guardar van en la tarjeta de acción; el botón avisa si falta alguno en vez de estar deshabilitado |
 | Chip, estado y sello | Los de la sección 5 |
 | Dato y huella | Texto en la fuente de dato; la huella se abrevia a 8 + 4 caracteres |
 | Firma | Marca de firma + «Confirmada» + fecha, en tinta azul |
 | Barra de proporción | Parte sobre total, bajo su cifra. En el color de la falla cuando cuenta fallas (fallas sobre repeticiones); **en tinta cuando mide avance** (ejecutadas de las planeadas): cuánto se ejecutó no es un veredicto |
-| Desglose | Los veredictos de un grupo en una línea que se parte, cada uno con su forma y su cifra («3 superadas · 3 fallidas · 4 sin ejecutar»); los ceros no se dibujan |
+| Desglose | Los estados de un grupo en una línea que se parte, cada uno con su forma y su cifra («3 superadas · 3 fallidas · 4 sin ejecutar»; en la vigencia por familia, «4 vigentes · 1 vencida»); los ceros no se dibujan |
 | Cuentas | Lista de rótulos con su forma y su cifra a la derecha, una por línea (hallazgos por severidad, controles por estado, catálogo por vigencia) |
 | Banda de validación | Sello al pie de la cabecera del tablero que dice si el instrumento pasó su validación (C18), con un botón que revela las comprobaciones. En rojo, nada se publica y el tablero no muestra cifras |
 | Tablero | Dos columnas desde 1240 px: a la izquierda lo que pide acción (una tabla «objeto · qué pasa · tipo», lo más urgente primero) y los activos; a la derecha, del ancho del carril, las cuentas |
@@ -227,6 +227,9 @@ Después, el bundle `design-sync/` desde este documento.
 
 ## 12. Registro de cambios
 
+- **0.8.0** — Cierre de la etapa (fase 2 de la auditoría): lo elegido lleva además barra inferior y más
+  peso (se reconoce sin color); el desglose sirve también para la vigencia por familia; la escala de
+  prioridad de IA declara su piso y su techo en datos; un solo nombre para «Toca revisar».
 - **0.7.0** — Mirada 5: tablero, brecha, vista por control (lista y una página por control), informe y la
   portada del recorrido. Componentes nuevos: desglose, cuentas, barra de avance en tinta, banda de
   validación, tablero de dos columnas, informe y hoja de impresión (con la paleta clara al imprimir).

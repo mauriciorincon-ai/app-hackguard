@@ -8,7 +8,7 @@ import { VALIDACION, pasa } from "../datos/validacion.mjs";
 import { ACTIVOS, HALLAZGOS, SOBRES, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 import { brecha as calcular } from "../nucleo/brecha.mjs";
 import { huellaDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, huella, lista, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, avisoPrincipal, chip, columnas, dato, enlace, estado, huella, lista, par, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, SEVERIDAD } from "../nucleo/estados.mjs";
 import { atributo, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -26,7 +26,6 @@ const SECCIONES = [
   { id: "informe-riesgos", nombre: { es: "Riesgos aceptados", en: "Accepted risks" } },
   { id: "informe-ficha", nombre: { es: "Ficha de reproducibilidad", en: "Reproducibility record" } },
 ];
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 const ORDEN_DE_ESTADO = ["abierto", "corregido", "re_probado", "aceptado_con_riesgo", "cerrado", "cerrado_por_eliminacion", "no_reproducible"];
 
 function seccion(i, cuerpo, bajada) {
@@ -306,7 +305,7 @@ ${b.porActivo.map(({ id, a, plan }) => par(a.nombre, plan ? enlace(archivoDeActi
 </aside>
 </div>
 
-${aviso(
+${avisoPrincipal(
   "vacio",
   VACIO,
   { es: "Todavía no hay informe", en: "There is no report yet" },
@@ -316,14 +315,14 @@ ${aviso(
   })}</p>`,
 )}
 
-${aviso(
+${avisoPrincipal(
   "carga",
   CARGA,
   { es: "Armando el informe", en: "Building the report" },
   `<p>${t({ es: "Se calcula la brecha y se firma el informe con su huella.", en: "The gap is calculated and the report is sealed with its fingerprint." })}</p>${ESQUELETO}`,
 )}
 
-${aviso(
+${avisoPrincipal(
   "error",
   ERROR,
   { es: "El informe no se generó", en: "The report was not generated" },

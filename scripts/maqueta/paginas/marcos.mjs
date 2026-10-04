@@ -5,7 +5,7 @@
 import { FAMILIAS, INSTANTANEAS, MARCOS, PRUEBAS, archivoDeFicha } from "../datos/catalogo.mjs";
 import { EQUIVALENCIAS, PROPUESTAS, TIPOS_DE_CAMBIO } from "../datos/gobierno.mjs";
 import { huellaDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, fechado, huella, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, columnas, dato, enlace, estado, fechado, huella, sello } from "../nucleo/componentes.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 
@@ -17,7 +17,6 @@ const VERIFICADO = { es: "Verificado", en: "Verified" };
 
 const pruebasDe = (marco) => PRUEBAS.filter((p) => p.marco === marco);
 const propuestaDe = (marco) => PROPUESTAS.find((p) => p.tipo === "version_de_marco" && p.marco === marco);
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 
 export function marcos({ consulta, umbrales, existentes }) {
   const ids = Object.keys(MARCOS);

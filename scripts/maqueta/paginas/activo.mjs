@@ -5,7 +5,7 @@
 // centro y, en el carril, el plan (o por qué no lo hay) y sus propiedades.
 import { FAMILIAS } from "../datos/catalogo.mjs";
 import { ACCESO, ACTIVOS, DATOS, EXPOSICION, PLANTILLA, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, fechado, lista, par, sello, selectorDeObjetos } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, avisoPrincipal, chip, dato, enlace, fechado, lista, par, selectorDeObjetos, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_ACTIVO } from "../nucleo/estados.mjs";
 import { atributo, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -181,7 +181,7 @@ ${par({ es: "Acceso", en: "Access" }, `<span>${t(ACCESO[a.acceso])}</span>`)}
 </div>
 </div>
 
-${aviso(
+${avisoPrincipal(
   "vacio",
   VACIO,
   { es: "No hay activos registrados", en: "No assets registered" },
@@ -191,9 +191,9 @@ ${aviso(
   })}</p>`,
 )}
 
-${aviso("carga", CARGA, { es: "Abriendo el activo", en: "Opening the asset" }, ESQUELETO)}
+${avisoPrincipal("carga", CARGA, { es: "Abriendo el activo", en: "Opening the asset" }, ESQUELETO)}
 
-${aviso(
+${avisoPrincipal(
   "error",
   ERROR,
   { es: "El activo no se pudo abrir", en: "The asset could not be opened" },

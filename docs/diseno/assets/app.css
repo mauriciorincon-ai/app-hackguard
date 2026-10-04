@@ -370,10 +370,13 @@ a {
   border-color: var(--tinta);
 }
 
-/* Lo elegido por una persona: borde y tinte de tinta azul. */
+/* Lo elegido por una persona: borde y tinte de tinta azul, y además una barra inferior y más peso, que se
+   reconocen sin color (regla 12: el color nunca va solo). */
 .hg-boton[aria-pressed="true"] {
   border-color: var(--acento);
   background: var(--acento-tinte);
+  box-shadow: inset 0 -3px 0 var(--acento);
+  font-weight: 700;
 }
 
 .hg-boton-primario {
@@ -1704,6 +1707,11 @@ a.hg-boton {
   border-radius: var(--radio);
   background: var(--superficie);
   text-align: center;
+}
+
+/* En una pantalla de detalle sin datos, el aviso es el título de la página: h1 con el tamaño de un h2. */
+.hg-aviso > h1 {
+  font-size: var(--t-medio);
 }
 
 .hg-aviso > .hg-marca-estado {

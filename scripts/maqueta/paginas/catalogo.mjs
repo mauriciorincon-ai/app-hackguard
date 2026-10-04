@@ -4,7 +4,7 @@
 // Dirección «consola» (mirada 4-ter): cabecera con cifras, panel con herramientas y tabla.
 import { CONTROLES, FAMILIAS, HERRAMIENTAS, INSTANTANEA, MADUREZ, MARCOS, PRUEBAS, archivoDeFicha } from "../datos/catalogo.mjs";
 import { huellaDe, vigencia } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, estado, huella, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, estado, fechado, huella, nombreDe, sello } from "../nucleo/componentes.mjs";
 import { VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, esc, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -12,7 +12,6 @@ import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 const SIN_CONTROL = { rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } };
 const SIN_CONTROL_CORTO = { ...SIN_CONTROL, nombre: { es: "Sin control", en: "No control" } };
 const MARCADA = { rol: "atencion", simbolo: "aviso", nombre: { es: "Marcada", en: "Flagged" } };
-const nombreDe = (h) => (typeof h.nombre === "string" ? neutro(h.nombre) : t(h.nombre));
 
 function fila(prueba, consulta, umbrales) {
   const v = vigencia(prueba.verificada, consulta, umbrales);
@@ -56,6 +55,30 @@ function lista(campo, rotulo, opciones) {
   const id = `filtro-${campo}`;
   const items = [{ valor: "", texto: { es: "Todos", en: "All" } }, ...opciones].map(opcion).join("");
   return `<label class="hg-campo" for="${id}"><span>${t(rotulo)}</span><select id="${id}" data-controlador="filtro" data-campo="${campo}">${items}</select></label>`;
+}
+
+// Semáforo por familia (RF-01.5): la familia está como su ficha verificada hace más tiempo, y el desglose
+// dice cuántas de sus pruebas hay en cada estado.
+const EN_PLURAL = {
+  vigente: (n) => ({ es: `${n} ${n === 1 ? "vigente" : "vigentes"}`, en: `${n} current` }),
+  por_revisar: (n) => ({ es: `${n} por revisar`, en: `${n} review due` }),
+  vencido: (n) => ({ es: `${n} ${n === 1 ? "vencida" : "vencidas"}`, en: `${n} overdue` }),
+};
+
+function filaDeFamilia(id, nombre, consulta, umbrales) {
+  const suyas = PRUEBAS.filter((p) => p.familia === id);
+  const estados = suyas.map((p) => vigencia(p.verificada, consulta, umbrales).estado);
+  const masAntigua = suyas.map((p) => p.verificada).sort()[0];
+  const desglose = Object.keys(EN_PLURAL)
+    .map((e) => [e, estados.filter((x) => x === e).length])
+    .filter(([, n]) => n > 0)
+    .map(([e, n]) => `<li>${estado({ ...VIGENCIA[e], nombre: EN_PLURAL[e](n) })}</li>`)
+    .join("");
+  return `<tr data-familia-vigencia="${id}" data-pruebas="${suyas.length}">
+<td data-celda="principal"><p>${t(nombre)}</p><p class="hg-menor">${t({ es: `${suyas.length} ${suyas.length === 1 ? "prueba" : "pruebas"}`, en: `${suyas.length} ${suyas.length === 1 ? "test" : "tests"}` })}</p></td>
+<td><ul class="hg-desglose">${desglose}</ul></td>
+<td data-celda="estado">${fechado(masAntigua, consulta, umbrales, { es: "Su ficha más antigua se verificó", en: "Its oldest record was verified" })}</td>
+</tr>`;
 }
 
 // Lo que el estado de error muestra rechazado al cargar: pruebas que no pasan su esquema.
@@ -151,6 +174,20 @@ ${PRUEBAS.map((p) => fila(p, consulta, umbrales)).join("\n")}
 </div>
 </section>
 
+<section class="hg-panel" data-si="datos" aria-labelledby="vigencia-por-familia">
+<div class="hg-panel-cab"><h2 id="vigencia-por-familia">${t({ es: "Vigencia por familia", en: "Freshness by family" })}</h2><p class="hg-menor">${t({
+    es: "Una familia está como su ficha verificada hace más tiempo.",
+    en: "A family stands where its longest-unverified record stands.",
+  })}</p></div>
+<table class="hg-tabla">
+<caption class="hg-oculto">${t({ es: "Vigencia por familia", en: "Freshness by family" })}</caption>
+<thead><tr><th scope="col">${t({ es: "Familia", en: "Family" })}</th><th scope="col">${t({ es: "Sus pruebas", en: "Its tests" })}</th><th scope="col">${t({ es: "Vigencia", en: "Freshness" })}</th></tr></thead>
+<tbody>
+${Object.entries(FAMILIAS).map(([id, nombre]) => filaDeFamilia(id, nombre, consulta, umbrales)).join("\n")}
+</tbody>
+</table>
+</section>
+
 ${aviso(
   "vacio",
   VACIO,
@@ -205,6 +242,11 @@ ${aviso(
         donde: { es: "Píldoras de familia", en: "Family pills" },
         hacer: { es: "Pulsa «Modelo de decisión»", en: "Press “Decision model”" },
         ver: { es: `Quedan ${deDecision} filas y el contador lo dice`, en: `${deDecision} rows remain and the counter says so` },
+      },
+      {
+        donde: { es: "Panel «Vigencia por familia»", en: "“Freshness by family” panel" },
+        hacer: { es: "Compáralo con la columna «Vigencia» de la tabla", en: "Compare it with the table's “Freshness” column" },
+        ver: { es: "Cada familia está como su prueba más atrasada, con cuántas hay en cada estado", en: "Each family stands where its most overdue test stands, with how many are in each state" },
       },
       {
         donde: { es: "Lista «Vigencia»", en: "“Freshness” list" },

@@ -7,7 +7,7 @@ import { CONTROLES, FAMILIAS, INSTANTANEA, archivoDeFicha } from "../datos/catal
 import { ACTIVOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
 import { brecha as calcular } from "../nucleo/brecha.mjs";
 import { archivoDeControl } from "./control.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, columnas, dato, enlace, estado, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_ACTIVO, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, esc, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
@@ -25,7 +25,6 @@ import {
 } from "../nucleo/piezas-de-brecha.mjs";
 
 const SIN_PLAN = { rol: "neutro", simbolo: "vacio", nombre: { es: "Sin plan", en: "No plan" } };
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 
 /** Una fila de «esperado contra obtenido». La brecha la filtra; el informe la lleva tal cual. */
 export function filaDeBrecha(f, existentes, { filtrable = true } = {}) {

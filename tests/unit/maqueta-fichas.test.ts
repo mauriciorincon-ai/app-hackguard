@@ -5,11 +5,21 @@
 // no una prueba. Corre también 45 días después, cuando varias filas ya cambiaron de estado.
 import { readFileSync, rmSync } from "node:fs";
 import { afterAll, describe, expect, it } from "vitest";
-import { documentoDe, generarEnTemporal, leerPagina, paginasDe, RAIZ_MAQUETA } from "./lib/maqueta";
+import {
+  documentoDe,
+  generarEnTemporal,
+  leerPagina,
+  paginasDe,
+  RAIZ_MAQUETA,
+} from "./lib/maqueta";
 
 const DIA = 86_400_000;
-const hoy: string = JSON.parse(readFileSync("scripts/maqueta/datos/consulta.json", "utf8")).fecha;
-const despues = new Date(Date.parse(`${hoy}T00:00:00Z`) + 45 * DIA).toISOString().slice(0, 10);
+const hoy: string = JSON.parse(
+  readFileSync("scripts/maqueta/datos/consulta.json", "utf8"),
+).fecha;
+const despues = new Date(Date.parse(`${hoy}T00:00:00Z`) + 45 * DIA)
+  .toISOString()
+  .slice(0, 10);
 
 const futuro = generarEnTemporal(despues);
 afterAll(() => rmSync(futuro, { recursive: true, force: true }));
@@ -34,9 +44,15 @@ describe.each([
     expect(filas.length).toBeGreaterThan(0);
     for (const fila of filas) {
       expect(fila.id, "fila sin data-prueba").toBeTruthy();
-      expect(fila.destino, `${fila.id}: fila sin enlace a su ficha`).toBeTruthy();
+      expect(
+        fila.destino,
+        `${fila.id}: fila sin enlace a su ficha`,
+      ).toBeTruthy();
     }
-    expect(new Set(filas.map((f) => f.destino)).size, "dos filas abren la misma ficha").toBe(filas.length);
+    expect(
+      new Set(filas.map((f) => f.destino)).size,
+      "dos filas abren la misma ficha",
+    ).toBe(filas.length);
   });
 
   it("la ficha que abre cada fila es la de esa prueba y dice su misma vigencia", () => {
@@ -44,22 +60,70 @@ describe.each([
       expect(paginas, `${fila.id}: su ficha no existe`).toContain(fila.destino);
       const ficha = documentoDe(leerPagina(dir, fila.destino!));
       const cuerpo = ficha.querySelector("[data-ficha-de]");
-      expect(cuerpo?.getAttribute("data-ficha-de"), `${fila.id} abre la ficha de otra prueba (${fila.destino})`).toBe(fila.id);
-      expect(cuerpo?.getAttribute("data-ficha-vigencia"), `${fila.id}: la fila y la ficha no dicen la misma vigencia`).toBe(fila.vigencia);
+      expect(
+        cuerpo?.getAttribute("data-ficha-de"),
+        `${fila.id} abre la ficha de otra prueba (${fila.destino})`,
+      ).toBe(fila.id);
+      expect(
+        cuerpo?.getAttribute("data-ficha-vigencia"),
+        `${fila.id}: la fila y la ficha no dicen la misma vigencia`,
+      ).toBe(fila.vigencia);
 
       // La vigencia se LEE en la cabecera: el primer dato fechado de la cabecera es el de la prueba.
-      const leida = ficha.querySelector(".hg-cabecera [data-fechado='vigencia']");
-      expect(leida?.getAttribute("data-estado-fechado"), `${fila.id}: el encabezado de la ficha dice otra vigencia`).toBe(fila.vigencia);
+      const leida = ficha.querySelector(
+        ".hg-cabecera [data-fechado='vigencia']",
+      );
+      expect(
+        leida?.getAttribute("data-estado-fechado"),
+        `${fila.id}: el encabezado de la ficha dice otra vigencia`,
+      ).toBe(fila.vigencia);
 
       // Y el aviso: lo lleva quien no está vigente, y solo quien no lo está.
-      const aviso = ficha.querySelector("[data-aviso-de-vigencia]")?.getAttribute("data-aviso-de-vigencia") ?? "vigente";
-      expect(aviso, `${fila.id}: el aviso de vigencia de la ficha`).toBe(fila.vigencia);
+      const aviso =
+        ficha
+          .querySelector("[data-aviso-de-vigencia]")
+          ?.getAttribute("data-aviso-de-vigencia") ?? "vigente";
+      expect(aviso, `${fila.id}: el aviso de vigencia de la ficha`).toBe(
+        fila.vigencia,
+      );
     }
-    // Lee y analiza 21 fichas: con la máquina cargada pasaba de los 5 s por defecto (2026-10-04).
+    // Lee y analiza cada ficha: con la máquina cargada pasaba de los 5 s por defecto (2026-10-04).
   }, 30_000);
+
+  it("cada familia dice la vigencia de su prueba más atrasada, y cuántas pruebas tiene (RF-01.5)", () => {
+    const catalogo = documentoDe(leerPagina(dir, "catalogo.html"));
+    const familias = [...catalogo.querySelectorAll("[data-familia-vigencia]")];
+    expect(
+      familias.length,
+      "el catálogo no dibuja la vigencia por familia",
+    ).toBeGreaterThan(0);
+    const ORDEN = ["vigente", "por_revisar", "vencido"];
+    for (const familia of familias) {
+      const id = familia.getAttribute("data-familia-vigencia");
+      const suyas = [
+        ...catalogo.querySelectorAll(`[data-filtrable][data-familia="${id}"]`),
+      ].map((f) => f.getAttribute("data-vigencia")!);
+      const peor = suyas.reduce(
+        (a, b) => (ORDEN.indexOf(b) > ORDEN.indexOf(a) ? b : a),
+        "vigente",
+      );
+      expect(
+        familia.getAttribute("data-pruebas"),
+        `${id}: cuántas pruebas`,
+      ).toBe(String(suyas.length));
+      expect(
+        familia
+          .querySelector("[data-fechado='vigencia']")
+          ?.getAttribute("data-estado-fechado"),
+        `${id}: la familia no dice la vigencia de su prueba más atrasada`,
+      ).toBe(peor);
+    }
+  });
 });
 
 it("la matriz de fichas vio los tres estados de vigencia", () => {
-  const vistos = new Set([...filasDe(RAIZ_MAQUETA), ...filasDe(futuro)].map((f) => f.vigencia));
+  const vistos = new Set(
+    [...filasDe(RAIZ_MAQUETA), ...filasDe(futuro)].map((f) => f.vigencia),
+  );
   expect([...vistos].sort()).toEqual(["por_revisar", "vencido", "vigente"]);
 });

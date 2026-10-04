@@ -19,7 +19,7 @@ export const MADUREZ = {
 
 export const MARCOS = {
   "owasp-top10": { nombre: "OWASP Top 10", corto: "OWASP Top 10", version: "2021", fecha_version: "2021-09-24", publicada: "2025", familias: ["software"], editor: "OWASP", verificada: "2026-09-12" },
-  "owasp-llm-top10": { nombre: "OWASP Top 10 for LLM Applications", corto: "OWASP LLM Top 10", version: "2025", fecha_version: "2024-11-18", publicada: "2026", anterior: "1.1", familias: ["agente", "modelo_generativo"], editor: "OWASP", verificada: "2026-08-20" },
+  "owasp-llm-top10": { nombre: "OWASP Top 10 for LLM Applications", corto: "OWASP LLM Top 10", version: "2025", fecha_version: "2024-11-18", publicada: "2026", familias: ["agente", "modelo_generativo"], editor: "OWASP", verificada: "2026-08-20" },
   "jev-docs": { nombre: "Jev · límites conocidos", corto: "Jev", version: "1.13", fecha_version: "2026-09-15", familias: ["modelo_decision"], editor: "TypeSafe AI", verificada: "2026-09-28" },
   "lista-decision-14": { nombre: "Lista de 14 comprobaciones para modelos de decisión", corto: "Lista de 14", version: "2026-09", fecha_version: "2026-09-22", familias: ["modelo_decision"], editor: "arXiv 2609.32160", verificada: "2026-09-28" },
 };
@@ -30,6 +30,22 @@ export const CONTROLES = {
   "iso42001-A.6.2.8": { es: "Se guardan registros de lo que el sistema de IA hace", en: "Records are kept of what the AI system does" },
   "iso42001-A.7.4": { es: "Los datos del sistema de IA tienen la calidad que su uso exige", en: "The AI system's data has the quality its use requires" },
   "iso42001-A.9.2": { es: "El uso del sistema de IA sigue un proceso definido", en: "Use of the AI system follows a defined process" },
+};
+
+// Equivalencias de un control con otro marco de cumplimiento (C5, E-16): cada una dice su fuente y si el
+// mapa la cubre entera. Ilustrativa en la maqueta (como las versiones y los resúmenes): el mapa real, con
+// su fuente, su versión y su alcance, se carga en el S1.
+export const EQUIVALENTES = {
+  "iso42001-A.6.2.4": [
+    {
+      marco: "NIST AI RMF",
+      version: "1.0",
+      control: "MEASURE 2.3",
+      resumen: { es: "El desempeño del sistema se mide y se demuestra en condiciones parecidas a las de uso.", en: "System performance is measured and shown under conditions close to those of use." },
+      fuente: { es: "Cruce publicado por NIST entre AI RMF e ISO/IEC 42001", en: "Crosswalk published by NIST between the AI RMF and ISO/IEC 42001" },
+      incompleto: { es: "Cubre la medición del desempeño; la validación antes de usarse no tiene equivalente en el mapa.", en: "It covers performance measurement; validation before use has no equivalent in the map." },
+    },
+  ],
 };
 
 export const HERRAMIENTAS = {
@@ -461,6 +477,7 @@ export function fichaDe(id) {
 export const ENTORNOS = {
   portatil: { es: "Portátil", en: "Laptop" },
   contenedor: { es: "Contenedor local", en: "Local container" },
+  plan_gratuito: { es: "Plan gratuito de un servicio", en: "Free tier of a service" },
   ninguno: { es: "Sin herramienta que instalar", en: "No tool to install" },
 };
 

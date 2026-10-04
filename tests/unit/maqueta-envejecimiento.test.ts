@@ -189,7 +189,7 @@ describe("maqueta: matriz de envejecimiento", () => {
     const completos: Record<string, string[]> = {
       vigencia: ["por_revisar", "vencido", "vigente"],
       evidencia: ["antigua", "vigente"],
-      plazo: ["vencido"],
+      plazo: ["en_plazo", "vencido"],
       revision: ["toca_revisar", "vigente"],
     };
     for (const [clase, estados] of vistos) {

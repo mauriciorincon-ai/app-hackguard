@@ -8,7 +8,7 @@
 import { CONTROLES, ENTORNOS, HERRAMIENTAS, INSTANTANEA, PRUEBAS, REGLAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
 import { ACTIVOS, PRIORIDAD, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
 import { huellaDe, planDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, aviso, chip, dato, destino, enlace, estado, fechado, huella, lista, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, avisoPrincipal, chip, columnas, dato, destino, enlace, estado, fechado, huella, lista, nombreDe, par, sello } from "../nucleo/componentes.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { seccionDeActivo, selectorDeActivos } from "./activo.mjs";
@@ -18,11 +18,10 @@ const MOTIVOS = {
   alcance: { rol: "atencion", simbolo: "aviso", nombre: { es: "Fuera de alcance", en: "Out of scope" } },
   operador: { rol: "acento", simbolo: "firma", nombre: { es: "Quitada por ti", en: "Removed by you" } },
 };
+const AGREGADA = { rol: "acento", simbolo: "firma", nombre: { es: "Agregada por ti", en: "Added by you" } };
 const SIN_PRUEBA = { rol: "atencion", simbolo: "aviso", nombre: { es: "Sin prueba en este plan", en: "No test in this plan" } };
 const SIN_PRUEBA_CORTO = { ...SIN_PRUEBA, nombre: { es: "Sin prueba", en: "No test" } };
 const AUTORIZADO = { rol: "positivo", simbolo: "ok", nombre: { es: "Alcance y reglas declarados", en: "Scope and rules declared" } };
-const nombreDe = (h) => (typeof h.nombre === "string" ? neutro(h.nombre) : t(h.nombre));
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 
 export const plan = (id) => ({ consulta, umbrales, existentes }) => {
   const a = ACTIVOS[id];
@@ -78,17 +77,22 @@ ${sello(
     });
   }
 
-  const { planeadas, excluidas, ajustes, cobertura, descubiertos, sinControl, otras } = calculado;
+  const { planeadas, excluidas, ajustes, subida, cobertura, descubiertos, sinControl, otras } = calculado;
   const huellaDelPlan = huellaDe({ plan: a.plan.id, activo: id, instantanea: INSTANTANEA.version, pruebas: planeadas.map((p) => p.ficha.id).join(",") });
-  const ajuste = ajustes.length ? ajustes.map((x) => `+${x.suma} ${x.razon.es}`).join(", ") : "";
-  const ajusteEn = ajustes.length ? ajustes.map((x) => `+${x.suma} ${x.razon.en}`).join(", ") : "";
+  // «+1 por exposición pública y capacidad de acción»: cuánto sube (con su tope) y qué lo sube.
+  const enLista = (partes, y) => (partes.length > 1 ? `${partes.slice(0, -1).join(", ")} ${y} ${partes.at(-1)}` : partes[0]);
+  const ajuste = ajustes.length ? `+${subida} por ${enLista(ajustes.map((x) => x.razon.es), "y")}` : "";
+  const ajusteEn = ajustes.length ? `+${subida} for ${enLista(ajustes.map((x) => x.razon.en), "and")}` : "";
 
   const filasPlaneadas = planeadas
-    .map(({ ficha: f, prioridad }) => {
+    .map(({ ficha: f, prioridad, agregada }) => {
       const h = HERRAMIENTAS[f.herramienta];
-      return `<tr data-planeada="${f.id}">
+      const porQue = agregada
+        ? `<p>${chip(AGREGADA)}</p><p class="hg-menor">${t({ es: "El perfil no la pide; la agregaste porque:", en: "The profile does not call for it; you added it because:" })} <span data-justificacion>${t(agregada)}</span></p>`
+        : `<p class="hg-menor">${t({ es: "Aplica porque:", en: "Applies because:" })} ${t(f.aplicabilidad[0])}</p>`;
+      return `<tr data-planeada="${f.id}"${agregada ? " data-agregada" : ""}>
 <td data-celda="id">${dato(f.id)}</td>
-<td data-celda="principal"><p><strong>${ficha(f)}</strong></p><p>${t(f.resultado_esperado)}</p><p class="hg-menor">${t({ es: "Aplica porque:", en: "Applies because:" })} ${t(f.aplicabilidad[0])}</p></td>
+<td data-celda="principal"><p><strong>${ficha(f)}</strong></p><p>${t(f.resultado_esperado)}</p>${porQue}</td>
 <td data-celda="estado"><p><span class="hg-cifra-menor" data-neutro>${prioridad}</span> <span class="hg-menor">${t({ es: "de 5", en: "of 5" })}</span></p><p class="hg-menor">${t(
         ajustes.length ? { es: `Base ${f.prioridad_base}, ${ajuste}`, en: `Base ${f.prioridad_base}, ${ajusteEn}` } : { es: `Base ${f.prioridad_base}, sin ajustes`, en: `Base ${f.prioridad_base}, no adjustments` },
       )}</p></td>
@@ -283,7 +287,7 @@ ${lista(a.reglas)}
 </div>
 
 <div class="hg-aviso es-neutro" data-si="vacio">
-<h2>${t({ es: "Este activo todavía no tiene plan", en: "This asset has no plan yet" })}</h2>
+<h1>${t({ es: "Este activo todavía no tiene plan", en: "This asset has no plan yet" })}</h1>
 <p>${t({
     es: "Ya tiene alcance y reglas, así que se puede planear. El plan cruza su perfil con el catálogo vigente; el mismo perfil y la misma instantánea dan siempre el mismo plan.",
     en: "It already has a scope and rules, so it can be planned. The plan matches its profile against the current catalog; the same profile and the same snapshot always give the same plan.",
@@ -291,14 +295,14 @@ ${lista(a.reglas)}
 <button type="button" class="hg-boton hg-boton-primario" data-controlador="estado" data-valor="datos">${t({ es: "Emitir el plan", en: "Issue the plan" })}</button>
 </div>
 
-${aviso(
+${avisoPrincipal(
   "carga",
   CARGA,
   { es: "Planeando", en: "Planning" },
   `<p>${t({ es: "Se cruza el perfil del activo con cada prueba del catálogo.", en: "The asset's profile is matched against each catalog test." })}</p>${ESQUELETO}`,
 )}
 
-${aviso(
+${avisoPrincipal(
   "error",
   ERROR,
   { es: "El plan no se pudo emitir", en: "The plan could not be issued" },
@@ -326,6 +330,11 @@ ${aviso(
         donde: { es: "Pruebas planeadas", en: "Planned tests" },
         hacer: { es: "Lee una fila completa", en: "Read one full row" },
         ver: { es: "Dice qué se espera, por qué aplica, con qué prioridad y con qué herramienta", en: "It says what is expected, why it applies, at what priority and with which tool" },
+      },
+      {
+        donde: { es: "Fila de PR-SW-CLK-001 (plan del asistente)", en: "PR-SW-CLK-001 row (assistant's plan)" },
+        hacer: { es: "Léela", en: "Read it" },
+        ver: { es: "Lleva «Agregada por ti» y dice por qué: el perfil no la pedía", en: "It carries “Added by you” and says why: the profile did not call for it" },
       },
       {
         donde: { es: "Excluidas", en: "Excluded" },

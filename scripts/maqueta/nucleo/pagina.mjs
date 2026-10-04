@@ -22,9 +22,9 @@ const COLUMNAS = [
   { es: "Qué deberías ver", en: "What you should see" },
 ];
 
-// Navegación de la app: cinco secciones, y dentro de cada una sus páginas. Una página que la maqueta
-// todavía no tiene se dibuja como texto (no como enlace roto) hasta que su mirada la construya.
-export const NAVEGACION = [
+// Navegación de la app: cinco secciones, y dentro de cada una sus páginas. Cada destino pasa por
+// destino(): si la maqueta no genera esa página, el generador falla.
+const NAVEGACION = [
   { id: "tablero", icono: "tablero", nombre: { es: "Tablero", en: "Dashboard" }, paginas: [{ archivo: "tablero.html", nombre: { es: "Tablero", en: "Dashboard" } }] },
   {
     id: "catalogo",
@@ -71,7 +71,7 @@ export const NAVEGACION = [
 ];
 
 /** Botonera de sala: un grupo de botones excluyentes de un mismo controlador. */
-export function grupoDeSala(controlador, rotulo, opciones, activa) {
+function grupoDeSala(controlador, rotulo, opciones, activa) {
   const botones = opciones
     .map(
       ({ valor, nombre }) =>
@@ -81,7 +81,7 @@ export function grupoDeSala(controlador, rotulo, opciones, activa) {
   return `<div class="mq-grupo" role="group" ${atributo("aria-label", rotulo)}><span>${t(rotulo)}</span>${botones}</div>`;
 }
 
-export const ESTADOS_DE_PANTALLA = [
+const ESTADOS_DE_PANTALLA = [
   { valor: "datos", nombre: { es: "Con datos", en: "With data" } },
   { valor: "vacio", nombre: { es: "Vacío", en: "Empty" } },
   { valor: "carga", nombre: { es: "Cargando", en: "Loading" } },

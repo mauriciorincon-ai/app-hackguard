@@ -15,6 +15,15 @@ export const VIGENCIA = {
   vencido: { rol: "falla", simbolo: "falla", nombre: { es: "Vencido", en: "Overdue" } },
 };
 
+/** Revisión de un riesgo aceptado: un solo nombre para cada estado, en todas las pantallas. */
+export const REVISION = {
+  toca_revisar: { rol: "falla", simbolo: "falla", nombre: { es: "Toca revisar", en: "Review due" } },
+  programada: { rol: "neutro", simbolo: "reloj", nombre: { es: "Revisión programada", en: "Review scheduled" } },
+};
+
+/** Una equivalencia que el mapa no cubre entera (E-16). */
+export const MAPA_INCOMPLETO = { rol: "atencion", simbolo: "aviso", nombre: { es: "Mapa incompleto", en: "Incomplete map" } };
+
 export const ESTADO_DE_CONTROL = {
   con_evidencia_vigente: { rol: "positivo", simbolo: "ok", nombre: { es: "Con evidencia vigente", en: "Current evidence" } },
   evidencia_antigua: { rol: "atencion", simbolo: "reloj", nombre: { es: "Evidencia antigua", en: "Stale evidence" } },

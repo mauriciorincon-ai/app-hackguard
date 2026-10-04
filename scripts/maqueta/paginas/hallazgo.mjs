@@ -5,23 +5,16 @@
 // Dirección «consola» (mirada 4-ter): cabecera con chips, el recorrido de cierre a todo el ancho, paneles
 // de severidad y control a la izquierda, y a la derecha el carril: qué puedes hacer y las propiedades.
 import { CONTROLES, FAMILIAS, PRUEBAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
-import { ACTIVOS, CVSS, ESCALA_IA, HALLAZGOS, IMPACTOS_DE_IA, LOTES, ORDEN_DE_HALLAZGOS, SOBRES, archivoDeActivo, archivoDeHallazgo } from "../datos/mundo.mjs";
+import { ACTIVOS, CVSS, ESCALA_IA, HALLAZGOS, IMPACTOS_DE_IA, LOTES, ORDEN_DE_HALLAZGOS, archivoDeActivo, archivoDeHallazgo, sobreDe } from "../datos/mundo.mjs";
 import { diasEntre, sumarDias } from "../nucleo/fecha.mjs";
 import { huellaDe, plazo } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, destino, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
-import { ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO } from "../nucleo/estados.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, avisoPrincipal, chip, dato, destino, dias, enlace, eslabon, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
+import { ESTADO_DE_HALLAZGO, REVISION, SEVERIDAD, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
-import { SIMBOLO } from "../nucleo/simbolos.mjs";
+import { conteo, plural } from "../nucleo/piezas-de-brecha.mjs";
 
-const sobreDe = (id) => SOBRES.find((s) => s.id === id);
-const plural = (n, uno, varios) => (n === 1 ? uno : varios);
 
-const conteoDe = (sobre) =>
-  sobre.razon ??
-  (sobre.fallidas > 0
-    ? { es: `${sobre.fallidas} de ${sobre.evaluadas} salidas fallaron`, en: `${sobre.fallidas} of ${sobre.evaluadas} outputs failed` }
-    : { es: `0 de ${sobre.evaluadas} salidas fallaron`, en: `0 of ${sobre.evaluadas} outputs failed` });
 
 function selector(actual, existentes) {
   const items = ORDEN_DE_HALLAZGOS.map((id) => {
@@ -33,14 +26,14 @@ function selector(actual, existentes) {
   return `<nav ${atributo("aria-label", { es: "Hallazgos", en: "Findings" })}><ul class="hg-selector">${items}</ul></nav>`;
 }
 
-function eslabon({ rol, simbolo, pendiente }, titulo, cuerpo = "") {
-  return `<li class="hg-eslabon es-${pendiente ? "pendiente" : rol}">${SIMBOLO[pendiente ? "vacio" : simbolo]}<span class="hg-eslabon-titulo">${t(titulo)}</span>${cuerpo}</li>`;
-}
 
 // Facilidad de un hallazgo de IA: NO se opina, sale de la frecuencia observada en su sobre de origen.
+// La banda se elige con la proporción exacta (4,6 % es «menos del 5 %»); el porcentaje redondeado solo se
+// muestra.
 function facilidadDe(sobre) {
-  const porCiento = Math.round((sobre.fallidas / sobre.evaluadas) * 100);
-  const banda = [...ESCALA_IA.facilidad].reverse().find((b) => porCiento >= b.desde);
+  const exacto = (sobre.fallidas / sobre.evaluadas) * 100;
+  const porCiento = Math.round(exacto);
+  const banda = [...ESCALA_IA.facilidad].reverse().find((b) => exacto >= b.desde);
   return { porCiento, nivel: banda.nivel, nombre: banda.nombre };
 }
 
@@ -153,7 +146,8 @@ export const hallazgo = (id) => ({ consulta, umbrales, existentes }) => {
   const ficha = fichaDe(h.prueba);
   const origen = sobreDe(h.sobre_origen);
   const reprueba = h.sobre_reprueba ? sobreDe(h.sobre_reprueba) : null;
-  const porConfirmar = h.reprueba_por_confirmar ? LOTES.flatMap((l) => l.sobres.map((s) => ({ ...s, lote: l.id }))).find((s) => s.id === h.reprueba_por_confirmar) : null;
+  // La re-prueba que espera confirmación se encuentra por su vínculo en el lote (un solo sentido).
+  const porConfirmar = LOTES.flatMap((l) => l.sobres.map((s) => ({ ...s, lote: l.id }))).find((s) => s.reprueba_de_hallazgo === h.id) ?? null;
   const corre = !["cerrado", "cerrado_por_eliminacion", "no_reproducible", "aceptado_con_riesgo"].includes(h.estado);
   const p = corre && umbrales.plazo_por_severidad[h.severidad] ? plazo(h, consulta, umbrales) : null;
 
@@ -177,7 +171,7 @@ export const hallazgo = (id) => ({ consulta, umbrales, existentes }) => {
     revision = par(
       { es: "Revisión del riesgo", en: "Risk review" },
       `<span data-fechado="revision" data-desde="${h.aceptacion.fecha}" data-plazo="${h.aceptacion.revision_en_dias}" data-dias="${d}" data-estado-fechado="${tocaRevisar ? "toca_revisar" : "vigente"}">${estado(
-        tocaRevisar ? { rol: "falla", simbolo: "falla", nombre: { es: "Toca revisarlo", en: "Review is due" } } : { rol: "neutro", simbolo: "reloj", nombre: { es: "Revisión programada", en: "Review scheduled" } },
+        tocaRevisar ? REVISION.toca_revisar : REVISION.programada,
       )} <span class="hg-menor">${t({ es: "Aceptado", en: "Accepted" })} <span data-frase-dias>${t(dias(d))}</span>, ${t({ es: "se revisa el", en: "to be reviewed on" })} ${dato(sumarDias(h.aceptacion.fecha, h.aceptacion.revision_en_dias))}</span></span>`,
     );
   }
@@ -224,7 +218,7 @@ ${par({ es: "Severidad", en: "Severity" }, `<span>${estado(SEVERIDAD[h.severidad
   const abierto = eslabon(
     { rol: "falla", simbolo: "falla" },
     { es: "Hallazgo abierto", en: "Finding opened" },
-    `<p>${dato(h.apertura)}</p><p class="hg-menor">${t(conteoDe(origen))}</p><p>${dato(origen.id)}</p><p>${huella(huellaDe(origen))}</p><p>${firma(origen.confirmado)}</p>`,
+    `<p>${dato(h.apertura)}</p><p class="hg-menor">${t(conteo(origen))}</p><p>${dato(origen.id)}</p><p>${huella(huellaDe(origen))}</p><p>${firma(origen.confirmado)}</p>`,
   );
   let segundo;
   let tercero;
@@ -245,7 +239,7 @@ ${par({ es: "Severidad", en: "Severity" }, `<span>${estado(SEVERIDAD[h.severidad
       ? eslabon(
           { rol: "positivo", simbolo: "ok" },
           { es: "Re-prueba superada", en: "Retest passed" },
-          `<p>${dato(reprueba.fecha)}</p><p class="hg-menor">${t(conteoDe(reprueba))}</p><p class="hg-menor">${t({
+          `<p>${dato(reprueba.fecha)}</p><p class="hg-menor">${t(conteo(reprueba))}</p><p class="hg-menor">${t({
             es: `Misma configuración, k = ${reprueba.evaluadas} (el original usó ${kOriginal}).`,
             en: `Same configuration, k = ${reprueba.evaluadas} (the original used ${kOriginal}).`,
           })}</p><p>${dato(reprueba.id)}</p><p>${huella(huellaDe(reprueba))}</p><p>${firma(reprueba.confirmado)}</p>`,
@@ -277,8 +271,8 @@ ${par({ es: "Severidad", en: "Severity" }, `<span>${estado(SEVERIDAD[h.severidad
   const cerrado = h.estado === "cerrado";
   const acciones = cerrado
     ? `<p class="hg-menor">${t({
-        es: "Nada: la evidencia confirmada es inmutable. Si una re-prueba posterior vuelve a fallar, el hallazgo se reabre y queda marcado como reabierto.",
-        en: "Nothing: confirmed evidence is immutable. If a later retest fails again, the finding is reopened and flagged as reopened.",
+        es: "Nada: la evidencia confirmada es inmutable. Si una prueba posterior vuelve a fallar, esa falla abre un hallazgo nuevo con su propia evidencia.",
+        en: "Nothing: confirmed evidence is immutable. If a later test fails again, that failure opens a new finding with its own evidence.",
       })}</p>`
     : `<div class="hg-pila" data-propuesta="${h.id}" data-decision="">
 <div class="hg-acciones" role="group" ${atributo("aria-label", { es: `Qué hacer con ${h.id}`, en: `What to do with ${h.id}` })}>
@@ -366,7 +360,7 @@ ${h.cvss ? severidadCVSS(h) : severidadIA(h, origen)}
 ${control}
 <div class="hg-contraste">
 <div><p class="hg-rotulo">${t({ es: "Lo que se esperaba", en: "What was expected" })}</p><p>${t(ficha.resultado_esperado)}</p></div>
-<div><p class="hg-rotulo">${t({ es: "Lo que se obtuvo", en: "What was obtained" })}</p><p>${chip(VEREDICTO[origen.veredicto])}</p><p>${t(conteoDe(origen))}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Lo que se obtuvo", en: "What was obtained" })}</p><p>${chip(VEREDICTO[origen.veredicto])}</p><p>${t(conteo(origen))}</p></div>
 </div>
 </div>
 </section>
@@ -385,7 +379,7 @@ ${propiedades}
 </div>
 </div>
 
-${aviso(
+${avisoPrincipal(
   "vacio",
   VACIO,
   { es: "No hay hallazgos", en: "No findings" },
@@ -395,9 +389,9 @@ ${aviso(
   })}</p>`,
 )}
 
-${aviso("carga", CARGA, { es: "Abriendo el hallazgo", en: "Opening the finding" }, ESQUELETO)}
+${avisoPrincipal("carga", CARGA, { es: "Abriendo el hallazgo", en: "Opening the finding" }, ESQUELETO)}
 
-${aviso(
+${avisoPrincipal(
   "error",
   ERROR,
   { es: "El hallazgo no se pudo abrir", en: "The finding could not be opened" },

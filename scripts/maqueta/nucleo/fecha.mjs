@@ -8,7 +8,7 @@ const DATOS = join(dirname(fileURLToPath(import.meta.url)), "..", "datos");
 const FORMA = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 /** Número de día (días desde 1970-01-01, UTC) de una fecha civil; lanza si la fecha no existe. */
-export function numeroDeDia(fecha) {
+function numeroDeDia(fecha) {
   const m = FORMA.exec(fecha);
   if (!m) throw new Error(`fecha con forma inválida: «${fecha}» (se espera AAAA-MM-DD)`);
   const [a, mes, d] = [Number(m[1]), Number(m[2]), Number(m[3])];

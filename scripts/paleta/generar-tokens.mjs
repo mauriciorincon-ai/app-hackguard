@@ -2,6 +2,7 @@
 // Uso: `pnpm tokens`. PALETA_SALIDA desvía la salida (gate de deriva de tests/unit/paleta.test.ts).
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { MAQUETA } from "../maqueta/rutas.mjs";
 import { linealAHex, oklchALineal } from "./color.mjs";
 import { TEMAS } from "./tokens.mjs";
@@ -36,7 +37,8 @@ ${bloque(':root,\n[data-theme="oscuro"],\n[data-theme="claro"]', hex.claro, "lig
 `;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Corre solo como script (no al importarse en los tests); con espacios o enlaces en la ruta también.
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const destino = process.env.PALETA_SALIDA ? resolve(process.env.PALETA_SALIDA) : join(MAQUETA, "assets");
   const hex = tokensHex();
   mkdirSync(destino, { recursive: true });

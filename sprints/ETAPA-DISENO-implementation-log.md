@@ -663,6 +663,8 @@ visibles).
 |---|---|---|
 | 1 · Altos | A1 · A2 · A3 (+ M13 en parte) | Portada, notas de sala y frontmatter dicen que la mirada 5 está aprobada; la portada abre la mirada 6. La escala de IA declara su piso y su techo en datos y la vista lee de ahí los impactos, el «de N» y los límites (mismos bytes). Toda cifra de datos en el texto sale de su arreglo o se dice sin número |
 | 2 · Cálculos latentes | M8 · M9 · M10 · M12 · M14 (+ M7 en parte) | Huella sobre JSON canónico en todos los niveles. Un solo predicado `estaCerrado`: el riesgo aceptado no está cerrado y sigue siendo falla de su control; «pide trabajo» es otra cosa, y el tablero lo dice. Un sobre «no ejecutada» deja la prueba sin evidencia (E-6). Un enlace a una página que no se genera hace fallar el generador; se retiran las ramas y los estilos de respaldo. El umbral de la evidencia antigua se lee de los datos. Se retira `brecha().cerrados`, sin lector |
+| 3 · Lo que se ve | M1 · M2 · M3 · M16 · M15 | Panel «Vigencia por familia» en el catálogo. Una equivalencia ilustrativa de `iso42001-A.6.2.4` con NIST AI RMF 1.0 · MEASURE 2.3, con su fuente y «mapa incompleto», en la tabla de controles y en el carril. El operador agrega `PR-SW-CLK-001` al plan del asistente con su justificación (la brecha pasa a 16 planeadas). El botón pulsado lleva barra inferior y más peso. Los estados vacío, carga y error tienen ahora su gate: el primero que corrió encontró 31 páginas sin `h1` en esos estados (el título vive con los datos); en las pantallas de detalle el aviso del estado pasa a ser el `h1`, con el tamaño de un `h2` |
+| 4 · Textos, documentación y orden | M4 · M5 · M6 · M7 · M11 · M13 · B1–B17 y la revisión propia | C19 y C20 declarados fuera de la maqueta; la decisión del agente «Experto ISO 42001» en el README; la promesa de «reabierto» (D5) reemplazada por lo que hace el H1; fuera `CONTROL`, `PRUEBAS` y `MARCOS.anterior`; `reprueba_de_sobre` y `reprueba_de_hallazgo` con un solo sentido; el orden de los hallazgos sale de su estado. Bajos: decisiones en orden, frases caducadas, mapa de funciones alineado con su gate, gates en la tabla, `columnas`/`nombreDe`/`eslabon`/`sobreDe`/`plural`/`conteo` en un solo lugar (un solo conteo de un sobre, con la cota), guardas de `copiar-maqueta` y `rutas`, `generar-tokens` como script, banda de frecuencia exacta, nota de re-prueba según su veredicto, atributos de texto en el script, «en plazo» exigido a la matriz, `srcset`/`meta refresh`/`import()` en la autocontención, áreas del Anexo A con palabras propias, capacidad de acción en la prioridad y «plan gratuito» en los entornos, un solo «Toca revisar», exportaciones de más retiradas |
 
 **Gates nuevos de la fase 2 y su demo en rojo (regla 15)**
 
@@ -672,6 +674,43 @@ visibles).
 | G23 | `maqueta-cifras` (nuevo) | Una cifra en letras pegada al nombre de una entidad de datos («cuatro familias», «the two envelopes») en el texto de cualquier página | «cuatro familias» de vuelta en la portada y regenerar | «index.html: cifras en letras que deberían salir de los datos: expected [ 'cuatro familias' ] to deeply equal []» → verde (`cmp` de la fuente y de la página) |
 | G24 | `maqueta-calculos` (nuevo) | Una huella que ignora lo anidado; un «no ejecutada» contado como evidencia de un control; un riesgo aceptado tratado como cerrado | (a) la huella de antes; (b) sin la regla de E-6; (c) `estaCerrado` acepta el riesgo aceptado | (a) «expected 'sha256:73c8…' not to be 'sha256:73c8…'»; (b) «la fila de la prueba: expected 'con_evidencia_vigente' to be 'sin_evidencia'»; (c) «aceptado_con_riesgo: expected true to be false» y «expected undefined to be 'HZ-X'» → verde (`cmp`) |
 | G25 | Guarda de enlaces del generador (`destino()` en `nucleo/componentes.mjs`) | Un enlace a una página que la maqueta no genera, que antes se volvía texto en silencio | El botón del plan apunta a `evidenca.html` | «Error: enlace a una página que la maqueta no genera: evidenca.html» → verde (`cmp`) |
+| G26 | `maqueta-fichas` (ampliado) | Una familia que no dice la vigencia de su prueba más atrasada, o que cuenta mal sus pruebas | La familia toma su ficha más reciente en vez de la más antigua | «software: la familia no dice la vigencia de su prueba más atrasada: expected 'vigente' to be 'vencido'» → verde (`cmp` de la fuente y de la página) |
+| G27 | `maqueta-plan` (ampliado) | Una prueba agregada por el operador sin su justificación | La fila agregada pierde la justificación | «plan-act-demo-asistente.html · PR-SW-CLK-001: agregada sin justificación (es): expected 0 to be greater than 20» → verde (`cmp`). Antes de la demo se vio que la primera versión **no podía fallar**: el texto que presenta la justificación ya pasaba de 20 caracteres; ahora se mide solo `[data-justificacion]` |
+| G28 | e2e «un botón pulsado se distingue sin color» (nuevo) | Un estado pulsado que solo cambia de color (regla 12) | Sin la barra ni el peso nuevos | La primera demo editó la copia servida y pasó en verde: el servidor de los e2e corre `pnpm build` y la regenera desde `docs/diseno/`. Repetida en la fuente: ««Con datos»: 500 \| none \| 1px \| 1px \| none \| none» y ««Elegido»: 600 \| none…» → verde (`cmp`) |
+| G29 | e2e «vacío, carga y error caben en 380 px y sin violaciones» (nuevo) | Un estado de pantalla que se sale a 380 px, parte palabras o falla axe | Rojo en su primera corrida, sobre un defecto real | 31 páginas: «vacio · page-has-heading-one: 1» (y en carga y error) → corregido → verde en las 44 páginas con estados |
+| G30 | `maqueta-autocontenida` (ampliado) | Red por `srcset`, `meta refresh` o `import()` | Una de cada una en la portada, el kit y el script | «index.html: imagen remota en srcset», «kit.html: redirección con meta refresh», «assets/maqueta.js: import() remoto» → verde (`cmp`) |
+| G31 | `maqueta-bilingue` (contrato con el script) | Un atributo de texto que el gate acepta y el script no cambia de idioma | El script sin `alt` | «assets/maqueta.js no cambia de idioma «alt»» → verde (`cmp`) |
+| G32 | `maqueta-mapa` (nuevo) | Que la portada y el README digan funciones distintas para una pantalla | La ficha vuelve a «C1 · C6» en la portada | «prueba-<id>: la portada y el README no coinciden: expected 'C1 · C6' to be 'C1 · C3 · C6'» → verde (`cmp` de la fuente y de la página) |
+| G33 | `maqueta-envejecimiento` (cobertura) | Una matriz que nunca ve un plazo «en plazo» | HZ-0009 abierto el 2026-06-01, regenerando la maqueta | «la matriz nunca mostró «en_plazo» en plazo: expected [ 'vencido' ] to include 'en_plazo'» → verde (`cmp` de la fuente; la maqueta regenerada sin diferencias). Dos intentos previos no valieron: con `-t` se saltaban las fechas que llenan la cobertura, y sin regenerar fallaba antes el inventario |
+| G34 | Guardas de `rutas.mjs` y `copiar-maqueta.mjs` (endurecidas) | Que el generador escriba fuera de `docs/diseno/` o de un temporal; que el build pase sin maqueta | `MAQUETA_SALIDA` en el directorio personal; build con `docs/diseno/` movida | «maqueta: MAQUETA_SALIDA solo puede ser docs/diseno/ o un directorio temporal (…); aborto.» (antes la aceptaba); «copiar-maqueta: no existe …/docs/diseno; el sitio saldría sin la maqueta. Aborto.» con salida 1 (antes, 0) → restaurado |
+
+**Bugs y resoluciones de la fase 2**
+
+- **El perfil ya tenía un campo `acciones`** (la lista de lo que el activo hace): la «capacidad de acción»
+  nueva chocó con él y el generador se detuvo («texto sin sus dos idiomas: undefined»). La fórmula lee
+  ahora `perfil.actua`, un campo aparte.
+- **Una regla de CSS quedó pegada a otra** al quitar `.hg-nav-pendiente`: `.hg-nav-sub a` se unió a
+  `.hg-cuenta`. Se vio en el diff antes de compilar y se restauró.
+- **La prueba de «reducir movimiento» buscaba `h1` en modo estricto**: con el aviso de cada estado como
+  `h1` (oculto fuera de su estado) encontró cuatro y falló en 62 pruebas (31 páginas en los dos proyectos).
+  Ahora busca el título por su rol, que excluye lo oculto.
+- **La capacidad de acción llevó todo el plan del asistente a «5 de 5»** (base de 3 a 5 más tres ajustes
+  de un punto, contra un techo de 5): la prioridad dejaba de ordenar. Ninguna sonda lo nombró; lo vio la
+  lectura de la captura del plan en teléfono. La fórmula lleva ahora un tope de ajuste de un punto (en
+  datos), y la fila dice qué factores lo suben. El reparto vuelve al aprobado: cinco pruebas en 4 y seis
+  en 5 (la agregada entra en 4).
+- **El servidor de los e2e compila antes de servir** (`pnpm build && pnpm start`): editar `out/` no sirve
+  para una demo. Se anota para las próximas.
+
+**Verificación de la fase 2** (local): 673 unitarias en 18 archivos · e2e completa sobre el árbol casi
+final: 982 en verde y 62 en rojo por el selector estricto de `h1` (ver bugs); corregido, las 94 de
+«reducir movimiento» en verde, y tras el tope de la prioridad, las 64 de los planes · arnés de capturas
+sin fallas: 1432 capturas de las 47 páginas, con la pasada de interacción, y los planes a 380, 900, 1280
+y 1440 px · capturas leídas como imagen: catálogo con la vigencia por familia (oscuro), página de
+`iso42001-A.6.2.4` con su equivalente (claro) y el plan del asistente en teléfono (donde apareció la
+prioridad saturada) · barrido de promesas aplazadas sobre lo añadido en la fase: dos coincidencias,
+ciertas hoy · lint y typecheck limpios · nada bajo `src/`. La e2e completa sobre el árbol final la corre
+la CI de este commit.
 
 ## Desviación del plan
 

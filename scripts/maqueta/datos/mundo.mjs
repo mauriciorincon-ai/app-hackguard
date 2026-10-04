@@ -1,13 +1,12 @@
-// Mundo sintético de la maqueta (fase 1: el corte de la vista por control; la fase 2 lo completa).
+// Mundo sintético de la maqueta: activos, planes, sobres, lotes y hallazgos.
 // Todo es ficticio y está al nivel de la regla dura 3: qué se verifica, con qué herramienta y qué se
 // espera — ninguna carga ni procedimiento. Las versiones de marcos y los resúmenes del Anexo A son
 // ilustrativos: se fijan con fuente y fecha en la fase 0 del S1 (DA-01). De ISO/IEC solo viaja el
 // identificador y un resumen con palabras propias (regla 11).
-import { CONTROLES, HERRAMIENTAS, PRUEBAS as CATALOGO } from "./catalogo.mjs";
-
 // Activos demo FICTICIOS que cubren todas las familias. Nunca las apps reales del operador
 // (regla dura 8). El tercero no tiene alcance autorizado: muestra el estado «sin autorización no hay plan».
 // `rasgos` es lo que el perfil declara; de ahí sale la aplicabilidad de cada prueba (su `requiere`).
+// `perfil.actua` dice si el activo puede actuar por su cuenta: la capacidad de acción de la prioridad (RF-03.2).
 export const ACTIVOS = {
   "ACT-DEMO-ASISTENTE": {
     nombre: { es: "Asistente demo de soporte", en: "Demo support assistant" },
@@ -37,6 +36,7 @@ export const ACTIVOS = {
       exposicion: "publica",
       autenticacion: { es: "Sin cuentas: cualquiera puede escribirle.", en: "No accounts: anyone can write to it." },
       datos: "publicos",
+      actua: true,
       modelos: { es: "Un modelo generativo del proveedor demo.", en: "One generative model from the demo provider." },
       canales: [
         { es: "Texto libre", en: "Free text" },
@@ -81,6 +81,10 @@ export const ACTIVOS = {
           prueba: "PR-IA-FUGA-001", accion: "quitada", fecha: "2026-10-01",
           justificacion: { es: "Las instrucciones internas del demo son públicas en su repositorio.", en: "The demo's internal instructions are public in its repository." },
         },
+        {
+          prueba: "PR-SW-CLK-001", accion: "agregada", fecha: "2026-10-01",
+          justificacion: { es: "La interfaz web del asistente se va a incrustar en el portal de clientes; el perfil todavía no lo declara.", en: "The assistant's web interface will be embedded in the customer portal; the profile does not declare it yet." },
+        },
       ],
     },
   },
@@ -103,6 +107,7 @@ export const ACTIVOS = {
       exposicion: "interna",
       autenticacion: { es: "No aplica: no se expone en red.", en: "Not applicable: it is not exposed on a network." },
       datos: "personales",
+      actua: false,
       modelos: { es: "Ninguno de terceros.", en: "None from third parties." },
       canales: [
         { es: "Texto de la solicitud", en: "Request text" },
@@ -147,6 +152,7 @@ export const ACTIVOS = {
       exposicion: "publica",
       autenticacion: { es: "Cuentas con contraseña.", en: "Accounts with a password." },
       datos: "personales",
+      actua: true,
       modelos: { es: "Ninguno.", en: "None." },
       canales: [{ es: "Formularios", en: "Forms" }],
       acciones: [{ es: "Actualizar los datos de la cuenta", en: "Update account data" }],
@@ -169,12 +175,16 @@ export const ACCESO = {
 };
 
 // Fórmula de la prioridad final (RF-03.2), como dato e ILUSTRATIVA: prioridad base de la prueba más
-// los ajustes que el perfil del activo activa, con techo. La definitiva se fija en el S2.
+// los ajustes que el perfil del activo activa (exposición, sensibilidad de los datos y capacidad de
+// acción), con un tope de ajuste y un techo. Sin el tope, un activo expuesto, con datos y que actúa
+// llevaría todo su plan al techo, y la prioridad no ordenaría nada. La definitiva se fija en el S2.
 export const PRIORIDAD = {
   techo: 5,
+  tope_de_ajuste: 1,
   ajustes: [
     { si: (perfil) => perfil.exposicion === "publica", suma: 1, razon: { es: "exposición pública", en: "public exposure" } },
     { si: (perfil) => perfil.datos !== "publicos", suma: 1, razon: { es: "datos personales", en: "personal data" } },
+    { si: (perfil) => perfil.actua, suma: 1, razon: { es: "capacidad de acción", en: "ability to act" } },
   ],
 };
 
@@ -189,28 +199,6 @@ export const PLANTILLA = {
     { es: "Ante un fallo que afecte el servicio, la prueba se detiene y se avisa al dueño.", en: "If a failure affects the service, testing stops and the owner is told." },
   ],
 };
-
-export const CONTROL = {
-  id: "iso42001-A.6.2.4",
-  marco: "ISO/IEC 42001:2023",
-  capa: { es: "Anexo A · capa por defecto", en: "Annex A · default layer" },
-  resumen: CONTROLES["iso42001-A.6.2.4"],
-};
-
-// Las pruebas del plan que cubren el control del corte: salen del catálogo, con el activo que el plan
-// les asigna.
-const delCatalogo = (id, activo) => {
-  const prueba = CATALOGO.find((c) => c.id === id);
-  const herramienta = HERRAMIENTAS[prueba.herramienta].nombre;
-  return { id, activo, herramienta, k: prueba.k, nombre: prueba.nombre, que_verifica: prueba.que_verifica };
-};
-
-export const PRUEBAS = [
-  delCatalogo("PR-IA-PINJ-001", "ACT-DEMO-ASISTENTE"),
-  delCatalogo("PR-IA-ENC-002", "ACT-DEMO-ASISTENTE"),
-  delCatalogo("PR-MD-CAL-001", "ACT-DEMO-CLASIFICADOR"),
-  delCatalogo("PR-MD-PAR-001", "ACT-DEMO-CLASIFICADOR"),
-];
 
 // Sobres de evidencia confirmados. `evaluadas`/`fallidas` son conteos del adaptador; en ZAP, `alertas` y
 // `corrio` (si hay constancia de que la regla corrió: sin ella, «no detectado» no es «verificado», E-6).
@@ -230,7 +218,7 @@ export const SOBRES = [
     razon: { es: "Sin alertas, con constancia de que la regla corrió sobre 4 páginas", en: "No alerts, with proof that the rule ran on 4 pages" } },
   { id: "SOB-0023", prueba: "PR-SW-XSS-001", fecha: "2026-09-05", veredicto: "no_ejecutada", confirmado: "2026-09-05", corrio: false, alertas: 0,
     razon: { es: "Sin alertas, pero no hay constancia de que la regla corrió", en: "No alerts, but there is no proof that the rule ran" } },
-  { id: "SOB-0027", prueba: "PR-IA-PINJ-001", fecha: "2026-09-24", veredicto: "superada", confirmado: "2026-09-24", evaluadas: 20, fallidas: 0, reprueba_de: "SOB-0012" },
+  { id: "SOB-0027", prueba: "PR-IA-PINJ-001", fecha: "2026-09-24", veredicto: "superada", confirmado: "2026-09-24", evaluadas: 20, fallidas: 0, reprueba_de_sobre: "SOB-0012" },
 ];
 
 export const HALLAZGOS = [
@@ -298,7 +286,6 @@ export const HALLAZGOS = [
       fecha: "2026-09-28",
       nota: { es: "La política se declara ahora en todas las respuestas con página.", en: "The policy is now declared on every response that carries a page." },
     },
-    reprueba_por_confirmar: "SOB-0036",
   },
   {
     id: "HZ-0005",
@@ -326,8 +313,18 @@ export const HALLAZGOS = [
 ];
 
 export const archivoDeHallazgo = (id) => `hallazgo-${id.toLowerCase()}.html`;
-/** Orden del conmutador de hallazgos: lo que pide acción primero. */
-export const ORDEN_DE_HALLAZGOS = ["HZ-0007", "HZ-0009", "HZ-0005", "HZ-0003"];
+// Orden del conmutador de hallazgos: lo que pide acción primero y, a igual estado, por identificador.
+// Sale de los datos: un hallazgo nuevo entra al selector sin tocar esta lista.
+const PRIMERO = ["abierto", "corregido", "re_probado", "aceptado_con_riesgo", "cerrado"];
+export const ORDEN_DE_HALLAZGOS = HALLAZGOS.map((h) => {
+  if (!PRIMERO.includes(h.estado)) throw new Error(`${h.id}: estado sin lugar en el orden de hallazgos: ${h.estado}`);
+  return h;
+})
+  .sort((x, y) => PRIMERO.indexOf(x.estado) - PRIMERO.indexOf(y.estado) || x.id.localeCompare(y.id))
+  .map((h) => h.id);
+
+/** Un sobre confirmado por su identificador. */
+export const sobreDe = (id) => SOBRES.find((s) => s.id === id);
 
 // Lotes de sobres PROPUESTOS por un adaptador, sin confirmar: todavía no cuentan (no están en SOBRES).
 // `conteo` es lo que el adaptador leyó; el veredicto sugerido lo calcula la regla de cada prueba.
@@ -351,7 +348,7 @@ export const LOTES = [
     sobres: [
       { id: "SOB-0034", prueba: "PR-SW-TS-001", corrio: true, alertas: 1, razon: { es: "1 alerta de riesgo medio y confianza alta", en: "1 alert at medium risk and high confidence" } },
       { id: "SOB-0035", prueba: "PR-SW-XSS-001", corrio: false, alertas: 0, razon: { es: "Sin alertas, pero no hay constancia de que la regla corrió", en: "No alerts, but there is no proof that the rule ran" } },
-      { id: "SOB-0036", prueba: "PR-SW-CSP-001", corrio: true, alertas: 0, razon: { es: "Sin alertas, con constancia de que la regla corrió sobre 4 páginas", en: "No alerts, with proof that the rule ran on 4 pages" }, reprueba_de: "HZ-0009" },
+      { id: "SOB-0036", prueba: "PR-SW-CSP-001", corrio: true, alertas: 0, razon: { es: "Sin alertas, con constancia de que la regla corrió sobre 4 páginas", en: "No alerts, with proof that the rule ran on 4 pages" }, reprueba_de_hallazgo: "HZ-0009" },
     ],
   },
 ];

@@ -3,7 +3,8 @@
 // Playwright). La fuente de verdad es docs/diseno/; public/diseno/ es DERIVADO: está en
 // .gitignore y en los globalIgnores de ESLint, y se regenera entero en cada build.
 //
-// Declara el árbol que lee y aborta si el destino sale de public/ (regla 17-bis b).
+// Declara el árbol que lee (regla 17-bis b): solo docs/diseno/ de este repo, hacia public/diseno/, que es
+// fijo. Sin la maqueta, el build falla: un sitio sin /diseno/ no debe pasar en verde.
 import { cpSync, existsSync, rmSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,11 +14,7 @@ const origen = join(raiz, "docs", "diseno");
 const destino = join(raiz, "public", "diseno");
 
 if (!existsSync(origen) || !statSync(origen).isDirectory()) {
-  console.error(`copiar-maqueta: no existe ${origen}; nada que copiar.`);
-  process.exit(0);
-}
-if (!destino.startsWith(join(raiz, "public") + "/")) {
-  console.error(`copiar-maqueta: destino fuera de public/ (${destino}); aborto.`);
+  console.error(`copiar-maqueta: no existe ${origen}; el sitio saldría sin la maqueta. Aborto.`);
   process.exit(1);
 }
 

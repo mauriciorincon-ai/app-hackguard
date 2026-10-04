@@ -4,7 +4,7 @@
 import { archivoDeHallazgo } from "../datos/mundo.mjs";
 import { cotaPorCiento } from "./calculos.mjs";
 import { chip, dato, dias, enlace, estado, proporcion } from "./componentes.mjs";
-import { ESTADO_DE_CONTROL, SEVERIDAD, VEREDICTO } from "./estados.mjs";
+import { ESTADO_DE_CONTROL, REVISION, SEVERIDAD, VEREDICTO } from "./estados.mjs";
 import { t } from "./html.mjs";
 
 export const plural = (n, uno, varios) => (n === 1 ? uno : varios);
@@ -69,8 +69,8 @@ export function plazoFechado(h, p, { marca: conMarca = true } = {}) {
 export function revisionFechada(h, r) {
   const marca =
     r.estado === "toca_revisar"
-      ? chip({ rol: "falla", simbolo: "falla", nombre: { es: "Toca revisarlo", en: "Review is due" } })
-      : estado({ rol: "neutro", simbolo: "reloj", nombre: { es: "Revisión programada", en: "Review scheduled" } });
+      ? chip(REVISION.toca_revisar)
+      : estado(REVISION.programada);
   return `<span data-fechado="revision" data-desde="${h.aceptacion.fecha}" data-plazo="${r.total}" data-dias="${r.dias}" data-estado-fechado="${r.estado}">${marca} <span class="hg-menor">${t({ es: "Aceptado", en: "Accepted" })} <span data-frase-dias>${t(dias(r.dias))}</span>, ${t({ es: "se revisa el", en: "to be reviewed on" })} ${dato(r.fecha)}</span></span>`;
 }
 
@@ -104,12 +104,12 @@ export function desglose(tot) {
 export const hallazgoBreve = (h, existentes) => `${enlace(archivoDeHallazgo(h.id), dato(h.id), existentes)} ${chip(SEVERIDAD[h.severidad])}`;
 
 /** Vigencia de la ficha de una prueba, con el protocolo «vigencia» (sin marca: la fila lleva su chip). */
-export const vigenciaFechada = (desde, v) =>
+const vigenciaFechada = (desde, v) =>
   `<span data-fechado="vigencia" data-desde="${desde}" data-dias="${v.dias}" data-estado-fechado="${v.estado}"><span class="hg-menor">${t({ es: "Ficha verificada", en: "Record verified" })} <span data-frase-dias>${t(dias(v.dias))}</span></span></span>`;
 
 const TIPO = {
   plazo: { rol: "falla", simbolo: "falla", nombre: { es: "Plazo vencido", en: "Deadline passed" } },
-  revision: { rol: "falla", simbolo: "falla", nombre: { es: "Toca revisar", en: "Review due" } },
+  revision: REVISION.toca_revisar,
   catalogo: { rol: "falla", simbolo: "falla", nombre: { es: "Ficha vencida", en: "Record overdue" } },
   marco: { rol: "atencion", simbolo: "aviso", nombre: { es: "Versión nueva", en: "New version" } },
   antigua: { rol: "atencion", simbolo: "reloj", nombre: { es: "Evidencia antigua", en: "Stale evidence" } },

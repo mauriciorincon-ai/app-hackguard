@@ -6,7 +6,7 @@
 // cómo se decide al centro, y en el carril el resumen, el marco con sus controles y las fuentes.
 import { CONTROLES, FAMILIAS, HERRAMIENTAS, MADUREZ, MARCOS, REGLAS, fichaDe } from "../datos/catalogo.mjs";
 import { cotaPorCiento } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, fechado, firma, par, sello } from "../nucleo/componentes.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, avisoPrincipal, chip, dato, fechado, firma, nombreDe, par, sello } from "../nucleo/componentes.mjs";
 import { atributo, neutro, t } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { vigencia } from "../nucleo/calculos.mjs";
@@ -19,7 +19,6 @@ const SIN_EJECUCION = {
 };
 const VERIFICADO = { es: "Verificado", en: "Verified" };
 
-const nombreDe = (h) => (typeof h.nombre === "string" ? neutro(h.nombre) : t(h.nombre));
 
 // Los avisos de la ficha dicen el UMBRAL, no los días transcurridos: la cifra que envejece vive en un
 // solo lugar (la vigencia de la cabecera), que es la que vigila la matriz de envejecimiento.
@@ -213,7 +212,7 @@ ${fuentes}
 </div>
 </div>
 
-${aviso(
+${avisoPrincipal(
   "vacio",
   VACIO,
   { es: "Esta prueba ya no está en el catálogo", en: "This test is no longer in the catalog" },
@@ -223,9 +222,9 @@ ${aviso(
   })}</p><p><a href="catalogo.html">${t({ es: "Volver al catálogo", en: "Back to the catalog" })}</a></p>`,
 )}
 
-${aviso("carga", CARGA, { es: "Abriendo la ficha", en: "Opening the record" }, ESQUELETO)}
+${avisoPrincipal("carga", CARGA, { es: "Abriendo la ficha", en: "Opening the record" }, ESQUELETO)}
 
-${aviso(
+${avisoPrincipal(
   "error",
   ERROR,
   { es: "No se pudo abrir la ficha", en: "The record could not be opened" },

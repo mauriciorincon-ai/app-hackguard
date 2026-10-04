@@ -9,7 +9,7 @@ import { ACTIVOS, HALLAZGOS, LOTES, PRIORIDAD, SOBRES } from "../datos/mundo.mjs
 import { antiguedad, estaCerrado, planDe, plazo, veredictoSugerido, vigencia, vistaPorControl } from "./calculos.mjs";
 import { diasEntre, sumarDias } from "./fecha.mjs";
 
-export const FICHAS = PRUEBAS.map((p) => fichaDe(p.id));
+const FICHAS = PRUEBAS.map((p) => fichaDe(p.id));
 const EJECUTADA = new Set(["superada", "fallida", "parcial"]);
 const SIN_CERRAR = new Set(["abierto", "corregido", "re_probado"]);
 

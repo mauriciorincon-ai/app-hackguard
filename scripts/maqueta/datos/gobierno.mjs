@@ -36,18 +36,19 @@ export const EQUIVALENCIAS = {
   },
 };
 
-// Capa por defecto: las áreas del Anexo A de ISO/IEC 42001, con identificador y resumen propio.
+// Capa por defecto: las áreas del Anexo A de ISO/IEC 42001, con identificador, y nombre y resumen con
+// palabras propias (regla 11: nada del texto de la norma, tampoco sus encabezados).
 export const NORMA = "ISO/IEC 42001:2023";
 export const AREAS = [
-  { id: "A.2", nombre: { es: "Políticas", en: "Policies" }, resumen: { es: "La organización tiene una política de IA escrita, coherente con sus otras políticas y revisada.", en: "The organization has a written AI policy, consistent with its other policies and reviewed." } },
-  { id: "A.3", nombre: { es: "Organización interna", en: "Internal organization" }, resumen: { es: "Hay responsables nombrados y una vía para reportar preocupaciones.", en: "There are named owners and a way to report concerns." } },
-  { id: "A.4", nombre: { es: "Recursos", en: "Resources" }, resumen: { es: "Se sabe con qué datos, herramientas, cómputo y personas cuenta cada sistema de IA.", en: "It is known which data, tools, compute and people each AI system relies on." } },
-  { id: "A.5", nombre: { es: "Evaluación de impacto", en: "Impact assessment" }, resumen: { es: "Se evalúa y se documenta cómo afecta el sistema a las personas y a la sociedad.", en: "How the system affects people and society is assessed and documented." } },
-  { id: "A.6", nombre: { es: "Ciclo de vida del sistema", en: "System life cycle" }, resumen: { es: "El sistema se diseña, se verifica, se despliega, se vigila y se registra con criterios declarados.", en: "The system is designed, verified, deployed, monitored and logged against declared criteria." } },
-  { id: "A.7", nombre: { es: "Datos", en: "Data" }, resumen: { es: "Se conoce el origen, la calidad y la preparación de los datos del sistema.", en: "The origin, quality and preparation of the system's data are known." } },
-  { id: "A.8", nombre: { es: "Información a partes interesadas", en: "Information for interested parties" }, resumen: { es: "Quien usa el sistema o resulta afectado por él recibe la información que necesita y puede reportar problemas.", en: "Whoever uses the system or is affected by it gets the information they need and can report problems." } },
-  { id: "A.9", nombre: { es: "Uso del sistema", en: "Use of the system" }, resumen: { es: "El sistema se usa según un proceso, con objetivos declarados y dentro de su uso previsto.", en: "The system is used following a process, with declared objectives and within its intended use." } },
-  { id: "A.10", nombre: { es: "Relaciones con terceros", en: "Third-party relationships" }, resumen: { es: "Las responsabilidades con proveedores y clientes están repartidas y escritas.", en: "Responsibilities with suppliers and customers are allocated and written down." } },
+  { id: "A.2", nombre: { es: "Política de IA escrita", en: "Written AI policy" }, resumen: { es: "La organización tiene una política de IA escrita, coherente con sus otras políticas y revisada.", en: "The organization has a written AI policy, consistent with its other policies and reviewed." } },
+  { id: "A.3", nombre: { es: "Quién responde", en: "Who is accountable" }, resumen: { es: "Hay responsables nombrados y una vía para reportar preocupaciones.", en: "There are named owners and a way to report concerns." } },
+  { id: "A.4", nombre: { es: "Con qué cuenta el sistema", en: "What the system relies on" }, resumen: { es: "Se sabe con qué datos, herramientas, cómputo y personas cuenta cada sistema de IA.", en: "It is known which data, tools, compute and people each AI system relies on." } },
+  { id: "A.5", nombre: { es: "Efectos en las personas", en: "Effects on people" }, resumen: { es: "Se evalúa y se documenta cómo afecta el sistema a las personas y a la sociedad.", en: "How the system affects people and society is assessed and documented." } },
+  { id: "A.6", nombre: { es: "Del diseño a la operación", en: "From design to operation" }, resumen: { es: "El sistema se diseña, se verifica, se despliega, se vigila y se registra con criterios declarados.", en: "The system is designed, verified, deployed, monitored and logged against declared criteria." } },
+  { id: "A.7", nombre: { es: "Origen y calidad de los datos", en: "Data origin and quality" }, resumen: { es: "Se conoce el origen, la calidad y la preparación de los datos del sistema.", en: "The origin, quality and preparation of the system's data are known." } },
+  { id: "A.8", nombre: { es: "Lo que se dice a quien lo usa", en: "What users are told" }, resumen: { es: "Quien usa el sistema o resulta afectado por él recibe la información que necesita y puede reportar problemas.", en: "Whoever uses the system or is affected by it gets the information they need and can report problems." } },
+  { id: "A.9", nombre: { es: "Cómo se usa", en: "How it is used" }, resumen: { es: "El sistema se usa según un proceso, con objetivos declarados y dentro de su uso previsto.", en: "The system is used following a process, with declared objectives and within its intended use." } },
+  { id: "A.10", nombre: { es: "Proveedores y clientes", en: "Suppliers and customers" }, resumen: { es: "Las responsabilidades con proveedores y clientes están repartidas y escritas.", en: "Responsibilities with suppliers and customers are allocated and written down." } },
 ];
 
 /** Área del Anexo A a la que pertenece un control (`iso42001-A.6.2.4` → `A.6`). */

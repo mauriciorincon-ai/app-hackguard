@@ -49,6 +49,17 @@ export function fechado(desde, consulta, umbrales, rotulo = { es: "Verificada", 
   return `<span data-fechado="vigencia" data-desde="${desde}" data-dias="${v.dias}" data-estado-fechado="${v.estado}">${marca} <span class="hg-menor">${t(rotulo)} <span data-frase-dias>${t(dias(v.dias))}</span></span></span>`;
 }
 
+/** Cabecera de una tabla: una celda por columna, en los dos idiomas. */
+export const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
+
+/** Nombre de algo que puede llamarse igual en los dos idiomas (una herramienta) o tener uno por idioma. */
+export const nombreDe = (h) => (typeof h.nombre === "string" ? neutro(h.nombre) : t(h.nombre));
+
+/** Un eslabón de la cadena de cierre: hecho (con su rol y su símbolo) o pendiente (trazo punteado). */
+export function eslabon({ rol, simbolo, pendiente }, titulo, cuerpo = "") {
+  return `<li class="hg-eslabon es-${pendiente ? "pendiente" : rol}">${SIMBOLO[pendiente ? "vacio" : simbolo]}<span class="hg-eslabon-titulo">${t(titulo)}</span>${cuerpo}</li>`;
+}
+
 /** El destino de un enlace, si la maqueta genera esa página. Si no, el generador falla: un enlace roto
  *  nunca se vuelve texto en silencio (el gate de enlaces solo ve los <a href>). */
 export function destino(archivo, existentes) {
@@ -70,8 +81,12 @@ export const proporcion = (parte, total, clase = "") =>
   `<svg class="hg-proporcion${clase ? ` ${clase}` : ""}" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="hg-proporcion-fondo" width="100" height="6" rx="1"/><rect class="hg-proporcion-parte" width="${Math.max(parte > 0 ? 3 : 0, Math.round((parte / total) * 100))}" height="6" rx="1"/></svg>`;
 
 /** Estado de pantalla (vacío, carga, error): marca, título y qué hacer. `si` es el estado de sala. */
-export const aviso = (si, { rol, simbolo }, titulo, cuerpo) =>
-  `<div class="hg-aviso es-${rol}" data-si="${si}">${SIMBOLO[simbolo]}<h2>${t(titulo)}</h2>${cuerpo}</div>`;
+export const aviso = (si, { rol, simbolo }, titulo, cuerpo, nivel = 2) =>
+  `<div class="hg-aviso es-${rol}" data-si="${si}">${SIMBOLO[simbolo]}<h${nivel}>${t(titulo)}</h${nivel}>${cuerpo}</div>`;
+
+/** El aviso de un estado en una pantalla de detalle, cuyo título vive con los datos: sin datos, el aviso
+ *  es el título de la página (h1, con el tamaño de un h2). La migaja de la barra dice de qué objeto es. */
+export const avisoPrincipal = (si, marca, titulo, cuerpo) => aviso(si, marca, titulo, cuerpo, 1);
 
 export const VACIO = { rol: "neutro", simbolo: "vacio" };
 export const CARGA = { rol: "neutro", simbolo: "reloj" };

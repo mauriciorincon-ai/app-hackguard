@@ -3,17 +3,16 @@
 // evidencia más reciente, sus fallas abiertas y su estado; cada control abre su página, con una fila por
 // prueba y la cadena hallazgo → corrección → re-prueba → cierre (la que se aprobó en la mirada 1, en la
 // página `direccion`, que esta reemplaza). Todo sale de nucleo/brecha.mjs con la fecha de consulta.
-import { CONTROLES, FAMILIAS, PRUEBAS as CATALOGO, archivoDeFicha } from "../datos/catalogo.mjs";
+import { CONTROLES, EQUIVALENTES, FAMILIAS, PRUEBAS as CATALOGO, archivoDeFicha } from "../datos/catalogo.mjs";
 import { AREAS, NORMA, areaDe } from "../datos/gobierno.mjs";
-import { ACTIVOS, SOBRES, archivoDeActivo, archivoDeHallazgo, archivoDePlan } from "../datos/mundo.mjs";
+import { ACTIVOS, archivoDeActivo, archivoDeHallazgo, archivoDePlan, sobreDe } from "../datos/mundo.mjs";
 import { brecha as calcular } from "../nucleo/brecha.mjs";
 import { huellaDe } from "../nucleo/calculos.mjs";
-import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, destino, enlace, estado, firma, huella, par, sello, selectorDeObjetos } from "../nucleo/componentes.mjs";
-import { ESTADO_DE_CONTROL, SEVERIDAD } from "../nucleo/estados.mjs";
+import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, columnas, dato, destino, enlace, eslabon, estado, firma, huella, par, selectorDeObjetos, sello } from "../nucleo/componentes.mjs";
+import { ESTADO_DE_CONTROL, MAPA_INCOMPLETO, SEVERIDAD } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { conteo, desglose, ejecutadas, estadoDeControl, evidenciaFechada, hallazgoBreve, plazoFechado, plural, veredictoDe } from "../nucleo/piezas-de-brecha.mjs";
-import { SIMBOLO } from "../nucleo/simbolos.mjs";
 
 // Sin puntos en el nombre: el gate de enlaces solo admite letras, cifras y guiones antes de «.html».
 export const archivoDeControl = (id) => `control-${id.toLowerCase().replaceAll(".", "-")}.html`;
@@ -23,9 +22,7 @@ const EVIDENCIA_ORGANIZADA = {
   es: "Esto es evidencia organizada para quien deba evaluarla. No mide el nivel de aseguramiento ni certifica cumplimiento.",
   en: "This is evidence organized for whoever must assess it. It does not measure assurance or certify compliance.",
 };
-const columnas = (lista) => `<thead><tr>${lista.map((c) => `<th scope="col">${t(c)}</th>`).join("")}</tr></thead>`;
 const ESTADOS = ["con_evidencia_vigente", "evidencia_antigua", "con_fallas", "sin_evidencia"];
-const sobreDe = (id) => SOBRES.find((s) => s.id === id);
 const nombreDeArea = (c) => AREAS.find((a) => a.id === areaDe(c)).nombre;
 
 // ---------- La lista: un control por fila ----------
@@ -203,7 +200,7 @@ function filaDePrueba(f, c, plazosPorHallazgo, existentes) {
   let resultado = `<p>${veredictoDe(veredicto)}</p>`;
   if (ultimo) {
     resultado += `<p class="hg-menor">${t(conteo(ultimo))}</p>`;
-    if (ultimo.reprueba_de) resultado += `<p class="hg-menor">${t({ es: "Re-prueba de", en: "Retest of" })} ${dato(ultimo.reprueba_de)}</p>`;
+    if (ultimo.reprueba_de_sobre) resultado += `<p class="hg-menor">${t({ es: "Re-prueba de", en: "Retest of" })} ${dato(ultimo.reprueba_de_sobre)}</p>`;
   } else {
     resultado += `<p class="hg-menor">${t({ es: "Planeada, sin resultado todavía.", en: "Planned, no result yet." })}</p>`;
   }
@@ -223,9 +220,6 @@ function filaDePrueba(f, c, plazosPorHallazgo, existentes) {
 </tr>`;
 }
 
-function eslabon({ rol, simbolo, pendiente }, titulo, cuerpo = "") {
-  return `<li class="hg-eslabon es-${pendiente ? "pendiente" : rol}">${SIMBOLO[pendiente ? "vacio" : simbolo]}<span class="hg-eslabon-titulo">${t(titulo)}</span>${cuerpo}</li>`;
-}
 
 function cadena(h, p, existentes) {
   const origen = sobreDe(h.sobre_origen);
@@ -255,6 +249,21 @@ ${repetida}
 ${cierre}
 </ol>
 </section>`;
+}
+
+/** Los controles de otros marcos que equivalen a este, con su fuente y lo que el mapa no cubre (E-16). */
+function equivalentes(id) {
+  const suyos = EQUIVALENTES[id] ?? [];
+  if (!suyos.length) return `<p class="hg-menor">${t({ es: "El mapa cargado no trae equivalente para este control.", en: "The loaded map has no equivalent for this control." })}</p>`;
+  return suyos
+    .map(
+      (e) => `<dl class="hg-propiedades">
+${par({ es: "Control", en: "Control" }, `<span>${dato(`${e.marco} ${e.version} · ${e.control}`)}</span><span class="hg-menor">${t(e.resumen)}</span>`)}
+${par({ es: "Fuente", en: "Source" }, `<span>${t(e.fuente)}</span>`)}
+${e.incompleto ? par({ es: "Alcance del mapa", en: "Map coverage" }, `<span>${chip(MAPA_INCOMPLETO)}</span><span class="hg-menor">${t(e.incompleto)}</span>`) : ""}
+</dl>`,
+    )
+    .join("");
 }
 
 /** Lo que una persona puede hacer por este control, según su estado: una sola acción principal. */
@@ -364,10 +373,7 @@ ${par({ es: "Evidencia más reciente", en: "Latest evidence" }, c.ultima ? evide
 </section>
 <section class="hg-tarjeta" aria-labelledby="equivalentes">
 <h2 class="hg-tarjeta-titulo" id="equivalentes">${t({ es: "Controles equivalentes", en: "Equivalent controls" })}</h2>
-<p class="hg-menor">${t({
-    es: "Ningún mapa hacia otro marco de cumplimiento está cargado todavía. Cuando lo esté, cada equivalencia dirá su fuente y si el mapa es incompleto.",
-    en: "No map to another compliance framework is loaded yet. When one is, each equivalence will state its source and whether the map is incomplete.",
-  })}</p>
+${equivalentes(id)}
 </section>
 </aside>
 </div>
@@ -415,6 +421,11 @@ ${errorDelLibro()}`;
         donde: { es: "Tabla de pruebas", en: "Test table" },
         hacer: { es: "Recorre una fila de izquierda a derecha", en: "Follow one row from left to right" },
         ver: { es: "Qué verifica, qué dio y qué hallazgo dejó abierto, y con qué evidencia firmada", en: "What it verifies, what it gave and which finding it left open, and with what signed evidence" },
+      },
+      {
+        donde: { es: "Carril · Controles equivalentes", en: "Side rail · Equivalent controls" },
+        hacer: { es: "Ábrelo en iso42001-A.6.2.4 y en otro control", en: "Open it on iso42001-A.6.2.4 and on another control" },
+        ver: { es: "En A.6.2.4, el control equivalente, su fuente y lo que el mapa no cubre; en los demás, que el mapa no trae equivalente", en: "On A.6.2.4, the equivalent control, its source and what the map leaves out; on the others, that the map has no equivalent" },
       },
       {
         donde: { es: "Cadena de cierre (control con fallas)", en: "Closure chain (control with failures)" },

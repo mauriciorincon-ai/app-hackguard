@@ -13,6 +13,7 @@ import { ESTADO_DE_HALLAZGO, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, esc, neutro, t, tHtml } from "../nucleo/html.mjs";
 import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
+import { conteo } from "../nucleo/piezas-de-brecha.mjs";
 
 const OBLIGATORIA = { rol: "falla", simbolo: "falla", nombre: { es: "Se revisa siempre", en: "Always reviewed" } };
 const EN_MUESTRA = { rol: "acento", simbolo: "firma", nombre: { es: "En la muestra", en: "In the sample" } };
@@ -30,11 +31,6 @@ const VIAS = [
 
 const sugerido = (sobre) => veredictoSugerido(sobre, fichaDe(sobre.prueba).regla);
 
-const conteoDe = (sobre) =>
-  sobre.razon ??
-  (sobre.fallidas > 0
-    ? { es: `${sobre.fallidas} de ${sobre.evaluadas} salidas fallaron`, en: `${sobre.fallidas} of ${sobre.evaluadas} outputs failed` }
-    : { es: `0 de ${sobre.evaluadas} salidas fallaron`, en: `0 of ${sobre.evaluadas} outputs failed` });
 
 /** Cuántos sobres «no fallidos» pide revisar el plan de muestreo para un lote de ese tamaño. */
 function muestraPara(tamano) {
@@ -49,11 +45,16 @@ function lotes(existentes) {
       const ficha = fichaDe(s.prueba);
       const veredicto = sugerido(s);
       const obligatoria = veredicto === "fallida" || veredicto === "parcial";
-      const hallazgo = HALLAZGOS.find((h) => h.id === (s.hallazgo_abierto ?? s.reprueba_de)) ?? null;
+      const hallazgo = HALLAZGOS.find((h) => h.id === (s.hallazgo_abierto ?? s.reprueba_de_hallazgo)) ?? null;
       const nota = s.hallazgo_abierto
         ? tHtml({ es: "Coincide con el hallazgo abierto {h}: no abre uno nuevo.", en: "It matches the open finding {h}: it does not open a new one." }, { h: enlace(archivoDeHallazgo(s.hallazgo_abierto), dato(s.hallazgo_abierto), existentes) })
-        : s.reprueba_de
-          ? tHtml({ es: "Es la re-prueba de {h}: al confirmarla, el hallazgo se cierra.", en: "It is the retest of {h}: once confirmed, the finding closes." }, { h: enlace(archivoDeHallazgo(s.reprueba_de), dato(s.reprueba_de), existentes) })
+        : s.reprueba_de_hallazgo
+          ? tHtml(
+              veredicto === "superada"
+                ? { es: "Es la re-prueba de {h}: al confirmarla, el hallazgo se cierra.", en: "It is the retest of {h}: once confirmed, the finding closes." }
+                : { es: "Es la re-prueba de {h}: no la supera, así que el hallazgo sigue abierto.", en: "It is the retest of {h}: it does not pass, so the finding stays open." },
+              { h: enlace(archivoDeHallazgo(s.reprueba_de_hallazgo), dato(s.reprueba_de_hallazgo), existentes) },
+            )
           : veredicto === "fallida"
             ? t({ es: "Al confirmarlo se abre un hallazgo.", en: "Confirming it opens a finding." })
             : veredicto === "no_ejecutada"
@@ -81,7 +82,7 @@ function lotes(existentes) {
   });
 }
 
-const resultado = (s) => `${s.evaluadas ? proporcion(s.fallidas, s.evaluadas) : ""}<p class="hg-menor">${t(conteoDe(s))}</p>`;
+const resultado = (s) => `${s.evaluadas ? proporcion(s.fallidas, s.evaluadas) : ""}<p class="hg-menor">${t(conteo(s))}</p>`;
 
 const paso = ({ rol, simbolo }, titulo, detalle) =>
   `<li class="hg-eslabon es-${rol}">${SIMBOLO[simbolo]}<span class="hg-eslabon-titulo">${t(titulo)}</span><span class="hg-menor">${t(detalle)}</span></li>`;
