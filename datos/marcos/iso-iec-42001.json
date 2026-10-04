@@ -1,0 +1,55 @@
+{
+  "id": "iso-iec-42001",
+  "nombre": "ISO/IEC 42001 — Artificial intelligence management system",
+  "editor": "ISO/IEC",
+  "version_vigente": "2023",
+  "fecha_version": "2023",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://www.iso.org/standard/81230.html",
+    "http": 403,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente",
+    "modelo_generativo",
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": "Copyright de ISO/IEC (texto no reproducible)",
+    "url": "https://www.iso.org/standard/81230.html",
+    "exige": {
+      "es": "El texto de la norma no se reproduce; solo identificadores.",
+      "en": "The standard's text is not reproduced; identifiers only."
+    },
+    "como_cumple": {
+      "es": "La app guarda solo identificadores de controles y resúmenes con palabras propias, marcados verificado_contra_norma: false hasta contrastarlos con la norma (antes de G-Release).",
+      "en": "The app stores only control identifiers and own-word summaries, marked verificado_contra_norma: false until checked against the standard (before G-Release)."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://www.iso.org/standard/81230.html",
+      "http": 403,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "fuente_no_accesible_al_agente: responde 403 a un agente; no se elude.",
+        "en": "fuente_no_accesible_al_agente: it answers 403 to an agent; it is not bypassed."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "iso.org"
+  ],
+  "estado": "fuente_no_accesible_al_agente",
+  "por_verificar": [
+    "fecha_version",
+    "fuente_oficial"
+  ],
+  "notas": {
+    "es": "El usuario no tiene el texto de la norma (G-Plan P1); la parada 3 del ⭐ no corre y la validación queda en deuda antes de G-Release.",
+    "en": "The user does not have the standard's text (G-Plan P1); ⭐ stop 3 does not run and validation is debt before G-Release."
+  }
+}

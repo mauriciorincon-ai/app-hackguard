@@ -1,0 +1,68 @@
+{
+  "id": "cwe",
+  "nombre": "Common Weakness Enumeration (CWE) y CWE Top 25",
+  "editor": "MITRE",
+  "version_vigente": "4.20",
+  "fecha_version": null,
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://cwe.mitre.org/data/index.html",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "software"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": "Términos de uso de CWE (licencia no exclusiva y sin regalías)",
+    "url": "https://cwe.mitre.org/about/termsofuse.html",
+    "exige": {
+      "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",
+      "en": "Reproduce MITRE's copyright designation and the licence in any copy."
+    },
+    "como_cumple": {
+      "es": "La app cita identificadores (CWE-…) y reproduce el aviso de MITRE en docs/LICENCIAS-DE-MARCOS.md.",
+      "en": "The app cites identifiers (CWE-…) and reproduces MITRE's notice in docs/LICENCIAS-DE-MARCOS.md."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://cwe.mitre.org/data/index.html",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "pagina",
+      "url": "https://cwe.mitre.org/top25/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Lista anual vigente: 2025 CWE Top 25.",
+        "en": "Current annual list: 2025 CWE Top 25."
+      }
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "cwe.mitre.org"
+  ],
+  "estado": "verificado",
+  "por_verificar": [
+    "fecha_version"
+  ],
+  "notas": {
+    "es": "La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25; ninguna página consultada dice la fecha de la 4.20.",
+    "en": "The current list is 4.20 and the annual list is the 2025 CWE Top 25; no page consulted states 4.20's date."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "id": "typesafe-jev",
+  "nombre": "TypeSafe — documentación de Jev (límites conocidos del modelo)",
+  "editor": "TypeSafe",
+  "version_vigente": "jev-1.13",
+  "fecha_version": "2026-10-02",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": "Sin licencia abierta declarada (términos de TypeSafe)",
+    "url": "https://typesafe.ai/legal/terms",
+    "exige": {
+      "es": "Sin permiso de reproducción: solo se cita con atribución y se resume con palabras propias.",
+      "en": "No reproduction permission: it is only cited with attribution and summarised in own words."
+    },
+    "como_cumple": {
+      "es": "La app guarda la versión del modelo, la fecha de revisión y el nombre de cada modo de falla como dato con fuente; no copia el texto de la documentación.",
+      "en": "The app stores the model version, the review date and each failure mode's name as sourced data; it does not copy the documentation's text."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "pagina",
+      "url": "https://docs.typesafe.ai/models.md",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "interfaz",
+      "url": "https://docs.typesafe.ai/llms.txt",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Índice de la documentación pensado para agentes.",
+        "en": "Documentation index meant for agents."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "typesafe.ai",
+    "docs.typesafe.ai",
+    "status.typesafe.ai",
+    "github.com/typesafe-ai",
+    "arxiv.org"
+  ],
+  "entradas": [
+    {
+      "id": "literal-reading",
+      "nombre": "Literal reading"
+    },
+    {
+      "id": "math-and-numbers",
+      "nombre": "Math and Numbers"
+    },
+    {
+      "id": "date-and-time-comparison",
+      "nombre": "Date and time comparison"
+    },
+    {
+      "id": "indirection",
+      "nombre": "Indirection"
+    },
+    {
+      "id": "large-state",
+      "nombre": "Large state full of irrelevant detail"
+    },
+    {
+      "id": "adversarial-content",
+      "nombre": "Adversarial content"
+    },
+    {
+      "id": "contradictory-instructions",
+      "nombre": "Contradictory instructions and criteria"
+    },
+    {
+      "id": "choice-option-order",
+      "nombre": "Choice option order"
+    },
+    {
+      "id": "generation",
+      "nombre": "Generation"
+    }
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "Marco aceptado por E-23 (documentación del fabricante con versión). La página dice «Applies to jev-1.13. Last reviewed 2026-10-02»; la fecha de versión es esa revisión. Hay sitios no oficiales que ofrecen claves: solo cuenta la lista blanca.",
+    "en": "Framework accepted by E-23 (versioned vendor documentation). The page says «Applies to jev-1.13. Last reviewed 2026-10-02»; the version date is that review. Unofficial sites offer keys: only the whitelist counts."
+  }
+}

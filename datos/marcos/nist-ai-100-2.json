@@ -1,0 +1,51 @@
+{
+  "id": "nist-ai-100-2",
+  "nombre": "NIST AI 100-2 — Adversarial Machine Learning: A Taxonomy and Terminology",
+  "editor": "NIST",
+  "version_vigente": "E2025",
+  "fecha_version": "2025-03",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://csrc.nist.gov/pubs/ai/100/2/e2025/final",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente",
+    "modelo_generativo",
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+    "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+    "exige": {
+      "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",
+      "en": "Cite the publication in NIST's recommended format, followed by «Republished courtesy of the National Institute of Standards and Technology.»"
+    },
+    "como_cumple": {
+      "es": "La app cita la publicación y su identificador con esa leyenda en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios.",
+      "en": "The app cites the publication and its identifier with that notice in docs/LICENCIAS-DE-MARCOS.md; summaries are its own."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://csrc.nist.gov/pubs/ai/100/2/e2025/final",
+      "http": 200,
+      "consultada": "2026-10-04"
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "csrc.nist.gov",
+    "nist.gov",
+    "nvlpubs.nist.gov",
+    "doi.org/10.6028"
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "Su página declara «March 2025» y una nota de planeación del 2025-06-03 por un error identificado; se vigila por si sale una errata.",
+    "en": "Its page states «March 2025» and a planning note dated 2025-06-03 about an identified error; it is watched for an erratum."
+  }
+}

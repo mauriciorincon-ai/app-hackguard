@@ -1,0 +1,71 @@
+{
+  "id": "nist-ai-rmf",
+  "nombre": "NIST AI Risk Management Framework (AI RMF)",
+  "editor": "NIST",
+  "version_vigente": "1.0",
+  "fecha_version": "2023-01-26",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente",
+    "modelo_generativo",
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+    "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+    "exige": {
+      "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",
+      "en": "Cite the publication in NIST's recommended format, followed by «Republished courtesy of the National Institute of Standards and Technology.»"
+    },
+    "como_cumple": {
+      "es": "La app cita la publicación y su identificador con esa leyenda en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios.",
+      "en": "The app cites the publication and its identifier with that notice in docs/LICENCIAS-DE-MARCOS.md; summaries are its own."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://doi.org/10.6028/NIST.AI.100-1",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "PDF de la publicación NIST AI 100-1.",
+        "en": "PDF of publication NIST AI 100-1."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://www.nist.gov/news-events/news/rss.xml",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "nist.gov",
+    "nvlpubs.nist.gov",
+    "doi.org/10.6028",
+    "airc.nist.gov"
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "NIST anuncia en su página que la versión 1.0 está en revisión (plan de acción de IA de la Casa Blanca); hasta que publique otra, la vigente es la 1.0.",
+    "en": "NIST states on its page that version 1.0 is being revised (White House AI Action Plan); until another is published, 1.0 is current."
+  }
+}

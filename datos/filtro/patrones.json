@@ -1,0 +1,102 @@
+{
+  "version": "1",
+  "fecha": "2026-10-04",
+  "proposito": {
+    "es": "Patrones de FORMA que sugieren contenido operativo (cargas o procedimientos). El filtro solo marca para revisión; nunca rechaza. Una persona decide (RF-01.3). Nombrar una técnica, citar la entrada de un marco o referenciar el módulo de una herramienta nunca marca.",
+    "en": "FORM patterns that suggest operational content (payloads or procedures). The filter only flags for review; it never rejects. A person decides (RF-01.3). Naming a technique, citing a framework entry or referencing a tool module never flags."
+  },
+  "patrones": [
+    {
+      "id": "bloque-con-interprete",
+      "nombre": {
+        "es": "Bloque de código con intérprete",
+        "en": "Code block with an interpreter"
+      },
+      "por_que": {
+        "es": "Un bloque marcado para una consola o un intérprete suele ser algo para ejecutar, no una descripción de qué se verifica.",
+        "en": "A block marked for a shell or an interpreter is usually something to run, not a description of what is verified."
+      },
+      "expresion": "```[ \\t]*(?:bash|sh|zsh|shell|console|powershell|pwsh|ps1|cmd|bat|python|py|perl|ruby|php|node|javascript|js)\\b|(?:^|\\n)[ \\t]*(?:\\$|PS>|C:\\\\>)[ \\t]+\\S",
+      "banderas": "i",
+      "carnadas": [
+        "```bash\necho hola\n```",
+        "Ejemplo:\n$ ls"
+      ],
+      "contraejemplos": [
+        "La herramienta guarda cada sonda en un archivo de resultados.",
+        "Costo esperado: US$ 0 al mes."
+      ]
+    },
+    {
+      "id": "pasos-imperativos",
+      "nombre": {
+        "es": "Secuencia imperativa paso a paso",
+        "en": "Step-by-step imperative sequence"
+      },
+      "por_que": {
+        "es": "Tres o más pasos numerados seguidos describen cómo hacer algo; la prueba describe qué se verifica y qué se espera.",
+        "en": "Three or more consecutive numbered steps describe how to do something; a test describes what is verified and what is expected."
+      },
+      "expresion": "(?:^|\\n)[ \\t]*(?:\\d{1,2}[.)]|(?:paso|step)[ \\t]+\\d{1,2}[:.)])[ \\t]+\\S[^\\n]*(?:\\n[ \\t]*(?:\\d{1,2}[.)]|(?:paso|step)[ \\t]+\\d{1,2}[:.)])[ \\t]+\\S[^\\n]*){2,}",
+      "banderas": "i",
+      "carnadas": [
+        "1. Abre el archivo de configuración.\n2. Cambia el valor.\n3. Guarda y reinicia.",
+        "Step 1: open the panel.\nStep 2: pick the option.\nStep 3: save."
+      ],
+      "contraejemplos": [
+        "Verifica tres cosas: que la salida tenga el formato declarado, que no traiga datos personales y que quede registrada.",
+        "1. Primera condición de aplicabilidad."
+      ]
+    },
+    {
+      "id": "cadena-codificada-larga",
+      "nombre": {
+        "es": "Cadena codificada larga",
+        "en": "Long encoded string"
+      },
+      "por_que": {
+        "es": "Una tira larga en base64 o hexadecimal dentro de una prueba suele ser una carga escondida; una huella de 64 caracteres no alcanza el umbral.",
+        "en": "A long base64 or hexadecimal run inside a test is usually a hidden payload; a 64-character fingerprint does not reach the threshold."
+      },
+      "expresion": "[A-Za-z0-9+/]{80,}={0,2}|\\b[0-9a-fA-F]{96,}\\b",
+      "banderas": "",
+      "carnadas": [
+        "Cadena de muestra: QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB"
+      ],
+      "contraejemplos": [
+        "Huella del sobre: sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "La regla pasiva 10038 de ZAP revisa la cabecera de política de contenido."
+      ]
+    },
+    {
+      "id": "url-con-parametros-de-inyeccion",
+      "nombre": {
+        "es": "Dirección con parámetros de inyección",
+        "en": "URL with injection parameters"
+      },
+      "por_que": {
+        "es": "Una dirección con caracteres de control codificados o parámetros de ejecución apunta a cómo explotar, no a qué verificar.",
+        "en": "A URL with encoded control characters or execution parameters points at how to exploit, not at what to verify."
+      },
+      "expresion": "https?://[^\\s?#]+\\?[^\\s#]*(?:%27|%22|%3c|%3e|%00|%0a|%0d|\\b(?:cmd|exec|command|shell|payload)=)",
+      "banderas": "i",
+      "carnadas": [
+        "Ver https://ejemplo.invalid/buscar?cmd=listar"
+      ],
+      "contraejemplos": [
+        "Fuente: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+        "Ver https://ejemplo.invalid/buscar?q=libros"
+      ]
+    }
+  ],
+  "contraejemplos_generales": {
+    "es": "Nombrar técnicas, citar marcos o referenciar módulos nunca marca.",
+    "en": "Naming techniques, citing frameworks or referencing modules never flags.",
+    "casos": [
+      "La prueba usa la sonda latentinjection de Garak con el detector TriggerListDetector.",
+      "Se traza a LLM01:2026 Prompt Injection y a la técnica AML.T0051 de MITRE ATLAS.",
+      "ZAP la cubre con la regla pasiva 10038 (cabecera de política de contenido).",
+      "Inyección de instrucciones indirecta: el asistente no obedece órdenes que llegan dentro del contenido que procesa."
+    ]
+  }
+}
