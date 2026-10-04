@@ -1,0 +1,86 @@
+{
+  "rasgos": [
+    {
+      "id": "expone_texto_libre_a_modelo",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Pasa texto libre a un modelo",
+        "en": "Passes free text to a model"
+      },
+      "pregunta": {
+        "es": "¿Llega a un modelo texto que escribe una persona o que viene de fuera del sistema?",
+        "en": "Does text written by a person, or coming from outside the system, reach a model?"
+      }
+    },
+    {
+      "id": "procesa_contenido_externo",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Procesa contenido de terceros",
+        "en": "Processes third-party content"
+      },
+      "pregunta": {
+        "es": "¿El activo lee páginas, documentos o correos que no escribió quien lo usa?",
+        "en": "Does the asset read pages, documents or emails that its user did not write?"
+      }
+    },
+    {
+      "id": "usa_herramientas",
+      "tipo": "booleano",
+      "nombre": { "es": "Usa herramientas", "en": "Uses tools" },
+      "pregunta": {
+        "es": "¿El agente puede llamar herramientas o servicios que actúan fuera de la conversación?",
+        "en": "Can the agent call tools or services that act outside the conversation?"
+      }
+    },
+    {
+      "id": "tiene_interfaz_web",
+      "tipo": "booleano",
+      "nombre": { "es": "Tiene una interfaz web", "en": "Has a web interface" },
+      "pregunta": {
+        "es": "¿Se usa desde un navegador?",
+        "en": "Is it used from a browser?"
+      }
+    },
+    {
+      "id": "devuelve_decision_tipada",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Devuelve una decisión tipada",
+        "en": "Returns a typed decision"
+      },
+      "pregunta": {
+        "es": "¿Devuelve probabilidades sobre opciones que define quien lo llama, en vez de texto?",
+        "en": "Does it return probabilities over options the caller defines, instead of text?"
+      }
+    },
+    {
+      "id": "tipo_de_acceso",
+      "tipo": "opcion",
+      "nombre": {
+        "es": "Tipo de acceso al activo",
+        "en": "Type of access to the asset"
+      },
+      "pregunta": {
+        "es": "¿Se prueba solo por fuera, o también se tiene acceso al código y a la configuración?",
+        "en": "Is it tested only from outside, or is there also access to the code and the configuration?"
+      },
+      "opciones": [
+        {
+          "id": "caja_negra",
+          "nombre": {
+            "es": "Caja negra: solo por fuera",
+            "en": "Black box: from outside only"
+          }
+        },
+        {
+          "id": "caja_blanca",
+          "nombre": {
+            "es": "Caja blanca: con código y configuración",
+            "en": "White box: with code and configuration"
+          }
+        }
+      ]
+    }
+  ]
+}

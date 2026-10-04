@@ -1,0 +1,244 @@
+{
+  "familias": [
+    {
+      "id": "software",
+      "nombre": { "es": "Software", "en": "Software" },
+      "descripcion": {
+        "es": "Aplicaciones y servicios sin un modelo de IA en el camino de la decisión. Sus pruebas dan el mismo resultado cada vez.",
+        "en": "Applications and services with no AI model in the decision path. Their tests give the same result every time."
+      },
+      "estocastica": false,
+      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "categorias": [
+        {
+          "id": "control_de_acceso",
+          "nombre": { "es": "Control de acceso", "en": "Access control" }
+        },
+        {
+          "id": "autenticacion_y_sesion",
+          "nombre": {
+            "es": "Autenticación y sesión",
+            "en": "Authentication and session"
+          }
+        },
+        {
+          "id": "validacion_de_entradas_e_inyeccion",
+          "nombre": {
+            "es": "Validación de entradas e inyección",
+            "en": "Input validation and injection"
+          }
+        },
+        {
+          "id": "configuracion_y_cabeceras",
+          "nombre": {
+            "es": "Configuración y cabeceras",
+            "en": "Configuration and headers"
+          }
+        },
+        {
+          "id": "exposicion_de_datos",
+          "nombre": { "es": "Exposición de datos", "en": "Data exposure" }
+        },
+        {
+          "id": "dependencias_vulnerables",
+          "nombre": {
+            "es": "Dependencias vulnerables",
+            "en": "Vulnerable dependencies"
+          }
+        },
+        {
+          "id": "registro_y_monitoreo",
+          "nombre": {
+            "es": "Registro y monitoreo",
+            "en": "Logging and monitoring"
+          }
+        }
+      ]
+    },
+    {
+      "id": "agente",
+      "nombre": { "es": "Agente", "en": "Agent" },
+      "descripcion": {
+        "es": "Un modelo de lenguaje que decide qué herramientas usar y actúa. Puede responder distinto a la misma entrada.",
+        "en": "A language model that decides which tools to use and acts. It may answer the same input differently."
+      },
+      "estocastica": true,
+      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "categorias": [
+        {
+          "id": "inyeccion_de_instrucciones",
+          "nombre": {
+            "es": "Inyección directa e indirecta de instrucciones",
+            "en": "Direct and indirect prompt injection"
+          }
+        },
+        {
+          "id": "abuso_de_herramientas_y_permisos",
+          "nombre": {
+            "es": "Abuso de herramientas y exceso de permisos",
+            "en": "Tool misuse and excessive permissions"
+          }
+        },
+        {
+          "id": "escalamiento_entre_agentes",
+          "nombre": {
+            "es": "Escalamiento entre agentes",
+            "en": "Escalation between agents"
+          }
+        },
+        {
+          "id": "fuga_de_datos_por_herramientas",
+          "nombre": {
+            "es": "Fuga de datos por herramientas",
+            "en": "Data leakage through tools"
+          }
+        },
+        {
+          "id": "confusion_de_identidad",
+          "nombre": {
+            "es": "Confusión de identidad",
+            "en": "Identity confusion"
+          }
+        },
+        {
+          "id": "agotamiento_de_recursos_y_bucles",
+          "nombre": {
+            "es": "Agotamiento de recursos y bucles",
+            "en": "Resource exhaustion and loops"
+          }
+        },
+        {
+          "id": "manipulacion_de_memoria_o_estado",
+          "nombre": {
+            "es": "Manipulación de la memoria o del estado",
+            "en": "Memory or state manipulation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "modelo_generativo",
+      "nombre": { "es": "Modelo generativo", "en": "Generative model" },
+      "descripcion": {
+        "es": "Un modelo que produce texto (un asistente, un resumidor). Puede responder distinto a la misma entrada.",
+        "en": "A model that produces text (an assistant, a summarizer). It may answer the same input differently."
+      },
+      "estocastica": true,
+      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "categorias": [
+        {
+          "id": "inyeccion_de_instrucciones",
+          "nombre": {
+            "es": "Inyección de instrucciones",
+            "en": "Prompt injection"
+          }
+        },
+        {
+          "id": "fuga_de_instrucciones_del_sistema",
+          "nombre": {
+            "es": "Fuga de las instrucciones del sistema",
+            "en": "System prompt leakage"
+          }
+        },
+        {
+          "id": "contenido_no_permitido",
+          "nombre": {
+            "es": "Contenido no permitido",
+            "en": "Disallowed content"
+          }
+        },
+        {
+          "id": "extraccion_de_datos",
+          "nombre": {
+            "es": "Extracción de datos de entrenamiento o de contexto",
+            "en": "Training or context data extraction"
+          }
+        },
+        {
+          "id": "envenenamiento_de_contexto_recuperado",
+          "nombre": {
+            "es": "Envenenamiento del contexto recuperado",
+            "en": "Retrieved context poisoning"
+          }
+        },
+        {
+          "id": "degradacion_bajo_entradas_adversarias",
+          "nombre": {
+            "es": "Degradación ante entradas adversarias",
+            "en": "Degradation under adversarial inputs"
+          }
+        }
+      ]
+    },
+    {
+      "id": "modelo_decision",
+      "nombre": { "es": "Modelo de decisión", "en": "Decision model" },
+      "descripcion": {
+        "es": "Un modelo que devuelve una distribución de probabilidad sobre opciones que define quien lo llama, y a veces un estadístico de confianza derivado, sin generar texto (E-28). Su resultado varía entre llamadas idénticas.",
+        "en": "A model that returns a probability distribution over options the caller defines, and sometimes a derived confidence statistic, without generating text (E-28). Its output varies between identical calls."
+      },
+      "estocastica": true,
+      "madurez_admitida": ["emergente", "propia"],
+      "categorias": [
+        {
+          "id": "calibracion",
+          "nombre": { "es": "Calibración", "en": "Calibration" }
+        },
+        {
+          "id": "cruce_de_umbral",
+          "nombre": { "es": "Cruce de umbral", "en": "Threshold crossing" }
+        },
+        {
+          "id": "inyeccion_en_el_estado",
+          "nombre": {
+            "es": "Inyección en el estado",
+            "en": "Injection into the state"
+          }
+        },
+        {
+          "id": "deriva_entre_versiones",
+          "nombre": {
+            "es": "Deriva entre versiones",
+            "en": "Drift between versions"
+          }
+        },
+        {
+          "id": "limites_conocidos",
+          "nombre": { "es": "Límites conocidos", "en": "Known limits" }
+        },
+        {
+          "id": "valido_pero_equivocado",
+          "nombre": { "es": "Válido pero equivocado", "en": "Valid but wrong" }
+        },
+        {
+          "id": "invariancia_de_opciones",
+          "nombre": {
+            "es": "Invariancia al nombre y al orden de las opciones",
+            "en": "Invariance to option names and order"
+          }
+        },
+        {
+          "id": "coherencia_de_probabilidades",
+          "nombre": {
+            "es": "Coherencia de las probabilidades",
+            "en": "Probability coherence"
+          }
+        },
+        {
+          "id": "paridad_de_idioma",
+          "nombre": {
+            "es": "Paridad entre español e inglés",
+            "en": "Spanish-English parity"
+          }
+        },
+        {
+          "id": "estabilidad_ante_reejecucion",
+          "nombre": {
+            "es": "Estabilidad ante la re-ejecución",
+            "en": "Stability under re-execution"
+          }
+        }
+      ]
+    }
+  ]
+}

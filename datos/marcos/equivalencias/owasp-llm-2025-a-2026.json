@@ -1,0 +1,68 @@
+{
+  "id": "owasp-llm-2025-a-2026",
+  "marco_id": "owasp-llm-top10",
+  "desde": "2025",
+  "hacia": "2026",
+  "fuente": {
+    "url": "https://raw.githubusercontent.com/genai-security-project/crosswalk/main/MIGRATION.md",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "pares": [
+    {
+      "desde": "LLM01",
+      "hacia": ["LLM01"],
+      "cambios": [],
+      "nota": {
+        "es": "En 2026 abarca también instrucciones ocultas en imagen, audio o video.",
+        "en": "In 2026 it also covers instructions hidden in image, audio or video."
+      }
+    },
+    { "desde": "LLM02", "hacia": ["LLM02"], "cambios": [] },
+    {
+      "desde": "LLM03",
+      "hacia": ["LLM04"],
+      "cambios": ["numero"],
+      "nota": {
+        "es": "En 2026 abarca también la procedencia de los artefactos del modelo.",
+        "en": "In 2026 it also covers the provenance of model artifacts."
+      }
+    },
+    {
+      "desde": "LLM04",
+      "hacia": ["LLM05"],
+      "cambios": ["numero"],
+      "nota": {
+        "es": "En 2026 abarca también el ajuste fino comprometido.",
+        "en": "In 2026 it also covers compromised fine-tuning."
+      }
+    },
+    {
+      "desde": "LLM05",
+      "hacia": ["LLM10"],
+      "cambios": ["numero", "alcance"],
+      "nota": {
+        "es": "En 2026 abarca también el código inseguro que genera un asistente y llega a producción.",
+        "en": "In 2026 it also covers insecure code that an assistant generates and that reaches production."
+      }
+    },
+    { "desde": "LLM06", "hacia": ["LLM03"], "cambios": ["numero"] },
+    {
+      "desde": "LLM07",
+      "hacia": ["LLM08"],
+      "cambios": ["numero", "nombre", "alcance"],
+      "nota": {
+        "es": "De la fuga de las instrucciones del sistema pasa a todo el contexto oculto que la aplicación arma para el modelo.",
+        "en": "It goes from system prompt leakage to all the hidden context the application assembles for the model."
+      }
+    },
+    { "desde": "LLM08", "hacia": ["LLM09"], "cambios": ["numero"] },
+    { "desde": "LLM09", "hacia": ["LLM07"], "cambios": ["numero"] },
+    { "desde": "LLM10", "hacia": ["LLM06"], "cambios": ["numero"] }
+  ],
+  "notas": {
+    "es": "Los pares son los del mapa oficial del proyecto (crosswalk, CC BY-SA 4.0). Los cambios de nombre se cuentan contra los nombres oficiales de 2025: el mapa compara dos entradas (LLM03 y LLM05) con sus nombres de 2023, y contra 2025 esas dos solo cambian de número.",
+    "en": "The pairs are those of the project's official map (crosswalk, CC BY-SA 4.0). Name changes are counted against the official 2025 names: the map compares two entries (LLM03 and LLM05) with their 2023 names, and against 2025 those two only change number."
+  }
+}

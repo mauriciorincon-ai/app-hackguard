@@ -35,7 +35,7 @@
     },
     {
       "tipo": "interfaz",
-      "url": "http://export.arxiv.org/api/query?id_list=2609.32160",
+      "url": "https://export.arxiv.org/api/query?id_list=2609.32160",
       "http": 200,
       "consultada": "2026-10-04",
       "nota": {
