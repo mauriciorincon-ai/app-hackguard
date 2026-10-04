@@ -46,8 +46,8 @@ Aprobadas con el plan de la etapa (2026-10-03):
    con `vercel.json` y `serve.json` equivalentes. Solo en despliegues protegidos. Que el paquete público
    del H2 jamás la incluya es un gate a construir en el S4.
 4. **Nombres de página:** `index` · `direccion` · `kit` · `tablero` · `catalogo` · `prueba-<id>` (una
-   por prueba del catálogo) · `marcos` · `controles` · `propuestas` · `activo` · `plan` · `evidencia` ·
-   `hallazgo` · `brecha` · `control` · `informe`.
+   por prueba del catálogo) · `marcos` · `controles` · `propuestas` · `activo-<id>` y `plan-<id>` (una
+   por activo demo) · `evidencia` · `hallazgo` · `brecha` · `control` · `informe`.
 5. **C18 (validación del instrumento)** no tiene pantalla propia: banda de estado en `tablero` y ficha
    de reproducibilidad en `informe`.
 6. **Toda marca de estado es un trazo SVG**, nunca un carácter de una fuente.
@@ -58,6 +58,13 @@ Aprobadas con el plan de la etapa (2026-10-03):
     21 hoy). Reemplaza la decisión anterior —todas las filas abrían la ficha de `PR-IA-PINJ-001`—, que
     el usuario encontró rota en la mirada 2: una prueba vencida se leía «Vigente» al abrirla. Una
     pantalla de detalle de la maqueta jamás muestra el estado de otro objeto.
+11. **Una página por activo, y su plan con él** (`activo-<id>.html`, `plan-<id>.html`; tres activos demo
+    ficticios que cubren las cuatro familias). Arriba, un conmutador dice qué activo está abierto; debajo,
+    «Activo» y «Plan» son de ese activo. El tercero no tiene alcance ni reglas: muestra «sin autorización
+    no hay plan» en las dos páginas. El plan lo calcula el generador desde el perfil y el catálogo
+    (aritmética de maqueta, no el planificador del producto); la fórmula de prioridad es ilustrativa.
+12. **Los botones de la bandeja de propuestas funcionan pero no guardan nada**: marcan la decisión, dicen
+    su consecuencia y descuentan la cifra «por decidir». Pulsar otra vez la misma decisión la deshace.
 8. **Dirección «acta»** (mirada 1): títulos en Source Serif 4, texto en Atkinson Hyperlegible Next, datos
    en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y secciones numeradas.
 
@@ -71,7 +78,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 0 | Fase 0: el preview del PR abre la maqueta provisional | **abre** (2026-10-03) |
 | 1 | `direccion.html` — corte real de la vista por control, dirección recomendada + alternativa | **aprobada: dirección B «acta»** (2026-10-04, ronda 1) |
 | 2 | `design-system.md` + `kit.html` + `catalogo` + `prueba-<id>` | **aprobada** (2026-10-04, ronda 2) |
-| 3 | `marcos` · `controles` · `propuestas` · `activo` · `plan` | pendiente |
+| 3 | `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` | **en mirada** (ronda 1) |
 | 4 | `evidencia` · `hallazgo` | pendiente |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
@@ -94,11 +101,11 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | `tablero` | C16 · C18 | — |
 | `catalogo` | C1 · C3 | con datos · sin resultados (filtros) · vacío · carga · error (pruebas rechazadas al cargar) |
 | `prueba-<id>` | C1 · C3 · C6 | con datos, en sus variantes: vigente · por revisar · vencida (sello bajo el encabezado) · marcada para revisión de contenido · sin control asignado · con repeticiones y cota · determinista · con adaptador o por carga manual — y vacío (prueba retirada) · carga · error (no pasa su esquema) |
-| `marcos` | C4 | — |
-| `controles` | C5 | — |
-| `propuestas` | C2 · C7 · C15 | — |
-| `activo` | C8 | — |
-| `plan` | C9 · C10 | — |
+| `marcos` | C3 · C4 | con datos (versión al día · versión más nueva con propuesta · versión más nueva sin propuesta · mapa de equivalencias con entrada sin equivalente y entradas nuevas · instantáneas) · vacío · carga · error (referencia sin versión) |
+| `controles` | C5 | con datos (áreas con y sin pruebas · controles con las pruebas que les dan evidencia · pruebas sin control asignado) · vacío · carga · error (control inexistente) |
+| `propuestas` | C2 · C7 · C15 | con datos (fuente verificada · fuente sin verificar · marcada por el filtro · cambio de versión · herramienta · sobre con prueba dudosa y veredicto por regla · texto que mezcla dos pruebas; cada una sin decidir / aprobada / rechazada / separada) · filtro por quién propone · registro de la corrida · vacío · carga · error (propuesta que no cumple su esquema) |
+| `activo-<id>` | C8 | con datos (autorizado con proveedor y política leída · autorizado sin proveedor · **sin autorización**, con la plantilla para activos propios) · vacío · carga · error (perfil sin dueño) |
+| `plan-<id>` | C9 · C10 | con datos (planeadas con prioridad y razón · excluidas por perfil, por alcance y por el operador · control sin prueba · paquete de ejecución por herramienta) · **sin autorización: no hay plan** · vacío con «Emitir el plan» · carga · error (instantánea que no coincide con su huella) |
 | `evidencia` | C11 · C14 | — |
 | `hallazgo` | C12 · C13 | — |
 | `brecha` | C16 | — |
@@ -118,6 +125,7 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Bilingüe | `tests/unit/maqueta-bilingue.test.ts` | Texto o atributo en un solo idioma |
 | Envejecimiento | `tests/unit/maqueta-envejecimiento.test.ts` | Estado equivocado en una fecha umbral |
 | Fichas | `tests/unit/maqueta-fichas.test.ts` | Que una fila del catálogo abra la ficha de otra prueba, o que fila y ficha digan vigencias distintas (hoy y 45 días después) |
+| Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
 | Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
 

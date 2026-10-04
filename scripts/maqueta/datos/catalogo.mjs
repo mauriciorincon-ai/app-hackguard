@@ -18,10 +18,10 @@ export const MADUREZ = {
 };
 
 export const MARCOS = {
-  "owasp-top10": { nombre: "OWASP Top 10", corto: "OWASP Top 10", version: "2021", editor: "OWASP", verificada: "2026-09-12" },
-  "owasp-llm-top10": { nombre: "OWASP Top 10 for LLM Applications", corto: "OWASP LLM Top 10", version: "2025", editor: "OWASP", verificada: "2026-08-20" },
-  "jev-docs": { nombre: "Jev · límites conocidos", corto: "Jev", version: "1.13", editor: "TypeSafe AI", verificada: "2026-09-28" },
-  "lista-decision-14": { nombre: "Lista de 14 comprobaciones para modelos de decisión", corto: "Lista de 14", version: "2026-09", editor: "arXiv 2609.32160", verificada: "2026-09-28" },
+  "owasp-top10": { nombre: "OWASP Top 10", corto: "OWASP Top 10", version: "2021", fecha_version: "2021-09-24", publicada: "2025", familias: ["software"], editor: "OWASP", verificada: "2026-09-12" },
+  "owasp-llm-top10": { nombre: "OWASP Top 10 for LLM Applications", corto: "OWASP LLM Top 10", version: "2025", fecha_version: "2024-11-18", publicada: "2026", anterior: "1.1", familias: ["agente", "modelo_generativo"], editor: "OWASP", verificada: "2026-08-20" },
+  "jev-docs": { nombre: "Jev · límites conocidos", corto: "Jev", version: "1.13", fecha_version: "2026-09-15", familias: ["modelo_decision"], editor: "TypeSafe AI", verificada: "2026-09-28" },
+  "lista-decision-14": { nombre: "Lista de 14 comprobaciones para modelos de decisión", corto: "Lista de 14", version: "2026-09", fecha_version: "2026-09-22", familias: ["modelo_decision"], editor: "arXiv 2609.32160", verificada: "2026-09-28" },
 };
 
 export const CONTROLES = {
@@ -33,12 +33,12 @@ export const CONTROLES = {
 };
 
 export const HERRAMIENTAS = {
-  zap: { nombre: "ZAP", licencia: "Apache-2.0", adaptador: true, version_minima: "2.16.0", verificada: "2026-09-18" },
-  garak: { nombre: "garak", licencia: "Apache-2.0", adaptador: true, version_minima: "0.17.0", verificada: "2026-09-21" },
-  promptfoo: { nombre: "promptfoo", licencia: "MIT", adaptador: false, verificada: "2026-08-23" },
-  inspect: { nombre: "Inspect", licencia: "MIT", adaptador: false, verificada: "2026-09-02" },
-  "scikit-learn": { nombre: "scikit-learn", licencia: "BSD-3-Clause", adaptador: false, verificada: "2026-09-05" },
-  propia: { nombre: { es: "Revisión propia", en: "In-house review" }, licencia: "—", adaptador: false, verificada: "2026-09-26" },
+  zap: { entorno: "contenedor", nombre: "ZAP", licencia: "Apache-2.0", adaptador: true, version_minima: "2.16.0", verificada: "2026-09-18" },
+  garak: { entorno: "portatil", nombre: "garak", licencia: "Apache-2.0", adaptador: true, version_minima: "0.17.0", verificada: "2026-09-21" },
+  promptfoo: { entorno: "portatil", nombre: "promptfoo", licencia: "MIT", adaptador: false, verificada: "2026-08-23" },
+  inspect: { entorno: "portatil", nombre: "Inspect", licencia: "MIT", adaptador: false, verificada: "2026-09-02" },
+  "scikit-learn": { entorno: "portatil", nombre: "scikit-learn", licencia: "BSD-3-Clause", adaptador: false, verificada: "2026-09-05" },
+  propia: { entorno: "ninguno", nombre: { es: "Revisión propia", en: "In-house review" }, licencia: "—", adaptador: false, verificada: "2026-09-26" },
 };
 
 const p = (id, familia, nombre, que_verifica, marco, ref, controles, herramienta, k, madurez, verificada, revision = "limpia") => ({
@@ -181,7 +181,7 @@ export const REGLAS = {
 // la comprobación (identificador, no procedimiento); cuando falta, lo fija el paquete de ejecución.
 const DETALLE = {
   "PR-SW-XSS-001": {
-    regla: "alertas-zap/v1", prioridad_base: 5, selector: "pluginid: 40012",
+    requiere: "paginas_con_datos_de_usuario", regla: "alertas-zap/v1", prioridad_base: 5, selector: "pluginid: 40012",
     por_que_importa: {
       es: "Si un dato del usuario llega a la página sin codificar, el navegador lo trata como parte de la página y puede ejecutarlo ante otra persona.",
       en: "If user data reaches the page unencoded, the browser treats it as part of the page and may run it in front of someone else.",
@@ -193,7 +193,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo muestra en sus páginas datos que escribe el usuario.", en: "The asset shows user-written data on its pages." }],
   },
   "PR-SW-SQLI-001": {
-    regla: "alertas-zap/v1", prioridad_base: 5, selector: "pluginid: 40018",
+    requiere: "base_de_datos", regla: "alertas-zap/v1", prioridad_base: 5, selector: "pluginid: 40018",
     por_que_importa: {
       es: "Una consulta armada con texto del usuario deja que ese texto cambie lo que la base de datos entrega o modifica.",
       en: "A query built from user text lets that text change what the database returns or modifies.",
@@ -205,7 +205,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo guarda o consulta datos en una base de datos.", en: "The asset stores or queries data in a database." }],
   },
   "PR-SW-CSP-001": {
-    regla: "alertas-zap/v1", prioridad_base: 3, selector: "pluginid: 10038",
+    requiere: "sirve_paginas", regla: "alertas-zap/v1", prioridad_base: 3, selector: "pluginid: 10038",
     por_que_importa: {
       es: "Sin esa política el navegador carga scripts de cualquier origen, y un descuido de codificación en una página pesa mucho más.",
       en: "Without that policy the browser loads scripts from any origin, and one encoding slip on a page weighs far more.",
@@ -217,7 +217,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo sirve páginas a un navegador.", en: "The asset serves pages to a browser." }],
   },
   "PR-SW-CLK-001": {
-    regla: "alertas-zap/v1", prioridad_base: 3, selector: "pluginid: 10020",
+    requiere: "acciones_con_sesion", regla: "alertas-zap/v1", prioridad_base: 3, selector: "pluginid: 10020",
     por_que_importa: {
       es: "Una página que se deja enmarcar puede mostrarse escondida dentro de otro sitio, y la persona pulsa en ella sin saberlo.",
       en: "A page that allows framing can be shown hidden inside another site, and the person clicks on it without knowing.",
@@ -229,7 +229,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo tiene páginas con acciones para usuarios con sesión.", en: "The asset has pages with actions for signed-in users." }],
   },
   "PR-SW-TS-001": {
-    regla: "alertas-zap/v1", prioridad_base: 4, selector: "pluginid: 10035",
+    requiere: "dominio_propio", regla: "alertas-zap/v1", prioridad_base: 4, selector: "pluginid: 10035",
     por_que_importa: {
       es: "Sin esa obligación, la primera visita puede viajar sin cifrar y alguien en la misma red puede leerla o cambiarla.",
       en: "Without that requirement, the first visit can travel unencrypted and someone on the same network can read or change it.",
@@ -242,7 +242,7 @@ const DETALLE = {
   },
 
   "PR-AG-PERM-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 5,
+    requiere: "herramientas_con_efecto", regla: "tasa-de-fallo/v1", prioridad_base: 5,
     por_que_importa: {
       es: "Un agente que puede hacer más de lo que su perfil declara convierte cualquier error o engaño en una acción real.",
       en: "An agent that can do more than its profile declares turns any mistake or deception into a real action.",
@@ -254,7 +254,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El agente tiene herramientas que cambian algo fuera de la conversación.", en: "The agent has tools that change something outside the conversation." }],
   },
   "PR-AG-CONF-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 5,
+    requiere: "acciones_irreversibles", regla: "tasa-de-fallo/v1", prioridad_base: 5,
     por_que_importa: {
       es: "Lo que no se puede deshacer —borrar, pagar, enviar— necesita que una persona lo vea antes, no después.",
       en: "What cannot be undone — deleting, paying, sending — needs a person to see it before, not after.",
@@ -266,7 +266,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El agente puede ejecutar acciones que no se deshacen.", en: "The agent can perform actions that cannot be undone." }],
   },
   "PR-AG-HERR-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 5,
+    requiere: "herramientas_de_terceros", regla: "tasa-de-fallo/v1", prioridad_base: 5,
     por_que_importa: {
       es: "La respuesta de una herramienta es texto que el agente no escribió. Si la trata como una orden, quien controle esa herramienta controla al agente.",
       en: "A tool's response is text the agent did not write. If it treats that text as an order, whoever controls the tool controls the agent.",
@@ -278,7 +278,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El agente llama herramientas cuyo contenido no controla su operador.", en: "The agent calls tools whose content its operator does not control." }],
   },
   "PR-AG-REG-001": {
-    regla: "revision-registrada/v1", prioridad_base: 3,
+    requiere: "actua_en_nombre", regla: "revision-registrada/v1", prioridad_base: 3,
     por_que_importa: {
       es: "Sin registro no se puede reconstruir qué hizo el agente ni responder por ello ante una auditoría.",
       en: "Without a log, what the agent did cannot be reconstructed or answered for in an audit.",
@@ -290,7 +290,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El agente ejecuta acciones en nombre de una persona o de la organización.", en: "The agent performs actions on behalf of a person or the organization." }],
   },
   "PR-AG-LIM-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 3,
+    requiere: "varios_pasos", regla: "tasa-de-fallo/v1", prioridad_base: 3,
     por_que_importa: {
       es: "Un agente sin límite puede quedarse dando vueltas y consumir sin que nadie lo note.",
       en: "An agent with no limit can keep looping and consuming without anyone noticing.",
@@ -303,7 +303,7 @@ const DETALLE = {
   },
 
   "PR-IA-PINJ-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 5, selector: "probe: latentinjection", detectores: "base.TriggerListDetector",
+    requiere: "contenido_de_terceros", regla: "tasa-de-fallo/v1", prioridad_base: 5, selector: "probe: latentinjection", detectores: "base.TriggerListDetector",
     agregacion: { es: "Falla si falla cualquier detector", en: "Fails if any detector fails" },
     por_que_importa: {
       es: "Un asistente que lee documentos, páginas o correos recibe texto que nadie de la organización escribió. Si lo trata como una orden, quien controle ese texto controla al asistente.",
@@ -319,7 +319,7 @@ const DETALLE = {
     ],
   },
   "PR-IA-ENC-002": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 4, selector: "probe: encoding.InjectHex", detectores: "encoding.DecodeMatch",
+    requiere: "restricciones_de_contenido", regla: "tasa-de-fallo/v1", prioridad_base: 4, selector: "probe: encoding.InjectHex", detectores: "encoding.DecodeMatch",
     agregacion: { es: "Falla si falla el detector", en: "Fails if the detector fails" },
     por_que_importa: {
       es: "Una restricción que solo reconoce texto corriente deja de proteger cuando la misma petición llega escrita de otra forma.",
@@ -332,7 +332,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El asistente tiene restricciones de contenido declaradas.", en: "The assistant has declared content restrictions." }],
   },
   "PR-IA-FUGA-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 3,
+    requiere: "instrucciones_internas", regla: "tasa-de-fallo/v1", prioridad_base: 3,
     por_que_importa: {
       es: "Las instrucciones internas suelen describir reglas de negocio y límites. Quien las conoce sabe dónde están esos límites.",
       en: "Internal instructions usually describe business rules and limits. Whoever knows them knows where those limits are.",
@@ -344,7 +344,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El modelo opera con instrucciones internas que no son públicas.", en: "The model runs with internal instructions that are not public." }],
   },
   "PR-IA-SAL-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 3,
+    requiere: "salida_consumida_por_codigo", regla: "tasa-de-fallo/v1", prioridad_base: 3,
     por_que_importa: {
       es: "La aplicación confía en la forma de la salida. Una salida con otra forma rompe lo que viene después o deja pasar contenido sin validar.",
       en: "The application trusts the shape of the output. An output with another shape breaks what comes next or lets unvalidated content through.",
@@ -356,7 +356,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "Otra parte del sistema consume la salida del modelo sin que una persona la lea.", en: "Another part of the system consumes the model's output without a person reading it." }],
   },
   "PR-IA-DATO-001": {
-    regla: "tasa-de-fallo/v1", prioridad_base: 5,
+    requiere: "datos_personales", regla: "tasa-de-fallo/v1", prioridad_base: 5,
     por_que_importa: {
       es: "Un dato personal que reaparece ante otra persona es una fuga, aunque nadie la haya buscado.",
       en: "Personal data that resurfaces in front of someone else is a leak, even if nobody went looking for it.",
@@ -369,7 +369,7 @@ const DETALLE = {
   },
 
   "PR-MD-CAL-001": {
-    regla: "calibracion-en-banda/v1", prioridad_base: 4,
+    requiere: "decide_por_umbral", regla: "calibracion-en-banda/v1", prioridad_base: 4,
     por_que_importa: {
       es: "Cerca del umbral se toman las decisiones dudosas. Si ahí la probabilidad no dice la verdad, el umbral corta donde no debe.",
       en: "The doubtful decisions are made near the threshold. If the probability is not truthful there, the threshold cuts in the wrong place.",
@@ -381,7 +381,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo decide comparando una probabilidad con un umbral.", en: "The asset decides by comparing a probability with a threshold." }],
   },
   "PR-MD-UMB-001": {
-    regla: "exceso-sobre-reejecucion/v1", prioridad_base: 4,
+    requiere: "texto_de_varias_personas", regla: "exceso-sobre-reejecucion/v1", prioridad_base: 4,
     por_que_importa: {
       es: "Si la forma de escribir un caso basta para cambiar la decisión, la decisión depende de quien redacta y no del caso.",
       en: "If the way a case is written is enough to change the decision, the decision depends on the writer and not on the case.",
@@ -393,7 +393,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El texto que llega al modelo lo redactan personas distintas.", en: "The text that reaches the model is written by different people." }],
   },
   "PR-MD-EST-001": {
-    regla: "exceso-sobre-reejecucion/v1", prioridad_base: 5,
+    requiere: "estado_con_texto_de_terceros", regla: "exceso-sobre-reejecucion/v1", prioridad_base: 5,
     por_que_importa: {
       es: "El estado suele traer texto de fuentes que nadie revisó. Si ese texto mueve la decisión, decide quien lo escribió.",
       en: "The state often carries text from sources nobody reviewed. If that text moves the decision, whoever wrote it decides.",
@@ -405,7 +405,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El modelo recibe un estado con texto de terceros.", en: "The model receives a state that contains third-party text." }],
   },
   "PR-MD-DER-001": {
-    regla: "exceso-sobre-reejecucion/v1", prioridad_base: 3,
+    requiere: "versiones_del_proveedor", regla: "exceso-sobre-reejecucion/v1", prioridad_base: 3,
     por_que_importa: {
       es: "Una versión nueva del modelo puede decidir distinto los mismos casos sin que nada más haya cambiado.",
       en: "A new model version can decide the same cases differently with nothing else having changed.",
@@ -417,7 +417,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El proveedor publica versiones nuevas del modelo.", en: "The provider releases new versions of the model." }],
   },
   "PR-MD-PAR-001": {
-    regla: "exceso-sobre-reejecucion/v1", prioridad_base: 4,
+    requiere: "casos_bilingues", regla: "exceso-sobre-reejecucion/v1", prioridad_base: 4,
     por_que_importa: {
       es: "Un clasificador que acierta menos en un idioma trata distinto a las personas según el idioma en que escriben.",
       en: "A classifier that is less accurate in one language treats people differently depending on the language they write in.",
@@ -429,7 +429,7 @@ const DETALLE = {
     aplicabilidad: [{ es: "El activo recibe casos en español y en inglés.", en: "The asset receives cases in Spanish and in English." }],
   },
   "PR-MD-VAL-001": {
-    regla: "revision-registrada/v1", prioridad_base: 4,
+    requiere: "decisiones_de_alto_impacto", regla: "revision-registrada/v1", prioridad_base: 4,
     por_que_importa: {
       es: "Una decisión con el formato correcto pasa todas las validaciones automáticas aunque esté equivocada.",
       en: "A decision in the right format passes every automatic validation even when it is wrong.",
@@ -458,4 +458,18 @@ export function fichaDe(id) {
   return { ...prueba, ...detalle, resultado_esperado: conK(detalle.resultado_esperado) };
 }
 
-export const INSTANTANEA = { version: "2026.10.0" };
+export const ENTORNOS = {
+  portatil: { es: "Portátil", en: "Laptop" },
+  contenedor: { es: "Contenedor local", en: "Local container" },
+  ninguno: { es: "Sin herramienta que instalar", en: "No tool to install" },
+};
+
+// Instantáneas del catálogo: todo plan cita una. La primera es la vigente. `pruebas` de las anteriores
+// es el conteo de entonces; el de la vigente se calcula.
+export const INSTANTANEAS = [
+  { version: "2026.10.0", fecha: "2026-10-01", cambio: { es: "Entran dos pruebas de modelo de decisión: paridad entre español e inglés y válido pero equivocado.", en: "Two decision-model tests come in: Spanish and English parity, and valid but wrong." } },
+  { version: "2026.09.0", fecha: "2026-09-01", pruebas: 19, cambio: { es: "OWASP LLM Top 10 pasa de la versión 1.1 a la 2025, con su mapa de equivalencias.", en: "OWASP LLM Top 10 moves from version 1.1 to 2025, with its equivalence map." } },
+  { version: "2026.08.0", fecha: "2026-08-03", pruebas: 15, cambio: { es: "Primera instantánea: software, agente y modelo generativo.", en: "First snapshot: software, agent and generative model." } },
+];
+
+export const INSTANTANEA = { version: INSTANTANEAS[0].version };

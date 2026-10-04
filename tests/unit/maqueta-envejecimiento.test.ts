@@ -132,7 +132,8 @@ describe("maqueta: matriz de envejecimiento", () => {
             : "evidencia_antigua";
       expect(control.getAttribute("data-control-estado"), `${pagina} @ ${fecha}: estado del control`).toBe(esperado);
     }
-  });
+    // Cada fecha genera y lee TODAS las páginas: el tiempo crece con la maqueta, no es un cuelgue.
+  }, 30_000);
 
   it("la matriz recorrió todos los estados de cada clase presente", () => {
     const completos: Record<string, string[]> = {

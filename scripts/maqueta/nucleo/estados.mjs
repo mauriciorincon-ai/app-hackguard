@@ -34,3 +34,11 @@ export const CONFIRMACION = {
   confirmada: { rol: "acento", simbolo: "firma", nombre: { es: "Confirmada por una persona", en: "Confirmed by a person" } },
   propuesta: { rol: "neutro", simbolo: "vacio", nombre: { es: "Propuesta, sin confirmar", en: "Proposed, not confirmed" } },
 };
+
+// Ciclo de un activo (§ 6.5): no es un juicio, es en qué punto va. Solo el ciclo cerrado es «positivo».
+export const ESTADO_DE_ACTIVO = {
+  registrado: { rol: "neutro", simbolo: "vacio", nombre: { es: "Registrado, sin plan", en: "Registered, no plan" } },
+  con_plan: { rol: "neutro", simbolo: "parcial", nombre: { es: "Con plan", en: "Has a plan" } },
+  en_prueba: { rol: "neutro", simbolo: "reloj", nombre: { es: "En prueba", en: "Under test" } },
+  cerrado_ciclo: { rol: "positivo", simbolo: "ok", nombre: { es: "Ciclo cerrado", en: "Cycle closed" } },
+};

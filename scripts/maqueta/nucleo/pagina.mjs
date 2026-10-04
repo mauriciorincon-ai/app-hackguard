@@ -2,7 +2,10 @@
 // idioma, bloque de SALA (lo que no es producto: nota de la mirada y botoneras), contenido, y al pie la
 // matriz «Qué revisar y qué deberías ver». CSS y JS son archivos relativos de assets/ (cero red, cero
 // scripts en línea: la política de contenido de /diseno/ solo admite 'self').
+import { ACTIVOS, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
 import { atributo, esc, t } from "./html.mjs";
+
+const PRIMER_ACTIVO = Object.keys(ACTIVOS)[0];
 
 const SALTO = { es: "Saltar al contenido", en: "Skip to content" };
 const DESCRIPTOR = { es: "planeador de pruebas y libro de evidencia", en: "security test planner & evidence ledger" };
@@ -34,8 +37,8 @@ export const NAVEGACION = [
     id: "activos",
     nombre: { es: "Activos", en: "Assets" },
     paginas: [
-      { archivo: "activo.html", nombre: { es: "Activo", en: "Asset" } },
-      { archivo: "plan.html", nombre: { es: "Plan", en: "Plan" } },
+      { archivo: archivoDeActivo(PRIMER_ACTIVO), nombre: { es: "Activo", en: "Asset" } },
+      { archivo: archivoDePlan(PRIMER_ACTIVO), nombre: { es: "Plan", en: "Plan" } },
     ],
   },
   {
@@ -71,7 +74,8 @@ function navegacion(seccion, existentes) {
 function subnavegacion(seccion, existentes) {
   const grupo = seccion && NAVEGACION.find((s) => s.id === seccion.id);
   if (!grupo || grupo.paginas.length < 2) return "";
-  const items = grupo.paginas.map((pg) => entrada(pg.archivo, pg.nombre, existentes, pg.archivo === seccion.archivo ? "page" : "")).join("");
+  // Una sección cuyas páginas dependen del objeto abierto (el activo) trae las suyas en `seccion.paginas`.
+  const items = (seccion.paginas ?? grupo.paginas).map((pg) => entrada(pg.archivo, pg.nombre, existentes, pg.archivo === seccion.archivo ? "page" : "")).join("");
   return `<nav class="hg-subnav" ${atributo("aria-label", grupo.nombre)}><ul class="hg-nav">${items}</ul></nav>`;
 }
 
@@ -108,7 +112,7 @@ function matriz(filas) {
   return `<footer class="mq-pie"><div class="mq-pie-caja"><h2>${t(MATRIZ)}</h2><div class="mq-tabla"><table><thead><tr>${cabecera}</tr></thead><tbody>${cuerpo}</tbody></table></div></div></footer>`;
 }
 
-export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion, existentes = [], contenido, revisar }) {
+export function pagina({ titulo, estadoInicial = "datos", sala: datosDeSala, seccion, existentes = [], antes = "", contenido, revisar }) {
   return `<!doctype html>
 <html lang="es" data-lang="es" data-theme="oscuro">
 <head>
@@ -133,7 +137,7 @@ ${navegacion(seccion, existentes)}
 </header>
 ${sala(datosDeSala)}
 <main id="contenido" class="hg-pagina">
-${subnavegacion(seccion, existentes)}
+${antes}${subnavegacion(seccion, existentes)}
 ${contenido}
 </main>
 ${matriz(revisar)}

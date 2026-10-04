@@ -7,10 +7,16 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PRUEBAS, archivoDeFicha } from "./datos/catalogo.mjs";
 import { fechaDeConsulta } from "./nucleo/fecha.mjs";
+import { ACTIVOS, archivoDeActivo, archivoDePlan } from "./datos/mundo.mjs";
+import { activo } from "./paginas/activo.mjs";
 import { catalogo } from "./paginas/catalogo.mjs";
+import { controles } from "./paginas/controles.mjs";
 import { direccion } from "./paginas/direccion.mjs";
 import { index } from "./paginas/index.mjs";
 import { kit } from "./paginas/kit.mjs";
+import { marcos } from "./paginas/marcos.mjs";
+import { plan } from "./paginas/plan.mjs";
+import { propuestas } from "./paginas/propuestas.mjs";
 import { prueba } from "./paginas/prueba.mjs";
 import { MAQUETA, salida } from "./rutas.mjs";
 
@@ -22,6 +28,11 @@ export const PAGINAS = [
   { archivo: "kit.html", generar: kit },
   { archivo: "catalogo.html", generar: catalogo },
   ...PRUEBAS.map((p) => ({ archivo: archivoDeFicha(p.id), generar: prueba(p.id) })),
+  { archivo: "marcos.html", generar: marcos },
+  { archivo: "controles.html", generar: controles },
+  { archivo: "propuestas.html", generar: propuestas },
+  ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDeActivo(id), generar: activo(id) })),
+  ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDePlan(id), generar: plan(id) })),
 ];
 
 const destino = salida();

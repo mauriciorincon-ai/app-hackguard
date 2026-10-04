@@ -64,3 +64,35 @@ export function vistaPorControl({ pruebas, sobres, hallazgos }, consulta, umbral
         : "evidencia_antigua";
   return { filas, estado, cuenta };
 }
+
+/**
+ * Plan de un activo para la maqueta: cruza lo que el perfil declara (`rasgos`) con lo que cada prueba
+ * requiere, respeta el alcance autorizado y los ajustes del operador, y calcula la prioridad final.
+ * Aritmética mínima para que la pantalla sea coherente; NO es el planificador del producto.
+ */
+export function planDe(activo, fichas, prioridad) {
+  if (!activo.alcance || !activo.reglas) return null;
+  const candidatas = fichas.filter((f) => activo.familias.includes(f.familia));
+  const fuera = new Map(activo.alcance.fuera.map((x) => [x.prueba, x.razon]));
+  const quitadas = new Map(activo.plan.ajustes.filter((a) => a.accion === "quitada").map((a) => [a.prueba, a]));
+  const ajustes = prioridad.ajustes.filter((a) => a.si(activo.perfil));
+  const suma = ajustes.reduce((n, a) => n + a.suma, 0);
+
+  const planeadas = [];
+  const excluidas = [];
+  for (const ficha of candidatas) {
+    if (!activo.rasgos.includes(ficha.requiere)) excluidas.push({ ficha, motivo: "perfil" });
+    else if (fuera.has(ficha.id)) excluidas.push({ ficha, motivo: "alcance", razon: fuera.get(ficha.id) });
+    else if (quitadas.has(ficha.id)) excluidas.push({ ficha, motivo: "operador", razon: quitadas.get(ficha.id).justificacion });
+    else planeadas.push({ ficha, prioridad: Math.min(prioridad.techo, ficha.prioridad_base + suma) });
+  }
+  planeadas.sort((a, b) => b.prioridad - a.prioridad || a.ficha.id.localeCompare(b.ficha.id));
+
+  const cobertura = new Map();
+  for (const { ficha } of planeadas) for (const c of ficha.controles) cobertura.set(c, [...(cobertura.get(c) ?? []), ficha.id]);
+  // Controles aplicables sin prueba en el plan: los que solo cubrían pruebas que quedaron excluidas.
+  const descubiertos = [...new Set(excluidas.flatMap((e) => e.ficha.controles))].filter((c) => !cobertura.has(c)).sort();
+  const sinControl = planeadas.filter((p) => p.ficha.controles.length === 0).map((p) => p.ficha.id);
+
+  return { planeadas, excluidas, ajustes, cobertura, descubiertos, sinControl, otras: fichas.length - candidatas.length };
+}

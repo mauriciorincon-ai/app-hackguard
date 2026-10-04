@@ -233,6 +233,61 @@ representativas y del catálogo leídas como imagen, sin fallas.
 **Decisión.** El e2e recorre las 21 fichas completas, no una muestra: los nombres y textos difieren en
 largo y el desborde a 380 px es justo lo que una muestra no vería. Cuesta un minuto.
 
+## Fase 3 — Marcos, controles, propuestas, activo y plan (2026-10-04)
+
+Mirada 2 aprobada («Los abri y los apruebo») y registrada en el README antes de empezar. La aprobación se
+tomó también como visto bueno de fase, igual que en la mirada 1 (se le dijo al usuario).
+
+### Qué se construyó
+
+- **`marcos.html`** (C4): versión de cada marco frente a la que publica su fuente, dos avisos de versión
+  nueva (uno con propuesta en la bandeja, otro sin ella), mapa de equivalencias de OWASP LLM Top 10 de la
+  1.1 a la 2025 con las pruebas que citan cada entrada, e instantáneas del catálogo con huella.
+- **`controles.html`** (C5): las nueve áreas del Anexo A con resumen propio, los controles con las pruebas
+  que les dan evidencia y la deuda de pruebas sin control. Solo identificadores y resúmenes propios.
+- **`propuestas.html`** (C2, C7, C15): siete propuestas (fuente verificada, sin verificar, marcada por el
+  filtro, cambio de versión, herramienta, sobre con veredicto calculado por la regla, texto que mezcla dos
+  pruebas), botones de decisión que funcionan y registro de la corrida del investigador.
+- **`activo-<id>.html`** (C8): tres activos demo ficticios; dueño y proveedor separados, política del
+  proveedor citada en las reglas, perfil, alcance y reglas. El tercero, sin autorización.
+- **`plan-<id>.html`** (C9, C10): planeadas con prioridad y razón, excluidas con sus tres motivos,
+  cobertura por control y paquete de ejecución declarativo. Lo calcula `planDe()` desde el perfil.
+- Datos nuevos: `datos/gobierno.mjs` (equivalencias, áreas, propuestas, corrida) y activos completos en
+  `datos/mundo.mjs`. Núcleo: `libro()`, `fechado()`, `par()`, `enlace()` (nunca un enlace roto a una página
+  que aún no existe), navegación por objeto. Controlador nuevo `decidir`; `estado` ahora sincroniza todos
+  sus botones.
+
+### Decisiones
+
+- **Una página por activo y por plan**, por la lección de la mirada 2: un detalle muestra su propio objeto.
+- **El mapa de equivalencias que se dibuja es 1.1 → 2025**, que conozco entrada por entrada; el aviso de
+  la edición 2026 (E-15) aparece como propuesta pendiente, sin inventar su contenido.
+- **El paquete de ejecución no tiene botón de descarga**: en la maqueta no descargaría nada.
+- **Selectores de herramienta** solo donde el spike los trae (identificadores, no procedimientos).
+
+### Demos en rojo de esta fase (confirmadas con `cmp`)
+
+| # | Gate | Cambio deliberado | Rojo que dio |
+|---|---|---|---|
+| G5 | `maqueta-plan` (nuevo) | la página del activo declara «sin autorización» a un activo cuyo plan lista pruebas | «plan-act-demo-asistente.html: plan emitido sin alcance ni reglas: expected [ 'PR-AG-HERR-001', …(9) ] to deeply equal []» |
+| G6 | pasada de interacción (sonda ampliada: busca un control recorriendo los estados de pantalla) | «Emitir el plan» deja el estado como está | «el control «estado:vacio» no cambió nada al activarlo» |
+
+### Bugs y resoluciones
+
+- **Flecha «→» fuera de la cobertura de las fuentes**: lo nombró el gate de cobertura; ahora es texto.
+- **Identificador de marco más ancho que la columna de folio** (9 px): lo nombró la sonda de columna; el
+  libro de marcos usa folio ancho.
+- **Salto de nivel de título en la bandeja** (h1 → h3): lo nombró axe en el e2e; el título de cada
+  propuesta es de segundo nivel con tamaño menor.
+- **El arnés elegía dos botones «datos»** al existir «Emitir el plan»: ahora se limita a la sala.
+- **La matriz de envejecimiento superó los 5 s por fecha** con 34 páginas: tiene 30 s por fecha. La suite
+  unitaria tarda ~70 s; si sigue creciendo se parte por página.
+
+### Verificación
+
+442 pruebas unitarias (12 archivos) · 554 e2e en local (34 páginas) · capturas de las pantallas nuevas en
+escritorio y teléfono leídas como imagen, sin fallas · 23 controles activados en la bandeja.
+
 ## Desviación del plan
 
 - **`prueba.html` dejó de existir**: el plan nombraba una página `prueba`; ahora hay una por prueba

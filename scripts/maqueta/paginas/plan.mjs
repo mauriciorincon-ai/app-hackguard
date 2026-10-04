@@ -1,0 +1,300 @@
+// plan-<id>.html — pantalla 8 (C9, C10). El plan de un activo: qué pruebas se planean y por qué, cuáles
+// quedan fuera y por qué, qué controles quedarán cubiertos y el paquete de ejecución para correrlas
+// afuera (declarativo: sin cargas). Lo calcula nucleo/calculos.mjs desde el perfil del activo y el
+// catálogo; nada se escribe a mano. Un activo sin autorización no tiene plan: su página lo dice.
+import { CONTROLES, ENTORNOS, HERRAMIENTAS, INSTANTANEA, PRUEBAS, REGLAS, archivoDeFicha, fichaDe } from "../datos/catalogo.mjs";
+import { ACTIVOS, PRIORIDAD, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
+import { huellaDe, planDe } from "../nucleo/calculos.mjs";
+import { dato, enlace, estado, fechado, huella, libro, lista, par, sello } from "../nucleo/componentes.mjs";
+import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
+import { conmutadorDeActivos, seccionDeActivo } from "./activo.mjs";
+
+const MOTIVOS = {
+  perfil: { rol: "neutro", simbolo: "no_aplica", nombre: { es: "No aplica por el perfil", en: "Not applicable to the profile" } },
+  alcance: { rol: "atencion", simbolo: "aviso", nombre: { es: "Fuera del alcance autorizado", en: "Outside the authorized scope" } },
+  operador: { rol: "acento", simbolo: "firma", nombre: { es: "Quitada por el operador", en: "Removed by the operator" } },
+};
+const SIN_PRUEBA = { rol: "atencion", simbolo: "aviso", nombre: { es: "Sin prueba en este plan", en: "No test in this plan" } };
+const nombreDe = (h) => (typeof h.nombre === "string" ? neutro(h.nombre) : t(h.nombre));
+
+export const plan = (id) => ({ consulta, umbrales, existentes }) => {
+  const a = ACTIVOS[id];
+  const fichas = PRUEBAS.map((p) => fichaDe(p.id));
+  const calculado = planDe(a, fichas, PRIORIDAD);
+  const ficha = (f) => enlace(archivoDeFicha(f.id), t(f.nombre), existentes);
+  const base = {
+    titulo: { es: `HackGuard · plan · ${a.nombre.es}`, en: `HackGuard · plan · ${a.nombre.en}` },
+    seccion: seccionDeActivo(id, archivoDePlan(id)),
+    existentes,
+    antes: conmutadorDeActivos(id, archivoDePlan, existentes),
+  };
+
+  // ---- Activo sin autorización: no hay plan que mostrar, y la página dice por qué y qué hacer.
+  if (!calculado) {
+    const contenido = `<div data-plan-de="${id}">
+<div class="hg-encabezado">
+<div>
+<h1>${t({ es: "Plan de pruebas", en: "Test plan" })}</h1>
+<p class="hg-entrada">${tHtml({ es: "{a} todavía no puede recibir plan.", en: "{a} cannot receive a plan yet." }, { a: t(a.nombre) })}</p>
+</div>
+</div>
+<div class="hg-avisos">${sello(
+      { rol: "falla", simbolo: "falla", nombre: { es: "Sin autorización no hay plan", en: "No authorization, no plan" } },
+      `<p>${tHtml(
+        {
+          es: "Falta el alcance autorizado y las reglas de enfrentamiento. Decláralos en {a} y vuelve: el plan se calcula solo.",
+          en: "The authorized scope and the rules of engagement are missing. Declare them in {a} and come back: the plan is computed automatically.",
+        },
+        { a: enlace(archivoDeActivo(id), t({ es: "la página del activo", en: "the asset's page" }), existentes) },
+      )}</p>`,
+    )}</div>
+</div>`;
+    return pagina({
+      ...base,
+      sala: {
+        nota: { es: "Mirada 3. El plan de un activo sin autorización: no existe, y la página lo explica.", en: "Review 3. The plan of an asset with no authorization: it does not exist, and the page explains why." },
+      },
+      contenido,
+      revisar: [
+        {
+          donde: { es: "Sello rojo", en: "Red seal" },
+          hacer: { es: "Léelo y pulsa el enlace", en: "Read it and press the link" },
+          ver: { es: "Dice qué falta y lleva a la página del activo, donde se declara", en: "It says what is missing and leads to the asset's page, where it is declared" },
+        },
+      ],
+    });
+  }
+
+  const { planeadas, excluidas, ajustes, cobertura, descubiertos, sinControl, otras } = calculado;
+  const huellaDelPlan = huellaDe({ plan: a.plan.id, activo: id, instantanea: INSTANTANEA.version, pruebas: planeadas.map((p) => p.ficha.id).join(",") });
+  const ajuste = ajustes.length ? ajustes.map((x) => `+${x.suma} ${x.razon.es}`).join(", ") : "";
+  const ajusteEn = ajustes.length ? ajustes.map((x) => `+${x.suma} ${x.razon.en}`).join(", ") : "";
+
+  const filasPlaneadas = planeadas.map(({ ficha: f, prioridad }) => {
+    const h = HERRAMIENTAS[f.herramienta];
+    return [
+      `<p>${dato(f.id)}</p>`,
+      `<p>${ficha(f)}</p><p>${t(f.resultado_esperado)}</p><p class="hg-menor">${t({ es: "Aplica porque:", en: "Applies because:" })} ${t(f.aplicabilidad[0])}</p>`,
+      `<p><span class="hg-cifra-menor" data-neutro>${prioridad}</span> <span class="hg-menor">${t({ es: "de 5", en: "of 5" })}</span></p><p class="hg-menor">${t(
+        ajustes.length ? { es: `Base ${f.prioridad_base}, ${ajuste}`, en: `Base ${f.prioridad_base}, ${ajusteEn}` } : { es: `Base ${f.prioridad_base}, sin ajustes`, en: `Base ${f.prioridad_base}, no adjustments` },
+      )}</p>`,
+      `<p>${nombreDe(h)}</p><p class="hg-menor">${t(ENTORNOS[h.entorno])}${f.k ? ` · ${neutro(`k = ${f.k}`)}` : ""}</p><p>${fechado(f.verificada, consulta, umbrales)}</p>`,
+      f.controles.length ? f.controles.map((c) => `<p>${dato(c)}</p>`).join("") : `<p class="hg-menor">${t({ es: "Sin control asignado", en: "No control assigned" })}</p>`,
+    ];
+  });
+
+  const filasExcluidas = excluidas.map(({ ficha: f, motivo, razon }) => [
+    `<p>${dato(f.id)}</p>`,
+    `<p>${ficha(f)}</p>`,
+    `<p>${estado(MOTIVOS[motivo])}</p><p class="hg-menor">${
+      motivo === "perfil" ? `${t({ es: "El perfil no declara esta condición:", en: "The profile does not declare this condition:" })} ${t(f.aplicabilidad[0])}` : t(razon)
+    }</p>`,
+  ]);
+
+  const controles = [...new Set([...cobertura.keys(), ...descubiertos])].sort();
+  const filasCobertura = controles.map((c) => {
+    const pruebas = cobertura.get(c) ?? [];
+    return [
+      `<p>${dato(c)}</p>`,
+      `<p>${t(CONTROLES[c])}</p>`,
+      pruebas.length
+        ? `<p>${pruebas.map((p) => enlace(archivoDeFicha(p), dato(p), existentes)).join(" · ")}</p>`
+        : `<p>${estado(SIN_PRUEBA)}</p><p class="hg-menor">${t({ es: "Las pruebas que lo cubrían quedaron fuera de este plan.", en: "The tests that covered it were left out of this plan." })}</p>`,
+    ];
+  });
+
+  // Paquete de ejecución: una entrada por herramienta, con lo que cada una necesita para correr afuera.
+  const porHerramienta = new Map();
+  for (const { ficha: f } of planeadas) porHerramienta.set(f.herramienta, [...(porHerramienta.get(f.herramienta) ?? []), f]);
+  const paquete = [...porHerramienta.entries()]
+    .map(([clave, suyas]) => {
+      const h = HERRAMIENTAS[clave];
+      const lineas = suyas
+        .map((f) => {
+          const regla = REGLAS[f.regla];
+          const partes = [dato(f.id)];
+          if (f.selector) partes.push(dato(f.selector));
+          if (f.k) partes.push(dato(`k = ${f.k}`));
+          if (regla.cota) partes.push(`<span class="hg-menor">${t({ es: "umbral de fallida: 100 por mil", en: "failure threshold: 100 per thousand" })}</span>`);
+          return `<li>${partes.join(" · ")}</li>`;
+        })
+        .join("");
+      return `<h3 class="hg-titulo-3">${nombreDe(h)}</h3>
+<dl class="hg-ficha">
+${h.version_minima ? par({ es: "Versión mínima", en: "Minimum version" }, dato(h.version_minima)) : ""}
+${par({ es: "Dónde corre", en: "Where it runs" }, t(ENTORNOS[h.entorno]))}
+${par({ es: "Cómo vuelve el resultado", en: "How the result comes back" }, t(h.adaptador ? { es: "Por su adaptador", en: "Through its adapter" } : { es: "Texto pegado o carga manual", en: "Pasted text or manual entry" }))}
+${par({ es: "Pruebas", en: "Tests" }, `<ul class="hg-lista hg-lista-datos">${lineas}</ul>`)}
+</dl>`;
+    })
+    .join("\n");
+
+  const contenido = `<div data-si="datos" data-plan-de="${id}">
+<div class="hg-encabezado">
+<div>
+<p>${dato(a.plan.id)}</p>
+<h1>${t({ es: "Plan de pruebas", en: "Test plan" })}</h1>
+<p class="hg-entrada">${tHtml(
+    {
+      es: "{a}: las pruebas que le aplican según su perfil, dentro de lo que su dueño autorizó.",
+      en: "{a}: the tests that apply given its profile, within what its owner authorized.",
+    },
+    { a: t(a.nombre) },
+  )}</p>
+</div>
+<dl class="hg-ficha">
+${par({ es: "Activo", en: "Asset" }, `${enlace(archivoDeActivo(id), dato(id), existentes)}`)}
+${par({ es: "Catálogo", en: "Catalog" }, `${t({ es: "Instantánea", en: "Snapshot" })} ${dato(INSTANTANEA.version)}`)}
+${par({ es: "Emitido", en: "Issued" }, dato(a.plan.fecha))}
+${par({ es: "Autorización", en: "Authorization" }, estado({ rol: "positivo", simbolo: "ok", nombre: { es: "Alcance y reglas declarados", en: "Scope and rules declared" } }))}
+${par({ es: "Huella", en: "Fingerprint" }, huella(huellaDelPlan))}
+</dl>
+</div>
+
+<ul class="hg-cifras" ${atributo("aria-label", { es: "Resumen del plan", en: "Plan summary" })}>
+<li><span class="hg-cifra" data-neutro>${planeadas.length}</span><span>${t({ es: "pruebas planeadas", en: "planned tests" })}</span></li>
+<li><span class="hg-cifra" data-neutro>${excluidas.length}</span><span>${t({ es: "excluidas, con su razón", en: "excluded, with a reason" })}</span></li>
+<li><span class="hg-cifra" data-neutro>${cobertura.size}</span>${estado({ rol: "positivo", simbolo: "ok", nombre: { es: "controles con prueba", en: "controls with a test" } })}</li>
+<li><span class="hg-cifra" data-neutro>${descubiertos.length}</span>${estado({ ...SIN_PRUEBA, nombre: { es: "controles sin prueba", en: "controls with no test" } })}</li>
+</ul>
+
+<section class="hg-seccion" aria-labelledby="planeadas">
+<h2 id="planeadas">${t({ es: "Pruebas planeadas", en: "Planned tests" })}</h2>
+<p class="hg-intro">${t({
+    es: "De mayor a menor prioridad. La prioridad final es la base de la prueba más lo que el perfil del activo le suma.",
+    en: "From highest to lowest priority. The final priority is the test's base plus what the asset's profile adds.",
+  })}</p>
+${libro(
+  [
+    { es: "Prueba", en: "Test" },
+    { es: "Qué se espera y por qué aplica", en: "What is expected and why it applies" },
+    { es: "Prioridad", en: "Priority" },
+    { es: "Herramienta y entorno", en: "Tool and environment" },
+    { es: "Controles", en: "Controls" },
+  ],
+  filasPlaneadas,
+  { atributos: (i) => `data-planeada="${planeadas[i].ficha.id}"` },
+)}
+</section>
+
+<section class="hg-seccion" aria-labelledby="excluidas">
+<h2 id="excluidas">${t({ es: "Excluidas, con su razón", en: "Excluded, with a reason" })}</h2>
+<p class="hg-intro">${tHtml(
+    {
+      es: "Ninguna prueba de las familias del activo desaparece sin explicación. Las {n} pruebas de otras familias no se consideran.",
+      en: "No test from the asset's families disappears without an explanation. The {n} tests from other families are not considered.",
+    },
+    { n: neutro(String(otras)) },
+  )}</p>
+${libro(
+  [
+    { es: "Prueba", en: "Test" },
+    { es: "Nombre", en: "Name" },
+    { es: "Por qué queda fuera", en: "Why it is left out" },
+  ],
+  filasExcluidas,
+  { atributos: (i) => `data-excluida="${excluidas[i].ficha.id}" data-motivo="${excluidas[i].motivo}"` },
+)}
+</section>
+
+<section class="hg-seccion" aria-labelledby="cobertura">
+<h2 id="cobertura">${t({ es: "Cobertura esperada por control", en: "Expected coverage by control" })}</h2>
+<p class="hg-intro">${tHtml(
+    {
+      es: "Qué controles tendrán evidencia cuando el plan se ejecute. {n} pruebas del plan no dan evidencia a ningún control.",
+      en: "Which controls will have evidence once the plan runs. {n} tests in the plan give evidence to no control.",
+    },
+    { n: neutro(String(sinControl.length)) },
+  )}</p>
+${libro(
+  [
+    { es: "Control", en: "Control" },
+    { es: "Qué exige, con palabras propias", en: "What it requires, in our own words" },
+    { es: "Pruebas del plan", en: "Tests in the plan" },
+  ],
+  filasCobertura,
+)}
+</section>
+
+<section class="hg-seccion" aria-labelledby="paquete">
+<h2 id="paquete">${t({ es: "Paquete de ejecución", en: "Execution package" })}</h2>
+<p class="hg-intro">${t({
+    es: "Lo que necesitas para correr las pruebas afuera, con tus herramientas. Es declarativo: dice qué correr y con qué límites, y no trae ninguna carga.",
+    en: "What you need to run the tests outside, with your tools. It is declarative: it says what to run and within which limits, and carries no payload.",
+  })}</p>
+${paquete}
+<h3 class="hg-titulo-3">${t({ es: "Alcance y límites", en: "Scope and limits" })}</h3>
+<dl class="hg-ficha">
+${par({ es: "Cuándo", en: "When" }, `<p>${t(a.alcance.ventana)}</p>`)}
+${par({ es: "Límites de carga", en: "Load limits" }, `<p>${t(a.alcance.limites)}</p>`)}
+${par({ es: "Reglas de enfrentamiento", en: "Rules of engagement" }, lista(a.reglas))}
+</dl>
+</section>
+</div>
+
+<div class="hg-aviso" data-si="vacio">
+<h2>${t({ es: "Este activo todavía no tiene plan", en: "This asset has no plan yet" })}</h2>
+<p>${t({
+    es: "Ya tiene alcance y reglas, así que se puede planear. El plan cruza su perfil con el catálogo vigente; el mismo perfil y la misma instantánea dan siempre el mismo plan.",
+    en: "It already has a scope and rules, so it can be planned. The plan matches its profile against the current catalog; the same profile and the same snapshot always give the same plan.",
+  })}</p>
+<button type="button" class="hg-boton" data-controlador="estado" data-valor="datos">${t({ es: "Emitir el plan", en: "Issue the plan" })}</button>
+</div>
+
+<div class="hg-aviso" data-si="carga">
+<h2>${t({ es: "Planeando", en: "Planning" })}</h2>
+<p class="hg-menor">${t({ es: "Se cruza el perfil del activo con cada prueba del catálogo.", en: "The asset's profile is matched against each catalog test." })}</p>
+<div class="hg-esqueleto" aria-hidden="true"><span></span><span></span><span></span></div>
+</div>
+
+<div class="hg-aviso" data-si="error">
+<h2>${t({ es: "El plan no se pudo emitir", en: "The plan could not be issued" })}</h2>
+${sello(
+  { rol: "falla", simbolo: "falla", nombre: { es: "La instantánea del catálogo no coincide con su huella", en: "The catalog snapshot does not match its fingerprint" } },
+  `<p>${t({
+    es: "Algún archivo del catálogo cambió sin guardar una instantánea nueva. Un plan sobre un catálogo que no se puede identificar no sería reproducible: guarda la instantánea y vuelve a planear.",
+    en: "Some catalog file changed without a new snapshot being saved. A plan on a catalog that cannot be identified would not be reproducible: save the snapshot and plan again.",
+  })}</p>`,
+)}
+</div>`;
+
+  return pagina({
+    ...base,
+    sala: {
+      nota: {
+        es: "Mirada 3. El plan de un activo. La fórmula de prioridad es ilustrativa; la definitiva se fija en el sprint del planificador.",
+        en: "Review 3. An asset's plan. The priority formula is illustrative; the final one is set in the planner's sprint.",
+      },
+      grupos: [barraDeEstados()],
+    },
+    contenido,
+    revisar: [
+      {
+        donde: { es: "1. Pruebas planeadas", en: "1. Planned tests" },
+        hacer: { es: "Lee una fila completa", en: "Read one full row" },
+        ver: { es: "Dice qué se espera, por qué aplica, con qué prioridad y con qué herramienta", en: "It says what is expected, why it applies, at what priority and with which tool" },
+      },
+      {
+        donde: { es: "2. Excluidas", en: "2. Excluded" },
+        hacer: { es: "Compara las razones", en: "Compare the reasons" },
+        ver: { es: "Se distinguen tres motivos: no aplica, fuera de alcance y quitada por el operador", en: "Three reasons are told apart: not applicable, out of scope and removed by the operator" },
+      },
+      {
+        donde: { es: "3. Cobertura por control", en: "3. Coverage by control" },
+        hacer: { es: "Busca un control sin prueba", en: "Find a control with no test" },
+        ver: { es: "Se ve como un aviso, con la explicación al lado", en: "It shows as a notice, with the explanation next to it" },
+      },
+      {
+        donde: { es: "4. Paquete de ejecución", en: "4. Execution package" },
+        hacer: { es: "Léelo buscando instrucciones de ataque", en: "Read it looking for attack instructions" },
+        ver: { es: "No hay: solo herramienta, versión, selector, repeticiones y límites", en: "There are none: only tool, version, selector, repetitions and limits" },
+      },
+      {
+        donde: { es: "Botón «Vacío» de la sala", en: "The room's “Empty” button" },
+        hacer: { es: "Púlsalo y luego «Emitir el plan»", en: "Press it and then “Issue the plan”" },
+        ver: { es: "El estado vacío dice qué hacer y el botón lleva al plan", en: "The empty state says what to do and the button leads to the plan" },
+      },
+    ],
+  });
+};

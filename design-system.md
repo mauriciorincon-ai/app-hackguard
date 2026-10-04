@@ -137,6 +137,10 @@ envejece. Una deuda («sin control asignado») es atención, no falla.
 | Botón | Borde de `--linea-fuerte`, sin relleno. Activo: borde y base azules, negrita |
 | Cadena de cierre | Hallazgo → corrección → re-prueba → cierre; horizontal en escritorio, vertical en teléfono; lo pendiente en línea punteada |
 | Aviso de pantalla | Vacío, carga y error con título propio y qué hacer. El error nombra cada falla |
+| Libro de tres, cuatro o cinco columnas | El mismo libro con menos columnas (`hg-cols-3`, `hg-cols-4`); `hg-folio-ancho` cuando el identificador es largo. En teléfono siempre igual: folio y descripción arriba, el resto de dos en dos |
+| Conmutador de objeto | Fila de enlaces con borde que dice cuál objeto está abierto (un activo). Va encima de la subnavegación, porque las páginas de debajo son de ese objeto. El abierto lleva base azul y negrita |
+| Propuesta | Fila de bandeja: a la izquierda quién propone, qué y con qué fuente; a la derecha, tras una barra, los botones de decisión y la frase que dice qué pasa con cada una. Al decidir, la barra pasa a tinta azul (la mano humana) |
+| Revelado | Contenido que abre el botón que lo precede (la plantilla para activos propios) |
 | Avisos de un objeto | Bajo el encabezado de una ficha, un sello por cada cosa que su lector debe saber antes de leerla (verificación vencida, toca revisarla, marcada para revisión). Del más grave al más leve; dice el umbral y qué hacer, no repite la cifra que ya está en la ficha. Un objeto sin nada que avisar no lleva sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
@@ -175,10 +179,13 @@ animación de entrada.
 ## 11. Pendiente
 
 Formularios de entrada (miradas 3 y 4) · tabla de prioridad de acción de la escala de IA (mirada 4) ·
-hoja de impresión del informe (mirada 5).
+hoja de impresión del informe (mirada 5) · llevar al `kit.html` los componentes de la mirada 3
+(conmutador de objeto, propuesta, revelado): hoy solo se ven en sus pantallas (se paga en la mirada 5).
 
 ## 12. Registro de cambios
 
+- **0.3.0** — Mirada 3: libros de tres y cuatro columnas, conmutador de objeto, propuesta con sus botones
+  de decisión, revelado y título menor.
 - **0.2.1** — Avisos de un objeto (sellos bajo el encabezado de la ficha). Regla de maqueta: una pantalla
   de detalle muestra siempre el estado de su propio objeto.
 - **0.2.0** — Dirección «acta» (elegida por el usuario en la mirada 1): Source Serif 4 en títulos, regla

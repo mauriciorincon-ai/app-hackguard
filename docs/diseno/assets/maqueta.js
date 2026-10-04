@@ -125,9 +125,31 @@
     control.setAttribute("aria-pressed", String(control.getAttribute("aria-pressed") !== "true"));
   });
 
+  // Estado de la pantalla. Lo cambia la botonera de sala, y también un botón de la propia pantalla
+  // («Emitir el plan» en el estado vacío): por eso se marcan TODOS los botones de estado que llevan
+  // aria-pressed, no solo los hermanos del que se pulsó.
   registrar("estado", function (control) {
-    document.body.setAttribute("data-estado", control.getAttribute("data-valor"));
-    marcarGrupo(control, "estado");
+    var valor = control.getAttribute("data-valor");
+    document.body.setAttribute("data-estado", valor);
+    var botones = document.querySelectorAll('[data-controlador="estado"][aria-pressed]');
+    for (var i = 0; i < botones.length; i++) {
+      botones[i].setAttribute("aria-pressed", String(botones[i].getAttribute("data-valor") === valor));
+    }
+  });
+
+  // Decisión sobre una propuesta: aprobar, rechazar o separar. Pulsar la misma otra vez la deshace.
+  // La propuesta guarda la decisión en data-decision (la hoja muestra su consecuencia) y la cifra
+  // «por decidir» se recalcula. En la maqueta nada se escribe.
+  registrar("decidir", function (control) {
+    var propuesta = control.closest("[data-propuesta]");
+    if (!propuesta) return;
+    var deshace = control.getAttribute("aria-pressed") === "true";
+    var grupo = propuesta.querySelectorAll('[data-controlador="decidir"]');
+    for (var i = 0; i < grupo.length; i++) grupo[i].setAttribute("aria-pressed", String(!deshace && grupo[i] === control));
+    propuesta.setAttribute("data-decision", deshace ? "" : control.getAttribute("data-valor"));
+    var pendientes = document.querySelectorAll('[data-propuesta][data-decision=""]').length;
+    var cifras = document.querySelectorAll("[data-cuenta-pendientes]");
+    for (var j = 0; j < cifras.length; j++) cifras[j].textContent = String(pendientes);
   });
 
   var tema = leer("tema");

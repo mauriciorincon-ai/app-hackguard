@@ -109,6 +109,12 @@ export async function pasadaDeInteraccion(page) {
   // que nunca llegó a verse (falla: nadie puede usarlo).
   for (const i of pendientes) {
     const control = controles.nth(i);
+    // Un control puede vivir bajo OTRO estado de la pantalla (el botón del estado vacío): se le busca
+    // recorriendo los estados de la sala antes de darlo por inalcanzable.
+    if (!(await control.isVisible())) {
+      const estados = page.locator('.mq-sala [data-controlador="estado"]');
+      for (let e = 0; e < (await estados.count()) && !(await control.isVisible()); e += 1) await estados.nth(e).click();
+    }
     if (!(await control.isVisible())) {
       fallas.push(`control que nunca se hizo visible: ${await control.getAttribute("data-controlador")}`);
       continue;

@@ -149,9 +149,9 @@ try {
             [tema, idioma],
           );
           const hoja = await abrir(contexto, pagina);
-          const estados = await hoja.locator('[data-controlador="estado"]').evaluateAll((els) => els.map((el) => el.getAttribute("data-valor")));
+          const estados = await hoja.locator('.mq-sala [data-controlador="estado"]').evaluateAll((els) => els.map((el) => el.getAttribute("data-valor")));
           for (const estado of estados.length ? estados : [null]) {
-            if (estado) await hoja.locator(`[data-controlador="estado"][data-valor="${estado}"]`).click();
+            if (estado) await hoja.locator(`.mq-sala [data-controlador="estado"][data-valor="${estado}"]`).click();
             const etiqueta = [nombre, tema, idioma, ancho, estado].filter(Boolean).join("__");
             for (const d of await desbordes(hoja)) registro.fallas.push(`${etiqueta}: desborde → ${d}`);
             await capturar(hoja, etiqueta);

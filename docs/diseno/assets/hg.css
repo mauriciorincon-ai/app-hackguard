@@ -517,6 +517,23 @@ a {
     gap: var(--e-5);
   }
 
+  /* Libros de tres y cuatro columnas (el de cinco es el de base). */
+  .hg-libro-cab.hg-cols-4,
+  .hg-cols-4 > li > .hg-fila {
+    grid-template-columns: 9.5rem minmax(0, 5fr) minmax(0, 4fr) minmax(0, 4fr);
+  }
+
+  /* Folio ancho: identificadores largos (los de un marco) no caben en la columna de folio de base. */
+  .hg-libro-cab.hg-folio-ancho,
+  .hg-folio-ancho > li > .hg-fila {
+    grid-template-columns: 11rem minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 3fr);
+  }
+
+  .hg-libro-cab.hg-cols-3,
+  .hg-cols-3 > li > .hg-fila {
+    grid-template-columns: 9.5rem minmax(0, 6fr) minmax(0, 5fr);
+  }
+
   .hg-fila > .hg-celda:nth-child(-n + 2) {
     grid-column: auto;
     margin-top: 0;
@@ -941,4 +958,165 @@ a {
 
 .hg-espaciado {
   margin-top: var(--e-5);
+}
+
+/* Título de un elemento de lista que, por jerarquía, es de segundo nivel (una propuesta de la bandeja). */
+.hg-titulo-menor {
+  font-size: var(--t-medio);
+}
+
+/* ---------- Título de tercer nivel dentro de una sección ---------- */
+
+.hg-titulo-3 {
+  margin-top: var(--e-5);
+}
+
+.hg-titulo-3 + .hg-ficha,
+.hg-titulo-3 + .hg-libro {
+  margin-top: var(--e-3);
+}
+
+/* ---------- Conmutador de objeto: qué activo está abierto ---------- */
+
+.hg-conmutador {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2) var(--e-3);
+  margin-bottom: var(--e-4);
+}
+
+.hg-conmutador ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-conmutador a,
+.hg-conmutador li > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio);
+  color: var(--tinta);
+  font-size: var(--t-menor);
+  text-decoration: none;
+}
+
+.hg-conmutador a:hover {
+  border-color: var(--tinta);
+}
+
+.hg-conmutador [aria-current="true"] {
+  border-color: var(--acento);
+  box-shadow: inset 0 -3px 0 var(--acento);
+  font-weight: 600;
+}
+
+/* ---------- Dos bloques lado a lado (dueño y proveedor) ---------- */
+
+.hg-dos {
+  display: grid;
+  gap: var(--e-4);
+  margin-top: var(--e-4);
+}
+
+@media (min-width: 960px) {
+  .hg-dos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--e-6);
+    align-items: start;
+  }
+}
+
+/* ---------- Revelado: contenido que abre el botón que lo precede ---------- */
+
+.hg-revelado {
+  display: none;
+  margin-top: var(--e-3);
+}
+
+[data-controlador="alternar"][aria-pressed="true"] + .hg-revelado {
+  display: block;
+}
+
+.hg-seccion > .hg-boton {
+  margin-top: var(--e-3);
+}
+
+/* ---------- Bandeja de propuestas ---------- */
+
+.hg-propuestas {
+  margin: var(--e-4) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--regla) double var(--tinta);
+}
+
+.hg-propuesta {
+  display: grid;
+  gap: var(--e-4);
+  padding: var(--e-5) 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.hg-propuesta > div {
+  min-width: 0;
+}
+
+.hg-propuesta > div > * + * {
+  margin-top: var(--e-2);
+}
+
+.hg-propuesta .hg-ficha,
+.hg-propuesta .hg-sello {
+  margin-top: var(--e-3);
+}
+
+/* La decisión es de una persona: tinta azul al tomarla. */
+.hg-propuesta-decision {
+  padding-left: var(--e-4);
+  border-left: 3px solid var(--linea-fuerte);
+}
+
+.hg-propuesta:not([data-decision=""]) .hg-propuesta-decision {
+  border-left-color: var(--acento);
+}
+
+.hg-propuesta [data-si-decision] {
+  display: none;
+}
+
+.hg-propuesta[data-decision=""] [data-si-decision=""],
+.hg-propuesta[data-decision="aprobar"] [data-si-decision="aprobar"],
+.hg-propuesta[data-decision="rechazar"] [data-si-decision="rechazar"],
+.hg-propuesta[data-decision="separar"] [data-si-decision="separar"] {
+  display: block;
+}
+
+.hg-propuesta:not([data-decision=""]) [data-si-decision] {
+  color: var(--tinta);
+}
+
+@media (min-width: 960px) {
+  .hg-propuesta {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: var(--e-6);
+  }
+}
+
+/* ---------- Cifra dentro de una fila y lista de datos ---------- */
+
+.hg-cifra-menor {
+  font: var(--peso-titulo) var(--t-h2) / 1.1 var(--fuente-titulo);
+}
+
+.hg-lista-datos {
+  padding-left: 0;
+  list-style: none;
 }

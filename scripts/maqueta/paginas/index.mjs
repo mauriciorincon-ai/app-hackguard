@@ -1,6 +1,9 @@
 // index.html: el recorrido de la maqueta. Provisional hasta la mirada 5 (la portada real): por ahora
 // lista las páginas que ya existen, en el orden en que se miran.
 import { archivoDeFicha } from "../datos/catalogo.mjs";
+import { ACTIVOS, archivoDeActivo, archivoDePlan } from "../datos/mundo.mjs";
+
+const ACTIVO = Object.keys(ACTIVOS)[0];
 import { t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
 
@@ -35,6 +38,46 @@ const PAGINAS = [
     que: {
       es: "Mirada 2. Qué verifica, resultado esperado, regla de veredicto, marco y controles. Cada prueba del catálogo tiene la suya.",
       en: "Review 2. What it verifies, expected result, verdict rule, framework and controls. Every test in the catalog has its own.",
+    },
+  },
+  {
+    archivo: "marcos.html",
+    nombre: { es: "Marcos y versiones", en: "Frameworks and versions" },
+    que: {
+      es: "Mirada 3. Versión vigente de cada marco, aviso de versión nueva y mapa de equivalencias.",
+      en: "Review 3. Each framework's current version, new-version notice and equivalence map.",
+    },
+  },
+  {
+    archivo: "controles.html",
+    nombre: { es: "Controles", en: "Controls" },
+    que: {
+      es: "Mirada 3. Las áreas del Anexo A, las pruebas que dan evidencia a cada control y las que no dan a ninguno.",
+      en: "Review 3. The Annex A areas, the tests that give evidence to each control and those that give to none.",
+    },
+  },
+  {
+    archivo: "propuestas.html",
+    nombre: { es: "Bandeja de propuestas", en: "Proposal inbox" },
+    que: {
+      es: "Mirada 3. Lo que proponen el investigador y el extractor, para aprobar, rechazar o separar.",
+      en: "Review 3. What the researcher and the extractor propose, to approve, reject or split.",
+    },
+  },
+  {
+    archivo: archivoDeActivo(ACTIVO),
+    nombre: { es: "Activo", en: "Asset" },
+    que: {
+      es: "Mirada 3. Dueño y proveedor, perfil, alcance autorizado y reglas de enfrentamiento. Tres activos demo.",
+      en: "Review 3. Owner and provider, profile, authorized scope and rules of engagement. Three demo assets.",
+    },
+  },
+  {
+    archivo: archivoDePlan(ACTIVO),
+    nombre: { es: "Plan", en: "Plan" },
+    que: {
+      es: "Mirada 3. Pruebas planeadas y excluidas con su razón, cobertura por control y paquete de ejecución.",
+      en: "Review 3. Planned and excluded tests with their reasons, coverage by control and execution package.",
     },
   },
 ];
