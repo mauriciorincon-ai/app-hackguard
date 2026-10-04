@@ -15,7 +15,6 @@ import { direccion } from "./paginas/direccion.mjs";
 import { evidencia } from "./paginas/evidencia.mjs";
 import { hallazgo } from "./paginas/hallazgo.mjs";
 import { index } from "./paginas/index.mjs";
-import { DIRECCIONES, interfaz } from "./paginas/interfaz.mjs";
 import { kit } from "./paginas/kit.mjs";
 import { marcos } from "./paginas/marcos.mjs";
 import { plan } from "./paginas/plan.mjs";
@@ -37,7 +36,6 @@ export const PAGINAS = [
   ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDeActivo(id), generar: activo(id) })),
   ...Object.keys(ACTIVOS).map((id) => ({ archivo: archivoDePlan(id), generar: plan(id) })),
   { archivo: "evidencia.html", generar: evidencia },
-  ...Object.entries(DIRECCIONES).map(([dir, d]) => ({ archivo: d.archivo, generar: interfaz(dir) })),
   ...HALLAZGOS.map((h) => ({ archivo: archivoDeHallazgo(h.id), generar: hallazgo(h.id) })),
 ];
 

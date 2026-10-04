@@ -3,7 +3,6 @@ Subconjunto latino, variables en peso, tomadas de los paquetes @fontsource-varia
 
 - Atkinson Hyperlegible Next — Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors (github.com/googlefonts/atkinson-hyperlegible-next)
 - Atkinson Hyperlegible Mono — Copyright 2020-2024 The Atkinson Hyperlegible Mono Project Authors (github.com/googlefonts/atkinson-hyperlegible-next-mono)
-- Source Serif 4 — Copyright Google Inc. / Adobe (github.com/adobe-fonts/source-serif)
 
 -----------------------------------------------------------
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007

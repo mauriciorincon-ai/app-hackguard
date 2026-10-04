@@ -11,7 +11,7 @@ import { huellaDe, plazo } from "../nucleo/calculos.mjs";
 import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, enlace, estado, firma, huella, par, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, neutro, t, tHtml } from "../nucleo/html.mjs";
-import { barraDeEstados, paginaDeApp } from "../nucleo/pagina.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 
 const sobreDe = (id) => SOBRES.find((s) => s.id === id);
@@ -404,7 +404,7 @@ ${aviso(
   ),
 )}`;
 
-  return paginaDeApp({
+  return pagina({
     titulo: { es: `HackGuard · ${h.id}`, en: `HackGuard · ${h.id}` },
     seccion: { id: "evidencia", archivo: archivoDeHallazgo(ORDEN_DE_HALLAZGOS[0]) },
     migas: [t({ es: "Evidencia", en: "Evidence" }), t({ es: "Hallazgos", en: "Findings" }), dato(h.id)],
@@ -412,8 +412,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, primer tramo: la interfaz nueva sobre un hallazgo. Hay cuatro, uno por cada momento del ciclo; la escala de IA es ilustrativa y provisional.",
-        en: "Review 4-ter, first stretch: the new interface on a finding. There are four, one for each moment of the life cycle; the AI scale is illustrative and provisional.",
+        es: "Mirada 4-ter: un hallazgo con la interfaz nueva (aprobado en el primer tramo). Hay cuatro, uno por cada momento del ciclo; la escala de IA es ilustrativa y provisional.",
+        en: "Review 4-ter: a finding with the new interface (approved in the first stretch). There are four, one for each moment of the life cycle; the AI scale is illustrative and provisional.",
       },
       grupos: [barraDeEstados()],
     },

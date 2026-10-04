@@ -1,7 +1,7 @@
 // Gate de COBERTURA DE FUENTE: todo carácter que la maqueta muestra existe en el subconjunto latino
 // de las fuentes cargadas. Un carácter fuera (una flecha, un ≤, un ✓) se pintaría con la fuente de
 // respaldo del sistema, distinta en cada dispositivo — por eso las marcas y los conectores son trazos
-// SVG. El rango es el `unicode-range` del subconjunto latino de @fontsource (las tres familias
+// SVG. El rango es el `unicode-range` del subconjunto latino de @fontsource (las dos familias
 // declaran el mismo).
 import { describe, expect, it } from "vitest";
 import { documentoDe, leerPagina, paginasDe, RAIZ_MAQUETA } from "./lib/maqueta";

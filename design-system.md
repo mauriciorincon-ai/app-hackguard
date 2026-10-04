@@ -1,6 +1,6 @@
 ---
-version: 0.5.0
-estado: dirección «consola» aprobada sobre tres pantallas tipo (mirada 4-ter, tramo 1) · en aplicación al resto (tramo 2) · se sella en G-Diseño
+version: 0.6.0
+estado: dirección «consola» aprobada en tres pantallas tipo (mirada 4-ter, tramo 1) y aplicada a todas (tramo 2, en mirada) · se sella en G-Diseño
 ---
 
 # HackGuard — sistema de diseño
@@ -8,11 +8,9 @@ estado: dirección «consola» aprobada sobre tres pantallas tipo (mirada 4-ter,
 Fuente de verdad visual de la app. La maqueta de `docs/diseno/` lo demuestra; el producto lo obedece. Se
 extiende por ADR, nunca se contradice en silencio.
 
-> **En transición (mirada 4-ter).** La dirección «acta» de la mirada 1 (un documento: una columna,
-> secciones numeradas, serifa y regla doble) fue rechazada en la mirada 4: no era la interfaz de una
-> aplicación. Este documento describe la dirección que la reemplaza. Su hoja es
-> `docs/diseno/assets/app.css`; `assets/hg.css` es la hoja anterior y solo la cargan las pantallas aún
-> sin rehacer. Al terminar la mirada 4-ter queda una sola hoja y este aviso se retira.
+La dirección «acta» de la mirada 1 (un documento: una columna, secciones numeradas, serifa y regla doble)
+fue rechazada en la mirada 4: no era la interfaz de una aplicación. Este documento describe la que la
+reemplazó. Su hoja es `docs/diseno/assets/app.css`.
 
 ## 1. Personalidad
 
@@ -29,8 +27,10 @@ Cinco ideas sostienen todo lo demás:
    paneles con borde. La pantalla ocupa el ancho; no hay columna centrada ni media pantalla vacía.
 2. **Tabla densa antes que lista de fichas.** Lo que se repite va en filas de tabla; lo que se decide
    sobre una fila, a su derecha.
-3. **A la derecha se actúa.** En toda pantalla de detalle hay un carril con lo que una persona puede
-   hacer y lo que falta para hacerlo. La acción no se busca al final de la página.
+3. **A la derecha se actúa.** En las pantallas de detalle hay un carril con lo que una persona puede
+   hacer y lo que falta para hacerlo (cuando hay algo que hacer) y las propiedades del objeto. La acción
+   no se busca al final de la página. Las listas van a todo el ancho: sus tablas no caben junto a un
+   carril.
 4. **Lo que tiene ciclo de vida muestra su recorrido.** Un lote y un hallazgo dicen en qué paso van, qué
    ya se hizo y qué falta, antes que cualquier otro dato.
 5. **La tinta azul es la mano humana, y la forma va antes que el color.** El único acento se reserva a
@@ -88,7 +88,7 @@ defecto es el oscuro; el claro se diseña y se mira con el mismo cuidado.
 
 Las dos son OFL y viven en el repo (`docs/diseno/assets/fuentes/`, subconjunto latino). Atkinson
 distingue cada carácter del vecino (0/O, 1/l/I), que es lo que una huella o un identificador necesitan.
-La serifa de la dirección anterior (Source Serif 4) se retira con la hoja anterior.
+La serifa de la dirección anterior (Source Serif 4) se retiró con su hoja.
 
 - **Escala:** 12 (rótulos) · 13 (datos y texto secundario) · **14 (texto de interfaz)** · 16 (título de
   panel destacado) · 22 (título de página y cifras).
@@ -110,7 +110,9 @@ La serifa de la dirección anterior (Source Serif 4) se retira con la hoja anter
 - Tres anchos: bajo 860 px las tablas pasan a tarjetas; bajo 1100 px la navegación baja a una barra fija
   al pie y las páginas de la sección van como pestañas; desde 1240 px el carril va a la derecha (antes,
   debajo del contenido).
-- A 380 px nada se desplaza en horizontal y nada se sale de su columna; en escritorio tampoco.
+- A 380 px nada se desplaza en horizontal y nada se sale de su columna; en escritorio tampoco. Ningún
+  panel, tarjeta ni caja deja salir su contenido por el borde (una tabla que no cabe junto al carril se
+  monta encima de él sin salirse de la ventana: la sonda de desbordes lo mide).
 - Objetivo táctil: 36 px con ratón, 44 px bajo 1100 px.
 
 ## 5. Estados: símbolo + texto + color
@@ -164,7 +166,11 @@ Lo que no es noticia no lleva chip. Una deuda («sin control asignado») es aten
 | Firma | Marca de firma + «Confirmada» + fecha, en tinta azul |
 | Barra de proporción | Parte sobre total (fallas sobre repeticiones), bajo su cifra |
 | Matriz de prioridad | Tabla de impacto por frecuencia con el nivel en cada casilla (barras + texto) y la casilla del objeto en un marco de tinta. En teléfono la tabla se reorganiza y las anclas bajan a una leyenda |
-| Contraste | Dos cajas enfrentadas: lo que se esperaba y lo que se obtuvo |
+| Contraste | Dos cajas enfrentadas: lo que se esperaba y lo que se obtuvo; dueño y proveedor; lo que se puede probar y lo que no |
+| Rejilla de cajas | Varias piezas iguales dentro de un panel (una por herramienta del paquete de ejecución, un aviso por marco) |
+| Propuesta | Un panel por propuesta de la bandeja: quién propone, qué y su fuente arriba; al pie, sobre superficie hundida, los botones de decisión y qué ocurre con cada uno. Decidida, el pie lleva la barra de tinta azul. Sin botón primario: hay varias a la vista |
+| Texto destacado | La frase que no puede perderse (el resultado esperado de una prueba): 16 px, peso 600, barra a la izquierda en `--linea-fuerte` |
+| Vocabulario | Los estados de cada familia en columnas, cada uno en línea (kit y vista por control) |
 | Estado de pantalla | Vacío, carga y error: caja centrada con marca, título y qué hacer. El error nombra cada falla en un sello |
 
 **Los cinco estados de cada pantalla** (vacío, carga, error, con datos, sin resultados cuando hay
@@ -204,12 +210,16 @@ animación de entrada.
 
 ## 11. Pendiente
 
-Segundo tramo de la mirada 4-ter: rehacer con esta dirección fichas de prueba, marcos, controles,
-propuestas, activo, plan, `kit.html`, `direccion.html` e `index.html`, y retirar `hg.css`, la serifa y las
-tres páginas de exploración (`interfaz-a/b/c`). Mirada 5: hoja de impresión del informe.
+Mirada 5: brecha, vista por control (completa), informe con su hoja de impresión, tablero y la portada
+real (`index`).
 
 ## 12. Registro de cambios
 
+- **0.6.0** — Mirada 4-ter, tramo 2: todas las pantallas con la dirección «consola» (fichas de prueba,
+  marcos, controles, propuestas, activo, plan, kit, vista por control e índice). Componentes nuevos:
+  propuesta, rejilla de cajas, texto destacado, vocabulario; el kit dibuja ya todos los de § 6. Las
+  listas van a todo el ancho; las cabeceras de tabla pueden partirse entre palabras. Se retiran
+  `hg.css`, la serifa y las tres páginas de exploración.
 - **0.5.0** — Dirección «consola» (elegida en la mirada 4-bis: la A, con el recorrido y el carril de la
   B). Armazón de aplicación, tabla, carril de acción, recorrido, chip, propiedades, selector de objeto,
   botón primario, tarjetas en teléfono. Se retiran: serifa, regla doble, secciones numeradas, libro de

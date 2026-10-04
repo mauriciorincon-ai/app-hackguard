@@ -45,7 +45,7 @@ describe("maqueta: autorización antes que plan", () => {
     expect(planeadas.filter((p) => excluidas.includes(p)), `${archivo}: prueba planeada y excluida a la vez`).toEqual([]);
     expect(new Set(planeadas).size).toBe(planeadas.length);
 
-    const cifras = [...doc.querySelectorAll(".hg-cifras .hg-cifra")].map((c) => Number(c.textContent));
+    const cifras = [...doc.querySelectorAll(".hg-resumen .hg-cifra")].map((c) => Number(c.textContent));
     expect(cifras[0], `${archivo}: la cifra de planeadas no es el número de filas`).toBe(planeadas.length);
     expect(cifras[1], `${archivo}: la cifra de excluidas no es el número de filas`).toBe(excluidas.length);
 

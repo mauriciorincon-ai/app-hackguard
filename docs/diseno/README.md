@@ -21,8 +21,6 @@ Al pie de cada página: la matriz «Qué revisar y qué deberías ver». Sobre l
 | `*.html` | Páginas de la maqueta | **Salida** de `scripts/maqueta/` (`pnpm maqueta`). No se editan a mano: el gate de deriva lo impide |
 | `assets/tokens.css`, `assets/tokens.json` | Tokens de color en ambos temas | **Salida** de `scripts/paleta/` (`pnpm tokens`) |
 | `assets/app.css` | Hoja del sistema de diseño, dirección «consola»: lo que el producto obedecerá | A mano |
-| `assets/hg.css` | Hoja de la dirección anterior («acta», rechazada). Solo la cargan las pantallas aún sin rehacer; se retira al terminar la mirada 4-ter | A mano |
-| `assets/interfaz.css` | Hoja de exploración de la mirada 4-bis (las tres direcciones); se retira con ellas | A mano |
 | `assets/maqueta.css`, `assets/maqueta.js` | Hoja y controlador de **sala**: lo que no es producto (nota de la mirada, botoneras, matriz del pie) | A mano |
 | `assets/fuentes/` | Tipografías OFL, subconjunto latino, con su licencia | Copiadas de `@fontsource-variable` 5.3.0 |
 | `README.md` | Este registro | A mano; no se publica (la copia al build excluye los `.md`) |
@@ -78,7 +76,8 @@ Aprobadas con el plan de la etapa (2026-10-03):
     caso con su recorrido y un carril «para confirmar»; `interfaz-c` «Tablero»: navegación superior,
     cifras grandes y los lotes lado a lado). Comparten datos, paleta y vocabulario de estados; difieren
     en navegación, disposición, densidad y componentes. Viven en `assets/interfaz.css`, aparte de la hoja
-    del sistema: la elegida pasa a `hg.css` y a `design-system.md`, y las otras dos se borran.
+    del sistema: la elegida pasó a `app.css` y a `design-system.md`; las tres páginas y su hoja se
+    retiraron en la 4-ter (tramo 2).
 8. **Dirección «acta»** (mirada 1; **rechazada en la mirada 4**): títulos en Source Serif 4, texto en
    Atkinson Hyperlegible Next, datos en Atkinson Hyperlegible Mono; regla doble, esquinas rectas y
    secciones numeradas. La reemplaza la decisión 16.
@@ -89,8 +88,12 @@ Aprobadas con el plan de la etapa (2026-10-03):
     y tablas como tarjetas. Se conservan la paleta, el vocabulario de estados y el contenido aprobado.
 17. **La mirada 4-ter se hace en dos tramos.** Primero el sistema y tres pantallas tipo — una lista
     (`catalogo`), un detalle (`hallazgo-<id>`) y un formulario (`evidencia`) — y, con su aprobación, el
-    resto. Mientras tanto conviven dos hojas (`app.css` y `hg.css`) y las pantallas sin rehacer conservan
-    el aspecto anterior; la franja de sala lo dice en cada página.
+    resto. Mientras duró el tramo 1 convivieron dos hojas; desde el tramo 2 queda solo `app.css`.
+19. **Las listas van a todo el ancho; el carril es de las pantallas de detalle.** El plan se diseñó al
+    principio con carril y su tabla de pruebas no cabía: se montaba encima del carril sin salirse de la
+    ventana. La sonda de desbordes mide ahora que ningún panel deje salir su contenido.
+20. **La página `direccion`** (mirada 1) se conserva rehecha como adelanto de la vista por control; la
+    página `control` de la mirada 5 la reemplaza.
 18. **En la carga de evidencia cada sobre se puede seleccionar**: el identificador de la fila es un botón
     y el carril muestra su regla, sus huellas y su hallazgo. La ficha del lote va bajo la tabla.
 
@@ -120,7 +123,7 @@ y su veredicto viaja al gate del MVP. Cambiar número, agrupación u orden exige
 | 4 | `evidencia` · `hallazgo-<id>` | **función aprobada, diseño rechazado** (2026-10-04, ronda 1): reabre la dirección visual |
 | 4-bis | `interfaz-a` · `interfaz-b` · `interfaz-c` — la misma pantalla (carga de evidencia) en tres direcciones de INTERFAZ: estructura, navegación, densidad y componentes, no solo tipografía | **elegida: A «Consola» con el recorrido y el carril de B** (2026-10-04, ronda 1) — elegida sobre la recomendación; **sin evidencia de que el usuario abriera las tres** (ver registro) |
 | 4-ter · tramo 1 | `design-system.md` 0.5.0 + `assets/app.css` + `catalogo` · `hallazgo-<id>` · `evidencia` con la dirección «consola» | **aprobada** (2026-10-04, ronda 1) — con ella queda vista y confirmada la dirección de la 4-bis |
-| 4-ter · tramo 2 | `prueba-<id>` · `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` · `kit` · `direccion` · `index` con la misma dirección; se retiran `hg.css`, `interfaz.css` e `interfaz-a/b/c` | en construcción |
+| 4-ter · tramo 2 | `prueba-<id>` · `marcos` · `controles` · `propuestas` · `activo-<id>` · `plan-<id>` · `kit` · `direccion` · `index` con la misma dirección; se retiran `hg.css`, `interfaz.css` e `interfaz-a/b/c` | **en mirada** (ronda 1, 2026-10-04) |
 | 5 | `brecha` · `control` · `informe` · `tablero` · `index` | pendiente |
 | 6 | G-Diseño: recorrido completo en el preview, teléfono y escritorio | pendiente |
 
@@ -173,7 +176,7 @@ Cada gate se vio fallar antes de entrar al repo; el detalle (qué se rompió, qu
 | Plan | `tests/unit/maqueta-plan.test.ts` | Un plan con pruebas para un activo sin alcance ni reglas; una prueba planeada y excluida a la vez; cifras que no son las filas; una exclusión sin razón |
 | Evidencia | `tests/unit/maqueta-evidencia.test.ts` | Una fallida fuera de la revisión obligatoria de su lote; un hallazgo mostrado como cerrado sin su cadena completa; una tabla de prioridad cuya casilla no es la severidad declarada |
 | Servidores | `tests/unit/servidor-config.test.ts` | Que Vercel y `serve` sirvan la maqueta distinto |
-| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad o dato que pisa la columna vecina, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
+| Servida | `tests/e2e/maqueta-servida.spec.ts` | 404 o estilos perdidos al entrar por `/diseno`; control que no hace nada; desborde a 380 px; palabra partida por la mitad, dato que pisa la columna vecina o contenido que se sale de su panel, en teléfono **y en escritorio**; violaciones de accesibilidad en cualquier tema e idioma; movimiento con «reducir movimiento» |
 
 ## Tokens de reusables consumidos
 

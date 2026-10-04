@@ -42,7 +42,6 @@ test("un enlace relativo del índice abre otra página con estilos y con sus fue
   });
   expect(caras).toContain("Atkinson Hyperlegible Next");
   expect(caras).toContain("Atkinson Hyperlegible Mono");
-  expect(caras).toContain("Source Serif 4");
 });
 
 for (const pagina of PAGINAS) {

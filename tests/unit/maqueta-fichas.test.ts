@@ -47,8 +47,8 @@ describe.each([
       expect(cuerpo?.getAttribute("data-ficha-de"), `${fila.id} abre la ficha de otra prueba (${fila.destino})`).toBe(fila.id);
       expect(cuerpo?.getAttribute("data-ficha-vigencia"), `${fila.id}: la fila y la ficha no dicen la misma vigencia`).toBe(fila.vigencia);
 
-      // La vigencia se LEE en el encabezado: el primer dato fechado de la ficha es el de la prueba.
-      const leida = ficha.querySelector(".hg-encabezado [data-fechado='vigencia']");
+      // La vigencia se LEE en la cabecera: el primer dato fechado de la cabecera es el de la prueba.
+      const leida = ficha.querySelector(".hg-cabecera [data-fechado='vigencia']");
       expect(leida?.getAttribute("data-estado-fechado"), `${fila.id}: el encabezado de la ficha dice otra vigencia`).toBe(fila.vigencia);
 
       // Y el aviso: lo lleva quien no está vigente, y solo quien no lo está.

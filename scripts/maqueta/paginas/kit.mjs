@@ -1,169 +1,259 @@
-// kit.html — la hoja de componentes del sistema de diseño (mirada 2): cada token y cada componente
-// canon de design-system.md, dibujado con la misma hoja que usan las pantallas.
+// kit.html — la hoja de componentes del sistema de diseño, dirección «consola» (mirada 4-ter): cada
+// token y cada componente canon de design-system.md § 6, dibujado con la misma hoja que usan las
+// pantallas. Es la referencia de fidelidad del primer sprint con UI; no es una pantalla del producto.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { celda, dato, estado, firma, huella, sello } from "../nucleo/componentes.mjs";
-import { CONFIRMACION, ESTADO_DE_CONTROL, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";
+import { ESCALA_IA } from "../datos/mundo.mjs";
+import { chip, dato, estado, firma, huella, lista, par, proporcion, sello } from "../nucleo/componentes.mjs";
+import { CONFIRMACION, ESTADO_DE_CONTROL, ESTADO_DE_HALLAZGO, SEVERIDAD, VEREDICTO, VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, neutro, t } from "../nucleo/html.mjs";
 import { pagina } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 import { MAQUETA } from "../rutas.mjs";
 
 const USO = {
-  fondo: { es: "Fondo de la página", en: "Page background" },
-  superficie: { es: "Campos y menús", en: "Fields and menus" },
-  "superficie-2": { es: "Hundido, hover", en: "Inset, hover" },
+  fondo: { es: "Fondo de la aplicación", en: "Application background" },
+  superficie: { es: "Paneles y barra lateral", en: "Panels and sidebar" },
+  "superficie-2": { es: "Cabecera de tabla, hover", en: "Table header, hover" },
   linea: { es: "Separador de filas", en: "Row separator" },
   "linea-fuerte": { es: "Borde de controles", en: "Control border" },
   tinta: { es: "Texto principal", en: "Main text" },
   "tinta-2": { es: "Texto secundario", en: "Secondary text" },
   acento: { es: "La mano humana", en: "The human hand" },
-  "acento-tinte": { es: "Fondo de lo firmado", en: "Signed background" },
+  "acento-tinte": { es: "Fondo de lo elegido", en: "Chosen background" },
   positivo: { es: "Bien", en: "Good" },
-  "positivo-tinte": { es: "Sello positivo", en: "Positive seal" },
+  "positivo-tinte": { es: "Chip positivo", en: "Positive chip" },
   atencion: { es: "Atención", en: "Attention" },
-  "atencion-tinte": { es: "Sello de atención", en: "Attention seal" },
+  "atencion-tinte": { es: "Chip de atención", en: "Attention chip" },
   falla: { es: "Falla", en: "Failure" },
-  "falla-tinte": { es: "Sello de falla", en: "Failure seal" },
+  "falla-tinte": { es: "Chip de falla", en: "Failure chip" },
   neutro: { es: "Ausente", en: "Absent" },
-  "neutro-tinte": { es: "Sello neutro", en: "Neutral seal" },
+  "neutro-tinte": { es: "Chip neutro", en: "Neutral chip" },
 };
 
-const seccion = (id, titulo, cuerpo, entrada) =>
-  `<section class="hg-seccion" aria-labelledby="${id}"><h2 id="${id}">${t(titulo)}</h2>${entrada ? `<p class="hg-intro">${t(entrada)}</p>` : ""}${cuerpo}</section>`;
+const panel = (id, titulo, cuerpo, nota) =>
+  `<section class="hg-panel" aria-labelledby="${id}"><div class="hg-panel-cab"><h2 id="${id}">${t(titulo)}</h2>${nota ? `<p class="hg-menor">${t(nota)}</p>` : ""}</div>${cuerpo}</section>`;
 
 const grupo = (titulo, mapa) =>
-  `<div><h3>${t(titulo)}</h3><ul>${Object.values(mapa)
+  `<div><p class="hg-rotulo">${t(titulo)}</p><ul>${Object.values(mapa)
     .map((e) => `<li>${estado(e)}</li>`)
     .join("")}</ul></div>`;
 
-export function kit({ existentes }) {
+export function kit({ consulta, existentes }) {
   const tokens = JSON.parse(readFileSync(join(MAQUETA, "assets", "tokens.json"), "utf8"));
 
-  const colores = `<ul class="hg-muestras">${Object.keys(tokens.oscuro)
+  const colores = `<div class="hg-panel-cuerpo"><ul class="hg-muestras">${Object.keys(tokens.oscuro)
     .map(
       (nombre) =>
-        `<li><span class="hg-muestra-color" style="background: var(--${nombre})"></span><p>${dato(`--${nombre}`)}</p><p class="hg-menor">${t(USO[nombre])}</p><p class="hg-menor"><span data-si-tema="oscuro">${neutro(tokens.oscuro[nombre])}</span><span data-si-tema="claro">${neutro(tokens.claro[nombre])}</span></p></li>`,
+        `<li><span class="hg-muestra-color" style="background: var(--${nombre})"></span>${dato(`--${nombre}`)}<span class="hg-menor">${t(USO[nombre])}</span><span class="hg-menor"><span data-si-tema="oscuro">${neutro(tokens.oscuro[nombre])}</span><span data-si-tema="claro">${neutro(tokens.claro[nombre])}</span></span></li>`,
     )
-    .join("")}</ul>`;
+    .join("")}</ul></div>`;
 
-  const tipografia = `<div class="hg-escala">
-<div><p class="hg-menor">${t({ es: "Título 1 · Source Serif 4 · 600", en: "Heading 1 · Source Serif 4 · 600" })}</p><p class="hg-cifra">${t({ es: "Un hallazgo es evidencia de que un control falla", en: "A finding is evidence that a control fails" })}</p></div>
-<div><p class="hg-menor">${t({ es: "Título 2 · Source Serif 4 · 600", en: "Heading 2 · Source Serif 4 · 600" })}</p><h3 class="hg-titulo-2">${t({ es: "Pruebas que cubren este control", en: "Tests that cover this control" })}</h3></div>
-<div><p class="hg-menor">${t({ es: "Texto · Atkinson Hyperlegible Next · 16", en: "Body · Atkinson Hyperlegible Next · 16" })}</p><p>${t({
+  const tipografia = `<div class="hg-panel-cuerpo"><div class="hg-escala">
+<div><p class="hg-rotulo">${t({ es: "Título de página y cifras · 22 · 700", en: "Page title and figures · 22 · 700" })}</p><p class="hg-cifra">${t({ es: "Un hallazgo es evidencia de que un control falla", en: "A finding is evidence that a control fails" })}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Título destacado · 16 · 700", en: "Highlighted title · 16 · 700" })}</p><p class="hg-tarjeta-nombre">${t({ es: "Restricciones ante otra codificación", en: "Restrictions under another encoding" })}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Texto de interfaz · 14 · Atkinson Hyperlegible Next", en: "Interface text · 14 · Atkinson Hyperlegible Next" })}</p><p>${t({
     es: "El asistente no obedece instrucciones que llegan dentro del contenido que procesa.",
     en: "The assistant does not follow instructions that arrive inside the content it processes.",
   })}</p></div>
-<div><p class="hg-menor">${t({ es: "Texto menor · 15, el mínimo de lectura", en: "Small text · 15, the reading minimum" })}</p><p class="hg-menor">${t({ es: "Verificada hace 12 días", en: "Verified 12 days ago" })}</p></div>
-<div><p class="hg-menor">${t({ es: "Dato · Atkinson Hyperlegible Mono · 15", en: "Data · Atkinson Hyperlegible Mono · 15" })}</p><p>${dato("PR-IA-PINJ-001 · 2026-09-24 · O0 Il1")}</p></div>
-</div>`;
+<div><p class="hg-rotulo">${t({ es: "Texto secundario · 13", en: "Secondary text · 13" })}</p><p class="hg-menor">${t({ es: "Verificada hace 12 días", en: "Verified 12 days ago" })}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Rótulo · 12 · versalitas", en: "Label · 12 · small caps" })}</p><p class="hg-rotulo">${t({ es: "Para confirmar", en: "To confirm" })}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Dato · 13 · Atkinson Hyperlegible Mono", en: "Data · 13 · Atkinson Hyperlegible Mono" })}</p><p>${dato("PR-IA-PINJ-001 · 2026-09-24 · O0 Il1")}</p></div>
+</div></div>`;
 
-  const estados = `<div class="hg-vocabulario">
+  const estados = `<div class="hg-panel-cuerpo">
+<p class="hg-menor">${t({
+    es: "Tres pesos. En línea, lo que no es noticia. En chip, lo que decide algo en una fila o una cabecera. En sello, lo que hay que saber antes de seguir.",
+    en: "Three weights. Inline, what is not news. As a chip, what decides something in a row or a header. As a seal, what must be known before going on.",
+  })}</p>
+<p class="hg-chips">${chip(VEREDICTO.fallida)}${chip(VEREDICTO.no_ejecutada)}${chip(VIGENCIA.por_revisar)}${chip(ESTADO_DE_HALLAZGO.corregido)}${chip(SEVERIDAD.alto)}${chip(CONFIRMACION.confirmada)}</p>
+${sello(ESTADO_DE_CONTROL.con_fallas, `<p>${t({ es: "Sello: título, qué pasa y qué hacer. Uno por pantalla, como mucho dos.", en: "Seal: title, what is happening and what to do. One per screen, two at most." })}</p>`)}
+</div>
+<div class="hg-panel-cuerpo">
+<div class="hg-vocabulario">
 ${grupo({ es: "Veredicto", en: "Verdict" }, VEREDICTO)}
 ${grupo({ es: "Estado de un control", en: "Control status" }, ESTADO_DE_CONTROL)}
 ${grupo({ es: "Severidad", en: "Severity" }, SEVERIDAD)}
 ${grupo({ es: "Vigencia y confirmación", en: "Freshness and confirmation" }, { ...VIGENCIA, ...CONFIRMACION })}
 </div>
-<div class="hg-pila hg-espaciado">
-${sello(ESTADO_DE_CONTROL.con_evidencia_vigente, `<p>${t({ es: "Sello positivo: tinte, borde sólido, barra lateral y visto en círculo relleno.", en: "Positive seal: tint, solid border, side bar and a check in a filled circle." })}</p>`)}
-${sello(ESTADO_DE_CONTROL.evidencia_antigua, `<p>${t({ es: "Sello de atención.", en: "Attention seal." })}</p>`)}
-${sello(ESTADO_DE_CONTROL.con_fallas, `<p>${t({ es: "Sello de falla.", en: "Failure seal." })}</p>`)}
-${sello(ESTADO_DE_CONTROL.sin_evidencia, `<p>${t({ es: "Sello neutro.", en: "Neutral seal." })}</p>`)}
 </div>`;
 
-  const controles = `<div class="hg-pila">
+  const controles = `<div class="hg-panel-cuerpo">
 <div class="hg-grupo" role="group" ${atributo("aria-label", { es: "Botones de muestra", en: "Sample buttons" })}>
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="alternar" aria-pressed="false">${t({ es: "Primario", en: "Primary" })}</button>
 <button type="button" class="hg-boton" data-controlador="alternar" aria-pressed="false">${t({ es: "Botón", en: "Button" })}</button>
-<button type="button" class="hg-boton" data-controlador="alternar" aria-pressed="true">${t({ es: "Botón activo", en: "Active button" })}</button>
+<button type="button" class="hg-boton" data-controlador="alternar" aria-pressed="true">${t({ es: "Elegido", en: "Chosen" })}</button>
+<button type="button" class="hg-boton hg-boton-discreto" data-controlador="alternar" aria-pressed="false">${t({ es: "Discreto", en: "Quiet" })}</button>
 </div>
-<div class="hg-campos">
-<label class="hg-campo" for="muestra-lista"><span>${t({ es: "Lista", en: "List" })}</span><select id="muestra-lista" data-controlador="filtro" data-campo="muestra"><option value="" data-es="Todos" data-en="All">Todos</option><option value="vigente" data-es="Vigente" data-en="Current">Vigente</option><option value="vencido" data-es="Vencido" data-en="Overdue">Vencido</option></select></label>
+<div class="hg-grupo" role="group" ${atributo("aria-label", { es: "Filtros de muestra", en: "Sample filters" })}>
+<button type="button" class="hg-boton hg-filtro" data-controlador="alternar" aria-pressed="true">${t({ es: "Todas", en: "All" })}</button>
+<button type="button" class="hg-boton hg-filtro" data-controlador="alternar" aria-pressed="false">${t({ es: "Software", en: "Software" })}</button>
+<button type="button" class="hg-boton hg-filtro" data-controlador="alternar" aria-pressed="false">${t({ es: "Agente", en: "Agent" })}</button>
+</div>
+<div class="hg-formulario hg-formulario-doble" data-formulario>
+<div class="hg-campo"><label for="muestra-lista">${t({ es: "Lista", en: "List" })}</label><select id="muestra-lista" data-controlador="filtro" data-campo="muestra"><option value="" data-es="Todos" data-en="All">Todos</option><option value="vigente" data-es="Vigente" data-en="Current">Vigente</option><option value="vencido" data-es="Vencido" data-en="Overdue">Vencido</option></select></div>
+<div class="hg-campo" data-obligatorio data-lleno="false"><label for="muestra-campo">${t({ es: "Campo (escribe algo: se marca en azul)", en: "Field (type something: it turns blue)" })}</label><input id="muestra-campo" type="text" autocomplete="off" data-controlador="campo"></div>
 </div>
 <p><a href="catalogo.html">${t({ es: "Un enlace va en tinta azul y subrayado", en: "A link is blue ink and underlined" })}</a></p>
 </div>`;
 
-  const libro = `<ul class="hg-cifras" ${atributo("aria-label", { es: "Cifras de muestra", en: "Sample figures" })}>
-<li><span class="hg-cifra" data-neutro>14</span>${estado(VIGENCIA.vigente)}</li>
-<li><span class="hg-cifra" data-neutro>5</span>${estado(VIGENCIA.por_revisar)}</li>
+  const tabla = `<table class="hg-tabla">
+<caption class="hg-oculto">${t({ es: "Tabla de muestra", en: "Sample table" })}</caption>
+<thead><tr><th scope="col">${t({ es: "Prueba", en: "Test" })}</th><th scope="col">${t({ es: "Qué verifica", en: "What it verifies" })}</th><th scope="col">${t({ es: "Resultado", en: "Result" })}</th><th scope="col">${t({ es: "Veredicto", en: "Verdict" })}</th><th scope="col">${t({ es: "Confirmación", en: "Confirmation" })}</th></tr></thead>
+<tbody>
+<tr><td data-celda="id">${dato("PR-IA-ENC-002")}</td><td><p><a class="hg-enlace-fila" href="catalogo.html">${t({ es: "Restricciones ante otra codificación", en: "Restrictions under another encoding" })}</a></p><p class="hg-menor">${t({ es: "El nombre de la fila abre su objeto.", en: "The row's name opens its object." })}</p></td><td>${proporcion(42, 116)}<p class="hg-menor">${t({ es: "42 de 116 salidas fallaron", en: "42 of 116 outputs failed" })}</p></td><td data-celda="estado">${chip(VEREDICTO.fallida)}</td><td>${huella("sha256:fb24bd33c0ffee0123456789abcdef0123456789abcdef0123456789abc913")}<p>${firma("2026-08-17")}</p></td></tr>
+<tr><td data-celda="id">${dato("PR-MD-PAR-001")}</td><td><p><a class="hg-enlace-fila" href="catalogo.html">${t({ es: "Paridad entre español e inglés", en: "Spanish and English parity" })}</a></p><p class="hg-menor">${t({ es: "Lo que no es noticia va sin recuadro.", en: "What is not news carries no box." })}</p></td><td><p class="hg-menor">${t({ es: "Planeada, sin resultado todavía.", en: "Planned, no result yet." })}</p></td><td data-celda="estado">${estado(VEREDICTO.no_ejecutada)}</td><td><p class="hg-menor">${t({ es: "Nada que firmar todavía.", en: "Nothing to sign yet." })}</p></td></tr>
+</tbody>
+</table>
+<p class="hg-panel-pie">${t({ es: "Bajo 860 px cada fila pasa a tarjeta: identificador y estado arriba, el resto debajo.", en: "Below 860 px each row becomes a card: identifier and status on top, the rest below." })}</p>`;
+
+  const resumen = `<div class="hg-panel-cuerpo"><ul class="hg-resumen" ${atributo("aria-label", { es: "Cifras de muestra", en: "Sample figures" })}>
+<li><span class="hg-cifra" data-neutro>13</span>${estado(VIGENCIA.vigente)}</li>
+<li><span class="hg-cifra" data-neutro>6</span>${estado(VIGENCIA.por_revisar)}</li>
 <li><span class="hg-cifra" data-neutro>2</span>${estado(VIGENCIA.vencido)}</li>
-<li><span class="hg-cifra" data-neutro>7</span>${estado({ rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } })}</li>
-</ul>
-<div class="hg-libro-cab hg-espaciado" aria-hidden="true"><span>${t({ es: "Prueba", en: "Test" })}</span><span>${t({ es: "Qué verifica", en: "What it verifies" })}</span><span>${t({ es: "Resultado", en: "Result" })}</span><span>${t({ es: "Evidencia", en: "Evidence" })}</span><span>${t({ es: "Huella y confirmación", en: "Fingerprint and confirmation" })}</span></div>
-<ul class="hg-libro">
-<li><dl class="hg-fila">
-${celda({ es: "Prueba", en: "Test" }, `<p>${dato("PR-IA-PINJ-001")}</p>`)}
-${celda({ es: "Qué verifica", en: "What it verifies" }, `<p>${t({ es: "El asistente no obedece instrucciones que llegan dentro del contenido que procesa.", en: "The assistant does not follow instructions that arrive inside the content it processes." })}</p>`)}
-${celda({ es: "Resultado", en: "Result" }, `<p>${estado(VEREDICTO.superada)}</p>`)}
-${celda({ es: "Evidencia", en: "Evidence" }, `<p>${dato("SOB-0027")} ${dato("2026-09-24")}</p>`)}
-${celda({ es: "Huella y confirmación", en: "Fingerprint and confirmation" }, `<p>${huella("sha256:4b3d7683a1c0e9f2d5bd")}</p><p>${firma("2026-09-24")}</p>`)}
-</dl></li>
-<li><dl class="hg-fila">
-${celda({ es: "Prueba", en: "Test" }, `<p>${dato("PR-MD-PAR-001")}</p>`)}
-${celda({ es: "Qué verifica", en: "What it verifies" }, `<p>${t({ es: "El clasificador decide lo mismo ante el mismo caso en español y en inglés.", en: "The classifier makes the same decision for the same case in Spanish and in English." })}</p>`)}
-${celda({ es: "Resultado", en: "Result" }, `<p>${estado(VEREDICTO.no_ejecutada)}</p>`)}
-${celda({ es: "Evidencia", en: "Evidence" }, `<p class="hg-menor">${t({ es: "Sin sobre de evidencia.", en: "No evidence envelope." })}</p>`)}
-${celda({ es: "Huella y confirmación", en: "Fingerprint and confirmation" }, `<p class="hg-menor">${t({ es: "Nada que firmar todavía.", en: "Nothing to sign yet." })}</p>`)}
-</dl></li>
-</ul>`;
+<li><span class="hg-cifra" data-neutro>7</span>${estado({ rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control", en: "No control" } })}</li>
+</ul></div>`;
 
-  const ficha = `<dl class="hg-ficha">
-<div><dt>${t({ es: "Regla", en: "Rule" })}</dt><dd>${dato("tasa-de-fallo/v1")}</dd></div>
-<div><dt>${t({ es: "Repeticiones", en: "Repetitions" })}</dt><dd>${dato("k = 20")}</dd></div>
-</dl>
-<p class="hg-destacado">${t({ es: "El texto destacado dice lo único que no puede perderse.", en: "Highlighted text says the one thing that must not be missed." })}</p>`;
-
-  const cadena = `<ol class="hg-cadena hg-espaciado">
-<li class="hg-eslabon es-falla">${SIMBOLO.falla}<span class="hg-eslabon-titulo">${t({ es: "Hallazgo abierto", en: "Finding opened" })}</span><p>${dato("2026-08-18")}</p></li>
-<li class="hg-eslabon es-acento">${SIMBOLO.firma}<span class="hg-eslabon-titulo">${t({ es: "Corrección declarada", en: "Fix declared" })}</span><p>${dato("2026-09-10")}</p></li>
-<li class="hg-eslabon es-positivo">${SIMBOLO.ok}<span class="hg-eslabon-titulo">${t({ es: "Re-prueba superada", en: "Retest passed" })}</span><p>${dato("2026-09-24")}</p></li>
-<li class="hg-eslabon es-pendiente">${SIMBOLO.vacio}<span class="hg-eslabon-titulo">${t({ es: "Sin cerrar", en: "Not closed" })}</span></li>
+  const paso = ({ rol, simbolo, pendiente }, titulo, cuerpo) =>
+    `<li class="hg-eslabon es-${pendiente ? "pendiente" : rol}">${SIMBOLO[pendiente ? "vacio" : simbolo]}<span class="hg-eslabon-titulo">${t(titulo)}</span>${cuerpo ? `<span class="hg-menor">${t(cuerpo)}</span>` : ""}</li>`;
+  const recorrido = `<ol class="hg-cadena hg-cadena-horizontal">
+${paso({ rol: "falla", simbolo: "falla" }, { es: "Hallazgo abierto", en: "Finding opened" }, { es: "Hecho: línea sólida del color del paso.", en: "Done: solid line in the step's color." })}
+${paso({ rol: "acento", simbolo: "firma" }, { es: "Corrección declarada", en: "Fix declared" }, { es: "Lo hizo una persona: tinta azul.", en: "Done by a person: blue ink." })}
+${paso({ pendiente: true }, { es: "Re-prueba pendiente", en: "Retest pending" }, { es: "Lo que falta: línea punteada.", en: "What is missing: dotted line." })}
+${paso({ pendiente: true }, { es: "Sin cerrar", en: "Not closed" })}
 </ol>`;
 
-  const avisos = `<div class="hg-aviso">
-<h3 class="hg-titulo-2">${t({ es: "Todavía no hay nada aquí", en: "Nothing here yet" })}</h3>
-<p>${t({ es: "Un aviso de pantalla dice qué pasa y qué hacer. Vacío, carga y error tienen cada uno el suyo.", en: "A screen notice says what is happening and what to do. Empty, loading and error each have their own." })}</p>
-<div class="hg-esqueleto" aria-hidden="true"><span></span><span></span><span></span></div>
+  const carril = `<div class="hg-panel-cuerpo"><div class="hg-trabajo">
+<div class="hg-pila">
+<dl class="hg-propiedades hg-propiedades-en-columnas">
+${par({ es: "Propiedad", en: "Property" }, `<span>${t({ es: "Rótulo arriba, valor abajo", en: "Label on top, value below" })}</span>`)}
+${par({ es: "Dato", en: "Data" }, dato("tasa-de-fallo/v1"))}
+${par({ es: "Fechado", en: "Dated" }, `${estado(VIGENCIA.vigente)}<span class="hg-menor">${t({ es: "Verificada hace 12 días", en: "Verified 12 days ago" })}</span>`)}
+${par({ es: "Lista", en: "List" }, lista([{ es: "Texto libre", en: "Free text" }, { es: "Archivos adjuntos", en: "Attached files" }]))}
+</dl>
+<div class="hg-contraste">
+<div><p class="hg-rotulo">${t({ es: "Lo que se esperaba", en: "What was expected" })}</p><p>${t({ es: "Contraste: dos cajas enfrentadas.", en: "Contrast: two facing boxes." })}</p></div>
+<div><p class="hg-rotulo">${t({ es: "Lo que se obtuvo", en: "What was obtained" })}</p><p>${chip(VEREDICTO.fallida)}</p></div>
+</div>
+<p class="hg-destacado">${t({ es: "El texto destacado dice lo único que no puede perderse.", en: "Highlighted text says the one thing that must not be missed." })}</p>
+</div>
+<div class="hg-carril">
+<section class="hg-tarjeta hg-tarjeta-accion" data-propuesta="KIT-1" data-decision="" aria-labelledby="kit-accion">
+<h3 class="hg-tarjeta-titulo" id="kit-accion">${t({ es: "Tarjeta de acción", en: "Action card" })}</h3>
+<ul class="hg-pendientes">
+<li class="es-falla">${SIMBOLO.falla}<span>${t({ es: "Qué falta, con su marca.", en: "What is missing, with its mark." })}</span></li>
+<li class="es-acento">${SIMBOLO.firma}<span>${t({ es: "Lo que decide una persona.", en: "What a person decides." })}</span></li>
+</ul>
+<div class="hg-acciones" role="group" ${atributo("aria-label", { es: "Decisión de muestra", en: "Sample decision" })}>
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="decidir" data-valor="aprobar" aria-pressed="false">${t({ es: "Confirmar", en: "Confirm" })}</button>
+<button type="button" class="hg-boton" data-controlador="decidir" data-valor="separar" aria-pressed="false">${t({ es: "Revisar uno por uno", en: "Review one by one" })}</button>
+</div>
+<p class="hg-menor" data-si-decision="">${t({ es: "Antes de decidir: qué falta.", en: "Before deciding: what is missing." })}</p>
+<p class="hg-consecuencia" data-si-decision="aprobar" hidden>${t({ es: "Al decidir: qué ocurre.", en: "On deciding: what happens." })}</p>
+<p class="hg-consecuencia" data-si-decision="separar" hidden>${t({ es: "Cada decisión dice su consecuencia.", en: "Each decision states its consequence." })}</p>
+</section>
+</div>
+</div></div>`;
+
+  const pestanas = `<div class="hg-panel-cuerpo">
+<div class="hg-pila" data-pestanas data-via="uno">
+<div class="hg-pestanas" role="group" ${atributo("aria-label", { es: "Pestañas de muestra", en: "Sample tabs" })}>
+<button type="button" class="hg-pestana" data-controlador="pestana" data-valor="uno" aria-pressed="true">${t({ es: "Primera vía", en: "First route" })}</button>
+<button type="button" class="hg-pestana" data-controlador="pestana" data-valor="dos" aria-pressed="false">${t({ es: "Segunda vía", en: "Second route" })}</button>
+</div>
+<p data-si-via="uno">${t({ es: "Las pestañas eligen un panel de la misma pantalla.", en: "Tabs choose a panel of the same screen." })}</p>
+<p data-si-via="dos" hidden>${t({ es: "Este es el segundo panel.", en: "This is the second panel." })}</p>
+</div>
+<div class="hg-pila" data-pestanas data-via="a">
+<div class="hg-selector" role="group" ${atributo("aria-label", { es: "Selector de muestra", en: "Sample selector" })}>
+<button type="button" class="hg-opcion" data-controlador="pestana" data-valor="a" aria-pressed="true"><span class="hg-opcion-titulo" data-neutro>LOTE-0007</span><span>${t({ es: "Selector de objeto", en: "Object selector" })}</span></button>
+<button type="button" class="hg-opcion" data-controlador="pestana" data-valor="b" aria-pressed="false"><span class="hg-opcion-titulo" data-neutro>LOTE-0008</span><span>${t({ es: "Otro objeto de la serie", en: "Another object in the series" })}</span></button>
+</div>
+<p data-si-via="a">${t({ es: "El selector dice cuál objeto de una serie está abierto.", en: "The selector says which object of a series is open." })}</p>
+<p data-si-via="b" hidden>${t({ es: "Cambia el objeto; la pantalla es la misma.", en: "The object changes; the screen is the same." })}</p>
+</div>
 </div>`;
 
-  const contenido = `<h1>${t({ es: "Kit de componentes", en: "Component kit" })}</h1>
-<p class="hg-entrada">${t({
+  const matriz = `<div class="hg-panel-cuerpo"><div class="hg-matriz">
+<table>
+<caption>${t({ es: "Prioridad de acción: impacto (filas) por frecuencia observada (columnas)", en: "Action priority: impact (rows) by observed frequency (columns)" })}</caption>
+<thead><tr><th scope="col">${t({ es: "Impacto", en: "Impact" })}</th>${ESCALA_IA.facilidad.map((b) => `<th scope="col">${t(b.nombre)}</th>`).join("")}</tr></thead>
+<tbody>
+${[4, 3, 2, 1]
+  .map(
+    (impacto) =>
+      `<tr><th scope="row"><span class="hg-cifra-menor" data-neutro>${impacto}</span></th>${ESCALA_IA.tabla[impacto]
+        .map((n, i) => {
+          const esta = impacto === 3 && i === 2;
+          return `<td${esta ? ' class="es-esta"' : ""}>${estado(SEVERIDAD[n])}${esta ? `<span class="hg-menor">${t({ es: "este objeto", en: "this object" })}</span>` : ""}</td>`;
+        })
+        .join("")}</tr>`,
+  )
+  .join("\n")}
+</tbody>
+</table>
+</div></div>`;
+
+  const avisos = `<div class="hg-panel-cuerpo">
+<div class="hg-aviso es-neutro">${SIMBOLO.vacio}<h3>${t({ es: "Todavía no hay nada aquí", en: "Nothing here yet" })}</h3><p>${t({
+    es: "Un estado de pantalla dice qué pasa y qué hacer. Vacío, carga y error tienen cada uno el suyo.",
+    en: "A screen state says what is happening and what to do. Empty, loading and error each have their own.",
+  })}</p><div class="hg-esqueleto" aria-hidden="true"><span></span><span></span><span></span></div></div>
+</div>`;
+
+  const contenido = `<div class="hg-cabecera">
+<div>
+<h1>${t({ es: "Kit de componentes", en: "Component kit" })}</h1>
+<p class="hg-bajada">${t({
     es: "Cada token y cada componente del sistema de diseño, dibujado con la misma hoja que usan las pantallas.",
     en: "Every token and component of the design system, drawn with the same stylesheet the screens use.",
   })}</p>
-${seccion("color", { es: "Color", en: "Color" }, colores, { es: "Papel y tinta, un solo acento y cuatro papeles de estado. Cambia de tema para ver el otro juego.", en: "Paper and ink, a single accent and four status roles. Switch theme to see the other set." })}
-${seccion("tipografia", { es: "Tipografía", en: "Typography" }, tipografia)}
-${seccion("estados", { es: "Estados", en: "Statuses" }, estados, { es: "Una forma por papel. En línea para las filas; como sello cuando resume un objeto entero.", en: "One shape per role. Inline for rows; as a seal when it sums up a whole object." })}
-${seccion("controles", { es: "Botones, listas y enlaces", en: "Buttons, lists and links" }, controles)}
-${seccion("libro", { es: "Cifras y libro", en: "Figures and ledger" }, libro, { es: "Regla doble arriba, líneas finas entre filas y el identificador en su columna.", en: "Double rule on top, thin lines between rows and the identifier in its own column." })}
-${seccion("ficha", { es: "Ficha y texto destacado", en: "Record sheet and highlighted text" }, ficha)}
-${seccion("cadena", { es: "Cadena de cierre", en: "Closure chain" }, cadena)}
-${seccion("avisos", { es: "Avisos de pantalla", en: "Screen notices" }, avisos)}`;
+</div>
+</div>
+${panel("color", { es: "Color", en: "Color" }, colores, { es: "Cambia de tema para ver el otro juego.", en: "Switch theme to see the other set." })}
+${panel("tipografia", { es: "Tipografía", en: "Typography" }, tipografia, { es: "Dos familias; sin serifa.", en: "Two families; no serif." })}
+${panel("estados", { es: "Estados", en: "Statuses" }, estados, { es: "Una forma por papel: se reconocen sin color.", en: "One shape per role: recognizable without color." })}
+${panel("controles", { es: "Botones, filtros y campos", en: "Buttons, filters and fields" }, controles, { es: "Un solo primario por tarjeta de acción.", en: "A single primary per action card." })}
+${panel("cifras", { es: "Tira de cifras", en: "Figures strip" }, resumen)}
+${panel("tabla", { es: "Tabla", en: "Table" }, tabla)}
+${panel("recorrido", { es: "Recorrido", en: "Progress" }, recorrido, { es: "Para lo que tiene ciclo de vida.", en: "For what has a life cycle." })}
+${panel("carril", { es: "Propiedades, contraste y carril de acción", en: "Properties, contrast and action rail" }, carril)}
+${panel("pestanas", { es: "Pestañas y selector de objeto", en: "Tabs and object selector" }, pestanas)}
+${panel("matriz", { es: "Matriz de prioridad", en: "Priority matrix" }, matriz, { es: "La casilla del objeto, en un marco de tinta.", en: "The object's cell, in an ink frame." })}
+${panel("avisos", { es: "Estado de pantalla", en: "Screen state" }, avisos)}`;
 
   return pagina({
     titulo: { es: "HackGuard · kit", en: "HackGuard · kit" },
+    migas: [t({ es: "Sala de diseño", en: "Design room" }), t({ es: "Kit de componentes", en: "Component kit" })],
+    consulta,
     existentes,
     sala: {
       nota: {
-        es: "Mirada 2. El kit: referencia de fidelidad para el primer sprint con pantallas. No es una pantalla del producto.",
-        en: "Review 2. The kit: the fidelity reference for the first sprint with screens. It is not a product screen.",
+        es: "Mirada 4-ter, segundo tramo: el kit con la interfaz nueva. Es la referencia de fidelidad para el primer sprint con pantallas, no una pantalla del producto.",
+        en: "Review 4-ter, second stretch: the kit with the new interface. It is the fidelity reference for the first sprint with screens, not a product screen.",
       },
     },
     contenido,
     revisar: [
       {
-        donde: { es: "1. Color", en: "1. Color" },
+        donde: { es: "Color", en: "Color" },
         hacer: { es: "Cambia de tema", en: "Switch theme" },
         ver: { es: "Las mismas muestras con su otro valor; ninguna se vuelve ilegible", en: "The same swatches with their other value; none becomes unreadable" },
       },
       {
-        donde: { es: "2. Tipografía", en: "2. Typography" },
-        hacer: { es: "Mira la línea de dato", en: "Look at the data line" },
-        ver: { es: "El cero y la O, y la I, la l y el 1, no se confunden", en: "Zero and O, and I, l and 1, cannot be mistaken" },
+        donde: { es: "Estados", en: "Statuses" },
+        hacer: { es: "Compara en línea, chip y sello", en: "Compare inline, chip and seal" },
+        ver: { es: "Tres pesos distintos; cada estado se reconoce por su marca aunque no distingas el color", en: "Three different weights; each status is recognizable by its mark even if you cannot tell the color" },
       },
       {
-        donde: { es: "3. Estados", en: "3. Statuses" },
-        hacer: { es: "Compara los cuatro sellos", en: "Compare the four seals" },
-        ver: { es: "Cada uno se reconoce por su marca aunque no distingas el color", en: "Each is recognizable by its mark even if you cannot tell the color" },
+        donde: { es: "Tarjeta de acción", en: "Action card" },
+        hacer: { es: "Pulsa «Confirmar»", en: "Press “Confirm”" },
+        ver: { es: "El botón queda marcado y la frase de abajo cambia", en: "The button stays marked and the sentence below changes" },
+      },
+      {
+        donde: { es: "Pestañas y selector", en: "Tabs and selector" },
+        hacer: { es: "Cambia de pestaña y de objeto", en: "Switch tab and object" },
+        ver: { es: "Cambia el panel de abajo; lo elegido lleva base azul", en: "The panel below changes; the chosen one has a blue base" },
       },
     ],
   });

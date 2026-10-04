@@ -28,6 +28,15 @@ export async function desbordes(page) {
         fuera.push(`<${el.tagName.toLowerCase()} class="${el.className}">: derecha ${Math.round(caja.right)} > ${ancho}`);
       }
     }
+    // Ningún panel, tarjeta ni caja deja salir su contenido por el borde (una tabla que no cabe junto al
+    // carril se monta encima de él sin salirse de la ventana). Lo que tiene desplazamiento propio
+    // (overflow auto) no cuenta: su caja recorta.
+    for (const caja of document.body.querySelectorAll(".hg-panel, .hg-tarjeta, .hg-caja")) {
+      if (caja.clientWidth === 0) continue;
+      if (caja.scrollWidth > caja.clientWidth + 1) {
+        fuera.push(`<${caja.tagName.toLowerCase()} class="${caja.className}">: su contenido se sale por ${caja.scrollWidth - caja.clientWidth} px`);
+      }
+    }
     // Dentro de una celda (de libro, o de una rejilla de propiedades) nada sobresale de su columna,
     // aunque quepa en la ventana: lo que sobresale pisa a la celda vecina.
     for (const celda of document.body.querySelectorAll(".hg-celda, .hg-propiedades > div")) {

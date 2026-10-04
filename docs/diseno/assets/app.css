@@ -1,7 +1,6 @@
-/* HackGuard — hoja del sistema de diseño, dirección «consola» (elegida en la mirada 4-bis; se aplica en
-   la 4-ter). Es la hoja que el producto obedecerá: mientras dure la 4-ter convive con hg.css (la
-   dirección «acta», rechazada), que solo cargan las pantallas aún sin rehacer; al terminar, esta la
-   reemplaza. Los colores salen de tokens.css; aquí no hay ningún valor de color suelto.
+/* HackGuard — hoja del sistema de diseño, dirección «consola» (elegida en la mirada 4-bis, aplicada a
+   todas las pantallas en la 4-ter). Es la hoja que el producto obedecerá. Los colores salen de
+   tokens.css; aquí no hay ningún valor de color suelto.
 
    Una aplicación, no un documento: barra lateral con las secciones, barra de contexto, tablas densas,
    paneles con borde, un carril de acción a la derecha en las pantallas de detalle y un recorrido de
@@ -376,6 +375,11 @@ a {
   border-color: var(--acento);
   background: var(--acento);
   color: var(--fondo);
+}
+
+/* Un enlace con forma de botón (abrir otra pantalla) no lleva subrayado. */
+a.hg-boton {
+  text-decoration: none;
 }
 
 .hg-boton-primario[aria-pressed="true"] {
@@ -1075,7 +1079,6 @@ a {
   letter-spacing: 0.04em;
   text-align: left;
   text-transform: uppercase;
-  white-space: nowrap;
   color: var(--tinta-2);
 }
 
@@ -1103,8 +1106,16 @@ a {
   background: var(--superficie-2);
 }
 
-.hg-tabla td[data-celda="estado"] {
+/* El estado de una fila no se parte; lo que lo acompaña (días, razones) sí. */
+.hg-tabla td[data-celda="estado"] .hg-estado {
   white-space: nowrap;
+}
+
+/* La columna que dice qué es la fila no se aprieta hasta una palabra por línea. */
+@media (min-width: 860px) {
+  .hg-tabla td[data-celda="principal"] {
+    min-width: 13rem;
+  }
 }
 
 .hg-tabla td[data-celda="resultado"] {
@@ -1367,10 +1378,22 @@ a {
   min-width: 0;
 }
 
-/* Lo fechado: el estado en una línea y su frase debajo. */
-.hg-propiedades [data-fechado] > .hg-menor {
+/* Lo fechado: el estado en una línea y su frase debajo; en la línea de una cabecera, todo seguido. */
+[data-fechado] > .hg-menor {
   display: block;
   margin-top: 2px;
+}
+
+.hg-cabecera-linea [data-fechado] {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+}
+
+.hg-cabecera-linea [data-fechado] > .hg-menor {
+  display: inline;
+  margin-top: 0;
 }
 
 /* En un panel ancho las propiedades van en columnas, sin líneas entre ellas. */
@@ -1727,6 +1750,183 @@ a {
 
 .hg-esqueleto > span:nth-child(3) {
   width: 48%;
+}
+
+/* ---------- Texto destacado: la frase que no puede perderse ---------- */
+
+.hg-destacado {
+  max-width: 84ch;
+  padding-left: var(--e-3);
+  border-left: 3px solid var(--linea-fuerte);
+  font-size: var(--t-medio);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- Rejilla de cajas: varias piezas iguales dentro de un panel ---------- */
+
+.hg-rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-caja {
+  display: grid;
+  gap: var(--e-2);
+  align-content: start;
+  justify-items: start;
+  min-width: 0;
+  padding: var(--e-3);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: var(--fondo);
+}
+
+.hg-caja > * {
+  max-width: 100%;
+}
+
+.hg-caja-titulo {
+  font-weight: 700;
+}
+
+@media (min-width: 720px) {
+  .hg-rejilla {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+}
+
+/* ---------- Propuesta: una fila de la bandeja, con su decisión al pie ---------- */
+
+.hg-propuestas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-3);
+}
+
+.hg-propuesta-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--e-2);
+  font-size: var(--t-menor);
+  color: var(--tinta-2);
+}
+
+.hg-decision {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+  padding: var(--e-3) var(--e-4);
+  border-top: 1px solid var(--linea);
+  border-radius: 0 0 var(--radio) var(--radio);
+  background: var(--superficie-2);
+}
+
+/* Decidida: la barra de la decisión pasa a tinta azul (la mano humana). */
+[data-propuesta]:not([data-decision=""]) > .hg-decision {
+  box-shadow: inset 3px 0 0 var(--acento);
+}
+
+@media (min-width: 720px) {
+  .hg-decision {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--e-2) var(--e-4);
+  }
+}
+
+/* ---------- Selector de objeto con nombre (no identificador) ---------- */
+
+.hg-opcion-nombre {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+/* ---------- Vocabulario de estados y muestras del kit ---------- */
+
+.hg-vocabulario {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-4) var(--e-5);
+}
+
+.hg-vocabulario > div {
+  display: grid;
+  gap: var(--e-2);
+  align-content: start;
+  min-width: 0;
+}
+
+.hg-vocabulario ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .hg-vocabulario {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1240px) {
+  .hg-vocabulario {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.hg-muestras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-muestras > li {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hg-muestra-color {
+  display: block;
+  height: 44px;
+  margin-bottom: var(--e-1);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-menor);
+}
+
+@media (min-width: 720px) {
+  .hg-muestras {
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  }
+}
+
+.hg-escala {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hg-escala > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--e-3) 0;
+  border-top: 1px solid var(--linea);
+}
+
+.hg-escala > div:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 /* ---------- Movimiento ---------- */

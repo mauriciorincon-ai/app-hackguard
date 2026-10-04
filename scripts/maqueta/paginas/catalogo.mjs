@@ -7,7 +7,7 @@ import { huellaDe, vigencia } from "../nucleo/calculos.mjs";
 import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, dias, estado, huella, sello } from "../nucleo/componentes.mjs";
 import { VIGENCIA } from "../nucleo/estados.mjs";
 import { atributo, esc, neutro, t, tHtml } from "../nucleo/html.mjs";
-import { barraDeEstados, paginaDeApp } from "../nucleo/pagina.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 
 const SIN_CONTROL = { rol: "atencion", simbolo: "aviso", nombre: { es: "Sin control asignado", en: "No control assigned" } };
 const SIN_CONTROL_CORTO = { ...SIN_CONTROL, nombre: { es: "Sin control", en: "No control" } };
@@ -177,7 +177,7 @@ ${aviso(
   ),
 )}`;
 
-  return paginaDeApp({
+  return pagina({
     titulo: { es: "HackGuard · catálogo", en: "HackGuard · catalog" },
     seccion: { id: "catalogo", archivo: "catalogo.html" },
     migas: [t({ es: "Catálogo", en: "Catalog" }), t({ es: "Pruebas", en: "Tests" })],
@@ -185,8 +185,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, primer tramo: la interfaz nueva sobre el catálogo. Las páginas que abre cada fila siguen con el aspecto anterior hasta el segundo tramo.",
-        en: "Review 4-ter, first stretch: the new interface on the catalog. The pages each row opens keep the previous look until the second stretch.",
+        es: "Mirada 4-ter: el catálogo con la interfaz nueva (aprobado en el primer tramo). Cada fila abre la ficha de su prueba.",
+        en: "Review 4-ter: the catalog with the new interface (approved in the first stretch). Each row opens its own test record.",
       },
       grupos: [barraDeEstados()],
     },
@@ -215,7 +215,7 @@ ${aviso(
       {
         donde: { es: "Nombre de una prueba", en: "A test's name" },
         hacer: { es: "Filtra por «Vencido» y abre una de las filas", en: "Filter by “Overdue” and open one of the rows" },
-        ver: { es: "Se abre la ficha de esa prueba, y dice que está vencida (aún con el aspecto anterior)", en: "That test's record opens, and it says it is overdue (still with the previous look)" },
+        ver: { es: "Se abre la ficha de esa prueba, y dice que está vencida", en: "That test's record opens, and it says it is overdue" },
       },
       {
         donde: { es: "En el teléfono", en: "On the phone" },

@@ -492,12 +492,69 @@ vive aquí» del README. Las secciones activo y plan dependen del objeto: pasar 
 las capturas como imagen (oscuro y claro, 380 y 1280) · barrido de cero enlaces tras el último `git add` ·
 `gh pr checks 4` tras el push. Todo selector de gate que cambie lleva su demo en rojo y `cmp`.
 
+### Mirada 4-ter, tramo 2 — todas las pantallas con la dirección «consola» (2026-10-04)
+
+El usuario cambió de modelo para este tramo, como se acordó («continúa» tras `/model opus`).
+
+**Qué se construyó**
+
+- Una sola forma de armar páginas: `pagina()` es ahora el armazón de aplicación (el de la dirección
+  anterior se borró). Admite páginas sin sección (índice y kit, que son de la sala).
+- Rehechas con la dirección nueva, mismo contenido, estados, datos y atributos `data-*`: las 21 fichas
+  de prueba (detalle: vigencia en la cabecera, avisos, paneles al centro, resumen, marco y fuentes en el
+  carril), `marcos`, `controles` y `propuestas` (listas; la bandeja con la decisión al pie de cada
+  propuesta y la corrida del investigador en el carril), los 3 activos (detalle, con selector de
+  activos y el plan en la tarjeta de acción), los 3 planes (lista a ancho completo), `kit` (ya con
+  todos los componentes de § 6, incluida la deuda de las miradas 3 y 4), `direccion` (adelanto de la
+  vista por control) e `index` (tabla del recorrido con el estado de cada mirada).
+- Componentes nuevos en `app.css`: propuesta y su decisión, rejilla de cajas, texto destacado,
+  vocabulario, muestras del kit, botón que es enlace. El componente `fechado` sigue la regla del chip
+  (lo vigente en línea; lo que no, en chip) y pone su frase debajo.
+- Retirados: `hg.css`, `interfaz.css`, `paginas/interfaz.mjs`, `interfaz-a/b/c.html`, la fuente Source
+  Serif 4 (y su línea en `LICENCIAS.txt`), los ayudantes `celda` y `libro`, y las reglas de sala del
+  armazón viejo en `maqueta.css`. La maqueta pasa de 42 a 39 páginas.
+- `design-system.md` 0.6.0 sin el aviso de transición.
+
+**Decisiones de diseño**
+
+- **Las listas van a todo el ancho.** El plan nació con carril y su tabla de 5 columnas no cabía: se
+  montaba encima del carril (177 px a 1280) sin salirse de la ventana. El alcance, los límites y las
+  reglas pasaron al panel del paquete de ejecución, con el botón «Ir a la carga de evidencia» al pie.
+- **Las cabeceras de tabla pueden partirse entre palabras** (nunca dentro de una): con `nowrap` fijaban
+  el ancho mínimo de cada columna y empujaban la tabla fuera de su panel.
+- **La esquina de una tarjeta de teléfono es solo para el estado.** En la vista por control la celda de
+  resultado llevaba una frase larga y, en esa esquina, desbordaba la pantalla a 380 px (426 px).
+- En la bandeja no hay botón primario: hay siete propuestas a la vista y la regla es uno por tarjeta de
+  acción.
+
+**Gates tocados y su demo en rojo (regla 15)**
+
+| # | Gate | Qué cambió | Demo | Resultado |
+|---|---|---|---|---|
+| G15 | Sonda `desbordes` | Nuevo: ningún `.hg-panel`, `.hg-tarjeta` ni `.hg-caja` deja salir su contenido (`scrollWidth > clientWidth`) | Rojo sobre defectos reales, antes de corregirlos: el plan a 1280 y 1440 px y la vista por control a 1280 (lo vi en la captura; ninguna sonda lo nombraba) | «`<section class="hg-panel">`: su contenido se sale por 177 px» → verde en 39 páginas × 5 anchos tras las correcciones |
+| G16 | `maqueta-fichas` | La vigencia se lee en `.hg-cabecera` (ya no hay `.hg-encabezado`) | Primero falló solo al cambiar la estructura (2 rojos: el selector viejo no encontraba nada). Con el selector nuevo: la vigencia de la herramienta antepuesta en la cabecera | «PR-IA-FUGA-001: el encabezado de la ficha dice otra vigencia: expected 'por_revisar' to be 'vencido'» → verde (`cmp`) |
+| G17 | `maqueta-plan` | Las cifras se leen en `.hg-resumen` | Igual: falló solo al cambiar la estructura. Con el selector nuevo: la cifra de planeadas +1 | «la cifra de planeadas no es el número de filas: expected 11 to be 10» → verde (`cmp`) |
+| — | e2e «un enlace del índice abre otra página con sus fuentes» | Ya no exige Source Serif 4 | No es un gate nuevo: la fuente dejó de existir | Sigue exigiendo las dos Atkinson cargadas |
+
+Las demos G16 y G17 se restauraron comparando byte a byte las 39 páginas.
+
+**Verificación** (local): 508 unitarias en 13 archivos (menos que antes: se retiraron tres páginas y
+cada página trae sus propias pruebas) · 790 e2e sobre 39 páginas · arnés de capturas sin fallas: 1176
+capturas (2 temas × 2 idiomas × 380 y 1280 px × estados de pantalla) y la pasada de interacción activó
+cada control de cada página · sondas de desbordes y palabras partidas limpias en 39 páginas × 5 anchos
+(380, 900, 1100, 1280, 1440) · capturas leídas como imagen: ficha de prueba (vencida y por revisar, en
+escritorio y teléfono), marcos, controles, propuestas (oscuro, claro y teléfono), activo autorizado y
+sin autorizar (oscuro y claro), plan (escritorio, claro y teléfono), kit, vista por control e índice ·
+lint y typecheck limpios · nada bajo `src/`.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
   usuario; registrado en el plan de miradas del README de diseño antes de construir.
 - **La mirada 4-ter se parte en dos tramos** (tres pantallas tipo primero, el resto después). Propuesto
   por el constructor y aprobado por el usuario antes de construir («iniciemos con el primer tramo»).
+- **Tres páginas menos** (`interfaz-a/b/c`), retiradas al terminar la 4-ter como se anunció al
+  construirlas; no cambia el plan de miradas.
 - **La mirada 4-bis se dio por decidida sin evidencia de mirada** (el usuario aceptó la recomendación y,
   repreguntado, ordenó empezar). Queda registrado tal cual; el tramo 1 es la parada donde la dirección
   se ve de verdad.

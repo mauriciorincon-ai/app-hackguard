@@ -202,7 +202,7 @@ export const CONTROL = {
 const delCatalogo = (id, activo) => {
   const prueba = CATALOGO.find((c) => c.id === id);
   const herramienta = HERRAMIENTAS[prueba.herramienta].nombre;
-  return { id, activo, herramienta, k: prueba.k, que_verifica: prueba.que_verifica };
+  return { id, activo, herramienta, k: prueba.k, nombre: prueba.nombre, que_verifica: prueba.que_verifica };
 };
 
 export const PRUEBAS = [

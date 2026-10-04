@@ -1,6 +1,6 @@
-/* Hoja de SALA de la maqueta: lo que NO es producto — la nota de sala, la botonera de estados
-   y la matriz «Qué revisar» del pie. Lo que sí es producto vive en hg.css.
-   Todo lo de sala lleva borde discontinuo para que no se confunda con la pantalla. */
+/* Hoja de SALA de la maqueta: lo que NO es producto — la franja de sala (nota de la mirada y estados de
+   la pantalla), los conmutadores de estado y la matriz «Qué revisar» del pie. Lo que sí es producto vive
+   en app.css. Todo lo de sala lleva borde discontinuo para que no se confunda con la pantalla. */
 
 html[data-theme="oscuro"] [data-si-tema="claro"],
 html[data-theme="claro"] [data-si-tema="oscuro"] {
@@ -18,6 +18,7 @@ body:not([data-estado="error"]) [data-si="error"] {
   position: absolute;
   left: 16px;
   top: -64px;
+  z-index: 10;
   padding: 8px 12px;
   background: var(--superficie);
   color: var(--tinta);
@@ -27,24 +28,28 @@ body:not([data-estado="error"]) [data-si="error"] {
   top: 8px;
 }
 
-.mq-sala {
-  max-width: var(--ancho);
-  margin: var(--e-4) auto 0;
-  padding: 0 var(--e-4);
-}
-
-.mq-sala-caja {
-  display: grid;
-  gap: var(--e-3);
-  padding: var(--e-3) var(--e-4);
-  border: 1px dashed var(--linea-fuerte);
-  border-radius: var(--radio);
+/* Franja de sala: una sola línea sobre la aplicación, para que la pantalla se vea como aplicación. */
+.mq-franja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2) var(--e-4);
+  padding: var(--e-2) var(--e-4);
+  border-bottom: 1px dashed var(--linea-fuerte);
   font-size: var(--t-menor);
   color: var(--tinta-2);
 }
 
-.mq-sala-caja > * {
+.mq-franja > * {
   min-width: 0;
+}
+
+.mq-franja .hg-boton {
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: var(--t-menor);
+  font-weight: 500;
 }
 
 .mq-sala-rotulo {
@@ -60,13 +65,12 @@ body:not([data-estado="error"]) [data-si="error"] {
 }
 
 .mq-grupo > span:first-child {
-  margin-right: var(--e-2);
+  margin-right: var(--e-1);
 }
 
+/* Matriz «Qué revisar y qué deberías ver», al pie de la columna de contenido. */
 .mq-pie {
-  max-width: var(--ancho);
-  margin: 0 auto;
-  padding: 0 var(--e-4) var(--e-7);
+  padding: 0 var(--e-4) var(--e-5);
 }
 
 .mq-pie-caja {
@@ -134,71 +138,6 @@ body:not([data-estado="error"]) [data-si="error"] {
   }
 }
 
-.mq-recorrido {
-  margin: var(--e-4) 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: var(--regla) solid var(--tinta);
-}
-
-.mq-recorrido > li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--e-1) var(--e-5);
-  padding: var(--e-4) 0;
-  border-bottom: 1px solid var(--linea);
-}
-
-.mq-recorrido > li > * {
-  min-width: 0;
-}
-
-.mq-recorrido a {
-  font-size: var(--t-medio);
-  font-weight: 700;
-}
-
-@media (min-width: 720px) {
-  .mq-recorrido > li {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    align-items: baseline;
-  }
-}
-
-/* ---------- Sala en las páginas con armazón de aplicación (dirección «consola») ---------- */
-
-/* Franja de sala: una sola línea sobre la aplicación, para que la pantalla se vea como aplicación. */
-.mq-franja {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--e-2) var(--e-4);
-  max-width: none;
-  margin: 0;
-  padding: var(--e-2) var(--e-4);
-  border-bottom: 1px dashed var(--linea-fuerte);
-  font-size: var(--t-menor);
-  color: var(--tinta-2);
-}
-
-.mq-franja > * {
-  min-width: 0;
-}
-
-.mq-franja .hg-boton {
-  min-height: 28px;
-  padding: 0 10px;
-  font-size: var(--t-menor);
-  font-weight: 500;
-}
-
-.hg-cuerpo > .mq-pie {
-  max-width: none;
-  margin: 0;
-  padding: 0 var(--e-4) var(--e-5);
-}
-
 @media (max-width: 1099px) {
   .mq-franja .hg-boton {
     min-height: 40px;
@@ -207,7 +146,7 @@ body:not([data-estado="error"]) [data-si="error"] {
 
 @media (min-width: 1100px) {
   .mq-franja,
-  .hg-cuerpo > .mq-pie {
+  .mq-pie {
     padding-left: var(--e-5);
     padding-right: var(--e-5);
   }

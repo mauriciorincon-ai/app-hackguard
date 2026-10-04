@@ -11,7 +11,7 @@ import { huellaDe, planDe } from "../nucleo/calculos.mjs";
 import { CARGA, ERROR, ESQUELETO, VACIO, aviso, chip, dato, enlace, estado, huella, par, proporcion, sello } from "../nucleo/componentes.mjs";
 import { ESTADO_DE_HALLAZGO, VEREDICTO } from "../nucleo/estados.mjs";
 import { atributo, esc, neutro, t, tHtml } from "../nucleo/html.mjs";
-import { barraDeEstados, paginaDeApp } from "../nucleo/pagina.mjs";
+import { barraDeEstados, pagina } from "../nucleo/pagina.mjs";
 import { SIMBOLO } from "../nucleo/simbolos.mjs";
 
 const OBLIGATORIA = { rol: "falla", simbolo: "falla", nombre: { es: "Se revisa siempre", en: "Always reviewed" } };
@@ -386,7 +386,7 @@ ${aviso(
   ),
 )}`;
 
-  return paginaDeApp({
+  return pagina({
     titulo: { es: "HackGuard · carga de evidencia", en: "HackGuard · evidence intake" },
     seccion: { id: "evidencia", archivo: "evidencia.html" },
     migas: [t({ es: "Evidencia", en: "Evidence" }), t({ es: "Carga", en: "Intake" })],
@@ -394,8 +394,8 @@ ${aviso(
     existentes,
     sala: {
       nota: {
-        es: "Mirada 4-ter, primer tramo: la interfaz nueva sobre la carga de evidencia. Los botones y los campos funcionan en la maqueta, pero no guardan nada.",
-        en: "Review 4-ter, first stretch: the new interface on evidence intake. Buttons and fields work in the mockup, but they save nothing.",
+        es: "Mirada 4-ter: la carga de evidencia con la interfaz nueva (aprobada en el primer tramo). Los botones y los campos funcionan en la maqueta, pero no guardan nada.",
+        en: "Review 4-ter: evidence intake with the new interface (approved in the first stretch). Buttons and fields work in the mockup, but they save nothing.",
       },
       grupos: [barraDeEstados()],
     },
