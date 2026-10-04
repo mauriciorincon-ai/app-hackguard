@@ -13,3 +13,8 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
 ignoredBuiltDependencies:
   - '@sentry/cli'
+auditConfig:
+  # ADR-001 (2026-10-03): dev-only transitive dep via eslint-config-next; no patched braces published yet.
+  # Remove this entry in the first PR that bumps braces past 3.0.3.
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm
