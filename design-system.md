@@ -1,6 +1,6 @@
 ---
 version: 0.6.0
-estado: dirección «consola» aprobada en tres pantallas tipo (mirada 4-ter, tramo 1) y aplicada a todas (tramo 2, en mirada) · se sella en G-Diseño
+estado: dirección «consola» aprobada en todas las pantallas construidas (mirada 4-ter, tramos 1 y 2) · se sella en G-Diseño
 ---
 
 # HackGuard — sistema de diseño

@@ -547,6 +547,13 @@ escritorio y teléfono), marcos, controles, propuestas (oscuro, claro y teléfon
 sin autorizar (oscuro y claro), plan (escritorio, claro y teléfono), kit, vista por control e índice ·
 lint y typecheck limpios · nada bajo `src/`.
 
+### Mirada 4-ter, tramo 2 — veredicto: aprobado (2026-10-04)
+
+«Abri todas las paginas y estan buenismas muy claras y adecuadas, las abri y las apruebo continua». Sin
+ajustes; dice haber abierto todas las páginas de la matriz. Con este veredicto toda la maqueta construida
+queda en la dirección «consola» y vista. CI del commit `911bb67`: `quality`, `e2e` y `lighthouse` en
+`success`. Lo siguiente es la mirada 5.
+
 ## Desviación del plan
 
 - **Dos miradas añadidas (4-bis y 4-ter)** por el rechazo del diseño en la mirada 4. Cambio pedido por el
