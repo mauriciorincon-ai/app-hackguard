@@ -1,0 +1,562 @@
+{
+  "id": "biblioteca-municipal",
+  "version": "1.0.0",
+  "descripcion": {
+    "es": "Solicitudes sintéticas de socios de una biblioteca municipal, cada una con su estado tipado y una nota redactada en español y en inglés. Es el conjunto de referencia del clasificador demo de la familia modelo_decision.",
+    "en": "Synthetic requests from members of a municipal library, each with its typed state and a note written in Spanish and in English. It is the reference set of the demo classifier for the modelo_decision family."
+  },
+  "advertencia": {
+    "es": "El conjunto y el clasificador los escribió la misma mano, y el clasificador no aprende. Las cifras demuestran que las métricas se calculan y que detectan las imperfecciones sembradas en el clasificador; no miden ningún modelo real.",
+    "en": "The same hand wrote the set and the classifier, and the classifier does not learn. The figures show that the metrics can be computed and that they catch the flaws planted in the classifier; they measure no real model."
+  },
+  "politica": [
+    {
+      "id": "condonacion",
+      "orden": 1,
+      "texto": {
+        "es": "Una petición de condonación de multa la decide siempre una persona (revisar), salvo que la multa venga de un error de la biblioteca: entonces se aprueba.",
+        "en": "A request to waive a fine is always decided by a person (review), unless the fine comes from a library error: then it is approved."
+      }
+    },
+    {
+      "id": "grave",
+      "orden": 2,
+      "texto": {
+        "es": "Más de 60 días de retraso, una multa de más de 50 € o diez préstamos activos o más al pedir una reserva o un préstamo interbibliotecario: se rechaza. Con una circunstancia atenuante (enfermedad, hospitalización, mudanza, inundación, duelo o un error de la biblioteca), la decide una persona.",
+        "en": "More than 60 days overdue, a fine above €50, or ten or more active loans when asking for a hold or an interlibrary loan: rejected. With a mitigating circumstance (illness, a hospital stay, moving house, a flood, a bereavement or a library error), a person decides."
+      }
+    },
+    {
+      "id": "leve",
+      "orden": 3,
+      "texto": {
+        "es": "Un retraso de 1 a 60 días o una multa de hasta 50 €: la decide una persona. Con una circunstancia atenuante, se aprueba.",
+        "en": "Between 1 and 60 days overdue, or a fine of up to €50: a person decides. With a mitigating circumstance, it is approved."
+      }
+    },
+    {
+      "id": "sin_problema",
+      "orden": 4,
+      "texto": {
+        "es": "Todo lo demás se aprueba.",
+        "en": "Everything else is approved."
+      }
+    },
+    {
+      "id": "urgencia",
+      "orden": 5,
+      "texto": {
+        "es": "Una solicitud es urgente si la nota pide respuesta con un plazo cercano: hoy, mañana, un examen o una entrega. Decir que no es urgente no la vuelve urgente.",
+        "en": "A request is urgent when the note asks for an answer against a near deadline: today, tomorrow, an exam or a submission. Saying it is not urgent does not make it urgent."
+      }
+    }
+  ],
+  "parametros": {
+    "semilla": 20261004,
+    "repeticiones": 5,
+    "ruido_por_mil": 150,
+    "bins_ece": 4,
+    "banda": {
+      "opcion": "aprobar",
+      "umbral": 0.7,
+      "desde": 0.6,
+      "hasta": 0.8
+    }
+  },
+  "casos": [
+    {
+      "id": "BIB-001",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 3
+      },
+      "nota": {
+        "es": "Quiero renovar la novela dos semanas más.",
+        "en": "I'd like to renew the novel for two more weeks."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-002",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 4,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 12
+      },
+      "nota": {
+        "es": "Por favor, apártenme el atlas para el sábado.",
+        "en": "Please hold the atlas for me for Saturday."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-003",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "prestamo_interbibliotecario",
+        "prestamos_activos": 1,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 2
+      },
+      "nota": {
+        "es": "Necesito el artículo para un examen el lunes; es urgente.",
+        "en": "I need the article for an exam on Monday; it is urgent."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": true
+      }
+    },
+    {
+      "id": "BIB-004",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "prestamo_interbibliotecario",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 1
+      },
+      "nota": {
+        "es": "Lo necesito antes de que venza el plazo de mi tesis, que es mañana.",
+        "en": "I need it before my thesis deadline tomorrow."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": true
+      }
+    },
+    {
+      "id": "BIB-005",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 3,
+        "dias_de_retraso": 15,
+        "multa_pendiente": 0,
+        "anios_como_socio": 4
+      },
+      "nota": {
+        "es": "Se me pasó la fecha de devolución.",
+        "en": "I missed the return date."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-006",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 20,
+        "multa_pendiente": 0,
+        "anios_como_socio": 6
+      },
+      "nota": {
+        "es": "Estuve en el hospital y no pude devolverlo a tiempo.",
+        "en": "I was in hospital and could not return it on time."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-007",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 1,
+        "dias_de_retraso": 25,
+        "multa_pendiente": 0,
+        "anios_como_socio": 3
+      },
+      "nota": {
+        "es": "Estuve enferma tres semanas y no pude salir de casa.",
+        "en": "I was ill for three weeks and could not leave the house."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-008",
+      "regla": "leve",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 5,
+        "dias_de_retraso": 10,
+        "multa_pendiente": 0,
+        "anios_como_socio": 2
+      },
+      "nota": {
+        "es": "Con la mudanza se me traspapelaron los libros.",
+        "en": "I was moving house and the books got mislaid."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-009",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 1500,
+        "anios_como_socio": 5
+      },
+      "nota": {
+        "es": "Tengo una multa pequeña; la pago la semana que viene.",
+        "en": "I have a small fine; I will pay it next week."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-010",
+      "regla": "leve",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 3,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 3000,
+        "anios_como_socio": 15
+      },
+      "nota": {
+        "es": "Soy socio desde hace quince años.",
+        "en": "I have been a member for fifteen years."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-011",
+      "regla": "grave",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 75,
+        "multa_pendiente": 0,
+        "anios_como_socio": 2
+      },
+      "nota": {
+        "es": "No he podido devolverlo.",
+        "en": "I have not been able to return it."
+      },
+      "etiqueta": {
+        "decision": "rechazar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-012",
+      "regla": "grave",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 4,
+        "dias_de_retraso": 90,
+        "multa_pendiente": 0,
+        "anios_como_socio": 8
+      },
+      "nota": {
+        "es": "Me operaron: entre la cirugía y la recuperación pasaron dos meses.",
+        "en": "I had surgery and spent two months recovering."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-013",
+      "regla": "grave",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 1,
+        "dias_de_retraso": 70,
+        "multa_pendiente": 0,
+        "anios_como_socio": 3
+      },
+      "nota": {
+        "es": "Se inundó mi casa y perdí la pista de todo.",
+        "en": "My flat flooded and I lost track of everything."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-014",
+      "regla": "grave",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 8000,
+        "anios_como_socio": 4
+      },
+      "nota": {
+        "es": "Quiero reservar la serie completa.",
+        "en": "I want to reserve the whole series."
+      },
+      "etiqueta": {
+        "decision": "rechazar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-015",
+      "regla": "grave",
+      "estado": {
+        "tipo": "prestamo_interbibliotecario",
+        "prestamos_activos": 11,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 7
+      },
+      "nota": {
+        "es": "Necesito tres títulos más para mi club de lectura.",
+        "en": "I need three more titles for my reading club."
+      },
+      "etiqueta": {
+        "decision": "rechazar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-016",
+      "regla": "grave",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 12,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 20
+      },
+      "nota": {
+        "es": "Mi hija está en el hospital y quiero llevarle lecturas.",
+        "en": "My daughter is in hospital and I want to bring her something to read."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-017",
+      "regla": "condonacion",
+      "estado": {
+        "tipo": "condonacion_de_multa",
+        "prestamos_activos": 1,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 2000,
+        "anios_como_socio": 3
+      },
+      "nota": {
+        "es": "Pido que me quiten la multa: devolví el libro con un día de retraso.",
+        "en": "Please waive the fine: I returned the book one day late."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-018",
+      "regla": "condonacion",
+      "estado": {
+        "tipo": "condonacion_de_multa",
+        "prestamos_activos": 0,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 1200,
+        "anios_como_socio": 9
+      },
+      "nota": {
+        "es": "La multa es un error de la biblioteca: devolví el libro a tiempo y tengo el recibo.",
+        "en": "The fine is a library error: I returned the book on time and I have the receipt."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-019",
+      "regla": "condonacion",
+      "estado": {
+        "tipo": "condonacion_de_multa",
+        "prestamos_activos": 0,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 2500,
+        "anios_como_socio": 2
+      },
+      "nota": {
+        "es": "Creo que se equivocaron al registrar la devolución.",
+        "en": "I think it was your mistake when the return was logged."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-020",
+      "regla": "condonacion",
+      "estado": {
+        "tipo": "condonacion_de_multa",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 9000,
+        "anios_como_socio": 6
+      },
+      "nota": {
+        "es": "No puedo pagar una multa tan alta.",
+        "en": "I cannot afford such a large fine."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-021",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 3,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 1
+      },
+      "nota": {
+        "es": "¿Puedo renovarlo hoy mismo? Me voy de viaje mañana.",
+        "en": "Can I renew it today? I am travelling tomorrow."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": true
+      }
+    },
+    {
+      "id": "BIB-022",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "reserva",
+        "prestamos_activos": 6,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 11
+      },
+      "nota": {
+        "es": "Es urgente: lo necesito para un examen esta semana.",
+        "en": "It is urgent: I need it for an exam this week."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": true
+      }
+    },
+    {
+      "id": "BIB-023",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 40,
+        "multa_pendiente": 0,
+        "anios_como_socio": 5
+      },
+      "nota": {
+        "es": "Falleció mi padre y estuve fuera de la ciudad; estoy de duelo.",
+        "en": "My father passed away and I was out of town for the funeral."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-024",
+      "regla": "grave",
+      "estado": {
+        "tipo": "prestamo_interbibliotecario",
+        "prestamos_activos": 3,
+        "dias_de_retraso": 65,
+        "multa_pendiente": 0,
+        "anios_como_socio": 4
+      },
+      "nota": {
+        "es": "Necesito este libro para el trabajo.",
+        "en": "I need this book for work."
+      },
+      "etiqueta": {
+        "decision": "rechazar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-025",
+      "regla": "leve",
+      "estado": {
+        "tipo": "renovacion",
+        "prestamos_activos": 2,
+        "dias_de_retraso": 12,
+        "multa_pendiente": 0,
+        "anios_como_socio": 3
+      },
+      "nota": {
+        "es": "No estuve enfermo; simplemente se me olvidó.",
+        "en": "I wasn't ill; I simply forgot."
+      },
+      "etiqueta": {
+        "decision": "revisar",
+        "urgente": false
+      }
+    },
+    {
+      "id": "BIB-026",
+      "regla": "sin_problema",
+      "estado": {
+        "tipo": "prestamo_interbibliotecario",
+        "prestamos_activos": 1,
+        "dias_de_retraso": 0,
+        "multa_pendiente": 0,
+        "anios_como_socio": 1
+      },
+      "nota": {
+        "es": "No es urgente; cuando puedan.",
+        "en": "It is not urgent; whenever you can."
+      },
+      "etiqueta": {
+        "decision": "aprobar",
+        "urgente": false
+      }
+    }
+  ]
+}
