@@ -573,3 +573,20 @@ Nota: la primera corrida de las tres primeras demos dio el rojo correcto y resta
 paso porque pedí `--minimo-tests` 30 y 20 sin contar; los archivos corren 27 y 19. Se repitieron con la cuenta
 medida y salieron limpias. Es la tercera fase con el mismo tropiezo: desde ahora cuento las pruebas del archivo
 antes de fijar el mínimo.
+
+### CI de la fase 3 (PR #8, commit `195f6bf`, corrida 37252435488)
+
+- **Checks requeridos:** `quality` (2 min 37 s), `e2e` (10 min 16 s) y `lighthouse` (1 min 28 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Dentro de `quality`:** 40 archivos de pruebas en verde, C18 «bloquea 11 de 11 semillas inválidas sembradas» y
+  el paso «Catálogo válido» con «Catálogo: con advertencias». En local, la misma validación sale con 1 (0 errores,
+  10 advertencias, 4 notas) sobre 61 reglas.
+
+**STOP de la fase 3:** semáforo en sus tres estados sobre datos reales, primera instantánea oficial y demo del
+clasificador presentados al usuario el 2026-10-04. El usuario preguntó «Que quieres de mi? se claro»; se le
+respondió que solo hacía falta su «continúa» o un cambio a alguna de las cuatro decisiones. **Veredicto del
+usuario, 2026-10-04: «continúa»**, sin cambios a las decisiones.
+
+## Fase 4 — Validación del instrumento, determinismo multi-navegador y cierre
+
+Arranca el 2026-10-04 tras el «continúa» de la fase 3.
