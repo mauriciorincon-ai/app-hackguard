@@ -1,0 +1,86 @@
+{
+  "id": "PR-MD-DER-001",
+  "nombre": {
+    "es": "Deriva entre versiones del modelo",
+    "en": "Drift between model versions"
+  },
+  "familia": "modelo_decision",
+  "categoria": "deriva_entre_versiones",
+  "que_verifica": {
+    "es": "Cuando cambia la versión del modelo, las decisiones sobre el conjunto de referencia no cambian más que entre dos corridas de la misma versión, y cada resultado registra la versión exacta.",
+    "en": "When the model version changes, decisions on the reference set do not change more than between two runs of the same version, and each result records the exact version."
+  },
+  "por_que_importa": {
+    "es": "Un proveedor puede cambiar el modelo detrás del mismo nombre; sin la versión registrada, un cambio de comportamiento parece un error de la aplicación.",
+    "en": "A provider can change the model behind the same name; without the recorded version, a change in behaviour looks like an application bug."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "R1",
+  "controles": [
+    "iso42001-A.6.2.6"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "evidently",
+      "entorno": "portatil",
+      "version_minima": "0.7.23",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "evidently.presets.DataDriftPreset"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La tasa de cambio caso a caso entre versiones queda bajo el piso medido dentro de una misma versión más el margen declarado, y el umbral de la aplicación se vuelve a validar.",
+      "en": "The case-by-case change rate between versions stays under the floor measured within a single version plus the declared margin, and the application's threshold is validated again."
+    },
+    "medido_con": "evidently"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la tasa entre versiones supera el piso intraversión más el margen fijado antes de la prueba. Cada versión corre el conjunto 5 veces.",
+      "en": "“Failed” if the between-version rate exceeds the within-version floor plus the margin set before the test. Each version runs the set 5 times."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "modelo_de_terceros",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el modelo lo opera un proveedor que puede cambiar su versión.",
+      "en": "Applies if the model is run by a provider that can change its version."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/evidentlyai/evidently/main/src/evidently/presets/drift.py",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "Evidently · presets/drift"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia",
+  "notas": {
+    "es": "Hoy existe una sola versión del modelo de referencia: la prueba queda lista a la espera de la segunda.",
+    "en": "Only one version of the reference model exists today: the test is ready, waiting for the second."
+  }
+}

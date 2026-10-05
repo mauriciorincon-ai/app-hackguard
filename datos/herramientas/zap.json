@@ -1,0 +1,79 @@
+{
+  "id": "zap",
+  "nombre": "ZAP",
+  "editor": "Checkmarx",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Escáner de aplicaciones web: recorre las páginas de un sitio, levanta alertas por regla y escribe un informe.",
+    "en": "Web application scanner: it crawls a site's pages, raises alerts per rule and writes a report."
+  },
+  "licencia": {
+    "spdx": "Apache-2.0",
+    "url": "https://github.com/zaproxy/zaproxy/blob/main/LICENSE"
+  },
+  "familias": [
+    "software"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "contenedor"
+  ],
+  "formato_salida": "traditional-json",
+  "tiene_adaptador": true,
+  "selector": "zap",
+  "version_verificada": "2.17.0",
+  "registro": {
+    "tipo": "github",
+    "url": "https://api.github.com/repos/zaproxy/zaproxy/releases/latest",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/zaproxy/zaproxy",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [
+    {
+      "nombre": "OWASP ZAP",
+      "nota": {
+        "es": "Nombre mientras fue proyecto de OWASP.",
+        "en": "Its name while it was an OWASP project."
+      }
+    },
+    {
+      "nombre": "Zed Attack Proxy"
+    }
+  ],
+  "cambio_de_editor": [
+    {
+      "fecha": "2023-08-01",
+      "de": "OWASP",
+      "a": "Software Security Project",
+      "fuente": {
+        "url": "https://www.zaproxy.org/blog/2023-08-01-zap-is-joining-the-software-security-project/",
+        "http": 200,
+        "consultada": "2026-10-04"
+      }
+    },
+    {
+      "fecha": "2024-09-24",
+      "de": "Software Security Project",
+      "a": "Checkmarx",
+      "fuente": {
+        "url": "https://www.zaproxy.org/blog/2024-09-24-zap-has-joined-forces-with-checkmarx/",
+        "http": 200,
+        "consultada": "2026-10-04"
+      },
+      "nota": {
+        "es": "El sitio oficial se presenta hoy como «ZAP by Checkmarx».",
+        "en": "The official site now presents itself as “ZAP by Checkmarx”."
+      }
+    }
+  ],
+  "notas": {
+    "es": "2.17.0 se publicó el 2025-12-15. El informe solo lista las alertas que se levantaron, no las reglas que corrieron: sin constancia de ejecución y cobertura, el adaptador del S3 sugiere «no ejecutada», nunca «superada» (E-6). ZAP se reporta como «Dev Build» y no declara la versión de su complemento de informes (E-26).",
+    "en": "2.17.0 was published on 2025-12-15. The report only lists the alerts that were raised, not the rules that ran: without proof of execution and coverage, the S3 adapter suggests “not run”, never “passed” (E-6). ZAP reports itself as “Dev Build” and does not declare the version of its report add-on (E-26)."
+  }
+}

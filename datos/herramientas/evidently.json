@@ -1,0 +1,41 @@
+{
+  "id": "evidently",
+  "nombre": "Evidently",
+  "editor": "Evidently AI",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería para comparar datos y predicciones entre dos momentos y detectar deriva.",
+    "en": "Library for comparing data and predictions between two points in time and detecting drift."
+  },
+  "licencia": {
+    "spdx": "Apache-2.0",
+    "url": "https://github.com/evidentlyai/evidently/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.7.23",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/evidently/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/evidentlyai/evidently",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "0.7.23 se publicó en PyPI el 2026-09-11.",
+    "en": "0.7.23 was published on PyPI on 2026-09-11."
+  }
+}

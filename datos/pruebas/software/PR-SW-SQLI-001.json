@@ -1,0 +1,89 @@
+{
+  "id": "PR-SW-SQLI-001",
+  "nombre": {
+    "es": "Consultas con parámetros",
+    "en": "Parameterized queries"
+  },
+  "familia": "software",
+  "categoria": "validacion_de_entradas_e_inyeccion",
+  "que_verifica": {
+    "es": "Lo que escribe el usuario no altera las consultas que la aplicación hace a su base de datos.",
+    "en": "What the user types does not alter the queries the application sends to its database."
+  },
+  "por_que_importa": {
+    "es": "Una consulta armada con texto del usuario deja que ese texto cambie lo que la base de datos entrega o modifica.",
+    "en": "A query built from user text lets that text change what the database returns or modifies."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A05",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-89"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          40018
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ninguna entrada del alcance cambia la consulta que la aplicación hace a su base de datos.",
+      "en": "No input in scope changes the query the application sends to its database."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 40018 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 40018 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "usa_base_de_datos",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo guarda o consulta datos en una base de datos.",
+      "en": "Applies if the asset stores or queries data in a database."
+    }
+  },
+  "prioridad_base": 5,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/40018/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 40018"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

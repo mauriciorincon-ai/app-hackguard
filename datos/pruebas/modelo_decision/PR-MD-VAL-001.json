@@ -1,0 +1,77 @@
+{
+  "id": "PR-MD-VAL-001",
+  "nombre": {
+    "es": "Contraste independiente para decisiones de alto impacto",
+    "en": "Independent check for high-impact decisions"
+  },
+  "familia": "modelo_decision",
+  "categoria": "valido_pero_equivocado",
+  "que_verifica": {
+    "es": "Cada decisión de alto impacto pasa por un contraste independiente del modelo: una regla, una segunda fuente o una persona.",
+    "en": "Every high-impact decision goes through a check independent of the model: a rule, a second source or a person."
+  },
+  "por_que_importa": {
+    "es": "Una decisión tipada siempre tiene la forma correcta; que sea correcta en el fondo no lo garantiza el tipo.",
+    "en": "A typed decision always has the right form; the type does not guarantee that it is right in substance."
+  },
+  "marco_id": "nist-ai-rmf",
+  "version_marco": "1.0",
+  "referencia_en_marco": "GOVERN 3.2",
+  "controles": [
+    "iso42001-A.9.2"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "hackguard-revision",
+      "entorno": "portatil",
+      "selector": {
+        "tipo": "revision",
+        "que_se_revisa": {
+          "es": "El diseño y el código que llevan cada decisión de alto impacto a su contraste.",
+          "en": "The design and the code that route each high-impact decision to its check."
+        }
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La revisión encuentra un contraste para cada tipo de decisión de alto impacto, y ninguna ruta que lo saltee.",
+      "en": "The review finds a check for every type of high-impact decision, and no path that skips it."
+    },
+    "medido_con": "hackguard-revision"
+  },
+  "criterio_de_veredicto": {
+    "regla": "revision_de_diseno",
+    "descripcion": {
+      "es": "«Superada» si la persona que revisa encuentra el contraste en cada ruta y lo deja escrito; «fallida» si alguna ruta lo saltea.",
+      "en": "“Passed” if the reviewer finds the check on every path and writes it down; “failed” if any path skips it."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "decisiones_de_alto_impacto",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si una decisión equivocada puede afectar seriamente a una persona.",
+      "en": "Applies if a wrong decision can seriously affect a person."
+    }
+  },
+  "prioridad_base": 5,
+  "madurez": "propia",
+  "fuentes": [
+    {
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "NIST AI RMF 1.0"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

@@ -27,7 +27,10 @@
     {
       "id": "usa_herramientas",
       "tipo": "booleano",
-      "nombre": { "es": "Usa herramientas", "en": "Uses tools" },
+      "nombre": {
+        "es": "Usa herramientas",
+        "en": "Uses tools"
+      },
       "pregunta": {
         "es": "¿El agente puede llamar herramientas o servicios que actúan fuera de la conversación?",
         "en": "Can the agent call tools or services that act outside the conversation?"
@@ -36,7 +39,10 @@
     {
       "id": "tiene_interfaz_web",
       "tipo": "booleano",
-      "nombre": { "es": "Tiene una interfaz web", "en": "Has a web interface" },
+      "nombre": {
+        "es": "Tiene una interfaz web",
+        "en": "Has a web interface"
+      },
       "pregunta": {
         "es": "¿Se usa desde un navegador?",
         "en": "Is it used from a browser?"
@@ -81,6 +87,234 @@
           }
         }
       ]
+    },
+    {
+      "id": "muestra_datos_del_usuario",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Muestra datos que escriben sus usuarios",
+        "en": "Shows data its users write"
+      },
+      "pregunta": {
+        "es": "¿Las páginas muestran texto que escribió un usuario?",
+        "en": "Do the pages show text that a user wrote?"
+      }
+    },
+    {
+      "id": "usa_base_de_datos",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Consulta una base de datos",
+        "en": "Queries a database"
+      },
+      "pregunta": {
+        "es": "¿Guarda o consulta datos en una base de datos?",
+        "en": "Does it store or query data in a database?"
+      }
+    },
+    {
+      "id": "tiene_sesiones",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Usa sesiones de usuario",
+        "en": "Uses user sessions"
+      },
+      "pregunta": {
+        "es": "¿Los usuarios inician sesión?",
+        "en": "Do users sign in?"
+      }
+    },
+    {
+      "id": "distingue_permisos",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Distingue permisos entre usuarios",
+        "en": "Distinguishes permissions between users"
+      },
+      "pregunta": {
+        "es": "¿Hay usuarios o roles que no deben ver o cambiar lo mismo?",
+        "en": "Are there users or roles that must not see or change the same things?"
+      }
+    },
+    {
+      "id": "se_publica_en_internet",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Se publica en internet",
+        "en": "Is published on the internet"
+      },
+      "pregunta": {
+        "es": "¿Se llega a él desde internet con un dominio propio?",
+        "en": "Is it reached from the internet on its own domain?"
+      }
+    },
+    {
+      "id": "usa_dependencias_de_terceros",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Carga librerías de terceros en el navegador",
+        "en": "Loads third-party libraries in the browser"
+      },
+      "pregunta": {
+        "es": "¿Las páginas cargan librerías de JavaScript que no escribió el equipo?",
+        "en": "Do the pages load JavaScript libraries the team did not write?"
+      }
+    },
+    {
+      "id": "acciones_irreversibles",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Puede hacer acciones irreversibles",
+        "en": "Can take irreversible actions"
+      },
+      "pregunta": {
+        "es": "¿El agente puede borrar, pagar, enviar o cambiar algo que no se deshace?",
+        "en": "Can the agent delete, pay, send or change something that cannot be undone?"
+      }
+    },
+    {
+      "id": "actua_en_nombre_de_usuarios",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Actúa en nombre de usuarios",
+        "en": "Acts on behalf of users"
+      },
+      "pregunta": {
+        "es": "¿El agente hace cosas con los permisos de una persona?",
+        "en": "Does the agent do things with a person's permissions?"
+      }
+    },
+    {
+      "id": "coopera_con_otros_agentes",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Coopera con otros agentes",
+        "en": "Works with other agents"
+      },
+      "pregunta": {
+        "es": "¿Recibe mensajes o tareas de otros agentes?",
+        "en": "Does it receive messages or tasks from other agents?"
+      }
+    },
+    {
+      "id": "tiene_memoria_persistente",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Recuerda entre sesiones",
+        "en": "Remembers across sessions"
+      },
+      "pregunta": {
+        "es": "¿Guarda información de una conversación para usarla en otra?",
+        "en": "Does it keep information from one conversation to use in another?"
+      }
+    },
+    {
+      "id": "accede_a_datos_sensibles",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Accede a datos sensibles",
+        "en": "Accesses sensitive data"
+      },
+      "pregunta": {
+        "es": "¿Puede leer datos personales o confidenciales?",
+        "en": "Can it read personal or confidential data?"
+      }
+    },
+    {
+      "id": "usa_recuperacion_de_documentos",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Busca documentos para responder",
+        "en": "Retrieves documents to answer"
+      },
+      "pregunta": {
+        "es": "¿Consulta una base de documentos antes de responder?",
+        "en": "Does it query a document store before answering?"
+      }
+    },
+    {
+      "id": "otro_sistema_usa_su_salida",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Otro sistema usa su salida",
+        "en": "Another system uses its output"
+      },
+      "pregunta": {
+        "es": "¿Lo que produce el modelo se muestra en una página o lo procesa otro programa?",
+        "en": "Is what the model produces shown on a page or processed by another program?"
+      }
+    },
+    {
+      "id": "atiende_a_varios_usuarios",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Atiende a varios usuarios",
+        "en": "Serves several users"
+      },
+      "pregunta": {
+        "es": "¿Lo usan varias personas, cada una con sus propios datos?",
+        "en": "Is it used by several people, each with their own data?"
+      }
+    },
+    {
+      "id": "usa_umbral_de_decision",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Decide con un umbral",
+        "en": "Decides with a threshold"
+      },
+      "pregunta": {
+        "es": "¿La aplicación compara una probabilidad con un umbral para actuar?",
+        "en": "Does the application compare a probability with a threshold to act?"
+      }
+    },
+    {
+      "id": "decisiones_de_alto_impacto",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Toma decisiones de alto impacto",
+        "en": "Makes high-impact decisions"
+      },
+      "pregunta": {
+        "es": "¿Una decisión equivocada puede afectar seriamente a una persona?",
+        "en": "Can a wrong decision seriously affect a person?"
+      }
+    },
+    {
+      "id": "opera_en_varios_idiomas",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Opera en varios idiomas",
+        "en": "Works in several languages"
+      },
+      "pregunta": {
+        "es": "¿Recibe casos en español y en inglés?",
+        "en": "Does it receive cases in Spanish and in English?"
+      }
+    },
+    {
+      "id": "modelo_de_terceros",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Depende de un modelo de terceros",
+        "en": "Depends on a third-party model"
+      },
+      "pregunta": {
+        "es": "¿El modelo lo opera un proveedor que puede cambiar su versión?",
+        "en": "Is the model run by a provider that can change its version?"
+      }
+    },
+    {
+      "id": "dispone_de_casos_etiquetados",
+      "tipo": "booleano",
+      "nombre": {
+        "es": "Tiene casos con la respuesta correcta",
+        "en": "Has cases with the correct answer"
+      },
+      "pregunta": {
+        "es": "¿Existe un conjunto de casos con la decisión correcta conocida?",
+        "en": "Is there a set of cases with the correct decision known?"
+      }
     }
   ]
 }

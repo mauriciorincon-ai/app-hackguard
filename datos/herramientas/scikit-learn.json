@@ -1,0 +1,41 @@
+{
+  "id": "scikit-learn",
+  "nombre": "scikit-learn",
+  "editor": "scikit-learn",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería de aprendizaje automático con funciones de calibración y de métricas sobre probabilidades.",
+    "en": "Machine-learning library with calibration functions and metrics over probabilities."
+  },
+  "licencia": {
+    "spdx": "BSD-3-Clause",
+    "url": "https://github.com/scikit-learn/scikit-learn/blob/main/COPYING"
+  },
+  "familias": [
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "1.9.1",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/scikit-learn/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/scikit-learn/scikit-learn",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "1.9.1 se publicó en PyPI el 2026-09-10.",
+    "en": "1.9.1 was published on PyPI on 2026-09-10."
+  }
+}

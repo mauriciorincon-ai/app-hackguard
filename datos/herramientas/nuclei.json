@@ -1,0 +1,43 @@
+{
+  "id": "nuclei",
+  "nombre": "Nuclei",
+  "editor": "ProjectDiscovery",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Escáner que aplica plantillas públicas de comprobación a servicios web; cada plantilla verifica una condición concreta.",
+    "en": "Scanner that applies public check templates to web services; each template verifies one specific condition."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/projectdiscovery/nuclei/blob/dev/LICENSE.md"
+  },
+  "familias": [
+    "software"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "contenedor"
+  ],
+  "formato_salida": "jsonl",
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "3.11.1",
+  "registro": {
+    "tipo": "github",
+    "url": "https://api.github.com/repos/projectdiscovery/nuclei/releases/latest",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/projectdiscovery/nuclei",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "3.11.1 se publicó el 2026-08-08. Las plantillas viven en el repositorio nuclei-templates.",
+    "en": "3.11.1 was published on 2026-08-08. The templates live in the nuclei-templates repository."
+  }
+}

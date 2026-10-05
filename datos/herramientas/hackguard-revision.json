@@ -1,0 +1,39 @@
+{
+  "id": "hackguard-revision",
+  "nombre": "hackguard-revision",
+  "editor": "HackGuard",
+  "tipo": "herramienta_propia",
+  "descripcion": {
+    "es": "Revisión documentada por una persona: lee el diseño, el código o los registros contra lo esperado y deja escrito qué miró y qué encontró.",
+    "en": "Documented review by a person: they read the design, the code or the logs against what is expected and write down what they looked at and what they found."
+  },
+  "licencia": {
+    "spdx": "NOASSERTION",
+    "url": "https://github.com/mauriciorincon-ai/app-hackguard"
+  },
+  "familias": [
+    "software",
+    "agente",
+    "modelo_generativo",
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "revision",
+  "version_verificada": "1",
+  "repositorio": "https://github.com/mauriciorincon-ai/app-hackguard",
+  "fuente": {
+    "url": "https://github.com/mauriciorincon-ai/app-hackguard",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "El repositorio todavía no declara licencia; es una decisión pendiente del dueño, no de este sprint.",
+    "en": "The repository does not declare a licence yet; that is a pending decision for the owner, not for this sprint."
+  }
+}

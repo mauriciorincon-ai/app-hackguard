@@ -1,0 +1,108 @@
+{
+  "id": "PR-SW-ERR-001",
+  "nombre": {
+    "es": "Errores sin detalles internos",
+    "en": "Errors without internal details"
+  },
+  "familia": "software",
+  "categoria": "exposicion_de_datos",
+  "que_verifica": {
+    "es": "Las respuestas de error y los archivos publicados no exponen trazas, rutas internas ni configuración.",
+    "en": "Error responses and published files do not expose stack traces, internal paths or configuration."
+  },
+  "por_que_importa": {
+    "es": "Esos detalles le dicen a cualquiera cómo está construido el sistema y dónde mirar.",
+    "en": "Those details tell anyone how the system is built and where to look."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A10",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-209"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          90022
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    },
+    {
+      "herramienta": "nuclei",
+      "entorno": "contenedor",
+      "version_minima": "3.11.1",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "http/exposures/configs"
+      },
+      "nota": {
+        "es": "Plantillas públicas que buscan archivos de configuración publicados por error.",
+        "en": "Public templates that look for configuration files published by mistake."
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ninguna respuesta de error muestra detalles internos y no hay archivos de configuración publicados en el alcance.",
+      "en": "No error response shows internal details and no configuration files are published in scope."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 90022 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 90022 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_interfaz_web",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo responde a un navegador.",
+      "en": "Applies if the asset answers a browser."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/90022/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 90022"
+    },
+    {
+      "url": "https://github.com/projectdiscovery/nuclei-templates/tree/main/http/exposures/configs",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "nuclei-templates · http/exposures/configs"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

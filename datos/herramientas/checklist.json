@@ -1,0 +1,41 @@
+{
+  "id": "checklist",
+  "nombre": "CheckList",
+  "editor": "Marco Tulio Ribeiro",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería para probar el comportamiento de modelos de lenguaje con pruebas de invariancia y de dirección esperada.",
+    "en": "Library for testing the behaviour of language models with invariance tests and expected-direction tests."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/marcotcr/checklist/blob/master/LICENSE"
+  },
+  "familias": [
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.0.11",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/checklist/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/marcotcr/checklist",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "0.0.11 es de 2021 y el repositorio no recibe cambios desde 2024: se usa por sus tipos de prueba, que siguen siendo la referencia.",
+    "en": "0.0.11 dates from 2021 and the repository has had no changes since 2024: it is used for its test types, which are still the reference."
+  }
+}

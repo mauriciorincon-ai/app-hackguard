@@ -1,0 +1,86 @@
+{
+  "id": "PR-MD-ESTAB-001",
+  "nombre": {
+    "es": "Estabilidad ante la re-ejecución",
+    "en": "Stability under re-execution"
+  },
+  "familia": "modelo_decision",
+  "categoria": "estabilidad_ante_reejecucion",
+  "que_verifica": {
+    "es": "Repetir la misma llamada sobre el mismo conjunto da la misma decisión en casi todos los casos, y esa tasa de cambio se mide antes que las demás pruebas de la familia.",
+    "en": "Repeating the same call on the same set gives the same decision in almost every case, and that change rate is measured before the family's other tests."
+  },
+  "por_que_importa": {
+    "es": "Esa tasa es el piso de ruido: sin ella no se puede saber si un cambio en otra prueba vino de la perturbación o del azar del modelo.",
+    "en": "That rate is the noise floor: without it there is no way to know whether a change in another test came from the perturbation or from the model's randomness."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "R2",
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "scikit-learn",
+      "entorno": "portatil",
+      "version_minima": "1.9.1",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "sklearn.metrics.accuracy_score"
+      },
+      "nota": {
+        "es": "Mide el acuerdo entre dos corridas; la tasa de cambio es uno menos el acuerdo.",
+        "en": "Measures agreement between two runs; the change rate is one minus the agreement."
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La tasa de cambio entre corridas idénticas queda bajo el máximo declarado antes de la prueba, y se informa con su intervalo.",
+      "en": "The change rate between identical runs stays under the maximum declared before the test, and is reported with its interval."
+    },
+    "medido_con": "scikit-learn"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la tasa supera el máximo fijado antes de la prueba. El conjunto corre 5 veces.",
+      "en": "“Failed” if the rate exceeds the maximum set before the test. The set runs 5 times."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas.",
+      "en": "Applies if the asset returns typed decisions."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "scikit-learn · accuracy_score"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "promptfoo",
+  "nombre": "promptfoo",
+  "editor": "OpenAI",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Herramienta de evaluación y pruebas de aplicaciones con modelos de lenguaje, con complementos por tipo de riesgo y aserciones sobre la salida.",
+    "en": "Evaluation and testing tool for language-model applications, with plugins per risk type and assertions on the output."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/promptfoo/promptfoo/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_generativo",
+    "agente"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "plan_gratuito"
+  ],
+  "formato_salida": "results.json",
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.123.1",
+  "registro": {
+    "tipo": "npm",
+    "url": "https://registry.npmjs.org/promptfoo/latest",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/promptfoo/promptfoo",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [
+    {
+      "fecha": "2026-03-09",
+      "de": "Promptfoo",
+      "a": "OpenAI",
+      "fuente": {
+        "url": "https://www.promptfoo.dev/blog/promptfoo-joining-openai/",
+        "http": 200,
+        "consultada": "2026-10-04"
+      },
+      "nota": {
+        "es": "Sigue siendo de código abierto con licencia MIT.",
+        "en": "It remains open source under the MIT licence."
+      }
+    }
+  ],
+  "notas": {
+    "es": "0.123.1 es la última versión publicada (2026-09-18). El proveedor para modelos de decisión de TypeSafe se fusionó el 2026-10-02 y ninguna versión publicada lo trae todavía; por eso ninguna prueba de modelo_decision la recomienda aún.",
+    "en": "0.123.1 is the latest published version (2026-09-18). The provider for TypeSafe decision models was merged on 2026-10-02 and no published version ships it yet; that is why no modelo_decision test recommends it yet."
+  }
+}

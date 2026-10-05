@@ -2,17 +2,27 @@
   "familias": [
     {
       "id": "software",
-      "nombre": { "es": "Software", "en": "Software" },
+      "nombre": {
+        "es": "Software",
+        "en": "Software"
+      },
       "descripcion": {
         "es": "Aplicaciones y servicios sin un modelo de IA en el camino de la decisión. Sus pruebas dan el mismo resultado cada vez.",
         "en": "Applications and services with no AI model in the decision path. Their tests give the same result every time."
       },
       "estocastica": false,
-      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "madurez_admitida": [
+        "estandar",
+        "emergente",
+        "propia"
+      ],
       "categorias": [
         {
           "id": "control_de_acceso",
-          "nombre": { "es": "Control de acceso", "en": "Access control" }
+          "nombre": {
+            "es": "Control de acceso",
+            "en": "Access control"
+          }
         },
         {
           "id": "autenticacion_y_sesion",
@@ -37,7 +47,10 @@
         },
         {
           "id": "exposicion_de_datos",
-          "nombre": { "es": "Exposición de datos", "en": "Data exposure" }
+          "nombre": {
+            "es": "Exposición de datos",
+            "en": "Data exposure"
+          }
         },
         {
           "id": "dependencias_vulnerables",
@@ -57,13 +70,20 @@
     },
     {
       "id": "agente",
-      "nombre": { "es": "Agente", "en": "Agent" },
+      "nombre": {
+        "es": "Agente",
+        "en": "Agent"
+      },
       "descripcion": {
         "es": "Un modelo de lenguaje que decide qué herramientas usar y actúa. Puede responder distinto a la misma entrada.",
         "en": "A language model that decides which tools to use and acts. It may answer the same input differently."
       },
       "estocastica": true,
-      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "madurez_admitida": [
+        "estandar",
+        "emergente",
+        "propia"
+      ],
       "categorias": [
         {
           "id": "inyeccion_de_instrucciones",
@@ -113,18 +133,32 @@
             "es": "Manipulación de la memoria o del estado",
             "en": "Memory or state manipulation"
           }
+        },
+        {
+          "id": "registro_de_acciones",
+          "nombre": {
+            "es": "Registro de las acciones",
+            "en": "Action logging"
+          }
         }
       ]
     },
     {
       "id": "modelo_generativo",
-      "nombre": { "es": "Modelo generativo", "en": "Generative model" },
+      "nombre": {
+        "es": "Modelo generativo",
+        "en": "Generative model"
+      },
       "descripcion": {
         "es": "Un modelo que produce texto (un asistente, un resumidor). Puede responder distinto a la misma entrada.",
         "en": "A model that produces text (an assistant, a summarizer). It may answer the same input differently."
       },
       "estocastica": true,
-      "madurez_admitida": ["estandar", "emergente", "propia"],
+      "madurez_admitida": [
+        "estandar",
+        "emergente",
+        "propia"
+      ],
       "categorias": [
         {
           "id": "inyeccion_de_instrucciones",
@@ -167,26 +201,45 @@
             "es": "Degradación ante entradas adversarias",
             "en": "Degradation under adversarial inputs"
           }
+        },
+        {
+          "id": "manejo_de_la_salida",
+          "nombre": {
+            "es": "Manejo de la salida",
+            "en": "Output handling"
+          }
         }
       ]
     },
     {
       "id": "modelo_decision",
-      "nombre": { "es": "Modelo de decisión", "en": "Decision model" },
+      "nombre": {
+        "es": "Modelo de decisión",
+        "en": "Decision model"
+      },
       "descripcion": {
         "es": "Un modelo que devuelve una distribución de probabilidad sobre opciones que define quien lo llama, y a veces un estadístico de confianza derivado, sin generar texto (E-28). Su resultado varía entre llamadas idénticas.",
         "en": "A model that returns a probability distribution over options the caller defines, and sometimes a derived confidence statistic, without generating text (E-28). Its output varies between identical calls."
       },
       "estocastica": true,
-      "madurez_admitida": ["emergente", "propia"],
+      "madurez_admitida": [
+        "emergente",
+        "propia"
+      ],
       "categorias": [
         {
           "id": "calibracion",
-          "nombre": { "es": "Calibración", "en": "Calibration" }
+          "nombre": {
+            "es": "Calibración",
+            "en": "Calibration"
+          }
         },
         {
           "id": "cruce_de_umbral",
-          "nombre": { "es": "Cruce de umbral", "en": "Threshold crossing" }
+          "nombre": {
+            "es": "Cruce de umbral",
+            "en": "Threshold crossing"
+          }
         },
         {
           "id": "inyeccion_en_el_estado",
@@ -204,11 +257,17 @@
         },
         {
           "id": "limites_conocidos",
-          "nombre": { "es": "Límites conocidos", "en": "Known limits" }
+          "nombre": {
+            "es": "Límites conocidos",
+            "en": "Known limits"
+          }
         },
         {
           "id": "valido_pero_equivocado",
-          "nombre": { "es": "Válido pero equivocado", "en": "Valid but wrong" }
+          "nombre": {
+            "es": "Válido pero equivocado",
+            "en": "Valid but wrong"
+          }
         },
         {
           "id": "invariancia_de_opciones",

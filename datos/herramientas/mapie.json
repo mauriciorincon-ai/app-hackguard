@@ -1,0 +1,41 @@
+{
+  "id": "mapie",
+  "nombre": "MAPIE",
+  "editor": "scikit-learn-contrib",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería de predicción conforme: da intervalos y control de riesgo con garantías estadísticas.",
+    "en": "Conformal prediction library: it gives intervals and risk control with statistical guarantees."
+  },
+  "licencia": {
+    "spdx": "BSD-3-Clause",
+    "url": "https://github.com/scikit-learn-contrib/MAPIE/blob/master/LICENSE"
+  },
+  "familias": [
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "1.5.0",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/mapie/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/scikit-learn-contrib/MAPIE",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "1.5.0 se publicó en PyPI el 2026-08-05.",
+    "en": "1.5.0 was published on PyPI on 2026-08-05."
+  }
+}

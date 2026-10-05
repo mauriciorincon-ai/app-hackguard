@@ -1,0 +1,94 @@
+{
+  "id": "PR-SW-XSS-001",
+  "nombre": {
+    "es": "Salida codificada en páginas con datos del usuario",
+    "en": "Encoded output on pages with user data"
+  },
+  "familia": "software",
+  "categoria": "validacion_de_entradas_e_inyeccion",
+  "que_verifica": {
+    "es": "La aplicación codifica los datos que escribe el usuario antes de mostrarlos en una página.",
+    "en": "The application encodes user-written data before showing it on a page."
+  },
+  "por_que_importa": {
+    "es": "Si un dato del usuario llega a la página sin codificar, el navegador lo trata como parte de la página y puede ejecutarlo frente a otra persona.",
+    "en": "If user data reaches the page unencoded, the browser treats it as part of the page and may run it in front of someone else."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A05",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-79"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          40012,
+          40014
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ninguna página del alcance muestra sin codificar un dato enviado por el usuario.",
+      "en": "No page in scope shows user-submitted data without encoding it."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 40012 o 40014 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 40012 o 40014 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_interfaz_web",
+        "valor": true
+      },
+      {
+        "rasgo": "muestra_datos_del_usuario",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo muestra en sus páginas datos que escriben sus usuarios.",
+      "en": "Applies if the asset shows data written by its users on its pages."
+    }
+  },
+  "prioridad_base": 5,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/40012/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 40012"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}
