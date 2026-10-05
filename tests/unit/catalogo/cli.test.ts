@@ -31,22 +31,22 @@ const temporal = mkdtempSync(path.join(tmpdir(), "hackguard-cli-"));
 afterAll(() => rmSync(temporal, { recursive: true, force: true }));
 
 describe("catalogo validar", () => {
-  it("sobre el catálogo real sale 0, en español por defecto", () => {
+  it("sobre el catálogo real sale 1 (con advertencias: las pruebas de software sin control), en español por defecto", () => {
     const r = catalogo("validar");
-    expect(r.codigo).toBe(0);
-    expect(r.salida.split("\n")[0]).toBe("Catálogo: ok");
+    expect(r.codigo).toBe(1);
+    expect(r.salida.split("\n")[0]).toBe("Catálogo: con advertencias");
     expect(r.errores).toBe("");
   });
 
   it("con --idioma en y con --json", () => {
     expect(catalogo("validar", "--idioma", "en").salida.split("\n")[0]).toBe(
-      "Catalog: ok",
+      "Catalog: with warnings",
     );
     const json = JSON.parse(catalogo("validar", "--json").salida) as {
       estado: string;
       codigo_de_salida: number;
     };
-    expect(json).toMatchObject({ estado: "ok", codigo_de_salida: 0 });
+    expect(json).toMatchObject({ estado: "con_advertencias", codigo_de_salida: 1 });
   });
 
   it("una semilla inválida sale 2 y una con advertencia sale 1", () => {

@@ -12,10 +12,10 @@ import {
 } from "../../../src/engine/catalogo/informe.ts";
 import { construirInstantanea } from "../../../src/engine/catalogo/instantanea.ts";
 import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";
-import { catalogoReal, conPrueba, referencia } from "./ayuda.ts";
+import { catalogoBase, conPrueba, referencia } from "./ayuda.ts";
 
 async function conSemilla(cambio: (p: Record<string, unknown>) => void) {
-  const c = catalogoReal();
+  const c = catalogoBase();
   const p = referencia();
   cambio(p);
   conPrueba(c, p);
@@ -38,7 +38,7 @@ describe("informeDeValidacion", () => {
     const texto = informeDeValidacion(r, "es");
     expect(texto.split("\n")[0]).toBe("Catálogo: inválido");
     expect(texto).toContain(
-      "14 marcos · 1 mapa de equivalencias · 0 controles · 1 herramienta · 0 pruebas",
+      "14 marcos · 1 mapa de equivalencias · 38 controles · 13 herramientas · 0 pruebas",
     );
     expect(texto).toContain("1 error · 0 advertencias · 4 notas");
     expect(texto).toContain("Errores (1)");
@@ -62,7 +62,7 @@ describe("informeDeValidacion", () => {
     const texto = informeDeValidacion(r, "en");
     expect(texto.split("\n")[0]).toBe("Catalog: with warnings");
     expect(texto).toContain("1 test (1 publishable, 0 awaiting review)");
-    expect(texto).toContain("Warnings (2)");
+    expect(texto).toContain("Warnings (1)");
     expect(texto).toContain(
       "  ! datos/pruebas/SEMILLA-REFERENCIA.json · version_marco",
     );
@@ -73,26 +73,26 @@ describe("informeDeValidacion", () => {
   });
 
   it("un catálogo sin hallazgos no imprime secciones vacías", async () => {
-    const r = await validarCatalogo(catalogoReal());
+    const r = await validarCatalogo(catalogoBase());
     const sinNotas = {
       ...r,
       hallazgos: [],
       conteos: { ...r.conteos, notas: 0 },
     };
     expect(informeDeValidacion(sinNotas, "es")).toBe(
-      "Catálogo: ok\n  14 marcos · 1 mapa de equivalencias · 0 controles · 1 herramienta · 0 pruebas (0 publicables, 0 pendientes de revisión)\n  0 errores · 0 advertencias · 0 notas\n",
+      "Catálogo: ok\n  14 marcos · 1 mapa de equivalencias · 38 controles · 13 herramientas · 0 pruebas (0 publicables, 0 pendientes de revisión)\n  0 errores · 0 advertencias · 0 notas\n",
     );
   });
 
   it("un hallazgo del archivo entero no lleva campo", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     c.familias = null;
     const texto = informeDeValidacion(await validarCatalogo(c), "es");
     expect(texto).toContain("  ✗ datos/familias.json\n      archivo/falta:");
   });
 
   it("en JSON: estado, código, conteos y hallazgos con los dos idiomas", async () => {
-    const r = await validarCatalogo(catalogoReal());
+    const r = await validarCatalogo(catalogoBase());
     const json = salidaJsonDeValidacion(r);
     expect(json).toMatchObject({ estado: "ok", codigo_de_salida: 0 });
     expect(json.hallazgos[0].nombre).toEqual({
@@ -104,7 +104,7 @@ describe("informeDeValidacion", () => {
 
 describe("informe de la instantánea", () => {
   it("emitida: dice dónde quedó y su huella, en los dos idiomas", async () => {
-    const r = await construirInstantanea(catalogoReal(), "2026-10-15");
+    const r = await construirInstantanea(catalogoBase(), "2026-10-15");
     if (!r.emitida) throw new Error("debía emitirse");
     const es = informeDeInstantanea(r, "datos/instantaneas/x.json", "es");
     expect(es).toContain("Instantánea emitida: datos/instantaneas/x.json");

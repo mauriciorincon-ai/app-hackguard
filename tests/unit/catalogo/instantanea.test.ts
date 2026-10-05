@@ -8,13 +8,13 @@ import {
   huellaDeInstantanea,
   nombreDeInstantanea,
 } from "../../../src/engine/catalogo/instantanea.ts";
-import { catalogoReal, conPrueba, referencia } from "./ayuda.ts";
+import { catalogoBase, conPrueba, referencia } from "./ayuda.ts";
 
 const FECHA = "2026-10-15";
 
 describe("construirInstantanea", () => {
   it("emite el catálogo con su huella, y la huella se recalcula igual", async () => {
-    const r = await construirInstantanea(catalogoReal(), FECHA);
+    const r = await construirInstantanea(catalogoBase(), FECHA);
     if (!r.emitida) throw new Error("debía emitirse");
     const { huella, ...cuerpo } = r.instantanea;
     expect(r.instantanea.formato).toBe(FORMATO_DE_INSTANTANEA);
@@ -37,7 +37,7 @@ describe("construirInstantanea", () => {
   it("tres corridas dan la misma huella, sin importar el orden de los archivos", async () => {
     const huellas = new Set<string>();
     for (let i = 0; i < 3; i++) {
-      const c = catalogoReal();
+      const c = catalogoBase();
       if (i === 1) c.marcos.reverse();
       if (i === 2) c.herramientas.reverse();
       const r = await construirInstantanea(c, FECHA);
@@ -47,15 +47,15 @@ describe("construirInstantanea", () => {
   });
 
   it("otra fecha de evaluación da otra huella", async () => {
-    const a = await construirInstantanea(catalogoReal(), FECHA);
-    const b = await construirInstantanea(catalogoReal(), "2026-12-01");
+    const a = await construirInstantanea(catalogoBase(), FECHA);
+    const b = await construirInstantanea(catalogoBase(), "2026-12-01");
     expect(
       a.emitida && b.emitida && a.instantanea.huella !== b.instantanea.huella,
     ).toBe(true);
   });
 
   it("publica las pruebas aprobadas y lista aparte las que esperan revisión", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const aprobada = referencia();
     aprobada.id = "PR-CASO-001";
     const propuesta = {
@@ -92,7 +92,7 @@ describe("construirInstantanea", () => {
   });
 
   it("no emite nada si el catálogo es inválido (gate de publicación)", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const p = referencia();
     delete p.marco_id;
     conPrueba(c, p);
@@ -105,7 +105,7 @@ describe("construirInstantanea", () => {
   it.each(["2026-02-30", "15/10/2026", "", "hoy"])(
     "rechaza la fecha «%s»: la fecha es una entrada, no el reloj",
     async (fecha) => {
-      await expect(construirInstantanea(catalogoReal(), fecha)).rejects.toThrow(
+      await expect(construirInstantanea(catalogoBase(), fecha)).rejects.toThrow(
         /fecha de evaluación inválida/,
       );
     },

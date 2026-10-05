@@ -18,6 +18,14 @@ export function catalogoReal(): CatalogoEnBruto {
   return structuredClone(base);
 }
 
+/**
+ * El catálogo real sin sus pruebas: marcos, controles, herramientas y vocabulario de `datos/`. Las pruebas del
+ * motor parten de aquí, para que sumar una prueba real al catálogo no cambie lo que miden.
+ */
+export function catalogoBase(): CatalogoEnBruto {
+  return { ...structuredClone(base), pruebas: [] };
+}
+
 export type Json = Record<string, unknown>;
 
 /** Lee, edita y vuelve a escribir el JSON de un archivo. */

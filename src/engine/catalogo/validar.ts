@@ -813,6 +813,30 @@ export async function validarCatalogo(
     }
   }
 
+  // El filtro recorre también el resto del catálogo: marcos, mapas, controles, herramientas y vocabulario.
+  // Ahí no hay estado de aprobación que cambiar; la marca queda como advertencia para que una persona lo lea.
+  const vocabulario: [ArchivoDeDatos | null, unknown][] = [
+    [entrada.familias, familiasDatos],
+    [entrada.reglas_de_veredicto, reglasDatos],
+    [entrada.rasgos, rasgosDatos],
+  ];
+  const resto: { ruta: string; datos: unknown }[] = [
+    ...vocabulario.flatMap(([archivo, valor]) =>
+      archivo !== null && valor !== null
+        ? [{ ruta: archivo.ruta, datos: valor }]
+        : [],
+    ),
+    ...marcosLeidos,
+    ...mapasLeidos,
+    ...capasLeidas,
+    ...herramientasLeidas,
+  ];
+  for (const { ruta, datos } of resto) {
+    for (const m of filtrar(datos, patrones)) {
+      registro.agregar("filtro/marcada", ruta, m.campo, comillas(m.patron));
+    }
+  }
+
   // Pruebas.
   const pruebasLeidas = leerColeccion(
     entrada.pruebas,

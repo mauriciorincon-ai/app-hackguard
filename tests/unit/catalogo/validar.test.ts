@@ -12,7 +12,7 @@ import {
 } from "../../../src/engine/catalogo/validar.ts";
 import {
   buscar,
-  catalogoReal,
+  catalogoBase,
   conPrueba,
   editar,
   fijar,
@@ -331,12 +331,18 @@ const CASOS: Caso[] = [
   {
     regla: "prueba/control-pendiente-incoherente",
     que: "sin controles y control_pendiente false",
-    preparar: (c) => conReferencia(c, (p) => (p.control_pendiente = false)),
+    preparar: (c) =>
+      conReferencia(c, (p) =>
+        Object.assign(p, { controles: [], control_pendiente: false }),
+      ),
   },
   {
     regla: "prueba/sin-control",
     que: "sin control",
-    preparar: (c) => conReferencia(c),
+    preparar: (c) =>
+      conReferencia(c, (p) =>
+        Object.assign(p, { controles: [], control_pendiente: true }),
+      ),
   },
   {
     regla: "prueba/herramienta-inexistente",
@@ -623,7 +629,7 @@ const CASOS: Caso[] = [
 
 describe("cada regla del validador salta con su caso", () => {
   it.each(CASOS)("$regla: $que", async ({ regla, preparar }) => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const ruta = await preparar(c);
     const r = await validarCatalogo(c);
     const encontrado = r.hallazgos.find(
@@ -650,9 +656,9 @@ describe("cada regla del validador salta con su caso", () => {
   });
 });
 
-describe("el catálogo real", () => {
+describe("el catálogo base (el real sin sus pruebas)", () => {
   it("es válido: sin errores ni advertencias, con sus datos por verificar a la vista", async () => {
-    const r = await validarCatalogo(catalogoReal());
+    const r = await validarCatalogo(catalogoBase());
     expect(r.estado).toBe("ok");
     expect(r.hallazgos.filter((h) => h.severidad !== "nota")).toEqual([]);
     expect(r.hallazgos.map((h) => `${h.ruta} · ${h.campo}`)).toEqual([
@@ -664,7 +670,8 @@ describe("el catálogo real", () => {
     expect(r.conteos).toMatchObject({
       marcos: 14,
       equivalencias: 1,
-      herramientas: 1,
+      controles: 38,
+      herramientas: 13,
       errores: 0,
       advertencias: 0,
       notas: 4,
@@ -672,7 +679,7 @@ describe("el catálogo real", () => {
   });
 
   it("no depende del orden en que llegan los archivos", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     conReferencia(c, (p) => (p.notas = codigo));
     const otra = structuredClone(c);
     for (const lista of [
@@ -688,7 +695,7 @@ describe("el catálogo real", () => {
 
 describe("qué prueba entra a una instantánea", () => {
   async function evaluar(cambio: (p: Json) => unknown) {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const p = referencia();
     p.id = "PR-CASO-001";
     await cambio(p);
@@ -706,7 +713,7 @@ describe("qué prueba entra a una instantánea", () => {
     expect(await evaluar(() => {})).toEqual({
       publicable: true,
       pendiente: null,
-      estado: "con_advertencias",
+      estado: "ok",
     });
   });
 
@@ -774,8 +781,23 @@ describe("qué prueba entra a una instantánea", () => {
 });
 
 describe("controles y vocabulario", () => {
+  it("el filtro recorre también herramientas, marcos y controles, y marca con advertencia", async () => {
+    const c = catalogoBase();
+    editar(buscar(c.herramientas, GARAK), (h) => (h.notas = codigo));
+    const r = await validarCatalogo(c);
+    expect(r.estado).toBe("con_advertencias");
+    expect(
+      r.hallazgos
+        .filter((h) => h.ruta === GARAK)
+        .map((h) => [h.regla, h.campo]),
+    ).toEqual([
+      ["filtro/marcada", "notas.en"],
+      ["filtro/marcada", "notas.es"],
+    ]);
+  });
+
   it("una prueba que cita un control de una capa cargada no pide control", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     conCapa(c);
     const ruta = conReferencia(c, (p) =>
       Object.assign(p, {
@@ -788,11 +810,11 @@ describe("controles y vocabulario", () => {
       r.hallazgos.filter((h) => h.ruta === ruta || h.ruta === CAPA),
     ).toEqual([]);
     expect(r.estado).toBe("ok");
-    expect(r.conteos.controles).toBe(1);
+    expect(r.conteos.controles).toBe(39);
   });
 
   it("una capa nombra su marco con versión, y sus equivalencias también", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     conCapa(
       c,
       (capa) => Object.assign(capa, { id: "a", marco_id: "marco-inexistente" }),
@@ -830,7 +852,7 @@ describe("controles y vocabulario", () => {
   });
 
   it("un id repetido dentro de un archivo de vocabulario se reporta", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     editar(c.familias!, (f) => {
       const familias = f.familias as Json[];
       familias.push({ ...familias[0] });
@@ -843,11 +865,11 @@ describe("controles y vocabulario", () => {
       r.hallazgos
         .filter((h) => h.regla === "catalogo/id-duplicado")
         .map((h) => h.campo),
-    ).toEqual(["familias.1.categorias.7.id", "familias.4.id"]);
+    ).toEqual(["familias.1.categorias.8.id", "familias.4.id"]);
   });
 
   it("una prueba que no pasa el esquema igual pasa por el filtro", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const ruta = conReferencia(c, (p) =>
       Object.assign(p, { prioridad_base: 9, notas: codigo }),
     );
@@ -861,7 +883,7 @@ describe("controles y vocabulario", () => {
   });
 
   it("un rasgo de opción admite solo sus opciones", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const bien = conReferencia(
       c,
       (p) =>
@@ -928,7 +950,7 @@ describe("el detalle de un campo que no cumple el esquema se lee en los dos idio
       "expected an https address",
     ],
   ])("%s = %j", async (campo, valor, es, en) => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const ruta = conReferencia(c, (p) => fijar(p, campo, valor));
     const r = await validarCatalogo(c);
     const h = r.hallazgos.find(
@@ -943,7 +965,7 @@ describe("el detalle de un campo que no cumple el esquema se lee en los dos idio
   });
 
   it("un campo desconocido anidado dice su ruta completa", async () => {
-    const c = catalogoReal();
+    const c = catalogoBase();
     const ruta = conReferencia(c, (p) =>
       fijar(p, "resultado_esperado.extra", 1),
     );

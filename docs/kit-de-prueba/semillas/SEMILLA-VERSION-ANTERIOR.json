@@ -17,8 +17,8 @@
   "marco_id": "owasp-llm-top10",
   "version_marco": "2025",
   "referencia_en_marco": "LLM07",
-  "controles": [],
-  "control_pendiente": true,
+  "controles": ["iso42001-A.6.2.4"],
+  "control_pendiente": false,
   "herramientas_recomendadas": [
     {
       "herramienta": "garak",

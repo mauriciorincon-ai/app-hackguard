@@ -16,8 +16,8 @@
   },
   "version_marco": "2026",
   "referencia_en_marco": "LLM01",
-  "controles": [],
-  "control_pendiente": true,
+  "controles": ["iso42001-A.6.2.4"],
+  "control_pendiente": false,
   "herramientas_recomendadas": [
     {
       "herramienta": "garak",

@@ -12,13 +12,13 @@
       "archivo": "SEMILLA-REFERENCIA.json",
       "requisito": "RF-01.2",
       "que_siembra": {
-        "es": "La prueba de referencia, completa. Las demás semillas son esta misma con un solo defecto.",
-        "en": "The complete reference test. Every other seed is this same test with a single defect."
+        "es": "La prueba de referencia, completa y con un control del Anexo A. Las demás semillas son esta misma con un solo defecto.",
+        "en": "The complete reference test, with an Annex A control. Every other seed is this same test with a single defect."
       },
       "espera": {
-        "estado": "con_advertencias",
+        "estado": "ok",
         "errores": [],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -96,7 +96,7 @@
       "espera": {
         "estado": "invalido",
         "errores": ["prueba/estocastica-sin-k"],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -122,7 +122,7 @@
       "espera": {
         "estado": "invalido",
         "errores": ["prueba/herramienta-inexistente"],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -135,7 +135,7 @@
       "espera": {
         "estado": "invalido",
         "errores": ["referencia/entrada-inexistente"],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -148,7 +148,7 @@
       "espera": {
         "estado": "invalido",
         "errores": ["referencia/version-inexistente"],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -161,7 +161,7 @@
       "espera": {
         "estado": "invalido",
         "errores": ["prueba/aprobada-sin-revision"],
-        "advertencias": ["prueba/sin-control"]
+        "advertencias": []
       }
     },
     {
@@ -187,7 +187,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["prueba/sin-control", "referencia/version-anterior"],
+        "advertencias": ["referencia/version-anterior"],
         "detalle_contiene": "LLM08"
       }
     },
@@ -201,7 +201,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["filtro/marcada", "prueba/sin-control"]
+        "advertencias": ["filtro/marcada"]
       }
     },
     {
@@ -214,7 +214,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["filtro/marcada", "prueba/sin-control"]
+        "advertencias": ["filtro/marcada"]
       }
     },
     {
@@ -227,7 +227,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["filtro/marcada", "prueba/sin-control"]
+        "advertencias": ["filtro/marcada"]
       }
     },
     {
@@ -240,7 +240,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["filtro/marcada", "prueba/sin-control"]
+        "advertencias": ["filtro/marcada"]
       }
     },
     {
@@ -253,7 +253,7 @@
       "espera": {
         "estado": "con_advertencias",
         "errores": [],
-        "advertencias": ["filtro/marcada", "prueba/sin-control"]
+        "advertencias": ["filtro/marcada"]
       }
     }
   ]

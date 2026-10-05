@@ -252,3 +252,145 @@ Nota sobre la demo del gate de publicación: la primera corrida dio el rojo corr
 salen con código 2 y su regla; la de referencia, la sin control, la de versión anterior y las cinco marcadas por el
 filtro salen con código 1, sin rechazo). **Veredicto del usuario, 2026-10-04: «continúa».** La fase 2
 arranca sobre este validador.
+
+## Fase 2 — Los datos del catálogo (2026-10-04)
+
+### Fuentes verificadas en esta fase (con `curl`, sin eludir nada; caché en el scratchpad)
+
+- **Anexo A de ISO/IEC 42001:** el esquema público de CISO Assistant (`iso42001-2023.yaml`, HTTP 200) confirma
+  38 controles en 9 áreas, de A.2 a A.10. De ahí salieron **solo los identificadores**; nombre y resumen de cada
+  control están escritos con palabras propias.
+- **Cruce NIST AI RMF ↔ ISO/IEC 42001** (PDF de NIST, HTTP 200): 201 pares control → subcategoría, uno o más para
+  cada uno de los 38 controles. El cruce se hizo contra el borrador final (FDIS) y cita el Anexo B, la guía de cada
+  control, con la misma numeración que el Anexo A. Por eso toda equivalencia queda «parcial», con esa nota.
+- **Herramientas, en su registro:**
+
+  | Herramienta | Versión | Fecha |
+  |---|---|---|
+  | PyRIT | 1.1.0 | 2026-09-04 |
+  | Inspect | 0.3.276 | 2026-10-02 |
+  | Giskard | 3.0.1 | 2026-10-02 |
+  | promptfoo | 0.123.1 | 2026-09-18 |
+  | ZAP | 2.17.0 | 2025-12-15 |
+  | Nuclei | 3.11.1 | 2026-08-08 |
+  | scikit-learn | 1.9.1 | 2026-09-10 |
+  | MAPIE | 1.5.0 | 2026-08-05 |
+  | Evidently | 0.7.23 | 2026-09-11 |
+  | CheckList | 0.0.11 | 2021 |
+  | TextAttack | 0.3.11 | 2026-08-14 |
+
+  Los repositorios y las licencias respondieron 200. La de scikit-learn está en `COPYING`.
+- **Cambios de editor, con fuente:**
+  - ZAP: de OWASP pasó al Software Security Project el 2023-08-01, y a Checkmarx el 2024-09-24 (blog oficial, 200).
+  - promptfoo: pasó a OpenAI el 2026-03-09 (blog, 200).
+  - PyRIT: archivó `Azure/PyRIT` y sigue en `microsoft/PyRIT`.
+- **Selectores, uno por uno:**
+  - garak 0.17.0: 8 sondas y 10 módulos de detectores leídos en la etiqueta `v0.17.0`, con sus clases.
+  - ZAP: 12 alertas en `zaproxy.org/docs/alerts/<id>/`.
+  - promptfoo: 14 complementos en sus páginas. `pii:session` y `agentic:memory-poisoning` se confirmaron dentro del
+    HTML, porque las etiquetas partían el id.
+  - Inspect: `inspect_evals/agentdojo` y `agentharm`.
+  - Nuclei: `http/exposures/configs`.
+  - Las funciones de scikit-learn, más las clases `DataDriftPreset` (Evidently), `INV` y `DIR` (CheckList) y
+    `EmbeddingAugmenter` (TextAttack), en sus archivos.
+- **Referencias adicionales:**
+  - 16 páginas de CWE 4.20.
+  - Los identificadores de MITRE ATLAS, leídos en `ATLAS-2026.09.yaml` (208 técnicas).
+- **Hallazgos que quedan como dato:**
+  - El proveedor TypeSafe de promptfoo se fusionó el 2026-10-02, pero ninguna versión publicada lo trae. Por eso
+    ninguna prueba de `modelo_decision` lo recomienda todavía.
+  - `inspect-typesafe` existe en GitHub (MIT) pero no en PyPI (404).
+  - CheckList no recibe cambios desde 2024.
+  - El repositorio de HackGuard no declara licencia: la herramienta propia dice `NOASSERTION` y lo anota como
+    decisión pendiente del dueño.
+
+### Qué se escribió
+
+- **`datos/controles/iso42001-anexo-a.json`:** capa `por_defecto`.
+  - 9 áreas con los nombres propios que se aprobaron en la maqueta.
+  - 38 controles con nombre y resumen `{es, en}` propios, todos con `verificado_contra_norma: false`.
+  - 201 equivalencias con NIST AI RMF 1.0.
+- **`datos/herramientas/`:** 12 herramientas nuevas, 13 en total.
+  - Las de la especificación: ZAP con adaptador, más PyRIT, promptfoo, Inspect, Giskard y Nuclei.
+  - Las de E-25: scikit-learn, MAPIE, Evidently, CheckList y TextAttack.
+  - `hackguard-revision`, herramienta propia para las pruebas que decide una persona revisando diseño o código.
+- **`datos/pruebas/<familia>/`:** 38 pruebas, todas `aprobada` y `limpia`:
+  - software: 10;
+  - agente: 9;
+  - modelo generativo: 7;
+  - modelo de decisión: 12, con las cuatro nuevas de E-22 y «válido pero equivocado» partido en tres.
+
+  Cada una dice qué se verifica, por qué importa, con qué herramienta y selector verificados y qué se espera. Lleva
+  además marco con versión y entrada, referencias adicionales (CWE, ATLAS), regla de veredicto con k cuando mide
+  sobre un activo estocástico, aplicabilidad por rasgos, prioridad, madurez (E-23) y fuentes con su HTTP.
+- **Vocabulario:**
+  - 2 categorías nuevas que pedían las pruebas de la maqueta: «Registro de las acciones» en agente y «Manejo de la
+    salida» en modelo generativo.
+  - 19 rasgos de perfil nuevos, 25 en total.
+- **Semillas:** la de referencia ahora cita el control A.6.2.4 y sale «ok». El manifiesto se actualizó y las 19
+  siguen respondiendo lo esperado.
+
+### Desviaciones del plan
+
+- **El filtro recorre ahora todo el catálogo dentro del validador:** marcos, mapas, controles, herramientas y
+  vocabulario, además de las pruebas. Fuera de las pruebas no hay estado de aprobación, así que una marca es una
+  advertencia.
+  - Corrida a mano antes de cambiar el validador: 70 archivos, 4.695 textos, 0 marcas.
+  - Con el validador: 0 marcas.
+- **Las 10 pruebas de software nacen sin control** (`control_pendiente`): la capa por defecto es el Anexo A de
+  ISO/IEC 42001, que gobierna sistemas de IA. Esperan una capa propia de controles de software (D12).
+- **Cambios frente a la maqueta:**
+  - `PR-IA-FUGA-001` cita LLM08 de 2026 en vez de LLM07 de 2025.
+  - `PR-IA-DATO-001`, que la maqueta mostraba marcada, no la marca el filtro con el texto real.
+  - Las referencias numéricas de la maqueta a la lista de 14 ítems (`3`, `7`…) pasan a sus identificadores reales
+    (`C1`, `C3`…).
+- **Las pruebas del motor parten ahora de `catalogoBase()`:** el catálogo real sin sus pruebas, para que sumar una
+  prueba real no cambie lo que miden. Las cifras del catálogo real tienen su propio archivo,
+  `tests/unit/catalogo/catalogo-real.test.ts`.
+
+### Inventario (salida del validador sobre `datos/`)
+
+«Catálogo: con advertencias»:
+- 14 marcos, 1 mapa, 38 controles, 13 herramientas y 38 pruebas: 38 publicables, 0 pendientes;
+- 0 errores, 10 advertencias (todas `prueba/sin-control`, de software) y 4 notas `por_verificar`.
+
+| Familia | Pruebas | Madurez | Categorías cubiertas |
+|---|---|---|---|
+| Software | 10 | 10 estándar | 7 de 7 |
+| Agente | 9 | 8 estándar · 1 propia | 8 de 8 |
+| Modelo generativo | 7 | 7 estándar | 7 de 7 |
+| Modelo de decisión | 12 | 9 emergente · 3 propia | 10 de 10 |
+
+- **Marcadas por el filtro:** ninguna.
+- **Sin control:** las 10 de software.
+- **Controles del Anexo A con pruebas:** A.6.2.4 (12), A.9.2 (5), A.6.2.6 (5), A.9.4 (2), A.6.2.8, A.7.4, A.7.5 y
+  A.6.2.2 (1 cada uno).
+- **Herramientas registradas sin prueba que las recomiende:** Giskard, MAPIE y PyRIT. Quedan en el catálogo como
+  recomendables, como pide § 10.4.
+
+### Pruebas (corrida final de la fase, después de las demos)
+
+- `pnpm test`: **1.028 pruebas en 34 archivos, todas en verde**. `pnpm typecheck` y `pnpm lint` limpios.
+- **Archivo nuevo, `catalogo/catalogo-real.test.ts`, con 37 pruebas:**
+  - una por cada una de las 32 categorías;
+  - cinco invariantes: sin errores, con solo las advertencias esperadas; cada prueba en la carpeta de su familia;
+    ningún control verificado contra la norma; toda herramienta pública con su registro en 200; k ≥ 5 en las
+    pruebas estocásticas que miden sobre el activo.
+- **Cobertura de `src/engine/`:**
+  - `validar.ts`: 98,56 % de sentencias, 94,25 % de ramas, 98,5 % de funciones y 98,44 % de líneas.
+  - `equivalencias.ts`: 95,83 % de ramas. `informe.ts`: 96,15 % de ramas.
+  - Los demás archivos, al 100 %.
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`)
+
+| Gate | Mutación | Rojo que dio | Verde tras restaurar |
+|---|---|---|---|
+| Toda categoría tiene prueba | `PR-SW-LOG-001` pasa a `control_de_acceso` | «× software · registro_y_monitoreo tiene al menos una prueba» | 37 de 37 |
+| Ningún control verificado contra la norma | El primer control dice `true` | «× ningún control del Anexo A dice estar verificado contra la norma (G-Plan P1)» | 37 de 37 |
+| Cada prueba en la carpeta de su familia | `PR-SW-LOG-001` dice `agente` | «× cada prueba vive en datos/pruebas/<su familia>/» (también nombró el error y la categoría vacía) | 37 de 37 |
+| Registro de herramienta en 200 | El registro de garak dice 404 | «× toda herramienta pública tiene su registro consultado con 200» | 37 de 37 |
+| k en pruebas estocásticas | `PR-AG-PERM-001` con k = 3 | «× toda prueba de una familia estocástica que mide sobre el activo declara k» | 37 de 37 |
+| El filtro recorre todo el catálogo | El bucle recorre una lista vacía | «× el filtro recorre también herramientas, marcos y controles, y marca con advertencia» | 88 de 88 |
+
+Nota: la primera corrida de las cinco demos de datos dio el rojo correcto y restauró, pero falló en el último paso
+porque pedí `--minimo-tests 40` y el verde corre 37. Se repitieron con 37 y salieron limpias.
