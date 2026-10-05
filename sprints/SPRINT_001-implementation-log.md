@@ -238,3 +238,17 @@ arranca sobre estos datos.
 
 Nota sobre la demo del gate de publicación: la primera corrida dio el rojo correcto y restauró, pero falló en el
 último paso porque le pedí `--minimo-tests 25` y el verde corre 24. Se repitió con 24 y salió limpia.
+
+### CI de la fase 1 (PR #8, commit `c5086d8`, corrida 37245076348)
+
+- **Checks requeridos:** `quality` (2 min 38 s), `e2e` (10 min 25 s) y `lighthouse` (1 min 37 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Node v22.23.3 en la CI:** el CLI corre con el TypeScript nativo de Node 22 (las 14 pruebas de `cli.test.ts`
+  lanzan el proceso aparte). Primera corrida del paso «Catálogo válido»: «Catálogo: ok · 14 marcos · 1 mapa de
+  equivalencias · 0 controles · 1 herramienta · 0 pruebas · 0 errores · 0 advertencias · 4 notas». C18 en la CI:
+  «bloquea 11 de 11 semillas inválidas sembradas».
+
+**STOP de la fase 1:** demo del validador con las 19 semillas presentada al usuario el 2026-10-04 (11 inválidas
+salen con código 2 y su regla; la de referencia, la sin control, la de versión anterior y las cinco marcadas por el
+filtro salen con código 1, sin rechazo). **Veredicto del usuario, 2026-10-04: «continúa».** La fase 2
+arranca sobre este validador.
