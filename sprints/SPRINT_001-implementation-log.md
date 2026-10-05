@@ -413,3 +413,72 @@ pruebas sin control (las 10 de software) presentados al usuario el 2026-10-04. *
 ## Fase 3 — Semáforo, instantáneas y la familia `modelo_decision`
 
 Arranca el 2026-10-04 tras el «continúa» de la fase 2.
+
+### Bloque A — semáforo de vigencia, vocabulario de estados e instantánea con semáforo
+
+**Qué se construyó:**
+
+- `datos/umbrales.json`: por revisar desde 30 días y vencido desde 60, con su origen (RF-01.5 y la maqueta).
+- `datos/estados.json`: el vocabulario completo de la maqueta aprobada, 9 vocabularios y 33 estados, cada uno con
+  papel de color, símbolo y nombre `{es, en}`. Se generó desde `scripts/maqueta/nucleo/estados.mjs` (solo
+  lectura) y una prueba exige que los dos sigan iguales estado por estado.
+- `src/engine/catalogo/semaforo.ts`: días y estado de cada prueba publicada, marco y herramienta; la familia
+  toma el estado de su prueba más atrasada y lleva el desglose de todas. Una familia sin pruebas publicadas
+  queda con estado `null`.
+- `src/engine/fecha.ts`: `fechaMasDias`, el inverso del algoritmo civil (Hinnant), para la matriz.
+- Validador: lee los dos archivos nuevos y suma dos reglas, `umbrales/orden-invalido` y `estados/sin-etiqueta`
+  (61 reglas). La segunda exige que cada estado que el motor calcula tenga nombre y símbolo. El filtro recorre
+  también estos dos archivos.
+- Instantánea: el catálogo suma `umbrales` y `estados`, y la instantánea suma `semaforo`, que entra en la huella.
+  El formato sigue en `hackguard/instantanea@1` porque todavía no había ninguna versionada.
+- Informe de `instantanea`: una sección de vigencia con marca, nombre y cifra por estado; los ceros no se
+  dibujan. La salida `--json` suma el desglose.
+
+**Decisiones:**
+
+- **El semáforo cubre pruebas publicadas, marcos, herramientas y familias** (RF-01.5 y E-26). No cubre
+  controles ni mapas de equivalencias: ningún requisito lo pide.
+- **Una fecha de evaluación anterior a la última verificación del catálogo se rechaza.** El motor lanza
+  `RangeError`, que el CLI trata como error de uso (código 3) con un mensaje en los dos idiomas. Una instantánea
+  no puede decir que algo estaba vigente antes de que alguien lo verificara.
+- **Las instantáneas versionadas son registros históricos.** Su prueba exige autoconsistencia (huella =
+  contenido, nombre = fecha + huella, bytes = los del CLI), no que coincidan con el catálogo de hoy.
+
+**Primera instantánea oficial:** `datos/instantaneas/2026-10-04-12d3b632a871.json` (502.746 bytes), emitida con
+`pnpm catalogo:instantanea --fecha 2026-10-04`. Las tres corridas dieron la misma huella
+(`12d3b632a871cc7ceb06970036976e25542b7eab6bc58ebc63dc4db5f6495ce4`). Cada una tardó entre 0,28 y 0,30 s
+medidos con `time -p`, incluido el arranque de pnpm. En esa fecha todo está vigente: el catálogo entero se
+verificó el 2026-10-04.
+
+**El semáforo sobre datos reales, en sus tres estados** (corridas a una carpeta temporal):
+
+| Fecha | Pruebas | Marcos | Herramientas | Familias | Huella |
+|---|---|---|---|---|---|
+| 2026-10-04 | ✓ Vigente 38 | ✓ Vigente 14 | ✓ Vigente 13 | ✓ Vigente 4 | `12d3b632a871…` |
+| 2026-11-03 | ! Por revisar 38 | ! Por revisar 14 | ! Por revisar 13 | ! Por revisar 4 | `0b24f1abde9c…` |
+| 2026-12-03 | ✗ Vencido 38 | ✗ Vencido 14 | ✗ Vencido 13 | ✗ Vencido 4 | `39f851ad3f55…` |
+| 2026-09-30 | — | — | — | — | rechazada: anterior a la última verificación |
+
+**Matriz de envejecimiento** (`tests/unit/catalogo/envejecimiento.test.ts`, regla 23): construye la instantánea
+del catálogo real en 6 fechas. Son el día de la última verificación, la víspera y el día de cada umbral, y +100
+días. En cada fecha exige la instantánea emitida, días enteros no negativos, el estado esperado de cada entidad
+(calculado comparando fechas, no días), la familia como su prueba más atrasada y la etiqueta de cada estado. 27
+pruebas. Los estados mezclados se prueban aparte, con casos armados a mano en `semaforo.test.ts`: el catálogo
+real tiene una sola fecha de verificación y no los tendría.
+
+**Pruebas:** 1.083 en 37 archivos, en verde con cobertura. El motor del catálogo queda en 99,12 % de sentencias y
+94,48 % de ramas. `semaforo.ts`, `instantanea.ts` y `fecha.ts` están al 100 %, y por eso la tabla no los lista.
+
+**Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
+
+| Gate | Mutación | Rojo que dio | Verde tras restaurar |
+|---|---|---|---|
+| Matriz de envejecimiento | `dias >= umbrales.vencido` pasa a `>` (el umbral se corre un día) | «× 2026-12-03: cada entidad está en el estado que le toca» y «× el semáforo y la huella cambian el día de cada umbral» | 27 de 27 |
+| Vocabulario = maqueta | «Por revisar» pasa a «Pendiente» en `datos/estados.json` | «× el vocabulario de estados es el de la maqueta aprobada en G-Diseño» | 39 de 39 |
+| Umbrales de RF-01.5 | `"vencido": 60` pasa a 61 | «× los umbrales de vigencia son los de RF-01.5» | 39 de 39 |
+| Regla `estados/sin-etiqueta` | La condición nunca se cumple | «× estados/sin-etiqueta: el vocabulario de vigencia sin «vencido»» | 90 de 90 |
+| Fecha anterior a la verificación | La comparación con la última verificación nunca se cumple | «× rechaza una fecha anterior a la última verificación del catálogo» | 12 de 12 |
+| Instantánea versionada autoconsistente | La fecha de la instantánea versionada pasa a 2026-10-05 | «× 2026-10-04-12d3b632a871.json: su huella es la de su contenido…» (huella `95265a1c60ce…` en vez de `12d3b632a871…`) | 2 de 2 |
+
+Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correcto y restauró, pero falló en el
+último paso porque pedí `--minimo-tests 100` y el archivo corre 90. Se repitió con 90 y salió limpia.
