@@ -73,7 +73,7 @@ function lineaDeConteos(r: ResultadoDeValidacion, idioma: Idioma): string[] {
   const c = r.conteos;
   if (idioma === "es") {
     return [
-      `  ${plural(c.marcos, "marco", "marcos")} · ${plural(c.equivalencias, "mapa de equivalencias", "mapas de equivalencias")} · ${plural(c.controles, "control", "controles")} · ${plural(c.herramientas, "herramienta", "herramientas")} · ${plural(c.pruebas, "prueba", "pruebas")} (${c.publicables} publicables, ${c.pendientes} pendientes de revisión)`,
+      `  ${plural(c.marcos, "marco", "marcos")} · ${plural(c.equivalencias, "mapa de equivalencias", "mapas de equivalencias")} · ${plural(c.controles, "control", "controles")} · ${plural(c.herramientas, "herramienta", "herramientas")} · ${plural(c.pruebas, "prueba", "pruebas")} (${plural(c.publicables, "publicable", "publicables")}, ${plural(c.pendientes, "pendiente de revisión", "pendientes de revisión")})`,
       `  ${plural(c.errores, "error", "errores")} · ${plural(c.advertencias, "advertencia", "advertencias")} · ${plural(c.notas, "nota", "notas")}`,
     ];
   }

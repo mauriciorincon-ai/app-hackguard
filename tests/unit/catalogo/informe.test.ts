@@ -84,6 +84,23 @@ describe("informeDeValidacion", () => {
     );
   });
 
+  it("concuerda en número: una prueba publicable, una pendiente de revisión", async () => {
+    const c = catalogoBase();
+    const limpia = referencia();
+    limpia.id = "PR-CASO-001";
+    const marcada = {
+      ...referencia(),
+      id: "PR-CASO-002",
+      notas: { es: "Ejemplo:\n$ ls", en: "Example:\n$ ls -a" },
+    };
+    conPrueba(c, limpia);
+    conPrueba(c, marcada);
+    const texto = informeDeValidacion(await validarCatalogo(c), "es");
+    expect(texto).toContain(
+      "2 pruebas (1 publicable, 1 pendiente de revisión)",
+    );
+  });
+
   it("un hallazgo del archivo entero no lleva campo", async () => {
     const c = catalogoBase();
     c.familias = null;
