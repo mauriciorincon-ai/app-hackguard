@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guía de prueba — [APP_NAME]</title>
+<title>Guía de prueba — HackGuard</title>
 <!--
   GUÍA DE PRUEBA VIVA Y ACUMULATIVA — entregable estándar de TODO sprint con UI (reglas duras
   del pipeline, G-Metodo 2026-07-12). Referencia: app-habla/docs/GUIA-DE-PRUEBA.html.
@@ -127,7 +127,9 @@
   ul.pasos li[hidden] { display: none; }
   ul.pasos input[type="checkbox"] { margin: 4px 0 0; width: 20px; height: 20px; flex: none;
     accent-color: var(--ok); cursor: pointer; }
-  ul.pasos label { cursor: pointer; }
+  /* min-width: 0 deja que la etiqueta se encoja dentro de la fila flex; las huellas de 64 caracteres se parten. */
+  ul.pasos label { cursor: pointer; min-width: 0; overflow-wrap: anywhere; }
+  .meta-bloque, code { overflow-wrap: anywhere; }
 
   .origen { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 0.65rem;
     letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 8px; border-radius: 99px;
@@ -157,28 +159,25 @@
 <body>
 <div class="pagina">
   <header>
-    <p class="eyebrow">[APP_NAME] · Guía de prueba viva y acumulativa · Sprint [SPRINT] · [FECHA]</p>
+    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 001 · 2026-10-04</p>
     <h1>Guía de prueba</h1>
-    <p class="suave">Todas las pruebas vigentes de la app — las nuevas de este sprint, las que
-      cambiaron y las heredadas (regresión). Filtra por origen para correr todo o solo lo que
-      cambió. Las casillas se guardan solas en este navegador.</p>
-    <p class="chica"><strong>Gate corto ⭐⭐: [K] paradas · ~20 min — es el que el cierre de
-      ciclo exige.</strong> Solo lo que únicamente un humano puede juzgar; si el CI lo verifica
-      por otro camino, no entra. Deja fuera [N−K] pruebas ⭐ — ninguna se borra: siguen enteras
-      en el filtro ⭐, que se ofrece para cuando quieras la confianza completa.</p>
-    <p class="chica"><strong>Gate mínimo ⭐: [N] pruebas · ~[M] min.</strong> Es lo que ninguna
-      automatización puede verificar (hardware/micrófono/voz reales, juicio sobre el contenido,
-      aprobación visual). Lo que la CI ya respalda queda fuera del mínimo y se corre en pases
-      completos.</p>
+    <p class="suave">Todas las pruebas vigentes de la app. En el Sprint 001 todas son nuevas: el núcleo del
+      catálogo, sin pantallas. Filtra por origen para correr todo o solo lo que cambió. Las casillas se guardan
+      solas en este navegador.</p>
+    <p class="chica"><strong>Gate corto ⭐⭐: 3 paradas declaradas, 2 efectivas · ~15 min. Es el que el cierre
+      exige.</strong> Solo entra lo que únicamente una persona puede juzgar. La parada 3 no corre: falta el texto de
+      la norma. Deja fuera 0 pruebas ⭐, porque en este sprint el gate mínimo son las mismas 3 paradas.</p>
+    <p class="chica"><strong>Gate mínimo ⭐: 3 pruebas · ~15 min.</strong> Son las decisiones sobre el contenido
+      del catálogo que ninguna automatización puede tomar. Lo demás (bloques B a F) lo respalda la CI y se corre en
+      pases completos: 18 pruebas, ~22 min.</p>
     <div class="url-caja">
-      <p class="eyebrow" style="margin:0 0 6px">URL de prueba</p>
-      <code>[URL de la preview de la rama del sprint]</code>
-      <p class="chica suave" style="margin:8px 0 0">Dirección estable de la rama: no cambia aunque
-        se suban correcciones. Si pide login de Vercel: Settings → Deployment Protection →
-        Vercel Authentication → Disabled.</p>
-      <p class="chica suave" style="margin:8px 0 0"><strong>Cada bloque abre con "Empieza en:"</strong> —
-        la ruta exacta (sobre esta URL) donde arranca su primera prueba. Navega ahí antes de
-        empezar el bloque.</p>
+      <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
+      <p style="margin:0">Una terminal abierta en la carpeta del repositorio (<code>~/Code/app-hackguard</code>), en
+        la rama <code>sprint-001/catalogo-vivo-nucleo</code> o en <code>main</code> después del merge, con
+        <code>pnpm install</code> hecho una vez. Este sprint no tiene pantallas: no hay preview que abrir.</p>
+      <p class="chica suave" style="margin:8px 0 0"><strong>Cada bloque abre con «Empieza en:»</strong>, que da el
+        archivo que hay que abrir o el comando con que arranca su primera prueba. <code>echo $?</code> muestra el
+        código de salida del último comando.</p>
     </div>
   </header>
 
@@ -189,72 +188,196 @@
     </div>
     <div class="filtros" role="group" aria-label="Filtrar pruebas por origen">
       <button type="button" data-filtro="todo" class="activo">Todo</button>
-      <button type="button" data-filtro="cambios">Lo que cambió en S[SPRINT]</button>
+      <button type="button" data-filtro="cambios">Lo que cambió en S1</button>
       <button type="button" data-filtro="minimo">Gate mínimo ⭐</button>
       <button type="button" data-filtro="corto">Gate corto ⭐⭐</button>
     </div>
   </div>
 
-  <!-- ANATOMÍA DE UN BLOQUE (copiar y adaptar; uno por área a probar).
-       Cada <li> DEBE llevar data-origen="nuevo|mejorado|heredada" + su chip visible, y
-       data-minimo (sin valor) + "⭐ mínimo" si integra el gate mínimo, y ADEMÁS data-corto +
-       "⭐⭐ Parada N de M" si integra el gate corto (toda data-corto lleva también data-minimo:
-       el corto es subconjunto del mínimo). Ids únicos.
-       La meta-línea SIEMPRE abre con "Empieza en:" + la ruta exacta (regla 8). -->
   <section class="bloque">
-    <div class="bloque-cabeza"><span class="letra">A</span><h2>[Nombre del bloque]</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>[/ruta-exacta]</code> ·
-      [~N min · qué valida en una línea]</p>
+    <div class="bloque-cabeza"><span class="letra">A</span><h2>Las tres paradas del gate ⭐</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>docs/LICENCIAS-DE-MARCOS.md</code> · ~15 min · lo que solo una persona puede decidir sobre el contenido del catálogo</p>
     <ul class="pasos">
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a1"><label for="a1">[Paso
-        NUEVO de este sprint cuyo veredicto SOLO puede ser humano — entra al gate corto.]
-        <span class="origen origen-nuevo">Nuevo · S[SPRINT]</span>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a1"><label for="a1"><strong>¿Apruebas la tabla de marcos y licencias?</strong> Abre <code>docs/LICENCIAS-DE-MARCOS.md</code>
+        (doble clic, o en el editor) y recorre la tabla: cada marco con su versión, su fuente, su licencia y lo que
+        la licencia exige. Esta parada se adelantó al cierre de la fase 0 y la aprobaste el 2026-10-04 («Aprobados
+        lo marcos, continua»). Desde entonces ningún marco cambió su versión, su fuente ni su licencia. Al cierre,
+        confirma que sigues de acuerdo. <strong>Respuesta esperada: «confirmo» o el marco que quieres
+        cambiar.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span>
         <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 1 de [K]</span></label></li>
-      <li data-origen="mejorado"><input type="checkbox" id="a2"><label for="a2">[Paso que venía
-        de antes y este sprint CAMBIÓ — con el resultado esperado en <strong>negrita</strong>.]
-        <span class="origen origen-mejorado">Mejorado en S[SPRINT]</span></label></li>
-      <li data-origen="heredada"><input type="checkbox" id="a3"><label for="a3">[Paso heredado
-        del sprint anterior SIN cambios ⇒ regresión. Se copia ENTERO, no se resume.]
-        <span class="origen origen-heredada">S[SPRINT-1]</span></label></li>
+        <span class="minimo">⭐⭐ Parada 1 de 3</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a2"><label for="a2"><strong>¿Qué hacemos con las pruebas que el filtro marcó?</strong> En el cierre de la fase 2 el
+        filtro no marcó ninguna de las 38. Para confirmarlo, corre <code>pnpm catalogo:validar</code> y busca <code>filtro/marcada</code>: no
+        debe aparecer. Luego abre tres pruebas de <code>datos/pruebas/</code>, una de <code>agente/</code>, una de
+        <code>modelo_generativo/</code> y una de <code>software/</code>. Cada una tiene que decir qué se verifica,
+        por qué importa, con qué herramienta y qué se espera, y nunca cómo se ejecuta un ataque.
+        <strong>Respuesta esperada: «confirmo», o la prueba que quieres reescribir o retirar.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 2 de 3</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a3"><label for="a3"><strong>¿Estos resúmenes del Anexo A dicen lo que dice la norma?</strong> <strong>No corre en este
+        sprint:</strong> no tienes el texto de ISO/IEC 42001:2023 (G-Plan, decisión P1). Marca la casilla cuando
+        hayas leído el aviso de abajo; no hay nada que juzgar todavía.
+        <span class="origen origen-nuevo">Nuevo · S1</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 3 de 3</span></label></li>
     </ul>
     <div class="tabla-scroll"><table>
       <tr><th>Qué mirar</th><th>Valor / comportamiento correcto</th></tr>
-      <tr><td>[dato o pantalla]</td><td class="valor">[lo que debe verse si está bien]</td></tr>
+      <tr><td>Marcos en la tabla</td><td class="valor">14, cada uno con versión, fuente con su código HTTP y licencia</td></tr>
+      <tr><td>Pruebas marcadas por el filtro</td><td class="valor">ninguna: <code>filtro/marcada</code> no aparece en la validación</td></tr>
+      <tr><td>Controles del Anexo A</td><td class="valor">38, todos con <code>"verificado_contra_norma": false</code></td></tr>
     </table></div>
-    <div class="kit"><p><strong>Kit de prueba:</strong> [si un paso necesita documento, código o
-      dataset de prueba, vive en <code>docs/kit-de-prueba/</code> — nómbralo aquí con su ruta y
-      cómo usarlo. Si el bloque no necesita kit, elimina este callout].</p></div>
-    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> [las señales que significan que
-      algo está roto y hay que arreglar antes del merge].</p></div>
+    <div class="diferido"><p><strong>Diferido:</strong> la parada 3 (resúmenes del Anexo A contra la norma) queda en deuda hasta antes de G-Release.
+        Cada control de <code>datos/controles/iso42001-anexo-a.json</code> lo declara con
+        <code>"verificado_contra_norma": false</code>, y una prueba impide que alguno diga <code>true</code> sin
+        esa revisión.</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> una prueba que describa pasos para atacar, cargas o comandos para explotar algo; un marco con una licencia que no reconozcas.</p></div>
   </section>
 
-  <!-- Repetir <section class="bloque"> por cada área. -->
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">B</span><h2>Validar el catálogo</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:validar</code> · ~4 min · el validador sobre el catálogo real, en los dos idiomas y en JSON</p>
+    <ul class="pasos">
+      <li data-origen="nuevo"><input type="checkbox" id="b1"><label for="b1">Corre <code>pnpm catalogo:validar</code> y después <code>echo $?</code>. <strong>Primera línea «Catálogo: con advertencias»;
+        «38 pruebas (38 publicables, 0 pendientes de revisión)»; «0 errores · 10 advertencias · 4 notas»;
+        código de salida 1.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="b2"><label for="b2">En la misma salida, lee las secciones de abajo. <strong>Las 10 advertencias son
+        <code>prueba/sin-control</code> de pruebas de software (<code>PR-SW-…</code>), y las 4 notas son
+        <code>marco/por-verificar</code>.</strong> Cada línea lleva su marca: ! para advertencia y · para nota.
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="b3"><label for="b3"><code>pnpm catalogo:validar --idioma en</code>. <strong>Primera línea «Catalog: with warnings», con
+        los hallazgos en inglés.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="b4"><label for="b4"><code>pnpm catalogo:validar --json</code>. <strong>Un JSON con <code>"estado": "con_advertencias"</code>
+        y <code>"codigo_de_salida": 1</code>; cada hallazgo trae su nombre en español y en inglés.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+    </ul>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> «Catálogo: inválido», cualquier error (✗), o una advertencia que no sea <code>prueba/sin-control</code>.</p></div>
+  </section>
 
   <section class="bloque">
-    <div class="bloque-cabeza"><span class="letra">B</span><h2>[Siguiente bloque]</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>[/ruta-exacta]</code> ·
-      [~N min · qué valida en una línea]</p>
+    <div class="bloque-cabeza"><span class="letra">C</span><h2>Las semillas: lo que debe fallar, falla</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-SIN-MARCO.json</code> · ~5 min · cada semilla es la prueba de referencia con un solo defecto</p>
     <ul class="pasos">
-      <li data-origen="heredada"><input type="checkbox" id="b1"><label for="b1">[…]
-        <span class="origen origen-heredada">S[SPRINT-1]</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="c1"><label for="c1"><code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-SIN-MARCO.json</code>. <strong>«Catálogo:
+        inválido», «✗ …SEMILLA-SIN-MARCO.json · marco_id», regla <code>prueba/sin-marco</code>, código 2.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="c2"><label for="c2"><code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-SIN-VERSION.json</code>. <strong>«Catálogo:
+        inválido», regla <code>referencia/sin-version</code>: «LLM07» sin versión se rechaza.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="c3"><label for="c3"><code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-VERSION-ANTERIOR.json</code>. <strong>«Catálogo:
+        con advertencias» y la advertencia ««owasp-llm-top10 2025 LLM07» es LLM08 en la versión 2026»: el mapa de
+        equivalencias la resuelve.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="c4"><label for="c4"><code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-PATRON-PASOS.json</code>. <strong>«Catálogo:
+        con advertencias», «(38 publicables, 1 pendiente de revisión)» y dos «! … filtro/marcada … «pasos-imperativos»»:
+        el filtro la marca y no la rechaza.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="c5"><label for="c5"><code>pnpm vitest run tests/unit/instrumento</code>. <strong>Entre la salida, «C18 catálogo: bloquea 11
+        de 11 semillas inválidas sembradas», y todas las pruebas en verde.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
     </ul>
-    <div class="diferido"><p><strong>Diferido:</strong> [lo que no se puede probar hoy y por qué;
-      cuándo se probará. Los diferidos se ACUMULAN entre sprints hasta pagarse].</p></div>
+    <div class="kit"><p><strong>Kit de prueba:</strong> las 19 semillas viven en <code>docs/kit-de-prueba/semillas/</code>. <code>semillas.json</code> dice, para cada una, qué
+        defecto tiene y qué resultado se espera (inválido con su regla, con advertencias, o válido).</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> una semilla inválida que salga «ok» o «con advertencias», o una regla distinta de la que dice <code>semillas.json</code>.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">D</span><h2>Instantánea y semáforo de vigencia</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard</code> · ~5 min · misma fecha, misma huella; el semáforo en sus tres estados</p>
+    <ul class="pasos">
+      <li data-origen="nuevo"><input type="checkbox" id="d1"><label for="d1">Corre tres veces <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard</code>.
+        (<code>--salida</code> la escribe fuera del repo; sin esa opción iría a <code>datos/instantaneas/</code>.)
+        <strong>Las tres veces «huella: e2858e62cd9e72af0baf1bf7b54c01f3c1cfc580b6f6afa21a19d700dabcd862», y en
+        <code>/tmp/hackguard</code> un solo archivo, <code>2026-10-15-e2858e62cd9e.json</code>.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="d2"><label for="d2">Repite con <code>--fecha 2026-11-03</code> y luego con <code>--fecha 2026-12-03</code>. <strong>En la
+        sección de vigencia, primero «! Por revisar 38 / 14 / 13 / 4» y después «✗ Vencido 38 / 14 / 13 / 4», con
+        otra huella cada vez.</strong> A la fecha del 2026-10-15 todo era «✓ Vigente».
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="d3"><label for="d3"><code>pnpm catalogo:instantanea --fecha 2026-09-30 --salida /tmp/hackguard</code> y <code>echo $?</code>.
+        <strong>Un error que dice «la fecha de evaluación 2026-09-30 es anterior a la última verificación del
+        catálogo (2026-10-04)», código 3, y ningún archivo nuevo.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="d4"><label for="d4"><code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard --agregar docs/kit-de-prueba/semillas/SEMILLA-SIN-MARCO.json</code>.
+        <strong>«Instantánea bloqueada: el catálogo es inválido (1 error). No se escribió nada.», código 2.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="d5"><label for="d5"><code>pnpm catalogo:instantanea --fecha 2026-10-04 --salida /tmp/hackguard</code>. <strong>Huella
+        «12d3b632a871cc7ceb06970036976e25542b7eab6bc58ebc63dc4db5f6495ce4», la misma de la primera instantánea
+        oficial, <code>datos/instantaneas/2026-10-04-12d3b632a871.json</code>.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+    </ul>
+    <div class="tabla-scroll"><table>
+      <tr><th>Qué mirar</th><th>Valor / comportamiento correcto</th></tr>
+      <tr><td>Vigente</td><td class="valor">✓ menos de 30 días desde la última verificación</td></tr>
+      <tr><td>Por revisar</td><td class="valor">! desde 30 días</td></tr>
+      <tr><td>Vencido</td><td class="valor">✗ desde 60 días; una familia está como su prueba más atrasada</td></tr>
+    </table></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> dos huellas distintas para la misma fecha, o un estado que aparezca sin su marca o sin su nombre.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">E</span><h2>El clasificador demo</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm clasificador:demo</code> · ~5 min · el activo demo de la familia «modelo de decisión» y sus medidas</p>
+    <ul class="pasos">
+      <li data-origen="nuevo"><input type="checkbox" id="e1"><label for="e1"><code>pnpm clasificador:demo</code>. <strong>«huella de las respuestas:
+        7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d» y las cifras de la tabla de
+        abajo.</strong> Córrelo otra vez: la huella no cambia.
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="e2"><label for="e2"><code>pnpm clasificador:demo --idioma en</code>. <strong>«accuracy 20 of 26 · 25 of 26» y «English
+        accuracy minus Spanish accuracy is 19.2 points».</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="e3"><label for="e3">Abre <code>docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json</code> y lee las notas de
+        <code>BIB-007</code> y <code>BIB-025</code> en los dos idiomas. <strong>Cada nota se lee natural en su
+        idioma, redactada y no traducida. BIB-007 falla en español porque «enferma» no está en el léxico, y
+        BIB-025 falla en inglés porque «I wasn't ill» es una negación: son dos de los defectos que el clasificador
+        trae a propósito.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+    </ul>
+    <div class="tabla-scroll"><table>
+      <tr><th>Qué mirar</th><th>Valor / comportamiento correcto</th></tr>
+      <tr><td>Exactitud de la decisión (es / en)</td><td class="valor">20 de 26 · 25 de 26</td></tr>
+      <tr><td>Brier (es / en)</td><td class="valor">0,3742 · 0,2267</td></tr>
+      <tr><td>ECE, 4 bins de igual masa (es / en)</td><td class="valor">0,0855 · 0,2914</td></tr>
+      <tr><td>Error en la banda 0,60–0,80 (es / en)</td><td class="valor">1 de 7 · 1 de 9</td></tr>
+      <tr><td>Exactitud de la urgencia (es / en)</td><td class="valor">23 de 26 · 25 de 26</td></tr>
+      <tr><td>Paridad</td><td class="valor">19,2 puntos a favor del inglés; los dos idiomas eligen lo mismo en 19 de 26</td></tr>
+      <tr><td>Re-ejecución</td><td class="valor">cambia la decisión en 1 de 52 respuestas (1,92 %); 0 de 52 distribuciones idénticas</td></tr>
+    </table></div>
+    <div class="kit"><p><strong>Kit de prueba:</strong> el conjunto de referencia (26 casos, su política y sus parámetros) vive en
+        <code>docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json</code>. El archivo avisa que el conjunto y
+        el clasificador los escribió la misma mano: las cifras demuestran que las métricas funcionan, no miden un
+        modelo real.</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> una huella distinta entre dos corridas, o cifras distintas de la tabla.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">F</span><h2>La misma huella en los tres navegadores</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts</code> · ~3 min · la CI ya lo corre; esto es para verlo con tus propios ojos</p>
+    <ul class="pasos">
+      <li data-origen="nuevo"><input type="checkbox" id="f1"><label for="f1">Corre <code>E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts</code>. La primera
+        vez puede pedir instalar los navegadores con <code>pnpm exec playwright install firefox webkit</code>, que los
+        descarga a la caché de Playwright. Tarda un par de minutos porque construye la app. <strong>«9 passed», y en
+        cada línea «determinismo · chromium / firefox / webkit · instantánea 2026-10-15 · e2858e62cd9e…» con la misma
+        huella que en Node.</strong>
+        <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
+    </ul>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un navegador con otra huella, o menos de 9 pruebas en verde.</p></div>
   </section>
 
   <footer>
-    <p class="chica suave">Guía <strong>viva y acumulativa</strong>: contiene TODAS las pruebas
-      vigentes de la app con su origen visible; una prueba solo se elimina cuando su feature dejó
-      de existir (queda declarado abajo). Archivo autocontenido — se abre sin internet, se
-      versiona con el repo y se puede compartir tal cual.</p>
+    <p class="chica suave">Guía <strong>viva y acumulativa</strong>: contiene TODAS las pruebas vigentes de la app con
+      su origen visible; una prueba solo se elimina cuando su feature dejó de existir (queda declarado abajo).
+      Archivo autocontenido: se abre sin internet, se versiona con el repo y se puede compartir tal cual.</p>
     <details class="chica">
       <summary>Historial de la guía</summary>
       <ul>
-        <li><strong>S[SPRINT] · [FECHA]:</strong> [qué bloques/pruebas se agregaron o mejoraron ·
-          pruebas eliminadas y la feature muerta que las justifica — o "ninguna eliminada"].</li>
-        <li><strong>S[SPRINT-1] · [FECHA]:</strong> [entrada anterior — el historial también es
-          acumulativo].</li>
+        <li><strong>S1 · 2026-10-04:</strong> nace la guía con 21 pruebas en 6 bloques. A tiene las tres paradas
+          del gate ⭐; la parada 3 no corre. B a F prueban la validación, las semillas, la instantánea con su
+          semáforo, el clasificador demo y el determinismo en navegadores. Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>
@@ -263,8 +386,8 @@
 <script>
   (function () {
     // NS VERSIONADO POR SPRINT (regla dura): al publicar la guía de un sprint nuevo se cambia
-    // s[SPRINT] — así una regresión sin correr no aparece marcada por el sprint anterior.
-    var NS = "guia-[SLUG]:s[SPRINT]:";
+    // el prefijo (hackguard-s1) — así una regresión sin correr no aparece marcada por el sprint anterior.
+    var NS = "hackguard-s1:";
     var casillas = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
     var barra = document.getElementById("barra-avance");
     var contador = document.getElementById("contador");
