@@ -394,3 +394,22 @@ arranca sobre este validador.
 
 Nota: la primera corrida de las cinco demos de datos dio el rojo correcto y restauró, pero falló en el último paso
 porque pedí `--minimo-tests 40` y el verde corre 37. Se repitieron con 37 y salieron limpias.
+
+### CI de la fase 2 (PR #8, commit `215d195`, corrida 37249090787)
+
+- **Checks requeridos:** `quality` (2 min 15 s), `e2e` (8 min 42 s) y `lighthouse` (1 min 31 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Paso «Catálogo válido» en Node v22.23.3:** «Catálogo: con advertencias · 14 marcos · 1 mapa de equivalencias
+  · 38 controles · 13 herramientas · 38 pruebas (38 publicables, 0 pendientes de revisión) · 0 errores ·
+  10 advertencias · 4 notas». El paso aceptó la salida 1. C18 en la CI: «bloquea 11 de 11 semillas inválidas
+  sembradas».
+- **Instantánea con el catálogo completo, en local:** misma huella en tres corridas (`cca0e8a58446…` con
+  `--fecha 2026-10-15`), entre 0,33 y 0,37 s cada una. No se comitea: la primera instantánea oficial sale en la
+  fase 3, con el semáforo.
+
+**STOP de la fase 2 (parada 2 del ⭐; la parada 3 no corre por el G-Plan P1):** inventario, marcadas (ninguna) y
+pruebas sin control (las 10 de software) presentados al usuario el 2026-10-04. **Veredicto del usuario, 2026-10-04: «Contunua»** (sic). Con cero pruebas marcadas no había nada que decidir prueba por prueba; las 38 nacen `aprobada` / `limpia` como se presentaron. No es una mirada: la fase no produjo ningún artefacto visual.
+
+## Fase 3 — Semáforo, instantáneas y la familia `modelo_decision`
+
+Arranca el 2026-10-04 tras el «continúa» de la fase 2.
