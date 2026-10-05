@@ -13,6 +13,8 @@ export interface CatalogoEnBruto {
   reglas_de_veredicto: ArchivoDeDatos | null;
   rasgos: ArchivoDeDatos | null;
   filtro: ArchivoDeDatos | null;
+  umbrales: ArchivoDeDatos | null;
+  estados: ArchivoDeDatos | null;
   marcos: ArchivoDeDatos[];
   equivalencias: ArchivoDeDatos[];
   controles: ArchivoDeDatos[];
@@ -26,6 +28,8 @@ export const RUTAS_UNICAS = {
   reglas_de_veredicto: "datos/reglas-de-veredicto.json",
   rasgos: "datos/rasgos-de-perfil.json",
   filtro: "datos/filtro/patrones.json",
+  umbrales: "datos/umbrales.json",
+  estados: "datos/estados.json",
 } as const;
 
 /** Las carpetas con un archivo por entidad. `datos/pruebas/` se recorre con sus subcarpetas por familia. */

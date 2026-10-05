@@ -307,6 +307,18 @@ export const REGLAS = {
     "No earlier version of the framework cites this map",
   ),
 
+  // Umbrales y vocabulario de estados (RF-01.5, regla dura 12).
+  "umbrales/orden-invalido": r(
+    "error",
+    "El umbral de vencido no es mayor que el de por revisar",
+    "The overdue threshold is not greater than the review-due threshold",
+  ),
+  "estados/sin-etiqueta": r(
+    "error",
+    "Un estado que calcula el motor no tiene nombre ni símbolo en el vocabulario",
+    "A state the engine computes has no name or symbol in the vocabulary",
+  ),
+
   // Controles (§ 6.2, E-16).
   "control/equivalente-parcial-sin-nota": r(
     "error",

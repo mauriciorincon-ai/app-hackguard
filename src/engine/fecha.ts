@@ -60,3 +60,29 @@ export function diasDesdeEpoca(texto: string): number {
 /** Días de `desde` a `hasta` (negativo si `hasta` es anterior). */
 export const diasEntre = (desde: string, hasta: string): number =>
   diasDesdeEpoca(hasta) - diasDesdeEpoca(desde);
+
+/** La fecha civil `dias` días después de `fecha` (antes, si es negativo). El inverso de `diasDesdeEpoca`. */
+export function fechaMasDias(fecha: string, dias: number): string {
+  if (!Number.isSafeInteger(dias)) throw new Error(`días no enteros: ${dias}`);
+  const z = diasDesdeEpoca(fecha) + dias + 719468;
+  const era = Math.floor(z / 146097);
+  const diaDeEra = z - era * 146097;
+  const anioDeEra = Math.floor(
+    (diaDeEra -
+      Math.floor(diaDeEra / 1460) +
+      Math.floor(diaDeEra / 36524) -
+      Math.floor(diaDeEra / 146096)) /
+      365,
+  );
+  const diaDelAnio =
+    diaDeEra -
+    (365 * anioDeEra + Math.floor(anioDeEra / 4) - Math.floor(anioDeEra / 100));
+  const mesDesdeMarzo = Math.floor((5 * diaDelAnio + 2) / 153);
+  const dia = diaDelAnio - Math.floor((153 * mesDesdeMarzo + 2) / 5) + 1;
+  const mes = mesDesdeMarzo < 10 ? mesDesdeMarzo + 3 : mesDesdeMarzo - 9;
+  const anio = anioDeEra + era * 400 + (mes <= 2 ? 1 : 0);
+  const texto = `${String(anio).padStart(4, "0")}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
+  if (!esFechaCivil(texto))
+    throw new Error(`fuera del rango 0001–9999: ${fecha} + ${dias}`);
+  return texto;
+}

@@ -1,0 +1,10 @@
+{
+  "vigencia": {
+    "por_revisar": 30,
+    "vencido": 60,
+    "origen": {
+      "es": "RF-01.5 de los requerimientos v1.1: verde menos de 30 días desde la última verificación, amarillo desde 30, rojo desde 60. Son los umbrales de la maqueta aprobada en G-Diseño.",
+      "en": "RF-01.5 of requirements v1.1: green under 30 days since the last verification, amber from 30, red from 60. They are the thresholds of the mock-up approved at G-Diseño."
+    }
+  }
+}

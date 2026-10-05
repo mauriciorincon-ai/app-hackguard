@@ -56,6 +56,8 @@ export function cargarCatalogo(
     reglas_de_veredicto: leerUnico(raiz, RUTAS_UNICAS.reglas_de_veredicto),
     rasgos: leerUnico(raiz, RUTAS_UNICAS.rasgos),
     filtro: leerUnico(raiz, RUTAS_UNICAS.filtro),
+    umbrales: leerUnico(raiz, RUTAS_UNICAS.umbrales),
+    estados: leerUnico(raiz, RUTAS_UNICAS.estados),
     marcos: leerCarpeta(raiz, CARPETAS.marcos),
     equivalencias: leerCarpeta(raiz, CARPETAS.equivalencias),
     controles: leerCarpeta(raiz, CARPETAS.controles),

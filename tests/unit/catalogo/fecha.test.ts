@@ -6,6 +6,7 @@ import {
   diasEntre,
   esFechaCivil,
   esFechaParcial,
+  fechaMasDias,
 } from "../../../src/engine/fecha.ts";
 
 describe("esFechaCivil", () => {
@@ -85,5 +86,35 @@ describe("diasDesdeEpoca y diasEntre", () => {
 
   it("lanza con una fecha que no existe", () => {
     expect(() => diasDesdeEpoca("2026-02-30")).toThrow(/fecha no civil/);
+  });
+});
+
+describe("fechaMasDias", () => {
+  it("suma y resta días cruzando meses, años y bisiestos", () => {
+    expect(fechaMasDias("2026-10-04", 30)).toBe("2026-11-03");
+    expect(fechaMasDias("2026-10-04", 60)).toBe("2026-12-03");
+    expect(fechaMasDias("2026-10-04", 100)).toBe("2027-01-12");
+    expect(fechaMasDias("2028-02-28", 1)).toBe("2028-02-29");
+    expect(fechaMasDias("2100-02-28", 1)).toBe("2100-03-01");
+    expect(fechaMasDias("2000-03-01", -1)).toBe("2000-02-29");
+    expect(fechaMasDias("1970-01-01", -1)).toBe("1969-12-31");
+    expect(fechaMasDias("2026-10-04", 0)).toBe("2026-10-04");
+  });
+
+  it("es el inverso de diasEntre en cada día de cuatro siglos alrededor de la época", () => {
+    let fecha = "1900-01-01";
+    for (let i = 0; i < 146_097; i += 7) {
+      const siguiente = fechaMasDias("1900-01-01", i);
+      expect(diasEntre("1900-01-01", siguiente)).toBe(i);
+      expect(esFechaCivil(siguiente)).toBe(true);
+      fecha = siguiente;
+    }
+    expect(fecha > "2299-12-01").toBe(true);
+  });
+
+  it("lanza fuera de 0001–9999 o con días no enteros", () => {
+    expect(() => fechaMasDias("9999-12-31", 1)).toThrow(/fuera del rango/);
+    expect(() => fechaMasDias("0001-01-01", -1)).toThrow(/fuera del rango/);
+    expect(() => fechaMasDias("2026-10-04", 1.5)).toThrow(/días no enteros/);
   });
 });

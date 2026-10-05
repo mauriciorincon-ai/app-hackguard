@@ -24,6 +24,7 @@ describe("construirInstantanea", () => {
     expect(Object.keys(r.instantanea.catalogo).sort()).toEqual([
       "controles",
       "equivalencias",
+      "estados",
       "familias",
       "filtro",
       "herramientas",
@@ -31,7 +32,35 @@ describe("construirInstantanea", () => {
       "pruebas",
       "rasgos",
       "reglas_de_veredicto",
+      "umbrales",
     ]);
+  });
+
+  it("lleva el semáforo de la fecha, y la huella lo cubre", async () => {
+    const r = await construirInstantanea(catalogoBase(), FECHA);
+    if (!r.emitida) throw new Error("debía emitirse");
+    const { semaforo } = r.instantanea;
+    expect(semaforo.marcos).toHaveLength(14);
+    expect(semaforo.herramientas).toHaveLength(13);
+    expect(semaforo.marcos.every((m) => m.estado === "vigente")).toBe(true);
+    expect(semaforo.familias.map((f) => f.estado)).toEqual([
+      null,
+      null,
+      null,
+      null,
+    ]);
+    const { huella, ...cuerpo } = r.instantanea;
+    const otro = structuredClone(cuerpo);
+    otro.semaforo.marcos[0].estado = "vencido";
+    expect(await huellaDeInstantanea(otro)).not.toBe(huella);
+  });
+
+  it("rechaza una fecha anterior a la última verificación del catálogo", async () => {
+    await expect(
+      construirInstantanea(catalogoBase(), "2026-10-03"),
+    ).rejects.toThrow(
+      /anterior a la última verificación del catálogo \(2026-10-04\)/,
+    );
   });
 
   it("tres corridas dan la misma huella, sin importar el orden de los archivos", async () => {

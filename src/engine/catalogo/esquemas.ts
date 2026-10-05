@@ -213,6 +213,67 @@ export const RasgosDePerfil = z.strictObject({
 });
 export type RasgosDePerfil = z.infer<typeof RasgosDePerfil>;
 
+// ── Umbrales y vocabulario de estados (RF-01.5, regla dura 12, design-system § 5) ──────────────
+
+export const Umbrales = z.strictObject({
+  // Días desde la última verificación: «por revisar» desde `por_revisar`, «vencido» desde `vencido`.
+  vigencia: z.strictObject({
+    por_revisar: z.int().min(1).max(3650),
+    vencido: z.int().min(1).max(3650),
+    origen: Texto,
+  }),
+});
+export type Umbrales = z.infer<typeof Umbrales>;
+
+/** Papel de color de un estado: el token del design system que lo pinta. */
+export const ROLES = [
+  "positivo",
+  "atencion",
+  "falla",
+  "neutro",
+  "acento",
+] as const;
+/** Las marcas del design system: un estado se reconoce por su forma, sin color. */
+export const SIMBOLOS = [
+  "ok",
+  "aviso",
+  "falla",
+  "parcial",
+  "reloj",
+  "vacio",
+  "no_aplica",
+  "firma",
+  "barras0",
+  "barras1",
+  "barras2",
+  "barras3",
+  "barras4",
+] as const;
+export type Simbolo = (typeof SIMBOLOS)[number];
+
+export const Estados = z.strictObject({
+  proposito: Texto,
+  vocabularios: z
+    .array(
+      z.strictObject({
+        id: IdMinusculas,
+        nombre: Texto,
+        estados: z
+          .array(
+            z.strictObject({
+              id: IdMinusculas,
+              rol: z.enum(ROLES),
+              simbolo: z.enum(SIMBOLOS),
+              nombre: Texto,
+            }),
+          )
+          .min(1),
+      }),
+    )
+    .min(1),
+});
+export type Estados = z.infer<typeof Estados>;
+
 // ── Controles de gobierno (§ 6.2, E-16): una capa por archivo ────────────────────────────────────
 
 export const ReferenciaAMarco = z.strictObject({

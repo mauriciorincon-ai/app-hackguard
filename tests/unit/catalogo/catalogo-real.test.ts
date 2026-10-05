@@ -5,6 +5,7 @@
 // las que el plan espera: pruebas sin control y pruebas que el filtro marcó.
 import { describe, expect, it } from "vitest";
 import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";
+import * as maqueta from "../../../scripts/maqueta/nucleo/estados.mjs";
 import { catalogoReal } from "./ayuda.ts";
 
 const resultado = await validarCatalogo(catalogoReal());
@@ -78,5 +79,43 @@ describe("el catálogo real", () => {
         ).toBeGreaterThanOrEqual(5);
       }
     }
+  });
+
+  it("los umbrales de vigencia son los de RF-01.5: por revisar desde 30 días, vencido desde 60", () => {
+    expect(catalogo.umbrales?.vigencia).toMatchObject({
+      por_revisar: 30,
+      vencido: 60,
+    });
+  });
+
+  it("el vocabulario de estados es el de la maqueta aprobada en G-Diseño, estado por estado", () => {
+    type Entrada = {
+      rol: string;
+      simbolo: string;
+      nombre: { es: string; en: string };
+    };
+    const deLaMaqueta: Record<string, Record<string, Entrada>> = {
+      veredicto: maqueta.VEREDICTO,
+      vigencia: maqueta.VIGENCIA,
+      revision_de_riesgo: maqueta.REVISION,
+      equivalencia: { parcial: maqueta.MAPA_INCOMPLETO },
+      estado_de_control: maqueta.ESTADO_DE_CONTROL,
+      severidad: maqueta.SEVERIDAD,
+      confirmacion: maqueta.CONFIRMACION,
+      estado_de_activo: maqueta.ESTADO_DE_ACTIVO,
+      estado_de_hallazgo: maqueta.ESTADO_DE_HALLAZGO,
+    };
+    const deDatos = Object.fromEntries(
+      catalogo.estados.map((v) => [
+        v.id,
+        Object.fromEntries(
+          v.estados.map(({ id, rol, simbolo, nombre }) => [
+            id,
+            { rol, simbolo, nombre },
+          ]),
+        ),
+      ]),
+    );
+    expect(deDatos).toEqual(deLaMaqueta);
   });
 });

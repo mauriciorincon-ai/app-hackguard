@@ -29,6 +29,8 @@ const GARAK = "datos/herramientas/garak.json";
 const FILTRO = "datos/filtro/patrones.json";
 const FAMILIAS = "datos/familias.json";
 const CAPA = "datos/controles/capa-de-prueba.json";
+const UMBRALES = "datos/umbrales.json";
+const ESTADOS = "datos/estados.json";
 
 /** La prueba de referencia con id PR-CASO-001 y un cambio. */
 function conReferencia(
@@ -624,6 +626,34 @@ const CASOS: Caso[] = [
       ),
       GARAK
     ),
+  },
+  {
+    regla: "umbrales/orden-invalido",
+    que: "vencido no es mayor que por revisar",
+    preparar: (c) => {
+      const archivo = c.umbrales;
+      if (archivo === null) throw new Error("faltan los umbrales");
+      editar(archivo, (u) => fijar(u, "vigencia.vencido", 30));
+      return UMBRALES;
+    },
+  },
+  {
+    regla: "estados/sin-etiqueta",
+    que: "el vocabulario de vigencia sin «vencido»",
+    preparar: (c) => {
+      const archivo = c.estados;
+      if (archivo === null) throw new Error("falta el vocabulario");
+      editar(archivo, (e) => {
+        const vigencia = (e.vocabularios as Json[]).find(
+          (v) => v.id === "vigencia",
+        );
+        if (vigencia === undefined) throw new Error("sin vigencia");
+        vigencia.estados = (vigencia.estados as Json[]).filter(
+          (x) => x.id !== "vencido",
+        );
+      });
+      return ESTADOS;
+    },
   },
 ];
 

@@ -1,22 +1,36 @@
-// Instantánea del catálogo (RF-01.7): el catálogo aprobado completo, con su huella JCS + SHA-256. Todo plan
-// referenciará una. Gate de publicación (RF-10.6): si el validador da «inválido», no se emite nada.
-// La fecha de evaluación es una entrada (RNF-01): la misma fecha y los mismos datos dan la misma huella en
-// Node y en cualquier navegador.
+// Instantánea del catálogo (RF-01.7): el catálogo aprobado completo y su semáforo de vigencia en la fecha de
+// evaluación, con su huella JCS + SHA-256. Todo plan referenciará una. Gate de publicación (RF-10.6): si el
+// validador da «inválido», no se emite nada. La fecha de evaluación es una entrada (RNF-01): la misma fecha y
+// los mismos datos dan la misma huella en Node y en cualquier navegador.
 import { esFechaCivil } from "../fecha.ts";
 import { huella } from "../huella.ts";
+import { semaforo, type Semaforo } from "./semaforo.ts";
+import type { Prueba, Umbrales } from "./esquemas.ts";
 import type { CatalogoEnBruto } from "./tipos.ts";
 import {
   validarCatalogo,
+  type CatalogoValidado,
   type MotivoPendiente,
   type ResultadoDeValidacion,
 } from "./validar.ts";
 
 export const FORMATO_DE_INSTANTANEA = "hackguard/instantanea@1";
 
+/** El catálogo aprobado tal como viaja en la instantánea: solo las pruebas publicables, sin su evaluación. */
+export interface CatalogoDeInstantanea extends Omit<
+  CatalogoValidado,
+  "umbrales" | "pruebas"
+> {
+  umbrales: Umbrales;
+  pruebas: Prueba[];
+}
+
 export interface Instantanea {
   formato: typeof FORMATO_DE_INSTANTANEA;
   fecha_evaluacion: string;
-  catalogo: Record<string, unknown>;
+  catalogo: CatalogoDeInstantanea;
+  /** La vigencia de cada prueba publicada, marco, herramienta y familia en `fecha_evaluacion`. */
+  semaforo: Semaforo;
   pendientes_de_revision: { id: string; motivo: MotivoPendiente }[];
   advertencias: {
     regla: string;
@@ -50,6 +64,7 @@ export function huellaDeInstantanea(
     formato,
     fecha_evaluacion,
     catalogo,
+    semaforo,
     pendientes_de_revision,
     advertencias,
   } = instantanea;
@@ -57,11 +72,16 @@ export function huellaDeInstantanea(
     formato,
     fecha_evaluacion,
     catalogo,
+    semaforo,
     pendientes_de_revision,
     advertencias,
   });
 }
 
+/**
+ * Lanza `RangeError` si la fecha no existe o es anterior a la última verificación del catálogo: las dos son
+ * errores de quien la pide, no del catálogo.
+ */
 export async function construirInstantanea(
   entrada: CatalogoEnBruto,
   fechaEvaluacion: string,
@@ -70,9 +90,15 @@ export async function construirInstantanea(
     throw new RangeError(`fecha de evaluación inválida: ${fechaEvaluacion}`);
   }
   const validacion = await validarCatalogo(entrada);
-  if (validacion.estado === "invalido") return { emitida: false, validacion };
-
   const c = validacion.catalogo;
+  // Sin umbrales el catálogo ya es inválido («archivo/falta» o el esquema); el segundo término solo estrecha
+  // el tipo.
+  if (validacion.estado === "invalido" || c.umbrales === null)
+    return { emitida: false, validacion };
+
+  const publicables = c.pruebas
+    .filter((p) => p.publicable)
+    .map((p) => p.prueba);
   const cuerpo: Omit<Instantanea, "huella"> = {
     formato: FORMATO_DE_INSTANTANEA,
     fecha_evaluacion: fechaEvaluacion,
@@ -85,8 +111,20 @@ export async function construirInstantanea(
       equivalencias: c.equivalencias,
       controles: c.controles,
       herramientas: c.herramientas,
-      pruebas: c.pruebas.filter((p) => p.publicable).map((p) => p.prueba),
+      umbrales: c.umbrales,
+      estados: c.estados,
+      pruebas: publicables,
     },
+    semaforo: semaforo(
+      {
+        familias: c.familias,
+        pruebas: publicables,
+        marcos: c.marcos,
+        herramientas: c.herramientas,
+      },
+      fechaEvaluacion,
+      c.umbrales.vigencia,
+    ),
     pendientes_de_revision: c.pruebas.flatMap((p) =>
       p.pendiente === null ? [] : [{ id: p.prueba.id, motivo: p.pendiente }],
     ),

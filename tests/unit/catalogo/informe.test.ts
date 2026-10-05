@@ -112,16 +112,61 @@ describe("informe de la instantánea", () => {
     expect(es).toContain(
       "pruebas publicadas: 0 · pendientes de revisión: 0 · advertencias y notas: 4",
     );
+    expect(es).toContain(
+      [
+        "  vigencia (por revisar desde 30 días, vencido desde 60):",
+        "    pruebas: ninguna",
+        "    marcos: ✓ Vigente 14",
+        "    herramientas: ✓ Vigente 13",
+        "    familias: ninguna · sin pruebas publicadas 4",
+      ].join("\n"),
+    );
     const en = informeDeInstantanea(r, null, "en");
     expect(en).toContain(`Snapshot written: ${r.archivo}`);
     expect(en).toContain("evaluation date: 2026-10-15");
+    expect(en).toContain(
+      "  freshness (review due from 30 days, overdue from 60):\n    tests: none\n    frameworks: ✓ Current 14",
+    );
     expect(salidaJsonDeInstantanea(r, null)).toMatchObject({
       emitida: true,
       codigo_de_salida: 0,
       archivo: r.archivo,
       huella: r.instantanea.huella,
+      vigencia: {
+        pruebas: { vigente: 0, por_revisar: 0, vencido: 0 },
+        marcos: { vigente: 14, por_revisar: 0, vencido: 0 },
+      },
     });
     expect(salidaJsonDeInstantanea(r, "a/b.json").archivo).toBe("a/b.json");
+  });
+
+  it("la vigencia muestra cada estado con su marca y su nombre, y no dibuja los ceros", async () => {
+    const c = await conSemilla((p) => (p.fecha_verificacion = "2026-08-20"));
+    const r = await construirInstantanea(c, "2026-10-15");
+    if (!r.emitida) throw new Error("debía emitirse");
+    const es = informeDeInstantanea(r, null, "es");
+    expect(es).toContain("    pruebas: ! Por revisar 1\n");
+    expect(es).toContain(
+      "    familias: ! Por revisar 1 · sin pruebas publicadas 3\n",
+    );
+    const tarde = await construirInstantanea(c, "2026-12-15");
+    if (!tarde.emitida) throw new Error("debía emitirse");
+    expect(informeDeInstantanea(tarde, null, "en")).toContain(
+      "    frameworks: ✗ Overdue 14\n",
+    );
+    expect(informeDeInstantanea(tarde, null, "en")).toContain(
+      "    families: ✗ Overdue 1 · no published tests 3\n",
+    );
+  });
+
+  it("un estado sin etiqueta en el vocabulario se muestra por su id, nunca en blanco", async () => {
+    const r = await construirInstantanea(catalogoBase(), "2026-10-15");
+    if (!r.emitida) throw new Error("debía emitirse");
+    const sinEtiquetas = structuredClone(r);
+    sinEtiquetas.instantanea.catalogo.estados = [];
+    expect(informeDeInstantanea(sinEtiquetas, null, "es")).toContain(
+      "    marcos: vigente 14\n",
+    );
   });
 
   it("bloqueada: dice que no escribió nada y por qué", async () => {

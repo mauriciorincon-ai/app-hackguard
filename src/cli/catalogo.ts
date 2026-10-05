@@ -6,7 +6,8 @@
 //   instantanea  --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>] [--agregar <prueba.json>]...
 //
 // Códigos de salida — validar: 0 ok · 1 con advertencias · 2 inválido · 3 error de uso o de lectura.
-// instantanea: 0 emitida · 2 bloqueada (catálogo inválido; no escribe nada) · 3 error de uso o de lectura.
+// instantanea: 0 emitida · 2 bloqueada (catálogo inválido; no escribe nada) · 3 error de uso o de lectura
+// (también una fecha anterior a la última verificación del catálogo).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
@@ -105,6 +106,7 @@ principal(process.argv.slice(2)).then(
     const detalle = error instanceof Error ? error.message : String(error);
     if (
       error instanceof ErrorDeUso ||
+      error instanceof RangeError ||
       (error instanceof Error &&
         "code" in error &&
         String(error.code).startsWith("ERR_PARSE_ARGS"))

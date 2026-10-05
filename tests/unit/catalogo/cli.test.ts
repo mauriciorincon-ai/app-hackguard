@@ -46,7 +46,10 @@ describe("catalogo validar", () => {
       estado: string;
       codigo_de_salida: number;
     };
-    expect(json).toMatchObject({ estado: "con_advertencias", codigo_de_salida: 1 });
+    expect(json).toMatchObject({
+      estado: "con_advertencias",
+      codigo_de_salida: 1,
+    });
   });
 
   it("una semilla inválida sale 2 y una con advertencia sale 1", () => {
@@ -83,6 +86,21 @@ describe("catalogo instantanea", () => {
       catalogo("instantanea", "--fecha", "2026-02-30", "--salida", temporal)
         .codigo,
     ).toBe(3);
+    expect(readdirSync(temporal)).toEqual([]);
+  });
+
+  it("una fecha anterior a la última verificación del catálogo es un error de uso (3)", () => {
+    const r = catalogo(
+      "instantanea",
+      "--fecha",
+      "2026-10-03",
+      "--salida",
+      temporal,
+    );
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain(
+      "la fecha de evaluación 2026-10-03 es anterior a la última verificación del catálogo (2026-10-04)",
+    );
     expect(readdirSync(temporal)).toEqual([]);
   });
 

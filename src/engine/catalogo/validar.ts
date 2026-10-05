@@ -7,6 +7,7 @@ import { resolverReferencia, type Referencia } from "./equivalencias.ts";
 import * as E from "./esquemas.ts";
 import { compilarPatrones, filtrar, type PatronCompilado } from "./filtro.ts";
 import { REGLAS, type IdRegla, type Severidad } from "./reglas.ts";
+import { ESTADOS_QUE_CALCULA_EL_MOTOR } from "./semaforo.ts";
 import {
   RUTAS_UNICAS,
   type ArchivoDeDatos,
@@ -43,6 +44,8 @@ export interface CatalogoValidado {
   reglas_de_veredicto: E.ReglasDeVeredicto["reglas"];
   rasgos: E.RasgosDePerfil["rasgos"];
   filtro: { version: string; fecha: string } | null;
+  umbrales: E.Umbrales | null;
+  estados: E.Estados["vocabularios"];
   marcos: E.Marco[];
   equivalencias: E.Equivalencias[];
   controles: E.CapaDeControles[];
@@ -494,6 +497,18 @@ export async function validarCatalogo(
     E.PatronesDelFiltro,
     registro,
   );
+  const umbralesDatos = leerUnico(
+    entrada.umbrales,
+    RUTAS_UNICAS.umbrales,
+    E.Umbrales,
+    registro,
+  );
+  const estadosDatos = leerUnico(
+    entrada.estados,
+    RUTAS_UNICAS.estados,
+    E.Estados,
+    registro,
+  );
 
   const familias = indicePorId(
     familiasDatos?.familias ?? [],
@@ -521,6 +536,53 @@ export async function validarCatalogo(
     "rasgos",
     registro,
   );
+
+  if (
+    umbralesDatos !== null &&
+    umbralesDatos.vigencia.vencido <= umbralesDatos.vigencia.por_revisar
+  ) {
+    const { por_revisar, vencido } = umbralesDatos.vigencia;
+    registro.agregar(
+      "umbrales/orden-invalido",
+      RUTAS_UNICAS.umbrales,
+      "vigencia.vencido",
+      t(
+        `vencido ${vencido} ≤ por revisar ${por_revisar}`,
+        `overdue ${vencido} ≤ review due ${por_revisar}`,
+      ),
+    );
+  }
+
+  const vocabularios = indicePorId(
+    estadosDatos?.vocabularios ?? [],
+    RUTAS_UNICAS.estados,
+    "vocabularios",
+    registro,
+  );
+  for (const [i, v] of (estadosDatos?.vocabularios ?? []).entries()) {
+    indicePorId(
+      v.estados,
+      RUTAS_UNICAS.estados,
+      `vocabularios.${i}.estados`,
+      registro,
+    );
+  }
+  if (estadosDatos !== null) {
+    for (const [vocabulario, ids] of Object.entries(
+      ESTADOS_QUE_CALCULA_EL_MOTOR,
+    )) {
+      for (const id of ids) {
+        if (!vocabularios.get(vocabulario)?.estados.some((e) => e.id === id)) {
+          registro.agregar(
+            "estados/sin-etiqueta",
+            RUTAS_UNICAS.estados,
+            "vocabularios",
+            comillas(`${vocabulario}.${id}`),
+          );
+        }
+      }
+    }
+  }
 
   let patrones: PatronCompilado[] = [];
   if (filtroDatos !== null) {
@@ -819,6 +881,8 @@ export async function validarCatalogo(
     [entrada.familias, familiasDatos],
     [entrada.reglas_de_veredicto, reglasDatos],
     [entrada.rasgos, rasgosDatos],
+    [entrada.umbrales, umbralesDatos],
+    [entrada.estados, estadosDatos],
   ];
   const resto: { ruta: string; datos: unknown }[] = [
     ...vocabulario.flatMap(([archivo, valor]) =>
@@ -1133,6 +1197,8 @@ export async function validarCatalogo(
         filtroDatos === null
           ? null
           : { version: filtroDatos.version, fecha: filtroDatos.fecha },
+      umbrales: umbralesDatos,
+      estados: estadosDatos?.vocabularios ?? [],
       marcos: marcosLeidos.map((m) => m.valor),
       equivalencias: mapasLeidos.map((m) => m.valor),
       controles: capasLeidas.map((c) => c.valor),
