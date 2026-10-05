@@ -590,3 +590,55 @@ usuario, 2026-10-04: «continúa»**, sin cambios a las decisiones.
 ## Fase 4 — Validación del instrumento, determinismo multi-navegador y cierre
 
 Arranca el 2026-10-04 tras el «continúa» de la fase 3.
+
+### C18: ya cubierto desde la fase 1
+
+- Las semillas RF-10.1 + E-15 de `docs/kit-de-prueba/semillas/` y su prueba en `tests/unit/instrumento/` existen
+  desde la fase 1.
+- Siguen dando «C18 catálogo: bloquea 11 de 11 semillas inválidas sembradas», en la corrida local y en la CI de la
+  fase 3.
+- Las demos en rojo del validador sobre las semillas, del filtro y del gate de publicación están en la tabla de la
+  fase 1. No se repiten aquí.
+
+### Determinismo en Node, Chromium, Firefox y WebKit
+
+**Qué se construyó:**
+
+- `tests/e2e/determinismo.spec.ts`:
+  - **Node es la referencia.** El CLI corre tres veces como proceso aparte y las tres huellas tienen que
+    coincidir. Además da la huella del umbral y la del clasificador.
+  - **El navegador recibe el motor empaquetado.** esbuild empaqueta `construirInstantanea` y `evaluarConjunto`
+    como IIFE, y la página se sirve con `page.route` sobre `https://hackguard.invalid`: un contexto seguro, sin red
+    y sin la aplicación.
+  - **Tres pruebas por navegador:** la instantánea del 2026-10-15, la del 2026-11-03 (que tiene que cambiar) y el
+    clasificador.
+- **Playwright:** proyectos `firefox` y `webkit` que corren solo ese spec. Chromium lo corre en `desktop-chromium`;
+  `mobile-chromium` lo ignora.
+- **CI:** el job `e2e` instala `chromium firefox webkit`.
+- **Dependencia:** `esbuild` 0.28.2 exacto, como devDependency.
+  - La instalación dio «+5 −3». Los −3 son `vite` y `vitest` re-resueltos con `esbuild` como peer opcional, en las
+    mismas versiones.
+  - `verificar-dependencias`: «680 paquetes, ninguno por debajo de origin/main».
+
+**Corrida local** (`E2E_PUERTO=3217`): 9 de 9 en verde.
+
+| Motor | Instantánea 2026-10-15 | Instantánea 2026-11-03 | Clasificador |
+|---|---|---|---|
+| Node (CLI ×3) | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
+| Chromium 153.0.8010.12 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
+| Firefox 155.0 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
+| WebKit 26.6 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
+
+Huellas completas:
+
+- 2026-10-15: `e2858e62cd9e72af0baf1bf7b54c01f3c1cfc580b6f6afa21a19d700dabcd862`.
+- 2026-11-03: `0b24f1abde9c3dcc912a28c69ed5907243037826a046c138f86e31be3182fcc2`.
+- Clasificador: `7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d`.
+
+**Demo en rojo (estándar v2.19.0: una divergencia en un solo motor):**
+
+- **Mutación:** `instantanea.ts` cambia el `formato` solo cuando el agente de usuario dice Firefox.
+- **Rojo:** «✘ [firefox] › tests/e2e/determinismo.spec.ts:124:7 › … la instantánea del 2026-10-15», «1 failed · 6
+  passed». Chromium y WebKit siguieron en verde. Las otras dos pruebas de Firefox no corrieron porque el spec es
+  serial.
+- **Verde tras restaurar:** 9 de 9.

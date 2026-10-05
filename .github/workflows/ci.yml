@@ -52,7 +52,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      # Firefox y WebKit solo corren tests/e2e/determinismo.spec.ts: la misma huella en los tres motores (RNF-01).
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e        # incluye scans axe (@axe-core/playwright)
       # El primer reintento graba trace (playwright.config `trace: on-first-retry`) con
       # consola, errores y DOM — se sube SOLO cuando algo falla (kit v1.26.0).
