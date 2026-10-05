@@ -482,3 +482,94 @@ real tiene una sola fecha de verificación y no los tendría.
 
 Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correcto y restauró, pero falló en el
 último paso porque pedí `--minimo-tests 100` y el archivo corre 90. Se repitió con 90 y salió limpia.
+
+**CI del bloque A (PR #8, commit `97b712a`, corrida 37251673371):** `quality` (2 min 32 s), `e2e` (7 min 15 s) y
+`lighthouse` (1 min 27 s), cada uno con conclusión propia `success`, y Vercel también.
+
+### Bloque B — clasificador demo, métricas y conjunto de referencia
+
+**Qué se construyó:**
+
+- `src/engine/demo/clasificador.ts`: el activo demo de `modelo_decision`. Imita el contrato de respuesta de Jev
+  (`{model, answers, usage}`, Choice con `choice`, `probabilities` y `confidence = (p_max − 1/n)/(1 − 1/n)`, y
+  Noul con `noul`) sobre un dominio neutro: el triaje de solicitudes de socios de una biblioteca municipal.
+- `src/engine/modelo-decision/metricas.ts`: funciones puras sobre probabilidades. Exactitud, Brier multiclase,
+  ECE con bins de igual masa, error en la banda del umbral, tasa de cambio por re-ejecución y paridad ES/EN.
+- `src/engine/demo/conjunto.ts`: el esquema del conjunto de referencia, su evaluación (cada caso en los dos
+  idiomas, k corridas con la semilla del conjunto) y el informe en español o en inglés.
+- `docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json`: 26 casos sintéticos con estado tipado y una
+  nota redactada en cada idioma, etiquetados según una política escrita de 5 reglas (decisión y urgencia). Lleva
+  su advertencia: el conjunto y el clasificador los escribió la misma mano.
+- `pnpm clasificador:demo [--json] [--idioma es|en] [--conjunto <archivo>]`: sale 0, o 3 ante un error de uso,
+  de lectura o un conjunto inválido.
+
+**Decisiones:**
+
+- **`answers` va indexado por el id de la pregunta.** El fabricante no documenta la anidación; es nuestra y el ADR
+  de la familia lo dirá. `usage` va en cero porque el demo no consume tokens.
+- **Probabilidades exactas.** Salen de pesos enteros por regla y se reparten en diezmilésimos por resto mayor, con
+  empates rotos por id: suman exactamente 1 y dan los mismos bytes en cualquier motor.
+- **Ruido sembrado.** Cada peso se perturba con mulberry32, sembrado con la semilla XOR FNV-1a del estado canónico.
+  Los sorteos van en un orden fijo, así que ni el orden ni el subconjunto de opciones que pide la pregunta
+  cambian la respuesta.
+- **Tres imperfecciones sembradas a propósito y fijadas por pruebas:**
+  1. el léxico cubre el inglés y solo parte del español;
+  2. no entiende la negación;
+  3. premia la antigüedad del socio, que la política no menciona.
+- **Convenciones de las métricas:**
+  - Una salida inválida cuenta como error y aporta 2 a Brier (E-17).
+  - El ECE es de la etiqueta elegida, con 4 bins de igual masa.
+  - La banda es la de «aprobar sin pasar por una persona si p ≥ 0,70», medida entre 0,60 y 0,80.
+  - La re-ejecución cuenta los ítems que cambian de elección en al menos una de las k corridas.
+- **NLL queda fuera.** E-17 la nombra junto a Brier, pero `Math.log` no tiene garantía de dar el mismo último bit
+  en todos los motores. Brier basta para el S1.
+- **`ruido_por_mil: 150` se fijó midiendo.** El objetivo era la cifra más cercana al ~1,5 % que cambia Jev entre
+  llamadas idénticas. En 52 respuestas cada cambio vale 1,9 %. Barrido con 5 corridas:
+
+  | Ruido por mil | Cambios de decisión | Exactitud ES / EN |
+  |---|---|---|
+  | 60 a 120 | 0 de 52 | 21 / 25 |
+  | 150 | 1 de 52 | 20 / 25 |
+  | 200 | 4 de 52 | 20 / 24 |
+
+**La demo, `pnpm clasificador:demo`** (huella de las respuestas
+`7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d`, la misma en tres evaluaciones):
+
+| Medida | Español | Inglés |
+|---|---|---|
+| Exactitud de la decisión | 20 de 26 | 25 de 26 |
+| Brier | 0,3742 | 0,2267 |
+| ECE (4 bins de igual masa) | 0,0855 | 0,2914 |
+| Error en la banda 0,60–0,80 | 1 de 7 | 1 de 9 |
+| Exactitud de la urgencia (Noul) | 23 de 26 | 25 de 26 |
+
+- **Paridad:** el inglés acierta 19,2 puntos más, y los dos idiomas eligen lo mismo en 19 de 26 casos.
+- **Re-ejecución:** en 5 corridas cambia la decisión en 1 de 52 respuestas (1,92 %), y ninguna distribución sale
+  idéntica.
+
+**Dónde falla, que es lo que tiene que pasar:**
+
+- El español falla en BIB-007, 008, 013, 019 y 023, cuyas notas usan palabras fuera de su léxico, y en BIB-018,
+  un casi empate que el ruido de la primera corrida voltea.
+- El inglés falla solo en BIB-025, la negación («I wasn't ill»).
+
+**Lectura de la calibración:** el inglés acierta casi todo con probabilidades de 0,54 a 0,79 de media por bin. Es
+un modelo subconfiado, y por eso su ECE es mayor que el del español, que acierta menos pero en proporción a lo
+que dice. Exactitud y calibración miden cosas distintas: por eso E-17 pide medir las probabilidades.
+
+**Pruebas:** 1.148 en 40 archivos, en verde con cobertura. `src/engine/demo/` queda en 99,47 % de sentencias y
+96,42 % de ramas; `src/engine/modelo-decision/` en 100 % y 93,54 %. Lint limpio.
+
+**Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
+
+| Gate | Mutación | Rojo que dio | Verde tras restaurar |
+|---|---|---|---|
+| Distribuciones que suman 1 | El resto mayor se detiene con un diezmilésimo por repartir | «× en cada caso del conjunto, en los dos idiomas…» y «× el resto mayor reparte los diezmilésimos que faltan» | 27 de 27 |
+| Misma entrada, misma salida | La semilla arrastra un contador global entre llamadas | «× la misma petición con la misma semilla da la misma respuesta y la misma huella» y «× el orden de las opciones no cambia nada» | 27 de 27 |
+| Brier calculado a mano | `(p − y)²` pasa a `\|p − y\|` | «× es la media de Σ (p − y)² sobre todas las opciones» (y otras dos) | 19 de 19 |
+| Lint de determinismo en `src/engine/demo/` (heredado, primera vez en esta carpeta) | `Math.random()` en un peso | «'Math.random' is restricted… Sin azar en el núcleo» | eslint limpio |
+
+Nota: la primera corrida de las tres primeras demos dio el rojo correcto y restauró, pero falló en el último
+paso porque pedí `--minimo-tests` 30 y 20 sin contar; los archivos corren 27 y 19. Se repitieron con la cuenta
+medida y salieron limpias. Es la tercera fase con el mismo tropiezo: desde ahora cuento las pruebas del archivo
+antes de fijar el mínimo.
