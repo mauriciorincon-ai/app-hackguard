@@ -9,16 +9,19 @@
   - presentar el plan de ajustes al usuario;
   - esperar su aprobación.
 - **Nada de la Fase 2 está pagado.**
+- **Lo que el auditor de motor no alcanzó a revisar** (anexo C) lo retoma mañana un auditor independiente nuevo, solo
+  sobre esa lista. De esa lista ya está resuelto «CI del HEAD»: la corrida 37254742220 de `10c277c` terminó con
+  `quality`, `e2e` y `lighthouse` en `success` (ver «CI de la fase 4» en la bitácora).
 
 ## Cómo se audita
 
 El diff del sprint contra `main` tiene 169 archivos. Por eso la Fase 1 se partió por superficies (kit v1.38.0). Hay tres auditores independientes, que no construyeron el sprint. Cada uno trabajó en solo lectura sobre su tramo del diff.
 
-| Superficie                                                   | Estado         | Altos · medios · bajos | Recomendación    |
-| ------------------------------------------------------------ | -------------- | ---------------------- | ---------------- |
-| Alcance y textos                                             | Entregado      | 2 · 8 · 8              | Requiere ajustes |
-| Hooks, privacidad, bilingüismo, guía y frontera de contenido | Entregado      | 3 · 5 · 4              | Requiere ajustes |
-| Motor, contrato, gates y dependencias                        | Ver el anexo C | —                      | —                |
+| Superficie                                                   | Estado                                                  | Altos · medios · bajos | Recomendación    |
+| ------------------------------------------------------------ | ------------------------------------------------------- | ---------------------- | ---------------- |
+| Alcance y textos                                             | Entregado                                               | 2 · 8 · 8              | Requiere ajustes |
+| Hooks, privacidad, bilingüismo, guía y frontera de contenido | Entregado                                               | 3 · 5 · 4              | Requiere ajustes |
+| Motor, contrato, gates y dependencias                        | Entregado, con una lista de lo que no alcanzó a revisar | 2 · 7 · 8              | Requiere ajustes |
 
 Ningún auditor encontró un hallazgo crítico.
 
@@ -29,6 +32,7 @@ Ningún auditor encontró un hallazgo crítico.
 No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instantánea fueron a una carpeta temporal fuera del repo, que borré al terminar.
 
 **Lo que corrí:**
+
 - `catalogo:validar` en es, en y `--json`, sobre el catálogo real y con 5 semillas.
 - `catalogo:instantanea` en 8 fechas.
 - `clasificador:demo` en es y en.
@@ -37,46 +41,47 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 
 #### 1. Cobertura de alcance
 
-| # | Ítem del plan o la orden | Estado | Evidencia |
-|---|---|---|---|
-| 1 | F0 · Verificación del kit (hooks, carnada, TS 6/React 19.3, ADR-001) | Completo | `sprints/SPRINT_001-implementation-log.md:10-16` |
-| 2 | F0 · Delta v1.34→v1.39 por nombre (scripts, CI, hook, comandos, constitución, plantilla) | Completo | log:18-40; `CLAUDE.md:9-11, 96-103, 323-332, 440-458, 504-538, 579-583, 658`; `.claude/commands/{audita-sprint,deploy-check}.md` = kit (diff vacío) |
-| 3 | F0 · `--coverage` + 90 % en el motor + test de observability | Completo | `package.json:11`; `vitest.config.ts:32-37` |
-| 4 | F0 · `datos/privado/` ignorado + README + test | Completo | `git ls-files datos/privado` da solo el README; `tests/unit/datos-privados.test.ts` |
-| 5 | F0 · DA-01/DA-10: 14 marcos con versión, fecha, fuente+HTTP, licencia, vías y lista blanca | Completo | `datos/marcos/*.json`; el validador da 4 notas `marco/por-verificar` |
-| 6 | F0 · DA-03: 4 patrones de forma con carnada y contraejemplo | Completo | `datos/filtro/patrones.json:9-99`; las carnadas son inocuas |
-| 7 | F0 · `docs/LICENCIAS-DE-MARCOS.md` es/en | Con desviación | `:3,:7` afirman algo falso; `:49-53` atribuciones incompletas (hallazgos M2 y M3) |
-| 8 | F0 · PR en borrador con la línea del merge + tabla de aprovisionamiento | Completo, cuerpo desactualizado | PR #8 `isDraft:true`, línea 1 correcta; describe solo la fase 0 (B5) |
-| 9 | F0 · STOP: tabla DA-01 (marco·versión·fecha·fuente·HTTP·licencia·vía máquina) aprobada | Parcial | Aprobada en el chat (log:131-134); **la tabla no existe en ningún archivo del repo** (A1) |
-| 10 | F1 · Esquemas Zod 4 con § 6 + campos de la F1 | Completo | `src/engine/catalogo/esquemas.ts:395-453` (el detalle es del otro auditor) |
-| 11 | F1 · Validador: rechazos, advertencias y aprobada+marcada | Completo | 61 reglas (`reglas.ts`); semillas reproducidas: SIN-MARCO 2, SIN-VERSION 2, VERSION-ANTERIOR 1, PATRON-PASOS 1 |
-| 12 | F1 · Filtro que marca y no rechaza | Completo | PATRON-PASOS da «38 publicables, 1 pendiente», sale 1 |
-| 13 | F1 · Huella JCS + SHA-256 | Completo | Huellas reproducidas (ítem 23) |
-| 14 | F1 · CLI `validar`/`instantanea`, `--json`, `--idioma`, códigos 0/1/2/3 | Completo | Reproducido: 1, 2, 3 y 0 |
-| 15 | F1 · Semillas C18 | Completo | 19 semillas + `semillas.json`; 11/11 bloqueadas |
-| 16 | F2 · Anexo A: 9 áreas, 38 controles, resúmenes propios, `verificado_contra_norma:false`, equivalentes NIST con nota | Completo | `datos/controles/iso42001-anexo-a.json`; conté 201 equivalencias, todas «parcial» |
-| 17 | F2 · Herramientas de § 10.4 y E-25, más proveedores TypeSafe si verifican | Completo | 13 archivos; los TypeSafe quedan como dato (`promptfoo.json:56`) |
-| 18 | F2 · 21 pruebas de la maqueta + categorías de § 10.1/§ 10.2 + E-22 | Completo, con desviación | Las 21 IDs de la maqueta están; +17 nuevas = 38; 32 categorías cubiertas. DER `emergente` sin declarar (B3) |
-| 19 | F2 · Mapa OWASP LLM 2025→2026; «LLM07» sin versión rechazado | Completo | `datos/marcos/equivalencias/owasp-llm-2025-a-2026.json`; reproducido |
-| 20 | F2 · Filtro sobre todo el catálogo | Completo, ampliado y declarado | log:335-338 |
-| 21 | F2 · STOP: parada 2; parada 3 declarada no corrida | Completo | log:410-411 |
-| 22 | F3 · Semáforo por prueba, marco, herramienta y familia; umbrales y estados como dato | Completo | `datos/umbrales.json`, `datos/estados.json` (9 vocabularios, 33 estados). Reproducido: 11-02 vigente, 11-03 por revisar, 12-03 vencido |
-| 23 | F3 · Instantáneas, gate de publicación, autoconsistencia | Completo | Re-emití 2026-10-04: **idéntica byte a byte** a `datos/instantaneas/2026-10-04-12d3b632a871.json` (502.746 B) |
-| 24 | F3 · Clasificador demo + conjunto bilingüe + métricas + `clasificador:demo` | Completo | Las cifras de log:538-548 coinciden una por una; huella `7d94f4a1…` |
-| 25 | F4 · C18 + `demo-rojo` sobre validador, filtro y gate | Completo (desde la fase 1) | log:222-240, 594-601 |
-| 26 | F4 · e2e de determinismo en 3 navegadores = Node, con rojo en un solo motor | Completo | `tests/e2e/determinismo.spec.ts:123-163`; el log de CI 37253753617 muestra las 9 huellas iguales |
-| 27 | F4 · Tiempos de los dos comandos | Parcial | `instantanea` medida (log:449-450); `validar` sin medición registrada (B1) |
-| 28 | F4 · Manual «El catálogo como dato» es/en | Parcial | Faltan 3 de los 5 contenidos de la DoD de `SPRINT_001.md:80-82` (A2) |
-| 29 | F4 · Guía: nace, prefijo `hackguard-s1`, ⭐⭐ «1 de 3…3 de 3», declara lo que deja fuera | Con desviación | `GUIA-DE-PRUEBA.html:390`; parada 1 sin su artefacto (A1); E3 fuera del ⭐ sin declararlo (M4) |
-| 30 | F4 · ADRs 002, 003 y 004 | Completo | `decisions/002…004` (inexactitud menor en B7) |
-| 31 | F4 · `docs/CHANGELOG.md` | Completo | Sus cifras coinciden con los datos |
-| 32 | Orden, insumo «§ 11.2: la escala, solo para dejar su tabla en datos» | No implementado ni declarado | `SPRINT_001-orden.md:56-57`; no hay tabla en `datos/` (M5) |
-| 33 | Aceptación: todo `por_verificar` listado en el summary | Pendiente, en riesgo | La bitácora lista 3 campos; los datos tienen 4 (M6) |
-| 34 | Cero UI y artefactos de diseño intactos | Completo | `git diff` sobre `src/app`, `docs/diseno`, `scripts/maqueta`, `design-*` está vacío |
+| #   | Ítem del plan o la orden                                                                                            | Estado                          | Evidencia                                                                                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | F0 · Verificación del kit (hooks, carnada, TS 6/React 19.3, ADR-001)                                                | Completo                        | `sprints/SPRINT_001-implementation-log.md:10-16`                                                                                                    |
+| 2   | F0 · Delta v1.34→v1.39 por nombre (scripts, CI, hook, comandos, constitución, plantilla)                            | Completo                        | log:18-40; `CLAUDE.md:9-11, 96-103, 323-332, 440-458, 504-538, 579-583, 658`; `.claude/commands/{audita-sprint,deploy-check}.md` = kit (diff vacío) |
+| 3   | F0 · `--coverage` + 90 % en el motor + test de observability                                                        | Completo                        | `package.json:11`; `vitest.config.ts:32-37`                                                                                                         |
+| 4   | F0 · `datos/privado/` ignorado + README + test                                                                      | Completo                        | `git ls-files datos/privado` da solo el README; `tests/unit/datos-privados.test.ts`                                                                 |
+| 5   | F0 · DA-01/DA-10: 14 marcos con versión, fecha, fuente+HTTP, licencia, vías y lista blanca                          | Completo                        | `datos/marcos/*.json`; el validador da 4 notas `marco/por-verificar`                                                                                |
+| 6   | F0 · DA-03: 4 patrones de forma con carnada y contraejemplo                                                         | Completo                        | `datos/filtro/patrones.json:9-99`; las carnadas son inocuas                                                                                         |
+| 7   | F0 · `docs/LICENCIAS-DE-MARCOS.md` es/en                                                                            | Con desviación                  | `:3,:7` afirman algo falso; `:49-53` atribuciones incompletas (hallazgos M2 y M3)                                                                   |
+| 8   | F0 · PR en borrador con la línea del merge + tabla de aprovisionamiento                                             | Completo, cuerpo desactualizado | PR #8 `isDraft:true`, línea 1 correcta; describe solo la fase 0 (B5)                                                                                |
+| 9   | F0 · STOP: tabla DA-01 (marco·versión·fecha·fuente·HTTP·licencia·vía máquina) aprobada                              | Parcial                         | Aprobada en el chat (log:131-134); **la tabla no existe en ningún archivo del repo** (A1)                                                           |
+| 10  | F1 · Esquemas Zod 4 con § 6 + campos de la F1                                                                       | Completo                        | `src/engine/catalogo/esquemas.ts:395-453` (el detalle es del otro auditor)                                                                          |
+| 11  | F1 · Validador: rechazos, advertencias y aprobada+marcada                                                           | Completo                        | 61 reglas (`reglas.ts`); semillas reproducidas: SIN-MARCO 2, SIN-VERSION 2, VERSION-ANTERIOR 1, PATRON-PASOS 1                                      |
+| 12  | F1 · Filtro que marca y no rechaza                                                                                  | Completo                        | PATRON-PASOS da «38 publicables, 1 pendiente», sale 1                                                                                               |
+| 13  | F1 · Huella JCS + SHA-256                                                                                           | Completo                        | Huellas reproducidas (ítem 23)                                                                                                                      |
+| 14  | F1 · CLI `validar`/`instantanea`, `--json`, `--idioma`, códigos 0/1/2/3                                             | Completo                        | Reproducido: 1, 2, 3 y 0                                                                                                                            |
+| 15  | F1 · Semillas C18                                                                                                   | Completo                        | 19 semillas + `semillas.json`; 11/11 bloqueadas                                                                                                     |
+| 16  | F2 · Anexo A: 9 áreas, 38 controles, resúmenes propios, `verificado_contra_norma:false`, equivalentes NIST con nota | Completo                        | `datos/controles/iso42001-anexo-a.json`; conté 201 equivalencias, todas «parcial»                                                                   |
+| 17  | F2 · Herramientas de § 10.4 y E-25, más proveedores TypeSafe si verifican                                           | Completo                        | 13 archivos; los TypeSafe quedan como dato (`promptfoo.json:56`)                                                                                    |
+| 18  | F2 · 21 pruebas de la maqueta + categorías de § 10.1/§ 10.2 + E-22                                                  | Completo, con desviación        | Las 21 IDs de la maqueta están; +17 nuevas = 38; 32 categorías cubiertas. DER `emergente` sin declarar (B3)                                         |
+| 19  | F2 · Mapa OWASP LLM 2025→2026; «LLM07» sin versión rechazado                                                        | Completo                        | `datos/marcos/equivalencias/owasp-llm-2025-a-2026.json`; reproducido                                                                                |
+| 20  | F2 · Filtro sobre todo el catálogo                                                                                  | Completo, ampliado y declarado  | log:335-338                                                                                                                                         |
+| 21  | F2 · STOP: parada 2; parada 3 declarada no corrida                                                                  | Completo                        | log:410-411                                                                                                                                         |
+| 22  | F3 · Semáforo por prueba, marco, herramienta y familia; umbrales y estados como dato                                | Completo                        | `datos/umbrales.json`, `datos/estados.json` (9 vocabularios, 33 estados). Reproducido: 11-02 vigente, 11-03 por revisar, 12-03 vencido              |
+| 23  | F3 · Instantáneas, gate de publicación, autoconsistencia                                                            | Completo                        | Re-emití 2026-10-04: **idéntica byte a byte** a `datos/instantaneas/2026-10-04-12d3b632a871.json` (502.746 B)                                       |
+| 24  | F3 · Clasificador demo + conjunto bilingüe + métricas + `clasificador:demo`                                         | Completo                        | Las cifras de log:538-548 coinciden una por una; huella `7d94f4a1…`                                                                                 |
+| 25  | F4 · C18 + `demo-rojo` sobre validador, filtro y gate                                                               | Completo (desde la fase 1)      | log:222-240, 594-601                                                                                                                                |
+| 26  | F4 · e2e de determinismo en 3 navegadores = Node, con rojo en un solo motor                                         | Completo                        | `tests/e2e/determinismo.spec.ts:123-163`; el log de CI 37253753617 muestra las 9 huellas iguales                                                    |
+| 27  | F4 · Tiempos de los dos comandos                                                                                    | Parcial                         | `instantanea` medida (log:449-450); `validar` sin medición registrada (B1)                                                                          |
+| 28  | F4 · Manual «El catálogo como dato» es/en                                                                           | Parcial                         | Faltan 3 de los 5 contenidos de la DoD de `SPRINT_001.md:80-82` (A2)                                                                                |
+| 29  | F4 · Guía: nace, prefijo `hackguard-s1`, ⭐⭐ «1 de 3…3 de 3», declara lo que deja fuera                            | Con desviación                  | `GUIA-DE-PRUEBA.html:390`; parada 1 sin su artefacto (A1); E3 fuera del ⭐ sin declararlo (M4)                                                      |
+| 30  | F4 · ADRs 002, 003 y 004                                                                                            | Completo                        | `decisions/002…004` (inexactitud menor en B7)                                                                                                       |
+| 31  | F4 · `docs/CHANGELOG.md`                                                                                            | Completo                        | Sus cifras coinciden con los datos                                                                                                                  |
+| 32  | Orden, insumo «§ 11.2: la escala, solo para dejar su tabla en datos»                                                | No implementado ni declarado    | `SPRINT_001-orden.md:56-57`; no hay tabla en `datos/` (M5)                                                                                          |
+| 33  | Aceptación: todo `por_verificar` listado en el summary                                                              | Pendiente, en riesgo            | La bitácora lista 3 campos; los datos tienen 4 (M6)                                                                                                 |
+| 34  | Cero UI y artefactos de diseño intactos                                                                             | Completo                        | `git diff` sobre `src/app`, `docs/diseno`, `scripts/maqueta`, `design-*` está vacío                                                                 |
 
 #### 2. Hallazgos
 
 ##### [ALTO] A1 · La tabla DA-01 aprobada en la parada 1 no es un archivo del repo, y la guía manda a confirmarla en un documento que no la contiene
+
 - **Ubicación:**
   - `docs/GUIA-DE-PRUEBA.html:199-209` y `:228`
   - `docs/LICENCIAS-DE-MARCOS.md:22-33`
@@ -112,10 +117,11 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
      ```
      Agregar su gemela en `## English`.
   2. En la guía, línea 201: «recorre la tabla» pasa a «recorre las tablas "Marcos con versión y fuente (DA-01)" y "Tabla de licencias"».
-- **Verificación:** `grep -c '^| `' docs/LICENCIAS-DE-MARCOS.md` sube en 28 (14 filas × 2 idiomas). Cada versión y HTTP de la tabla coincide con `datos/marcos/<id>.json`.
+- **Verificación:** `grep -c '^| `' docs/LICENCIAS-DE-MARCOS.md`sube en 28 (14 filas × 2 idiomas). Cada versión y HTTP de la tabla coincide con`datos/marcos/<id>.json`.
 - **Casilla:** 6 (guía contra arquitectura) y 1.
 
 ##### [ALTO] A2 · El manual no cumple 3 de los 5 contenidos de la DoD
+
 - **Ubicación:**
   - `docs/MANUAL-DE-USO.md:33-92` (es) y `:155-213` (en)
   - DoD en `SPRINT_001.md:80-82` (planeadora)
@@ -145,6 +151,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 1.
 
 ##### [MEDIO] M1 · Una persona no tiene cómo calcular la `revision.huella` que el validador exige para aprobar una prueba marcada
+
 - **Ubicación:**
   - `src/engine/catalogo/validar.ts:453-464` y `:1113-1137`
   - `src/cli/` (ningún comando la expone)
@@ -160,6 +167,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 1 y textos.
 
 ##### [MEDIO] M2 · `LICENCIAS-DE-MARCOS.md` afirma que el HTTP de cada licencia está registrado, y no lo está
+
 - **Ubicación:** `docs/LICENCIAS-DE-MARCOS.md:3` y `:7`
 - **Qué pasa (confirmado):**
   - El documento dice «con la URL de cada licencia consultada con `curl` y su código HTTP registrado en `datos/marcos/<id>.json`».
@@ -173,6 +181,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** regla 27 y normas.
 
 ##### [MEDIO] M3 · Las atribuciones no cumplen lo que los propios datos dicen que cada licencia exige
+
 - **Ubicación:**
   - `docs/LICENCIAS-DE-MARCOS.md:49-53`
   - `datos/marcos/lista-decision-14.json` (`editor`), `nist-*.json` (`licencia.exige`)
@@ -189,11 +198,13 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
     - y la de AI 100-2 E2025 tomada de su `fuente_oficial`
 
     Cada cita, seguida de la leyenda.
+
   - Línea 37: agregar a cada título OWASP la URL de su `fuente_oficial`.
 - **Verificación:** las tres atribuciones contienen autor o DOI o URL de la obra. Los datos no cambian de huella si solo se toca el `.md`.
 - **Casilla:** normas (regla 11).
 
 ##### [MEDIO] M4 · La guía afirma que los bloques B a F «los respalda la CI», pero E3 es un juicio humano que queda fuera del ⭐ sin declararse
+
 - **Ubicación:**
   - `docs/GUIA-DE-PRUEBA.html:170-172`
   - `:333-338` (E3)
@@ -206,6 +217,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 6.
 
 ##### [MEDIO] M5 · El insumo de la orden «§ 11.2: la escala, solo para dejar su tabla en datos» no se hizo ni se declaró
+
 - **Ubicación:**
   - `hr01…/ordenes/SPRINT_001-orden.md:56-57`
   - `datos/` (no hay tabla de escala)
@@ -216,13 +228,16 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
   - El brief asigna C13 al S3 y descarta la suma de dimensiones.
 - **Por qué importa:** una desviación del plan que no se registra queda invisible para la planeadora.
 - **Ajuste ejecutable:** en la bitácora, bajo la fase 4, agregar `### Desviación del plan` con este texto:
+
   > «§ 11.2 (escala de IA) no se deja en datos en el S1: la orden la nombraba entre los insumos, pero ni el plan aprobado ni `SPRINT_001.md` la incluyen; el brief asigna C13 al S3 y la regla dura 7 sustituye la suma de dimensiones por una tabla de prioridad de acción.»
 
   Repetirlo en el summary y avisar al usuario.
+
 - **Verificación:** `grep -n "11.2" sprints/SPRINT_001-implementation-log.md` da ≥ 1.
 - **Casilla:** 1.
 
 ##### [MEDIO] M6 · La bitácora lista 3 campos `por_verificar`; los datos tienen 4
+
 - **Ubicación:**
   - `sprints/SPRINT_001-implementation-log.md:85-88` y `:133`
   - `datos/marcos/iso-iec-42001.json` (`por_verificar: [fecha_version, fuente_oficial]`)
@@ -233,6 +248,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** coherencia.
 
 ##### [MEDIO] M7 · El manual pide «Node 22 o posterior», pero el CLI usa type stripping, que Node 22 solo trae activado desde la 22.18 (plausible)
+
 - **Ubicación:**
   - `docs/MANUAL-DE-USO.md:27` y `:149`
   - `package.json` sin `engines`
@@ -246,6 +262,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 4.
 
 ##### [MEDIO] M8 · `semillas.json` dice «ok» para la semilla de referencia, pero su propio `como_correr` da «con advertencias»
+
 - **Ubicación:** `docs/kit-de-prueba/semillas/semillas.json:6-9` y `:12-19`
 - **Qué pasa (confirmado):**
   - `pnpm catalogo:validar --agregar …/SEMILLA-REFERENCIA.json` da «Catálogo: con advertencias» y sale 1, por las 10 pruebas de software.
@@ -256,6 +273,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 6.
 
 ##### [BAJO] B1 · El tiempo de `catalogo:validar` no está medido
+
 - **Ubicación:** bitácora, fase 4
 - **Qué pasa:** solo se midió `instantanea` (log:449-450). Yo medí `validar` con `time -p` tres veces: 0,30, 0,31 y 0,36 s en esta máquina y con el entorno de agente. La cifra válida es la del builder.
 - **Ajuste ejecutable:** correr `for i in 1 2 3; do /usr/bin/time -p pnpm -s catalogo:validar >/dev/null; done` y anotar el rango en «### Tiempos» de la fase 4 y en el summary.
@@ -263,18 +281,21 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 1 y regla 27.
 
 ##### [BAJO] B2 · La corrección de la fase 4 (concordancia de número, `0a8228a`) no está en la bitácora
+
 - **Ubicación:** bitácora, fase 4 (no tiene «Bugs y resoluciones»)
 - **Qué pasa:** la línea de conteos decía «1 pendientes de revisión». La guía C4 depende de la corrección.
 - **Ajuste ejecutable:** agregar a la fase 4 «### Bugs y resoluciones — La línea de conteos en español no concordaba en número («1 publicables», «1 pendientes de revisión»); `0a8228a` lo corrige con su prueba en `tests/unit/catalogo/informe.test.ts`.»
 - **Verificación:** `grep -n 0a8228a sprints/SPRINT_001-implementation-log.md` da 1.
 
 ##### [BAJO] B3 · Deriva (`PR-MD-DER-001`) es `emergente` sin declararlo frente a E-23 / J E-8
+
 - **Ubicación:** `datos/pruebas/modelo_decision/PR-MD-DER-001.json:64`; `decisions/004-…md:22-23`
 - **Qué pasa:** E-23 dice «cuatro de las seis pasan a emergente» y J E-8 nombra calibración, umbral, inyección y límites. Los datos ponen cinco de las seis en `emergente`.
 - **Ajuste ejecutable:** en ADR-004, línea 23, agregar: «Drift (`PR-MD-DER-001`) is `emergente`, one more than E-23's four: it is anchored on item R1 of the 14-item checklist, which E-23 accepts as a framework.»
 - **Verificación:** `grep -n "PR-MD-DER-001" decisions/004-*.md` da 1.
 
 ##### [BAJO] B4 · Tres afirmaciones inexactas en el manual
+
 - **Ubicación:** `docs/MANUAL-DE-USO.md:39/161`, `:99/221` y `:60/182`
 - **Qué pasa:**
   - «13 herramientas, cada una con su versión verificada y su licencia»: `hackguard-revision` tiene versión «1» propia y licencia `NOASSERTION`.
@@ -289,11 +310,13 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 - **Casilla:** 4.
 
 ##### [BAJO] B5 · El cuerpo del PR #8 quedó en la fase 0
+
 - **Qué pasa:** dice «Phase 0 (this push)» y «Playwright browsers … added in phase 4», en futuro, aunque ya está hecho.
 - **Ajuste ejecutable:** al cierre, `gh pr edit 8 --body-file <archivo>`. La línea del merge va primero, luego un resumen de las 5 fases y la tabla de aprovisionamiento con «Installed by CI (chromium, firefox, webkit)».
 - **Verificación:** `gh pr view 8 --json body --jq .body | grep -c "this push"` da 0.
 
 ##### [BAJO] B6 · Cuatro textos desfasados en la constitución y los comandos
+
 - **Ubicación:**
   - `CLAUDE.md:81`
   - `CLAUDE.md:110-119` (Estructura)
@@ -306,18 +329,20 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
   - (d) La regla 10 dice «Dos clases de mirada»; `plan-sprint` (f) dice «Tres». La contradicción se hereda del kit.
 - **Ajuste ejecutable:**
   - (a) «(se fija en la fase 0 del S1)» pasa a «(fijada en la fase 0 del S1: `docs/LICENCIAS-DE-MARCOS.md` y `licencia` en cada `datos/marcos/<id>.json`)».
-  - (b) Añadir «├─ cli/            (E/S del catálogo: lee `datos/` y llama al motor)» bajo `├─ app/`.
+  - (b) Añadir «├─ cli/ (E/S del catálogo: lee `datos/` y llama al motor)» bajo `├─ app/`.
   - (c) En la línea 96, «**La CI construye COMO EL PROVEEDOR (kit v1.39.0):**» pasa a «**La CI construye COMO EL PROVEEDOR (kit v1.39.0) — lo que el proveedor publica no es lo que el build escribe:**».
   - (d) Registrar «K-S1-4 — la regla 10 del `CLAUDE.md` del kit dice dos clases de mirada y `plan-sprint.md` v1.36 dice tres» en la bitácora, sin editar la regla.
 - **Verificación:** `grep -c "lo que el proveedor publica no es lo que el build escribe" CLAUDE.md` da 2, y `grep -n K-S1-4` da 1.
 
 ##### [BAJO] B7 · ADR-002 describe mal el contenido de la instantánea
+
 - **Ubicación:** `decisions/002-…md:38-39`
 - **Qué pasa:** dice «only publishable tests … plus the freshness semaphore». La instantánea lleva el catálogo entero (11 claves), `pendientes_de_revision` y `advertencias`. ADR-003, el manual y el CHANGELOG lo dicen bien.
 - **Ajuste ejecutable:** reemplazar por «**Contents:** the whole catalog (frameworks, maps, controls, tools, vocabularies, thresholds, states) with only its publishable tests, plus the freshness semaphore, the tests awaiting review and the validator's warnings and notes.»
 - **Verificación:** `grep -n "whole catalog" decisions/002-*.md` da 1.
 
 ##### [BAJO] B8 · Otros textos menores
+
 - **(a) Cita del usuario en dos versiones.** La bitácora dice «Aprobados los marcos, continúa» (`log:132`) y la guía dice «Aprobados lo marcos, continua» (`GUIA:203-204`). Hay que unificar con la cita literal de la conversación, con «(sic)» como en la fase 2.
 - **(b) La guía E2 cita una línea que no existe.** «accuracy 20 of 26 · 25 of 26» no sale así: la salida es una fila de tabla, `accuracy 20 of 26 25 of 26`. Cambiarlo por «la fila "accuracy" con 20 of 26 y 25 of 26».
 - **(c) Afirmación sin sustento en `PR-MD-COH-001.json:14-15`.** «es la más barata de la familia»: ESTAB e INV tampoco necesitan etiquetas.
@@ -354,6 +379,7 @@ No modifiqué nada en el repo; `git status` sigue limpio. Las corridas de instan
 El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. Trabajé en mi scratchpad porque otro auditor estaba vaciando `/tmp/auditoria-hg` mientras yo lo usaba.
 
 #### Qué pasó bien (comprobado)
+
 - **Rutas que no debían cambiar:** `git diff origin/main...HEAD` sobre `src/app`, `docs/diseno`, `scripts/maqueta`, `design-system.md` y `design-sync` sale vacío.
 - **Worktrees:** `git worktree list` muestra solo el checkout principal y no existe `.claude/worktrees`.
 - **Secretos:**
@@ -383,6 +409,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 ---
 
 ##### [ALTO] Nombres y licencias de los marcos escritos en un solo idioma, y el esquema lo permite
+
 - **Ubicación:**
   - `src/engine/catalogo/esquemas.ts:81` (`nombre: Nombre`) y `:97` (`licencia.nombre: Nombre`).
   - `datos/marcos/cwe.json:3` y `:18`; `lista-decision-14.json:3`; `typesafe-jev.json:3` y `:18`; `mitre-atlas.json:20`; `mitre-attack.json:23`; `iso-iec-42001.json:20`; `nist-ai-rmf.json:20`; `nist-ai-600-1.json:19`; `nist-ai-100-2.json:20`.
@@ -391,6 +418,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
   - en 8 licencias, por ejemplo «Obra de empleados de NIST (sin copyright en EE. UU.; …)» o «Sin licencia abierta declarada (términos de TypeSafe)».
 
   La versión inglesa existe solo en `docs/LICENCIAS-DE-MARCOS.md` (tabla «Licence table»). Ese es justo el patrón que la regla 20 prohíbe: «un campo en un idioma más una traducción aparte». Estos campos entran en la instantánea, y el gate «datos bilingües» (`texto/idioma-repetido`) no puede verlos porque no son `{es,en}`.
+
 - **Por qué importa:** la pantalla del S2 los va a mostrar. Cuanto más tarde se corrija, más costoso es: cambia el contrato de datos y la huella.
 - **Ajuste ejecutable:**
   1. En `esquemas.ts:97`, dentro de `licencia`, cambiar `nombre: Nombre,` por `nombre: Texto,`.
@@ -405,22 +433,26 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
      - iso → `"ISO/IEC copyright (text not reproducible)"`
 
      Los textos de menos de 24 caracteres no disparan `idioma-repetido`.
+
   3. `Marco.nombre` sigue siendo `Nombre`: es el título propio tal como lo publica el editor (comentario en `esquemas.ts:6-7`). Se quitan las glosas en español:
      - `cwe.json:3` → `"Common Weakness Enumeration (CWE)"`;
      - `lista-decision-14.json:3` → `"Typed Decision Models: An Early Evidence Audit and Evaluation Checklist"`;
      - `typesafe-jev.json:3` → el título de la página `https://docs.typesafe.ai/model-jaggedness/jev-1.13.md` copiado literal (leerlo con `curl` y registrar el HTTP).
 
      Cada glosa pasa a `notas` `{es,en}`: «lista de 14 ítems» / «14-item checklist»; «documentación de los límites conocidos del modelo» / «documentation of the model's known limits». La de CWE (Top 25) ya está en `notas`.
+
   4. Nuevo invariante en `tests/unit/catalogo/catalogo-real.test.ts`: «ningún `nombre` de marco lleva glosa en español», con `expect(m.nombre).not.toMatch(/[áéíóúñ¿¡]|\b(y|de|del|la|los|las|el)\b/)`. Va con su demo en rojo: restaurar la glosa de `cwe.json` debe poner la prueba en rojo.
   5. Efecto en cadena: las huellas cambian. Hay que actualizar la guía en D1 y F1 (`e2858e62…`), D2 y D5. La instantánea `2026-10-04-12d3b632a871.json` se conserva como registro histórico (su prueba exige autoconsistencia, no igualdad), así que D5 se reescribe así: «hoy la misma fecha da `<nueva>`; la versionada es el registro del 2026-10-04». Ninguna prueba fija esas huellas a mano (comprobado con `git grep`).
 
   **Alternativa válida:** declararlo como deuda en el summary, pagable antes de la primera pantalla que muestre marcos (S2).
+
 - **Verificación:**
   - `pnpm catalogo:validar` sale 1, con las mismas 10 advertencias y 4 notas.
   - `python3 -c "import json,glob;print([f for f in glob.glob('datos/marcos/*.json') if not isinstance(json.load(open(f))['licencia']['nombre'],dict)])"` → `[]`.
 - **Casilla:** bilingüe (regla 20).
 
 ##### [ALTO] El filtro de contenido no ve las cargas escritas dentro de una línea, y la parada 2 lo presenta como prueba de que nada operativo pasó
+
 - **Ubicación:** `datos/filtro/patrones.json:19,40,61,81`; `docs/GUIA-DE-PRUEBA.html:210-215`; `docs/MANUAL-DE-USO.md:91` y `:212`.
 - **Qué pasa (confirmado con una sonda en Node sobre los patrones reales):** ninguno de estos textos se marca:
   - `<script>alert(1)</script>`
@@ -439,6 +471,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
   - Una prueba que no se marca puede nacer `aprobada` sin ningún registro de revisión (decisión 7 del plan). Por eso el filtro es la única barrera automática entre una carga escrita en línea y la instantánea publicada.
 
   Hoy no hay ninguna violación: leí las 38 pruebas.
+
 - **Por qué importa:** el requisito RF-01.3 pide marcar «toda prueba cuyo texto parezca contener cargas». La parada 2 («busca `filtro/marcada`: no debe aparecer») y la orden («el filtro demuestra… que nada operativo pasó») afirman más de lo que el filtro puede ver. Las propuestas del investigador (RF-07.4) pasarán por este mismo filtro.
 - **Ajuste ejecutable (lo mínimo, sin decisión de producto):**
   1. `MANUAL-DE-USO.md`, después de la línea 92: «- **Lo que el filtro no ve:** reconoce cuatro formas (bloque de código con intérprete, tres o más pasos numerados, cadena codificada larga y dirección con parámetros de inyección). Una carga corta escrita dentro de una línea (una etiqueta HTML, una comilla seguida de una condición, una ruta con `../`) no tiene ninguna de esas formas y no se marca: la lectura de cada prueba nueva por una persona sigue siendo el control.»
@@ -452,6 +485,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** frontera de contenido (regla dura 3).
 
 ##### [ALTO] Los errores del clasificador demo mezclan español e inglés y no respetan `--idioma`
+
 - **Ubicación:** `src/engine/demo/conjunto.ts:172-174`, `src/engine/demo/clasificador.ts:260-263` y `src/cli/clasificador-demo.ts:35` (lectura sin envoltorio).
 - **Qué pasa (confirmado):** con un conjunto modificado y `--idioma en`, el CLI imprime `conjunto inválido: parametros.repeticiones: Too small: expected number to be >=2`: prefijo en español y cuerpo de Zod en inglés. Lo mismo ocurre con `bins_ece=0` y `ruido_por_mil=900`. Un archivo que no existe da `ENOENT: no such file…`, solo en inglés. Por contraste, el `RangeError` del semáforo (`semaforo.ts:103`) sí es bilingüe.
 - **Por qué importa:** `--conjunto` es una opción documentada, así que este texto llega al usuario.
@@ -459,7 +493,9 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
   1. `conjunto.ts:172`:
      ```ts
      const ruta = p.path.map(String).join(".") || "(raíz / root)";
-     throw new RangeError(`conjunto inválido en ${ruta} (${p.code}) / invalid set at ${ruta} (${p.code})`);
+     throw new RangeError(
+       `conjunto inválido en ${ruta} (${p.code}) / invalid set at ${ruta} (${p.code})`,
+     );
      ```
   2. `clasificador.ts:260`, igual: `petición inválida en ${ruta} (${p.code}) / invalid request at ${ruta} (${p.code})`.
   3. `clasificador-demo.ts:35`: envolver `readFileSync` y `JSON.parse` en un `try` que relance `new Error(\`error de lectura / read error: ${e.message}\`)`.
@@ -470,25 +506,47 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** bilingüe (regla 20).
 
 ##### [MEDIO] La prueba del hook no cubre el caso «falta solo una herramienta»
+
 - **Ubicación:** `.claude/settings.json:12`; `tests/unit/hook-secretos.test.ts:48-73`.
 - **Qué pasa (confirmado):** corrí el comando real del hook con gitleaks en el PATH, sin jq, y con la carnada como contenido:
   - el hook original sale 2;
   - mutado de `||` a `&&`, sale 0 y deja pasar la carnada.
 
   Las 3 pruebas existentes (faltan las dos, `KIT_SIN_GITLEAKS`, están las dos) siguen en verde con esa mutación.
+
 - **Por qué importa:** «gitleaks sí, jq no» es el caso más probable en Windows con Git Bash, que no trae jq. Hoy esa rama de «falla cerrado» no tiene ninguna prueba que la sostenga.
 - **Ajuste ejecutable:** en `hook-secretos.test.ts`, añadir:
   ```ts
-  const hay = (b: string) => spawnSync("/bin/bash", ["-c", `command -v ${b}`]).status === 0;
-  function pathCon(extras: string[]) { const dir = pathSinHerramientas(); for (const b of extras) { const r = spawnSync("/bin/bash", ["-c", `command -v ${b}`], { encoding: "utf8" }); if (r.stdout.trim().startsWith("/")) symlinkSync(r.stdout.trim(), join(dir, b)); } return dir; }
-  it.runIf(hay("jq"))("con jq pero sin gitleaks bloquea", () => { const r = correr("hola", { PATH: pathCon(["jq"]) }); expect(r.status).toBe(2); expect(r.stdout).toContain("falta gitleaks o jq"); });
-  it.runIf(hay("gitleaks"))("con gitleaks pero sin jq bloquea", () => { const r = correr("hola", { PATH: pathCon(["gitleaks"]) }); expect(r.status).toBe(2); expect(r.stdout).toContain("falta gitleaks o jq"); });
+  const hay = (b: string) =>
+    spawnSync("/bin/bash", ["-c", `command -v ${b}`]).status === 0;
+  function pathCon(extras: string[]) {
+    const dir = pathSinHerramientas();
+    for (const b of extras) {
+      const r = spawnSync("/bin/bash", ["-c", `command -v ${b}`], {
+        encoding: "utf8",
+      });
+      if (r.stdout.trim().startsWith("/"))
+        symlinkSync(r.stdout.trim(), join(dir, b));
+    }
+    return dir;
+  }
+  it.runIf(hay("jq"))("con jq pero sin gitleaks bloquea", () => {
+    const r = correr("hola", { PATH: pathCon(["jq"]) });
+    expect(r.status).toBe(2);
+    expect(r.stdout).toContain("falta gitleaks o jq");
+  });
+  it.runIf(hay("gitleaks"))("con gitleaks pero sin jq bloquea", () => {
+    const r = correr("hola", { PATH: pathCon(["gitleaks"]) });
+    expect(r.status).toBe(2);
+    expect(r.stdout).toContain("falta gitleaks o jq");
+  });
   ```
   La demo en rojo se hace con `demo-rojo.sh`, mutando `||` por `&&` en el `command`: las dos pruebas nuevas tienen que salir en rojo y volver a verde al restaurar. Se registra en la bitácora.
 - **Verificación:** `pnpm vitest run tests/unit/hook-secretos.test.ts` debe dar 5 de 5 en local.
 - **Casilla:** secretos (regla 7, regla 15).
 
 ##### [MEDIO] La prueba que bloquea la carnada nunca corre en la CI
+
 - **Ubicación:** `tests/unit/hook-secretos.test.ts:62` (`it.runIf(hayHerramientas)`); `.github/workflows/ci.yml:33`.
 - **Qué pasa (confirmado):** en el log de la corrida 37253753617 aparece `tests/unit/hook-secretos.test.ts (3 tests | 1 skipped)` y en el total `1147 passed | 1 skipped`. El runner de Ubuntu no tiene gitleaks.
 - **Por qué importa:** regla 15, «skipped no es verde». La única prueba que demuestra que el hook detecta un secreto no ejecuta en la CI, y la CI no tiene ningún otro escaneo de secretos.
@@ -502,10 +560,12 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
   3. La demo en rojo va en un PR desechable sin el paso de instalación: `quality` debe salir en rojo.
 
   **Alternativa:** declarar la prueba `manual` en el summary, con su corrida local registrada.
+
 - **Verificación:** con `gh run view <id> --log | grep hook-secretos` debe verse `(3 tests)` sin «skipped».
 - **Casilla:** secretos (regla 15).
 
 ##### [MEDIO] `instantanea --agregar` escribe en la carpeta versionada un derivado que viene de fuera de `datos/`, con la ruta de la máquina dentro
+
 - **Ubicación:** `src/cli/catalogo.ts:83` (salida por defecto `datos/instantaneas`); `src/cli/cargar.ts:67` (`path.relative` de un archivo externo).
 - **Qué pasa:**
   - **Confirmado:** `instantanea --fecha 2026-10-15 --agregar <archivo fuera del repo con advertencia> --salida <tmp>` emite el archivo y deja en `advertencias[].ruta` el valor `"../../../../private/tmp/claude-501/-Users-henryrincon-…/SEMILLA-SIN-CONTROL.json"`. Ahí van el nombre del usuario y la estructura local. Además, la huella pasa a depender de la máquina, lo que rompe la promesa del manual de «la misma huella en cualquier computador».
@@ -514,8 +574,14 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Ajuste ejecutable:**
   1. En `catalogo.ts`, dentro de la rama `instantanea` y antes de `construirInstantanea`:
      ```ts
-     if (o.agregar.length > 0 && (o.salida === undefined || path.resolve(o.salida) === path.resolve("datos/instantaneas")))
-       throw new ErrorDeUso("--agregar exige --salida fuera de datos/instantaneas/ / --agregar requires --salida outside datos/instantaneas/");
+     if (
+       o.agregar.length > 0 &&
+       (o.salida === undefined ||
+         path.resolve(o.salida) === path.resolve("datos/instantaneas"))
+     )
+       throw new ErrorDeUso(
+         "--agregar exige --salida fuera de datos/instantaneas/ / --agregar requires --salida outside datos/instantaneas/",
+       );
      ```
   2. En `cargar.ts:67`, para cada archivo agregado: si `path.relative(raiz, abs)` empieza por `..`, usar como ruta `agregado/${path.basename(abs)}`; si no, la relativa de hoy. Así siguen funcionando la guía (C1–C4, D4) y `semillas-del-catalogo.test.ts`, que arma sus rutas por su cuenta.
   3. Pruebas nuevas en `tests/unit/catalogo/cli.test.ts`:
@@ -527,6 +593,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** privacidad (reglas 8 y 17-bis).
 
 ##### [MEDIO] Guía: contraste de 4,44:1 en las celdas de valor del tema claro
+
 - **Ubicación:** `docs/GUIA-DE-PRUEBA.html:74` (`--ok: #4f7a4a`) y `:146` (`td.valor`).
 - **Qué pasa (confirmado):** axe da `color-contrast(serious) x15` en tema claro en los tres motores: #4f7a4a sobre #f2f2ef = 4,44 (el mínimo es 4,5). El tema oscuro está limpio.
 - **Ajuste ejecutable:** en la línea 74, dentro del `:root` claro, cambiar `--ok: #4f7a4a;` por `--ok: #477043;`. Calculado: 5,11 sobre #f2f2ef, 5,53 sobre #fbfbfa y 4,53 sobre #dde6ec.
@@ -534,6 +601,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** a11y de la guía (regla 11).
 
 ##### [MEDIO] Guía D1: cuenta archivos sin decir desde qué estado parte
+
 - **Ubicación:** `docs/GUIA-DE-PRUEBA.html:290-295`.
 - **Qué pasa (confirmado leyendo):** D1 espera «en `/tmp/hackguard` un solo archivo», pero D2, D3 y D5 escriben en esa misma carpeta. Al repetir el bloque (el gate se corre por bloques, y volver a probar tras un arreglo es parte del gate) salen 4 archivos. Eso contradice la regla 9 que la propia guía declara en su cabecera.
 - **Ajuste ejecutable:** en las líneas 290 y 292, D1 usa su propia carpeta: `--salida /tmp/hackguard-d1` en «Empieza en:» y en el paso. El esperado pasa a «en `/tmp/hackguard-d1` un solo archivo, `2026-10-15-<huella12>.json`, aunque repitas el bloque». Como el CLI no reescribe un archivo con la misma huella, sigue habiendo uno solo.
@@ -541,6 +609,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** guía (regla 11).
 
 ##### [BAJO] Identificadores en español dentro de la salida en inglés
+
 - **Ubicación:**
   - `src/engine/demo/conjunto.ts:333` y `:351`: «Choice: aprobar · rechazar · revisar» y «the band: “aprobar”».
   - `src/engine/catalogo/validar.ts:900`, `:926` y `:1146`: el detalle de `filtro/marcada` muestra el id «pasos-imperativos» aunque el patrón tiene `nombre` `{es,en}`.
@@ -555,17 +624,20 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 - **Casilla:** bilingüe.
 
 ##### [BAJO] Una familia sin pruebas publicadas se imprime sin marca
+
 - **Ubicación:** `src/engine/catalogo/informe.ts:156-160`.
 - **Qué pasa (confirmado leyendo):** «sin pruebas publicadas N» se imprime sin símbolo. El vocabulario `vigencia` no tiene un estado para ese caso, así que la pantalla del S2 heredará el mismo hueco. Hoy no ocurre, porque las 4 familias tienen pruebas.
 - **Ajuste ejecutable:** añadir a `datos/estados.json`, vocabulario `vigencia`, el estado `{ "id": "sin_pruebas", "rol": "neutro", "simbolo": "vacio", "nombre": { "es": "Sin pruebas publicadas", "en": "No published tests" } }` y pintarlo con `MARCAS.vacio`. También puede quedar como backlog del S2.
 - **Casilla:** el color nunca solo (regla dura 12).
 
 ##### [BAJO] La cita del usuario no coincide entre la guía y la bitácora
+
 - **Ubicación:** `docs/GUIA-DE-PRUEBA.html:203-204` («Aprobados lo marcos, continua») frente a `sprints/SPRINT_001-implementation-log.md:132` («Aprobados los marcos, continúa»).
 - **Ajuste ejecutable:** dejar las dos con el texto literal del usuario, con «(sic)» si se conservan las erratas, como ya se hizo en la línea 411.
 - **Casilla:** evidencia (regla 27).
 
 ##### [BAJO] La guía está solo en español
+
 - **Ubicación:** `docs/GUIA-DE-PRUEBA.html` (`lang="es-CO"`).
 - **Qué pasa (plausible, es una interpretación):** la regla 20 pide «documentos» bilingües y la guía se declara también «entregable para usuarios finales». Hay precedente en las dos direcciones: planlang tiene la guía bilingüe y big-d no. La orden no lo exige.
 - **Ajuste:** que lo decida la planeadora; si no se hace ahora, anotarlo en el summary.
@@ -574,6 +646,7 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 ---
 
 **Casilla 8 (protecciones del sistema tocadas): ninguna.**
+
 - Busqué en el diff Llavero, TCC, launchd o LaunchAgents, Touch ID, `osascript`, certificados, `sudo`, micrófono y cámara: no aparece nada.
 - `pnpm test` solo lanza `bash`, `git`, `node` y gitleaks, y escribe en `os.tmpdir()`.
 - `verificar-dependencias.test.ts` inyecta la consulta al registro, así que no sale a la red.
@@ -582,6 +655,390 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 
 **Para mi superficie: requiere ajustes.** Los 3 altos hay que corregirlos o declararlos como deuda en el summary con su sprint de pago. Los medios del hook (2), de `--agregar` y de la guía (2) son cambios acotados.
 
-## Anexo C — Informe del auditor «motor, contrato, gates y dependencias»
+## Anexo C — Informe del auditor «motor, contrato, gates y dependencias», tal como lo entregó
 
-Todavía no llega. Se le pidió cerrar con lo revisado y listar «Lo que no alcancé a revisar».
+### Auditoría independiente S1 HackGuard: motor, contrato, gates y dependencias
+
+**Veredicto para mi superficie: requiere ajustes.** Hay 2 hallazgos Altos, 7 Medios y 8 Bajos. No encontré nada Crítico.
+
+No toqué el repo: `git status` sale limpio y no hay stash. Lo único que se movió fue un `git fetch origin main`, que solo actualiza `FETCH_HEAD` y la referencia `origin/main` dentro de `.git`. Todas las mutaciones las hice sobre una copia en el scratchpad (`…/scratchpad/copia-hg`, con `node_modules` enlazado).
+
+**Lo que verifiqué y está bien:**
+
+- **Pruebas unitarias:** 1.149 de 1.149 en verde en la copia.
+- **Cobertura:** el motor queda en 99,12 % de sentencias y 94,48 % de ramas en `engine/catalogo`, y en 99,47 % y 96,42 % en `engine/demo`.
+- **Reglas del validador:** son 61 y cada una tiene un caso que la hace saltar.
+- **Paso de CI «Catálogo válido»:** `pnpm` propaga el código del CLI (2 → paso en rojo, 1 → paso en verde; comprobado con `bash -ec`).
+- **Dependencias:** `esbuild` entró exacto en 0.28.2. `verificar-dependencias` dice «680 paquetes, ninguno por debajo de origin/main».
+- **Scripts del kit:** son idénticos byte a byte a `kit-app/scripts`.
+- **Instantánea versionada:** `2026-10-04-12d3b632a871` se reproduce exacta desde los datos actuales.
+- **e2e de determinismo en CI:** en la corrida 37253753617, Node, Chromium, Firefox y WebKit dan las mismas huellas en las 9 pruebas.
+
+---
+
+#### ALTO
+
+##### [ALTO] Las pruebas fechan contra el calendario y la matriz de envejecimiento revienta con fechas de verificación mezcladas
+
+- **Ubicación:**
+  - `tests/unit/catalogo/envejecimiento.test.ts:35-46`, `:55-58` y `:125-140`;
+  - `tests/unit/catalogo/instantanea.test.ts:13`, `:60`, `:80`;
+  - `tests/unit/catalogo/informe.test.ts:124`, `:162`, `:169`, `:180`, `:192`;
+  - `tests/unit/catalogo/cli.test.ts:96`, `:113`, `:137`;
+  - `tests/e2e/determinismo.spec.ts:19-21`;
+  - la causa está en `src/engine/catalogo/semaforo.ts:102-107` (RangeError si la fecha es anterior a la última verificación).
+- **Qué pasa (CONFIRMADO en la copia):**
+  1. **Re-verificar una sola entidad después del 2026-10-15 rompe 13 pruebas unitarias.** Con `datos/herramientas/nuclei.json` en `fecha_verificacion: "2026-10-20"` fallan 13 en 4 archivos (cli, envejecimiento, informe, instantanea). El e2e se rompería igual, porque usa el mismo `"2026-10-15"`.
+  2. **La matriz no soporta fechas separadas por más de 29 días.** Con una herramienta en `"2026-08-20"` y el resto en `2026-10-04`, el módulo entero de la matriz falla al cargar: «RangeError: la fecha de evaluación 2026-09-18 es anterior a la última verificación…» y corre 0 pruebas. La causa es que la matriz incluye umbrales de lo verificado antes, que caen antes de la última verificación.
+  3. **La prueba «cambian el día de cada umbral» solo compara `semaforo.pruebas`.** Si lo re-verificado es un marco o una herramienta, falla aunque el motor esté bien.
+- **Por qué importa:**
+  - El S2 va a heredar la CI en rojo en cuanto re-verifique datos.
+  - La regla 23 existe justamente para el catálogo vivo con fechas mezcladas, y ahí el gate se cae en vez de medir.
+  - La bitácora (fase 3, bloque A) dice que los estados mezclados «no los tendría» el catálogo real. Lo tendrá.
+- **Ajuste ejecutable (verificado en la copia):**
+  1. `tests/unit/catalogo/ayuda.ts`, tras `const base = cargarCatalogo(RAIZ);`:
+     ```ts
+     export const ULTIMA_VERIFICACION = [
+       ...base.marcos,
+       ...base.herramientas,
+       ...base.pruebas,
+     ]
+       .map(
+         (a) =>
+           (JSON.parse(a.texto) as { fecha_verificacion?: string })
+             .fecha_verificacion ?? "",
+       )
+       .reduce((max, f) => (f > max ? f : max), "");
+     export const FECHA_BASE = "2026-10-04";
+     function conFechaBase(archivo: ArchivoDeDatos): ArchivoDeDatos {
+       const datos = JSON.parse(archivo.texto) as Record<string, unknown>;
+       datos.fecha_verificacion = FECHA_BASE;
+       return { ...archivo, texto: JSON.stringify(datos) };
+     }
+     ```
+     y `catalogoBase()` pasa a:
+     ```ts
+     const c = structuredClone(base);
+     return {
+       ...c,
+       marcos: c.marcos.map(conFechaBase),
+       herramientas: c.herramientas.map(conFechaBase),
+       pruebas: [],
+     };
+     ```
+  2. `cli.test.ts`:
+     - importar `fechaMasDias` y `ULTIMA_VERIFICACION`;
+     - `const FECHA = fechaMasDias(ULTIMA_VERIFICACION, 11)`, `OTRA_FECHA = …(…, 12)` y `ANTERIOR = …(…, -1)`;
+     - reemplazar `"2026-10-15"` → `FECHA`, `"2026-10-16"` → `OTRA_FECHA` y `"2026-10-03"` → `ANTERIOR`;
+     - el mensaje esperado pasa a `` `la fecha de evaluación ${ANTERIOR} es anterior a la última verificación del catálogo (${ULTIMA_VERIFICACION})` ``;
+     - el regex de la línea 143 pasa a ``new RegExp(`^Instantánea emitida: .*${OTRA_FECHA}-[0-9a-f]{12}\\.json\\n`)``;
+     - el `archivo` esperado pasa a `` `${temporal}/${FECHA}-…` ``.
+  3. `envejecimiento.test.ts`:
+     - **Filtro de fechas:** tras construir el arreglo de `FECHAS`, añadir `.filter((f) => f >= hoy)` antes de `.sort()`, con un comentario: «el motor rechaza fechas anteriores a la última verificación; esos umbrales los cubre semaforo.test.ts».
+     - **Pares de víspera y día:** en el bucle de las líneas 130-138, tras `const dia = …`, añadir `if (vispera < hoy) continue;`.
+     - **Qué se compara:** `vigencias()` mapea `[...semaforo.pruebas, ...semaforo.marcos, ...semaforo.herramientas]`.
+  4. `determinismo.spec.ts`:
+     - importar `fechaMasDias` y sustituir las líneas 19-21 por:
+       ```ts
+       const LEIDO = cargarCatalogo(RAIZ);
+       const ULTIMA = [...LEIDO.marcos, ...LEIDO.herramientas, ...LEIDO.pruebas]
+         .map(
+           (a) =>
+             (JSON.parse(a.texto) as { fecha_verificacion: string })
+               .fecha_verificacion,
+         )
+         .reduce((m, f) => (f > m ? f : m), "");
+       const POR_REVISAR = (
+         JSON.parse(LEIDO.umbrales?.texto ?? "{}") as {
+           vigencia: { por_revisar: number };
+         }
+       ).vigencia.por_revisar;
+       const FECHA = fechaMasDias(ULTIMA, 11);
+       const FECHA_EN_UMBRAL = fechaMasDias(ULTIMA, POR_REVISAR);
+       ```
+     - en `beforeAll`, `catalogo = LEIDO;`.
+- **Verificación:**
+  - En una copia, `zap.json` con `"2026-10-20"` y `nuclei.json` con `"2026-08-20"` → `npx vitest run tests/unit` todo en verde. Ya lo medí con el arreglo: 43 de 43 en la matriz y el resto en verde.
+  - Volver a datos reales y cambiar `semaforo.ts:71` de `>=` a `>` → la matriz en rojo. Medido: 3 fallas con fechas mezcladas y 2 con datos reales.
+  - El e2e no lo corrí; su arreglo queda por correr.
+- **Casilla:** regla 23 y gates (regla 15).
+
+##### [ALTO] El lint de determinismo del motor deja pasar `crypto.randomUUID`, `globalThis.Date`, `navigator` e `import()` dinámico
+
+- **Ubicación:** `eslint.config.mjs:26-53`.
+- **Qué pasa (CONFIRMADO):** un archivo sonda en `src/engine/` con estas líneas pasa `eslint` sin error:
+  - `globalThis.Date.now()`, `crypto.randomUUID()` y `crypto.getRandomValues(...)`;
+  - `navigator.userAgent`, `globalThis.Math.random()` y `new globalThis.Intl.Collator()`;
+  - `await import("node:fs")`.
+
+  Solo se marcan `Date.now()`, `Math.random()`, `const {random}=Math` e `Intl`. La propia demo en rojo del e2e (bitácora, fase 4) metió `navigator.userAgent` en `instantanea.ts`, y el lint no lo vio.
+
+- **Por qué importa:**
+  - La regla dura 1 promete un núcleo sin azar ni entorno.
+  - `crypto.randomUUID()` es la tentación natural en el S3 (ids de sobres y lotes) y hoy sale en verde.
+  - Es un gate con falsos negativos sobre el caso más probable.
+- **Ajuste ejecutable (verificado en la copia):** en el bloque `files: ["src/engine/**/*.ts"]`:
+  1. Añadir `"navigator", "window", "self", "document", "location"` a la lista de `no-restricted-globals`.
+  2. Añadir, antes de `"no-restricted-imports"`:
+     ```js
+     "no-restricted-syntax": ["error",
+       { selector: "MemberExpression[object.name='globalThis'][property.name!='crypto']", message: "Del entorno global, el núcleo solo usa globalThis.crypto.subtle (regla dura 1)." },
+       { selector: "MemberExpression[object.name='crypto'][property.name!='subtle']", message: "Del entorno global, el núcleo solo usa globalThis.crypto.subtle (regla dura 1)." },
+       { selector: "MemberExpression[object.property.name='crypto'][property.name!='subtle']", message: "Del entorno global, el núcleo solo usa globalThis.crypto.subtle (regla dura 1)." },
+       { selector: "ImportExpression", message: "El núcleo no importa en tiempo de ejecución (regla dura 1)." },
+     ],
+     ```
+  3. Opcional: ampliar `files` a `src/engine/**/*.{ts,tsx,mts}`.
+- **Verificación:**
+  - La sonda de 8 líneas (las 7 de arriba más `globalThis.crypto.subtle`) da 7 errores, y `globalThis.crypto.subtle` pasa.
+  - `npx eslint src/engine src/cli` limpio sobre el árbol real (medido).
+  - Registrar la demo en rojo con `demo-rojo.sh` (`crypto.randomUUID()` en `huella.ts`).
+- **Casilla:** 2 (seguridad y determinismo) y gates.
+
+#### MEDIO
+
+##### [MEDIO] Ninguna prueba puede fallar si el orden de las pruebas de entrada cambia la huella
+
+- **Ubicación:**
+  - `tests/unit/catalogo/instantanea.test.ts:66-76`: invierte solo marcos y herramientas, y `catalogoBase()` no trae pruebas;
+  - `tests/unit/catalogo/validar.test.ts:711-723`: invierte una lista de 1 prueba;
+  - `tests/e2e/determinismo.spec.ts`: Node y navegador reciben el mismo orden.
+- **Qué pasa (CONFIRMADO):** muté `validar.ts:905` para que las pruebas sigan el orden de entrada (`.sort` por índice en `entrada.pruebas`). La huella del 2026-10-15 cambió (`6f32…` en vez de `e285…`) y las 1.149 pruebas unitarias siguieron en verde.
+- **Por qué importa:** el día que la UI cargue los archivos en otro orden, la huella del navegador divergirá de la de Node sin que nada lo vea antes.
+- **Ajuste ejecutable (verificado):** añadir en `instantanea.test.ts`:
+
+  ```ts
+  it("el catálogo real, con cada lista invertida, da la misma huella", async () => {
+    const directo = await construirInstantanea(catalogoReal(), FECHA);
+    const c = catalogoReal();
+    for (const l of [
+      c.marcos,
+      c.equivalencias,
+      c.controles,
+      c.herramientas,
+      c.pruebas,
+    ])
+      l.reverse();
+    const invertido = await construirInstantanea(c, FECHA);
+    if (!directo.emitida || !invertido.emitida)
+      throw new Error("debía emitirse");
+    expect(invertido.instantanea.huella).toBe(directo.instantanea.huella);
+  });
+  ```
+
+  Importar `catalogoReal`. Ojo: `FECHA` debe ser posterior a la última verificación del catálogo real, o sea la derivada del hallazgo Alto 1.
+
+  Opcional y barato: en el e2e, enviar al navegador una copia de `LEIDO` con las cinco listas invertidas.
+
+- **Verificación:** pasa sobre el código real y falla con la mutación («expected '5a70…' to be '6f32…'», medido).
+- **Casilla:** 2 (tests) y regla 19.
+
+##### [MEDIO] La prueba «el manifiesto nombra cada semilla del directorio» no puede fallar
+
+- **Ubicación:** `tests/unit/instrumento/semillas-del-catalogo.test.ts:96-105`.
+- **Qué pasa (CONFIRMADO):** `enDisco` es el texto del propio `semillas.json`, no el listado de la carpeta. Una `SEMILLA-HUERFANA.json` fuera del manifiesto deja la prueba en 22 de 22 verde.
+- **Por qué importa:** una semilla nueva sin entrada en el manifiesto jamás se ejerce en C18. El «N de N» sale sin ella.
+- **Ajuste ejecutable:**
+  - importar `readdirSync`;
+  - sustituir `const enDisco = readFileSync(...)` y el `expect(enDisco).toContain(s.archivo)` por:
+    ```ts
+    const enCarpeta = readdirSync(`${RAIZ}/${SEMILLAS}`)
+      .filter((n) => n.startsWith("SEMILLA-") && n.endsWith(".json"))
+      .sort();
+    expect(manifiesto.semillas.map((s) => s.archivo).sort()).toEqual(enCarpeta);
+    ```
+- **Verificación:** con una semilla huérfana en la copia, la prueba sale en rojo; sin ella, en verde.
+- **Casilla:** gates (¿puede fallar?).
+
+##### [MEDIO] `instantanea --agregar` publica pruebas de fuera de `datos/` en una instantánea de aspecto oficial
+
+- **Ubicación:** `src/cli/catalogo.ts:76-90`.
+- **Qué pasa (CONFIRMADO):** `pnpm catalogo:instantanea --fecha 2026-10-15 --agregar docs/kit-de-prueba/semillas/SEMILLA-REFERENCIA.json` emite una instantánea con 39 pruebas, incluida la semilla.
+  - Sin `--salida`, cae en `datos/instantaneas/` y pasa `instantaneas-versionadas.test.ts`, que solo mide autoconsistencia.
+  - Nada en el archivo dice que entró algo de fuera; las advertencias no nombran ninguna ruta externa.
+- **Ajuste ejecutable:** en `catalogo.ts`, dentro de `if (o.comando === "instantanea")` y tras validar la fecha:
+  ```ts
+  if (o.agregar.length > 0) {
+    const datosAbs = path.resolve(raiz, "datos");
+    const salidaAbs = o.salida === undefined ? null : path.resolve(o.salida);
+    if (
+      salidaAbs === null ||
+      salidaAbs === datosAbs ||
+      salidaAbs.startsWith(`${datosAbs}${path.sep}`)
+    )
+      throw new ErrorDeUso(
+        "--agregar con instantanea exige --salida fuera de datos/",
+      );
+  }
+  ```
+  Y en `cli.test.ts` un caso: `catalogo("instantanea","--fecha",FECHA,"--agregar",\`${SEMILLAS}/SEMILLA-REFERENCIA.json\`)`→`codigo`3,`errores`contiene «--salida fuera de datos/» y`readdirSync("datos/instantaneas")` no cambia.
+- **Verificación:** con ese comando, `ls datos/instantaneas` sigue con un solo archivo. El paso d4 de la guía (que sí usa `--salida /tmp/hackguard`) sigue saliendo 2.
+- **Casilla:** 2 (superficie de entrada del CLI) y gate de publicación.
+
+##### [MEDIO] `revision.huella` no tiene productor: no hay forma de aprobar una prueba marcada sin escribir código
+
+- **Ubicación:** `src/engine/catalogo/validar.ts:453-464` y `:1110-1137`.
+- **Qué pasa (CONFIRMADO por lectura y `grep`):**
+  - `huellaDeRevision` solo la llaman el validador y las pruebas unitarias.
+  - Ningún comando la imprime, y ningún hallazgo la incluye en su detalle.
+  - La parada 2 («revisada_y_aprobada» con registro) no es ejecutable por una persona. No saltó en el S1 porque hubo cero marcadas.
+- **Ajuste ejecutable:** en `validar.ts`, sustituir el cálculo de `revisionAlDia` (líneas 1110-1112) por:
+  ```ts
+  const huellaActual = await huellaDeRevision(p);
+  const revisionAlDia =
+    p.revision !== undefined && huellaActual === p.revision.huella;
+  const conHuella = t(
+    `huella del contenido a revisar: ${huellaActual}`,
+    `fingerprint of the content to review: ${huellaActual}`,
+  );
+  ```
+  y pasar `conHuella` como 4.º argumento en `registro.agregar("prueba/revision-sin-registro", ruta, "revision", conHuella)` y en `registro.agregar("prueba/revision-desactualizada", ruta, "revision.huella", conHuella)`.
+  - En `validar.test.ts`, el caso `prueba/revision-sin-registro` añade `expect(encontrado?.detalle?.es).toContain(await huellaDeRevision(Prueba.parse({...p, revision_contenido:"revisada_y_aprobada"})))`.
+  - El manual describe los dos pasos (eso es del auditor de textos).
+- **Verificación:**
+  - `pnpm catalogo:validar --agregar <semilla con revision_contenido revisada_y_aprobada y sin revision>` imprime la huella de 64 caracteres.
+  - La instantánea oficial no cambia de huella: hoy no hay advertencias de ese tipo.
+- **Casilla:** 5 (campo sin productor) y 2.
+
+##### [MEDIO] Estados que el motor emite sin etiqueta en el vocabulario
+
+- **Ubicación:**
+  - `src/engine/catalogo/instantanea.ts:34`: `pendientes_de_revision[].motivo`, con los valores `propuesta`, `marcada_para_revision` y `revision_desactualizada`;
+  - `src/engine/catalogo/semaforo.ts:41-43`: familia con `estado: null`;
+  - `src/engine/catalogo/semaforo.ts:19-23`: `ESTADOS_QUE_CALCULA_EL_MOTOR` solo declara `vigencia`;
+  - `src/engine/catalogo/informe.ts:153-160`: «sin pruebas publicadas» escrito a mano.
+- **Qué pasa (CONFIRMADO):** `datos/estados.json` trae 9 vocabularios, y ninguno cubre esos motivos ni la «familia sin pruebas». La instantánea los publica.
+- **Por qué importa:** la regla dura 12 y la decisión 2 del ADR-003 dicen que no se publica un estado sin etiqueta. El S2 los pintará.
+- **Ajuste ejecutable:**
+  - El ajuste mínimo y coherente con «sin tocar `docs/diseno/`»: añadir a `decisions/003-state-vocabulary-as-data.md`, en Consequences:
+    > The engine also emits `pendientes_de_revision[].motivo` and family `estado: null`; their labels (vocabulary `pendiente_de_revision` and a «no published tests» state) arrive with the first screen that shows them (S2), and `ESTADOS_QUE_CALCULA_EL_MOTOR` gains them in that same sprint.
+  - Y registrarlo como deuda en el summary con sprint de pago S2.
+- **Verificación:** `grep -n "pendiente_de_revision" decisions/003-*.md sprints/SPRINT_001-summary.md` devuelve resultados.
+- **Casilla:** 5 y regla dura 12.
+
+##### [MEDIO] El e2e de determinismo corre con reintentos en CI, y una divergencia intermitente sale «flaky» en verde
+
+- **Ubicación:** `playwright.config.ts:14` (`retries: process.env.CI ? 2 : 0`) y `tests/e2e/determinismo.spec.ts:46`.
+- **Qué pasa (PLAUSIBLE; no corrí el e2e):** una fuga de azar o de reloj que diverge 1 de cada 3 veces pasa al reintento. Playwright no falla el job por pruebas flaky.
+- **Ajuste ejecutable:** en `determinismo.spec.ts:46`, `test.describe.configure({ mode: "serial", retries: 0 });`.
+- **Verificación:** `grep -n "retries: 0" tests/e2e/determinismo.spec.ts`. Demo opcional: un contador de módulo que cambia `formato` en llamadas alternas da rojo en CI, no flaky.
+- **Casilla:** gates (regla 15) y regla 19.
+
+##### [MEDIO] Los selectores de Garak y ZAP están cableados en el esquema del núcleo
+
+- **Ubicación:** `src/engine/catalogo/esquemas.ts:326-331` (`TIPOS_DE_SELECTOR`) y `:374-388` (`Selector`).
+- **Qué pasa (CONFIRMADO por lectura):**
+  - El tercer adaptador previsto (promptfoo, H2 en el brief, línea 82; y PyRIT e Inspect en D10) obliga a editar el esquema del núcleo.
+  - No hay regla que ate `tiene_adaptador: true` a un selector de adaptador.
+  - La regla dura 10 dice que «agregar un adaptador no toca el núcleo».
+- **Ajuste ejecutable:** declararlo como constante con su razón:
+  - comentario sobre `TIPOS_DE_SELECTOR`: «Un adaptador trae su selector; agregar uno añade aquí su forma (contrato del adaptador). En S3 los selectores se mueven a `src/engine/adaptadores/<id>/selector.ts` y este union se arma desde ese registro»;
+  - la misma frase en ADR-002 o en uno nuevo, y la tarea anotada para el S3.
+- **Verificación:** `grep -n "Un adaptador trae su selector" src/engine/catalogo/esquemas.ts decisions/*.md`.
+- **Casilla:** 7.
+
+#### BAJO
+
+##### [BAJO] Asserts de «otra fecha, otra huella» que el defecto también cumple
+
+- **Ubicación:** `tests/e2e/determinismo.spec.ts:147`, `tests/unit/catalogo/envejecimiento.test.ts:135-137` y `tests/unit/catalogo/instantanea.test.ts:78-84`.
+- **Qué pasa (CONFIRMADO por lectura):** `fecha_evaluacion` entra en la huella, así que la huella siempre cambia aunque el semáforo esté roto.
+- **Ajuste ejecutable:** en el e2e, que `page.evaluate` devuelva también `[...new Set([...s.pruebas, ...s.marcos, ...s.herramientas].map(v => v.estado))]`, y afirmar `toContain("por_revisar")` en `FECHA_EN_UMBRAL`. En las dos pruebas unitarias, borrar el assert de huella (el de estados ya lo cubre).
+- **Casilla:** gates.
+
+##### [BAJO] Las probabilidades del demo no suman exactamente 1 en coma flotante
+
+- **Ubicación:**
+  - comentarios en `src/engine/demo/clasificador.ts:3` y `:8`;
+  - ADR-004, línea 32;
+  - bitácora, líneas 510-511.
+- **Qué pasa (CONFIRMADO):** suman 1 en diezmilésimos enteros, pero en flotante 3 de 52 distribuciones dan 0,9999999999999999 (BIB-001 es, BIB-013 es, BIB-022 en). Además `margen` (`conjunto.ts:261`) sale con ruido flotante, por ejemplo 0.04820000000000002.
+- **Ajuste ejecutable:**
+  - redactar «suman 10 000 diezmilésimos; en coma flotante la suma puede diferir de 1 en el último bit»;
+  - añadir en `clasificador.test.ts` `expect(Math.abs(sum - 1)).toBeLessThanOrEqual(1e-12)`;
+  - en `conjunto.ts:261`: `margen: (Math.round((d.probabilities[banda.opcion] ?? 0) * 10000) - Math.round(banda.umbral * 10000)) / 10000`.
+- **Casilla:** 2 (floats).
+
+##### [BAJO] Cardinalidades del catálogo cableadas en las pruebas (no en el núcleo)
+
+- **Ubicación:**
+  - `instantanea.test.ts:43-51` (14 marcos, 13 herramientas, `[null×4]`);
+  - `informe.test.ts:41`, `:83`, `:130`, `:136-138`, `:154`, `:172`, `:175`;
+  - `validar.test.ts:694-708` (conteos y notas).
+- **Por qué importa:** agregar un marco o una familia rompe pruebas que no miden eso.
+- **Ajuste ejecutable:** derivar los valores de `catalogoBase()`. Por ejemplo `const marcos = catalogoBase().marcos.length`, `toHaveLength(marcos)`, `Array(familias).fill(null)`, y armar las cadenas con esas cifras.
+- **Casilla:** 7, lado de pruebas.
+
+##### [BAJO] `erasableSyntaxOnly` no está activado
+
+- **Ubicación:** `tsconfig.json`.
+- **Qué pasa (CONFIRMADO en la copia):** un `enum` en `src/engine/` pasa `tsc`. Con `--erasableSyntaxOnly` da TS1294, y el resto del repo compila limpio con el flag.
+- **Ajuste ejecutable:** `"erasableSyntaxOnly": true` en `compilerOptions`.
+- **Casilla:** 3 y decisión 1 del plan.
+
+##### [BAJO] El CLI no declara qué Node exige
+
+- **Ubicación:** `package.json`.
+- **Qué pasa:** el CLI exige type stripping sin flag (Node ≥ 22.18). No hay `engines` ni `.nvmrc`.
+- **Ajuste ejecutable:** `"engines": { "node": ">=22.18" }`.
+- **Casilla:** 3.
+
+##### [BAJO] `huellaDeInstantanea` elige los campos a mano
+
+- **Ubicación:** `src/engine/catalogo/instantanea.ts:60-79`.
+- **Qué pasa:** un campo futuro quedaría fuera de la huella en silencio, y la prueba versionada usa la misma función.
+- **Ajuste ejecutable:** `const { huella: _h, ...cuerpo } = instantanea as Instantanea; return huella(cuerpo);`, tipando el parámetro como `Omit<Instantanea,"huella"> | Instantanea`.
+- **Casilla:** 2 (diseño).
+
+##### [BAJO] La rama hexadecimal del patrón `cadena-codificada-larga` es código muerto
+
+- **Ubicación:** `datos/filtro/patrones.json:61`.
+- **Qué pasa:** todo hexadecimal está dentro del alfabeto base64, así que la primera alternativa (80 o más caracteres) siempre gana. Un hexadecimal de 80 a 95 caracteres ya marca, aunque `por_que` sugiere 96.
+- **Ajuste ejecutable:** dejar solo `[A-Za-z0-9+/]{80,}={0,2}` y redactar `por_que` con «80 caracteres de base64 o hexadecimal».
+- **ReDoS:** revisé los 4 patrones y los regex de ids, y no hay retroceso catastrófico.
+- **Casilla:** 2.
+
+##### [BAJO] El informe del clasificador demo omite la advertencia del conjunto
+
+- **Ubicación:** `src/engine/demo/conjunto.ts:284-365`.
+- **Qué pasa:** la advertencia del conjunto («el conjunto y el clasificador los escribió la misma mano») no aparece en `pnpm clasificador:demo`.
+- **Ajuste ejecutable:** añadir `` `  ${c.advertencia[idioma]}` `` tras la línea de huella, pasando `advertencia` en `EvaluacionDelDemo.conjunto`.
+- **Casilla:** 5.
+
+---
+
+#### Casilla 5: campos con lector fuera de su construcción y de sus pruebas
+
+| Tipo                                          | Campos                                        | Con lector                           | Huérfanos                                                                                                                                                                                                   |
+| --------------------------------------------- | --------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ResultadoDeValidacion` (+ `conteos`)         | 4 + 10                                        | 14                                   | 0                                                                                                                                                                                                           |
+| `Hallazgo`                                    | 6                                             | 6                                    | 0                                                                                                                                                                                                           |
+| `CatalogoValidado` / `PruebaEvaluada`         | 11 / 4                                        | 11 / 3                               | `PruebaEvaluada.ruta`                                                                                                                                                                                       |
+| `Instantanea`                                 | 7 (+ 2 de `pendientes` + 5 de `advertencias`) | 6                                    | `formato`; los ítems de `pendientes_de_revision` (`id`, `motivo`) y de `advertencias` (5 campos): solo se lee `.length`. Declarados para el S2                                                              |
+| `CatalogoDeInstantanea`                       | 11                                            | 3 (`pruebas`, `estados`, `umbrales`) | 8: `familias`, `reglas_de_veredicto`, `rasgos`, `filtro`, `marcos`, `equivalencias`, `controles`, `herramientas`. Carga del planificador y la UI del S2, declarados                                         |
+| `Semaforo` / `Vigencia` / `VigenciaDeFamilia` | 4 / 4 / 4                                     | 4 / 1 / 1                            | `Vigencia.{id, fecha_verificacion, dias}`; `VigenciaDeFamilia.{id, dias, desglose}` (el informe recalcula el desglose). S2                                                                                  |
+| `RespuestaDemo` / `Choice` / `Noul`           | 3 / 4 / 2                                     | 1 / 1 / 1                            | `model`, `usage`, `type`, `choice`, `confidence`. Espejo del contrato de Jev; `confidence` se ignora a propósito (E-17)                                                                                     |
+| `EvaluacionDelDemo`                           | 7 (y anidados)                                | 6                                    | `casos` entero (8 subcampos, solo en `--json`), `ece.{bins, validas, invalidas}`, `paridad.{es, en}` (duplican `decision.es/en`). En la entrada: `advertencia`, `descripcion` y `politica[].{orden, texto}` |
+| JSON de `validar`                             | 4                                             | 0 (la CI usa el código de salida)    | interfaz de máquina, declarada                                                                                                                                                                              |
+| JSON de `instantanea`                         | 7                                             | 1 (`huella`, solo el e2e)            | 6, declarada                                                                                                                                                                                                |
+| JSON de `clasificador:demo`                   | el objeto entero                              | `huella_de_respuestas` (solo el e2e) | ver `EvaluacionDelDemo`                                                                                                                                                                                     |
+
+**Casilla 3:** no veo alternativas claramente superiores. JCS propio con los vectores del RFC, Zod 4 y `esbuild` exacto están bien elegidos.
+
+**Contrato entre runtimes (regla 19):** el e2e compara de verdad: Node vía el CLI tres veces como proceso aparte contra el paquete `esbuild` del mismo código en tres navegadores. Lo que solo corre en Node es el CLI, `informe.ts` y `cargar.ts`. En el navegador no se ejercen el camino bloqueado ni el orden de los hallazgos de error (Bajo, no lo listé aparte).
+
+#### Lo que no alcancé a revisar
+
+- **e2e sin correr:** no ejecuté `tests/e2e/determinismo.spec.ts` (requiere build y navegadores). Quedan sin probar en vivo los arreglos propuestos al e2e (fechas derivadas, `retries: 0`, estados en el umbral, listas invertidas) y la demo de flaky.
+- **Arreglo de `revision.huella`:** no lo apliqué en la copia; queda la corrida de verificación.
+- **Cuerpo de las pruebas de métricas y demo:** de `tests/unit/modelo-decision/metricas.test.ts`, `tests/unit/demo/clasificador.test.ts` y `tests/unit/demo/conjunto.test.ts` solo leí los títulos. Falta revisar las cifras calculadas a mano (Brier, ECE, banda) y si alguna prueba es tautológica.
+- **Pruebas de fechas y equivalencias:** `tests/unit/catalogo/equivalencias.test.ts` y `tests/unit/catalogo/fecha.test.ts` no los revisé en detalle.
+- **Scripts del kit:** de `scripts/demo-rojo.sh`, `verificar-dependencias.mjs`, `lighthouse-margen.mjs`, `build-como-proveedor.mjs` y `verificar-salida-publicada.mjs` solo comprobé que son idénticos al kit. Su lógica interna y su prueba `tests/unit/verificar-dependencias.test.ts` no las audité.
+- **CI del HEAD:** el e2e de la corrida 37254742220 (commit `10c277c`) estaba en curso. Falta `gh pr checks` con conclusión propia `success` en `quality`, `e2e` y `lighthouse`.
+- **Contenido de `datos/`:** no revisé la coherencia campo a campo de marcos, controles, herramientas y pruebas más allá de fechas, selectores, reglas y k.
+- **Instantánea versionada:** no verifiqué que `datos/instantaneas/2026-10-04-12d3b632a871.json` pase hoy el validador si se reconstruye desde su propio catálogo (gate de publicación sobre archivos versionados).
+- **Otros chequeos sin correr:**
+  - `pnpm peers check` y `pnpm audit` en local;
+  - si `@types/node` 22 cubre lo que usa el CLI con Node 24;
+  - el comportamiento del CLI ante un BOM (`cargar.ts:13`, `ignoreBOM: true` lo reporta como JSON inválido) y ante archivos con extensión distinta de `.json` bajo `datos/`, que se ignoran sin aviso.
+- **ADRs y bitácora:** solo contrasté los ADR-002, ADR-003 y ADR-004 y la bitácora en los puntos citados. No revisé todas las cifras de la bitácora contra corridas (casilla de la regla 27).
