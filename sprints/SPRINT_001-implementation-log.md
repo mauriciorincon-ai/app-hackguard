@@ -221,20 +221,20 @@ arranca sobre estos datos.
 
 ### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, restauradas con Python + `cmp`)
 
-| Gate | Mutación | Rojo que dio | Verde tras restaurar |
-|---|---|---|---|
-| Lint de determinismo: azar | `+ Math.random()` en `huella.ts` | «'Math.random' is restricted… Sin azar en el núcleo» (`no-restricted-properties`) | lint limpio |
-| Lint de determinismo: Node | `import { readFileSync } from "node:fs"` en `validar.ts` | «'node:fs' import is restricted…» (`no-restricted-imports`) | lint limpio |
-| Validador sobre las semillas | La regla de k compara con `-1` en vez de `undefined` | «× SEMILLA-ESTOCASTICA-SIN-K.json (E-2)» y «× bloquea N de N sembradas» | 22 de 22 |
-| E-15: referencia sin versión | Se quita la regla propia de `version_marco` ausente | «× SEMILLA-SIN-VERSION.json (E-15)»: sigue rechazada, pero ya no nombra su regla | 22 de 22 |
-| Filtro: carnadas y contraejemplos | `{80,}` → `{800,}` en `cadena-codificada-larga` | «× cadena-codificada-larga marca su carnada» y «× compilan y se comprueban a sí mismos» | 27 de 27 |
-| Huella JCS | Claves ordenadas con `localeCompare` | «× ordena las claves por unidades UTF-16 (§ 3.2.3)» | 47 de 47 |
-| Gate de publicación | El gate compara con un estado que no existe | «× no emite nada si el catálogo es inválido» y «× con un catálogo inválido sale 2 y no escribe nada» | 24 de 24 (ver nota) |
-| Datos bilingües | La comparación es = en nunca se cumple | «× texto/idioma-repetido: un texto largo igual en los dos idiomas» | 87 de 87 |
-| Procedencia de marcos | Se quita la regla propia de `fuente_oficial.http` ausente | «× marco/sin-procedencia: sin código HTTP de la fuente» | 87 de 87 |
-| ¿Puede fallar? Toda regla con caso | Una regla nueva en `reglas.ts` sin caso | «× ninguna regla queda sin un caso que la haga saltar» | 87 de 87 |
-| CI: «Catálogo válido» | `cwe.json` sin `fecha_version` en `por_verificar` | «✗ datos/marcos/cwe.json · fecha_version» (`marco/nulo-sin-declarar`), salida 2 | salida 0 |
-| Cobertura del motor ≥ 90 % | `describe.skip` sobre la tabla de reglas | «ERROR: Coverage for branches (86.63%) does not meet "src/engine/**/*.ts" threshold (90%)» | 990 de 990 |
+| Gate                               | Mutación                                                  | Rojo que dio                                                                                         | Verde tras restaurar |
+| ---------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------- |
+| Lint de determinismo: azar         | `+ Math.random()` en `huella.ts`                          | «'Math.random' is restricted… Sin azar en el núcleo» (`no-restricted-properties`)                    | lint limpio          |
+| Lint de determinismo: Node         | `import { readFileSync } from "node:fs"` en `validar.ts`  | «'node:fs' import is restricted…» (`no-restricted-imports`)                                          | lint limpio          |
+| Validador sobre las semillas       | La regla de k compara con `-1` en vez de `undefined`      | «× SEMILLA-ESTOCASTICA-SIN-K.json (E-2)» y «× bloquea N de N sembradas»                              | 22 de 22             |
+| E-15: referencia sin versión       | Se quita la regla propia de `version_marco` ausente       | «× SEMILLA-SIN-VERSION.json (E-15)»: sigue rechazada, pero ya no nombra su regla                     | 22 de 22             |
+| Filtro: carnadas y contraejemplos  | `{80,}` → `{800,}` en `cadena-codificada-larga`           | «× cadena-codificada-larga marca su carnada» y «× compilan y se comprueban a sí mismos»              | 27 de 27             |
+| Huella JCS                         | Claves ordenadas con `localeCompare`                      | «× ordena las claves por unidades UTF-16 (§ 3.2.3)»                                                  | 47 de 47             |
+| Gate de publicación                | El gate compara con un estado que no existe               | «× no emite nada si el catálogo es inválido» y «× con un catálogo inválido sale 2 y no escribe nada» | 24 de 24 (ver nota)  |
+| Datos bilingües                    | La comparación es = en nunca se cumple                    | «× texto/idioma-repetido: un texto largo igual en los dos idiomas»                                   | 87 de 87             |
+| Procedencia de marcos              | Se quita la regla propia de `fuente_oficial.http` ausente | «× marco/sin-procedencia: sin código HTTP de la fuente»                                              | 87 de 87             |
+| ¿Puede fallar? Toda regla con caso | Una regla nueva en `reglas.ts` sin caso                   | «× ninguna regla queda sin un caso que la haga saltar»                                               | 87 de 87             |
+| CI: «Catálogo válido»              | `cwe.json` sin `fecha_version` en `por_verificar`         | «✗ datos/marcos/cwe.json · fecha_version» (`marco/nulo-sin-declarar`), salida 2                      | salida 0             |
+| Cobertura del motor ≥ 90 %         | `describe.skip` sobre la tabla de reglas                  | «ERROR: Coverage for branches (86.63%) does not meet "src/engine/**/*.ts" threshold (90%)»           | 990 de 990           |
 
 Nota sobre la demo del gate de publicación: la primera corrida dio el rojo correcto y restauró, pero falló en el
 último paso porque le pedí `--minimo-tests 25` y el verde corre 24. Se repitió con 24 y salió limpia.
@@ -265,21 +265,22 @@ arranca sobre este validador.
   control, con la misma numeración que el Anexo A. Por eso toda equivalencia queda «parcial», con esa nota.
 - **Herramientas, en su registro:**
 
-  | Herramienta | Versión | Fecha |
-  |---|---|---|
-  | PyRIT | 1.1.0 | 2026-09-04 |
-  | Inspect | 0.3.276 | 2026-10-02 |
-  | Giskard | 3.0.1 | 2026-10-02 |
-  | promptfoo | 0.123.1 | 2026-09-18 |
-  | ZAP | 2.17.0 | 2025-12-15 |
-  | Nuclei | 3.11.1 | 2026-08-08 |
-  | scikit-learn | 1.9.1 | 2026-09-10 |
-  | MAPIE | 1.5.0 | 2026-08-05 |
-  | Evidently | 0.7.23 | 2026-09-11 |
-  | CheckList | 0.0.11 | 2021 |
-  | TextAttack | 0.3.11 | 2026-08-14 |
+  | Herramienta  | Versión | Fecha      |
+  | ------------ | ------- | ---------- |
+  | PyRIT        | 1.1.0   | 2026-09-04 |
+  | Inspect      | 0.3.276 | 2026-10-02 |
+  | Giskard      | 3.0.1   | 2026-10-02 |
+  | promptfoo    | 0.123.1 | 2026-09-18 |
+  | ZAP          | 2.17.0  | 2025-12-15 |
+  | Nuclei       | 3.11.1  | 2026-08-08 |
+  | scikit-learn | 1.9.1   | 2026-09-10 |
+  | MAPIE        | 1.5.0   | 2026-08-05 |
+  | Evidently    | 0.7.23  | 2026-09-11 |
+  | CheckList    | 0.0.11  | 2021       |
+  | TextAttack   | 0.3.11  | 2026-08-14 |
 
   Los repositorios y las licencias respondieron 200. La de scikit-learn está en `COPYING`.
+
 - **Cambios de editor, con fuente:**
   - ZAP: de OWASP pasó al Software Security Project el 2023-08-01, y a Checkmarx el 2024-09-24 (blog oficial, 200).
   - promptfoo: pasó a OpenAI el 2026-03-09 (blog, 200).
@@ -323,6 +324,7 @@ arranca sobre este validador.
   Cada una dice qué se verifica, por qué importa, con qué herramienta y selector verificados y qué se espera. Lleva
   además marco con versión y entrada, referencias adicionales (CWE, ATLAS), regla de veredicto con k cuando mide
   sobre un activo estocástico, aplicabilidad por rasgos, prioridad, madurez (E-23) y fuentes con su HTTP.
+
 - **Vocabulario:**
   - 2 categorías nuevas que pedían las pruebas de la maqueta: «Registro de las acciones» en agente y «Manejo de la
     salida» en modelo generativo.
@@ -351,15 +353,16 @@ arranca sobre este validador.
 ### Inventario (salida del validador sobre `datos/`)
 
 «Catálogo: con advertencias»:
+
 - 14 marcos, 1 mapa, 38 controles, 13 herramientas y 38 pruebas: 38 publicables, 0 pendientes;
 - 0 errores, 10 advertencias (todas `prueba/sin-control`, de software) y 4 notas `por_verificar`.
 
-| Familia | Pruebas | Madurez | Categorías cubiertas |
-|---|---|---|---|
-| Software | 10 | 10 estándar | 7 de 7 |
-| Agente | 9 | 8 estándar · 1 propia | 8 de 8 |
-| Modelo generativo | 7 | 7 estándar | 7 de 7 |
-| Modelo de decisión | 12 | 9 emergente · 3 propia | 10 de 10 |
+| Familia            | Pruebas | Madurez                | Categorías cubiertas |
+| ------------------ | ------- | ---------------------- | -------------------- |
+| Software           | 10      | 10 estándar            | 7 de 7               |
+| Agente             | 9       | 8 estándar · 1 propia  | 8 de 8               |
+| Modelo generativo  | 7       | 7 estándar             | 7 de 7               |
+| Modelo de decisión | 12      | 9 emergente · 3 propia | 10 de 10             |
 
 - **Marcadas por el filtro:** ninguna.
 - **Sin control:** las 10 de software.
@@ -383,14 +386,14 @@ arranca sobre este validador.
 
 ### Demos en rojo de esta fase (`scripts/demo-rojo.sh`)
 
-| Gate | Mutación | Rojo que dio | Verde tras restaurar |
-|---|---|---|---|
-| Toda categoría tiene prueba | `PR-SW-LOG-001` pasa a `control_de_acceso` | «× software · registro_y_monitoreo tiene al menos una prueba» | 37 de 37 |
-| Ningún control verificado contra la norma | El primer control dice `true` | «× ningún control del Anexo A dice estar verificado contra la norma (G-Plan P1)» | 37 de 37 |
-| Cada prueba en la carpeta de su familia | `PR-SW-LOG-001` dice `agente` | «× cada prueba vive en datos/pruebas/<su familia>/» (también nombró el error y la categoría vacía) | 37 de 37 |
-| Registro de herramienta en 200 | El registro de garak dice 404 | «× toda herramienta pública tiene su registro consultado con 200» | 37 de 37 |
-| k en pruebas estocásticas | `PR-AG-PERM-001` con k = 3 | «× toda prueba de una familia estocástica que mide sobre el activo declara k» | 37 de 37 |
-| El filtro recorre todo el catálogo | El bucle recorre una lista vacía | «× el filtro recorre también herramientas, marcos y controles, y marca con advertencia» | 88 de 88 |
+| Gate                                      | Mutación                                   | Rojo que dio                                                                                       | Verde tras restaurar |
+| ----------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------- | -------------------- |
+| Toda categoría tiene prueba               | `PR-SW-LOG-001` pasa a `control_de_acceso` | «× software · registro_y_monitoreo tiene al menos una prueba»                                      | 37 de 37             |
+| Ningún control verificado contra la norma | El primer control dice `true`              | «× ningún control del Anexo A dice estar verificado contra la norma (G-Plan P1)»                   | 37 de 37             |
+| Cada prueba en la carpeta de su familia   | `PR-SW-LOG-001` dice `agente`              | «× cada prueba vive en datos/pruebas/<su familia>/» (también nombró el error y la categoría vacía) | 37 de 37             |
+| Registro de herramienta en 200            | El registro de garak dice 404              | «× toda herramienta pública tiene su registro consultado con 200»                                  | 37 de 37             |
+| k en pruebas estocásticas                 | `PR-AG-PERM-001` con k = 3                 | «× toda prueba de una familia estocástica que mide sobre el activo declara k»                      | 37 de 37             |
+| El filtro recorre todo el catálogo        | El bucle recorre una lista vacía           | «× el filtro recorre también herramientas, marcos y controles, y marca con advertencia»            | 88 de 88             |
 
 Nota: la primera corrida de las cinco demos de datos dio el rojo correcto y restauró, pero falló en el último paso
 porque pedí `--minimo-tests 40` y el verde corre 37. Se repitieron con 37 y salieron limpias.
@@ -452,12 +455,12 @@ verificó el 2026-10-04.
 
 **El semáforo sobre datos reales, en sus tres estados** (corridas a una carpeta temporal):
 
-| Fecha | Pruebas | Marcos | Herramientas | Familias | Huella |
-|---|---|---|---|---|---|
-| 2026-10-04 | ✓ Vigente 38 | ✓ Vigente 14 | ✓ Vigente 13 | ✓ Vigente 4 | `12d3b632a871…` |
-| 2026-11-03 | ! Por revisar 38 | ! Por revisar 14 | ! Por revisar 13 | ! Por revisar 4 | `0b24f1abde9c…` |
-| 2026-12-03 | ✗ Vencido 38 | ✗ Vencido 14 | ✗ Vencido 13 | ✗ Vencido 4 | `39f851ad3f55…` |
-| 2026-09-30 | — | — | — | — | rechazada: anterior a la última verificación |
+| Fecha      | Pruebas          | Marcos           | Herramientas     | Familias        | Huella                                       |
+| ---------- | ---------------- | ---------------- | ---------------- | --------------- | -------------------------------------------- |
+| 2026-10-04 | ✓ Vigente 38     | ✓ Vigente 14     | ✓ Vigente 13     | ✓ Vigente 4     | `12d3b632a871…`                              |
+| 2026-11-03 | ! Por revisar 38 | ! Por revisar 14 | ! Por revisar 13 | ! Por revisar 4 | `0b24f1abde9c…`                              |
+| 2026-12-03 | ✗ Vencido 38     | ✗ Vencido 14     | ✗ Vencido 13     | ✗ Vencido 4     | `39f851ad3f55…`                              |
+| 2026-09-30 | —                | —                | —                | —               | rechazada: anterior a la última verificación |
 
 **Matriz de envejecimiento** (`tests/unit/catalogo/envejecimiento.test.ts`, regla 23): construye la instantánea
 del catálogo real en 6 fechas. Son el día de la última verificación, la víspera y el día de cada umbral, y +100
@@ -471,14 +474,14 @@ real tiene una sola fecha de verificación y no los tendría.
 
 **Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
 
-| Gate | Mutación | Rojo que dio | Verde tras restaurar |
-|---|---|---|---|
-| Matriz de envejecimiento | `dias >= umbrales.vencido` pasa a `>` (el umbral se corre un día) | «× 2026-12-03: cada entidad está en el estado que le toca» y «× el semáforo y la huella cambian el día de cada umbral» | 27 de 27 |
-| Vocabulario = maqueta | «Por revisar» pasa a «Pendiente» en `datos/estados.json` | «× el vocabulario de estados es el de la maqueta aprobada en G-Diseño» | 39 de 39 |
-| Umbrales de RF-01.5 | `"vencido": 60` pasa a 61 | «× los umbrales de vigencia son los de RF-01.5» | 39 de 39 |
-| Regla `estados/sin-etiqueta` | La condición nunca se cumple | «× estados/sin-etiqueta: el vocabulario de vigencia sin «vencido»» | 90 de 90 |
-| Fecha anterior a la verificación | La comparación con la última verificación nunca se cumple | «× rechaza una fecha anterior a la última verificación del catálogo» | 12 de 12 |
-| Instantánea versionada autoconsistente | La fecha de la instantánea versionada pasa a 2026-10-05 | «× 2026-10-04-12d3b632a871.json: su huella es la de su contenido…» (huella `95265a1c60ce…` en vez de `12d3b632a871…`) | 2 de 2 |
+| Gate                                   | Mutación                                                          | Rojo que dio                                                                                                           | Verde tras restaurar |
+| -------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Matriz de envejecimiento               | `dias >= umbrales.vencido` pasa a `>` (el umbral se corre un día) | «× 2026-12-03: cada entidad está en el estado que le toca» y «× el semáforo y la huella cambian el día de cada umbral» | 27 de 27             |
+| Vocabulario = maqueta                  | «Por revisar» pasa a «Pendiente» en `datos/estados.json`          | «× el vocabulario de estados es el de la maqueta aprobada en G-Diseño»                                                 | 39 de 39             |
+| Umbrales de RF-01.5                    | `"vencido": 60` pasa a 61                                         | «× los umbrales de vigencia son los de RF-01.5»                                                                        | 39 de 39             |
+| Regla `estados/sin-etiqueta`           | La condición nunca se cumple                                      | «× estados/sin-etiqueta: el vocabulario de vigencia sin «vencido»»                                                     | 90 de 90             |
+| Fecha anterior a la verificación       | La comparación con la última verificación nunca se cumple         | «× rechaza una fecha anterior a la última verificación del catálogo»                                                   | 12 de 12             |
+| Instantánea versionada autoconsistente | La fecha de la instantánea versionada pasa a 2026-10-05           | «× 2026-10-04-12d3b632a871.json: su huella es la de su contenido…» (huella `95265a1c60ce…` en vez de `12d3b632a871…`)  | 2 de 2               |
 
 Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correcto y restauró, pero falló en el
 último paso porque pedí `--minimo-tests 100` y el archivo corre 90. Se repitió con 90 y salió limpia.
@@ -527,20 +530,20 @@ Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correc
   llamadas idénticas. En 52 respuestas cada cambio vale 1,9 %. Barrido con 5 corridas:
 
   | Ruido por mil | Cambios de decisión | Exactitud ES / EN |
-  |---|---|---|
-  | 60 a 120 | 0 de 52 | 21 / 25 |
-  | 150 | 1 de 52 | 20 / 25 |
-  | 200 | 4 de 52 | 20 / 24 |
+  | ------------- | ------------------- | ----------------- |
+  | 60 a 120      | 0 de 52             | 21 / 25           |
+  | 150           | 1 de 52             | 20 / 25           |
+  | 200           | 4 de 52             | 20 / 24           |
 
 **La demo, `pnpm clasificador:demo`** (huella de las respuestas
 `7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d`, la misma en tres evaluaciones):
 
-| Medida | Español | Inglés |
-|---|---|---|
-| Exactitud de la decisión | 20 de 26 | 25 de 26 |
-| Brier | 0,3742 | 0,2267 |
-| ECE (4 bins de igual masa) | 0,0855 | 0,2914 |
-| Error en la banda 0,60–0,80 | 1 de 7 | 1 de 9 |
+| Medida                          | Español  | Inglés   |
+| ------------------------------- | -------- | -------- |
+| Exactitud de la decisión        | 20 de 26 | 25 de 26 |
+| Brier                           | 0,3742   | 0,2267   |
+| ECE (4 bins de igual masa)      | 0,0855   | 0,2914   |
+| Error en la banda 0,60–0,80     | 1 de 7   | 1 de 9   |
 | Exactitud de la urgencia (Noul) | 23 de 26 | 25 de 26 |
 
 - **Paridad:** el inglés acierta 19,2 puntos más, y los dos idiomas eligen lo mismo en 19 de 26 casos.
@@ -562,12 +565,12 @@ que dice. Exactitud y calibración miden cosas distintas: por eso E-17 pide medi
 
 **Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
 
-| Gate | Mutación | Rojo que dio | Verde tras restaurar |
-|---|---|---|---|
-| Distribuciones que suman 1 | El resto mayor se detiene con un diezmilésimo por repartir | «× en cada caso del conjunto, en los dos idiomas…» y «× el resto mayor reparte los diezmilésimos que faltan» | 27 de 27 |
-| Misma entrada, misma salida | La semilla arrastra un contador global entre llamadas | «× la misma petición con la misma semilla da la misma respuesta y la misma huella» y «× el orden de las opciones no cambia nada» | 27 de 27 |
-| Brier calculado a mano | `(p − y)²` pasa a `\|p − y\|` | «× es la media de Σ (p − y)² sobre todas las opciones» (y otras dos) | 19 de 19 |
-| Lint de determinismo en `src/engine/demo/` (heredado, primera vez en esta carpeta) | `Math.random()` en un peso | «'Math.random' is restricted… Sin azar en el núcleo» | eslint limpio |
+| Gate                                                                               | Mutación                                                   | Rojo que dio                                                                                                                     | Verde tras restaurar |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Distribuciones que suman 1                                                         | El resto mayor se detiene con un diezmilésimo por repartir | «× en cada caso del conjunto, en los dos idiomas…» y «× el resto mayor reparte los diezmilésimos que faltan»                     | 27 de 27             |
+| Misma entrada, misma salida                                                        | La semilla arrastra un contador global entre llamadas      | «× la misma petición con la misma semilla da la misma respuesta y la misma huella» y «× el orden de las opciones no cambia nada» | 27 de 27             |
+| Brier calculado a mano                                                             | `(p − y)²` pasa a `\|p − y\|`                              | «× es la media de Σ (p − y)² sobre todas las opciones» (y otras dos)                                                             | 19 de 19             |
+| Lint de determinismo en `src/engine/demo/` (heredado, primera vez en esta carpeta) | `Math.random()` en un peso                                 | «'Math.random' is restricted… Sin azar en el núcleo»                                                                             | eslint limpio        |
 
 Nota: la primera corrida de las tres primeras demos dio el rojo correcto y restauró, pero falló en el último
 paso porque pedí `--minimo-tests` 30 y 20 sin contar; los archivos corren 27 y 19. Se repitieron con la cuenta
@@ -622,12 +625,12 @@ Arranca el 2026-10-04 tras el «continúa» de la fase 3.
 
 **Corrida local** (`E2E_PUERTO=3217`): 9 de 9 en verde.
 
-| Motor | Instantánea 2026-10-15 | Instantánea 2026-11-03 | Clasificador |
-|---|---|---|---|
-| Node (CLI ×3) | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
-| Chromium 153.0.8010.12 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
-| Firefox 155.0 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
-| WebKit 26.6 | `e2858e62cd9e…` | `0b24f1abde9c…` | `7d94f4a1c73e…` |
+| Motor                  | Instantánea 2026-10-15 | Instantánea 2026-11-03 | Clasificador    |
+| ---------------------- | ---------------------- | ---------------------- | --------------- |
+| Node (CLI ×3)          | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| Chromium 153.0.8010.12 | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| Firefox 155.0          | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| WebKit 26.6            | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
 
 Huellas completas:
 
@@ -642,3 +645,69 @@ Huellas completas:
   passed». Chromium y WebKit siguieron en verde. Las otras dos pruebas de Firefox no corrieron porque el spec es
   serial.
 - **Verde tras restaurar:** 9 de 9.
+
+### CI de la fase 4 (PR #8)
+
+Leída con `gh run view` el 2026-10-04, después de cada corrida. Los tres jobs requeridos terminaron con conclusión propia `success` en las dos corridas.
+
+| Commit                                                        | Corrida     | quality        | e2e            | lighthouse    |
+| ------------------------------------------------------------- | ----------- | -------------- | -------------- | ------------- |
+| `38ac110` (e2e de determinismo)                               | 37253753617 | success, 172 s | success, 633 s | success, 95 s |
+| `10c277c` (manual, guía, changelog y ADRs; incluye `0a8228a`) | 37254742220 | success, 143 s | success, 544 s | success, 97 s |
+
+- **Determinismo:** en la corrida 37253753617 el job `e2e` corrió el spec en Chromium 153, Firefox 155 y WebKit 26.6, con las mismas tres huellas que Node.
+- **Primera vez en CI:** es la primera vez que corren Firefox y WebKit en la CI de este repo, así que no hay histórico para afirmar regresión ni no-regresión.
+
+## Punto de reanudación (pausa del 2026-10-04, noche)
+
+El usuario pausó el sprint hasta el día siguiente. Este es el estado exacto para retomar.
+
+**Dónde está el sprint:**
+
+- Las fases 0 a 3 están aprobadas.
+- De la fase 4 están hechos:
+  - C18;
+  - el e2e de determinismo en los cuatro motores;
+  - el manual, la guía, el changelog y los ADRs 002 a 004.
+- `/audita-sprint` está en la **Fase 1**, que es de solo lectura.
+  - Los informes llegados están guardados tal cual en `sprints/SPRINT_001-auditoria.md`.
+  - **Todavía no hay consolidado.**
+  - **No se ha pagado ningún hallazgo.**
+
+**Datos medidos que esperan su sitio en la fase 4 (hallazgo B1 de la auditoría):**
+
+- **Qué se midió:** `validar`, `instantanea` y `clasificador:demo`, con 7 corridas cada uno.
+- **Medianas:** 0,100 s, 0,135 s y 0,121 s.
+- **Condiciones:** Node v24.18.0, con la máquina cargada (load average de ~9,7, por VS Code).
+- **Cifra válida:** la máquina no estaba quieta, así que la cifra que va al summary se toma de una corrida nueva en
+  máquina quieta.
+
+**Pasos para retomar, en orden:**
+
+1. **Repo:** `git status` limpio en `sprint-001/catalogo-vivo-nucleo`, y `gh pr checks 8` en verde sobre el último
+   commit.
+2. **Auditoría:** leer `sprints/SPRINT_001-auditoria.md`.
+   - Si el anexo del auditor de motor, contrato, gates y dependencias dice «Lo que no alcancé a revisar», lanzar un
+     auditor independiente nuevo, en solo lectura, **solo sobre esa lista**.
+   - Si el anexo falta, relanzar esa superficie entera.
+3. **Consolidado:** convertir `sprints/SPRINT_001-auditoria.md` en el consolidado.
+   - Sin duplicados.
+   - Cada hallazgo con `archivo:línea`, severidad, ajuste ejecutable, verificación y auditor de origen.
+   - Pasar por la casilla 4 todo copy que proponga.
+4. **Presentar la Fase 1 al usuario.**
+   - Las decisiones van en lenguaje llano, por ejemplo:
+     - los nombres de licencia de los marcos, bilingües ahora o como deuda;
+     - qué hacer con lo que el filtro no ve;
+     - instalar gitleaks en la CI o declarar manual la prueba de la carnada.
+   - Recordarle `/model`.
+   - Esperar su aprobación.
+5. **Fase 2:** pagar todos los hallazgos, primero los que crean gates (cada uno con `demo-rojo.sh`, contando antes
+   los tests para `--minimo-tests`). Después, la segunda pasada de frases caducadas y frases de evidencia, con otro
+   auditor independiente.
+6. **Cierre:**
+   - `/deploy-check`;
+   - `sprints/SPRINT_001-summary.md`, con la auditoría y la sección «Para mergear»;
+   - cuerpo del PR #8 al día;
+   - ⭐ corto del usuario (3 paradas, la 3 declarada no corrida);
+   - el usuario marca el PR listo y mergea con squash;
+   - aviso «Sprint 001 de HackGuard cerrado — corre `/cierre-sprint hackguard` en la planeadora».
