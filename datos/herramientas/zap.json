@@ -73,7 +73,7 @@
     }
   ],
   "notas": {
-    "es": "2.17.0 se publicó el 2025-12-15. El informe solo lista las alertas que se levantaron, no las reglas que corrieron: sin constancia de ejecución y cobertura, el adaptador del S3 sugiere «no ejecutada», nunca «superada» (E-6). ZAP se reporta como «Dev Build» y no declara la versión de su complemento de informes (E-26).",
-    "en": "2.17.0 was published on 2025-12-15. The report only lists the alerts that were raised, not the rules that ran: without proof of execution and coverage, the S3 adapter suggests “not run”, never “passed” (E-6). ZAP reports itself as “Dev Build” and does not declare the version of its report add-on (E-26)."
+    "es": "2.17.0 se publicó el 2025-12-15. El informe solo lista las alertas que se levantaron, no las reglas que corrieron: sin constancia de ejecución y cobertura, el veredicto que se sugiera es «no ejecutada», nunca «superada» (E-6). ZAP se reporta como «Dev Build» y no declara la versión de su complemento de informes (E-26).",
+    "en": "2.17.0 was published on 2025-12-15. The report only lists the alerts that were raised, not the rules that ran: without proof of execution and coverage, the suggested verdict is “not run”, never “passed” (E-6). ZAP reports itself as “Dev Build” and does not declare the version of its report add-on (E-26)."
   }
 }

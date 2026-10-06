@@ -17,7 +17,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+    "nombre": {
+      "es": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+      "en": "Work of NIST employees (not subject to copyright in the US; outside it, a royalty-free licence)"
+    },
     "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
     "exige": {
       "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",

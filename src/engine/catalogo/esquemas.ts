@@ -94,7 +94,8 @@ export const Marco = z.strictObject({
   familias_aplicables: z.array(IdMinusculas).min(1),
   fecha_verificacion: Fecha,
   licencia: z.strictObject({
-    nombre: Nombre,
+    // Redactado por nosotros, así que en los dos idiomas (regla 20); el `nombre` del marco es su título propio.
+    nombre: Texto,
     url: Url,
     exige: Texto,
     como_cumple: Texto,

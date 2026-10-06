@@ -20,7 +20,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "CC BY-SA 4.0",
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
     "url": "https://creativecommons.org/licenses/by-sa/4.0/",
     "exige": {
       "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",

@@ -40,6 +40,15 @@ describe("el catálogo real", () => {
     ).toBe(true);
   });
 
+  it("el nombre de cada marco es su título propio, sin glosas en español (regla 20)", () => {
+    // Lo redactado por nosotros va en `notas` como { es, en }; el nombre es el título que publica el editor.
+    expect(catalogo.marcos.length).toBeGreaterThan(0);
+    for (const m of catalogo.marcos)
+      expect(m.nombre, m.id).not.toMatch(
+        /[áéíóúñ¿¡]|\b(y|de|del|la|los|las|el|lista|documentación)\b/i,
+      );
+  });
+
   it("cada prueba vive en datos/pruebas/<su familia>/", () => {
     for (const p of catalogo.pruebas)
       expect(p.ruta).toBe(

@@ -20,7 +20,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "Términos de uso de ATT&CK (licencia no exclusiva y sin regalías)",
+    "nombre": {
+      "es": "Términos de uso de ATT&CK (licencia no exclusiva y sin regalías)",
+      "en": "ATT&CK terms of use (non-exclusive, royalty-free licence)"
+    },
     "url": "https://attack.mitre.org/resources/legal-and-branding/terms-of-use/",
     "exige": {
       "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",

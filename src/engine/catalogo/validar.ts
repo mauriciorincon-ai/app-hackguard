@@ -979,22 +979,27 @@ export async function validarCatalogo(
     }
 
     revisarReferencia(p, ruta, "");
-    p.referencias_adicionales?.forEach((r, i) =>
-      revisarReferencia(r, ruta, `referencias_adicionales.${i}.`),
-    );
-    const marco = marcos.get(p.marco_id);
-    if (
-      marco !== undefined &&
-      familia !== undefined &&
-      !marco.familias_aplicables.includes(p.familia)
-    ) {
-      registro.agregar(
-        "prueba/marco-no-aplica",
-        ruta,
-        "marco_id",
-        comillas(p.marco_id),
-      );
-    }
+    // El marco tiene que declarar que aplica a la familia de la prueba, en la referencia principal y en cada
+    // referencia adicional.
+    const aplica = (marcoId: string, campo: string) => {
+      const marco = marcos.get(marcoId);
+      if (
+        marco !== undefined &&
+        familia !== undefined &&
+        !marco.familias_aplicables.includes(p.familia)
+      )
+        registro.agregar(
+          "prueba/marco-no-aplica",
+          ruta,
+          campo,
+          comillas(marcoId),
+        );
+    };
+    aplica(p.marco_id, "marco_id");
+    p.referencias_adicionales?.forEach((r, i) => {
+      revisarReferencia(r, ruta, `referencias_adicionales.${i}.`);
+      aplica(r.marco_id, `referencias_adicionales.${i}.marco_id`);
+    });
 
     p.controles.forEach((c, i) => {
       if (!controles.has(c))

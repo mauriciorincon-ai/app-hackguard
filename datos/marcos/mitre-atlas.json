@@ -17,7 +17,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "Apache-2.0 (datos de atlas-data)",
+    "nombre": {
+      "es": "Apache-2.0 (datos de atlas-data)",
+      "en": "Apache-2.0 (atlas-data data)"
+    },
     "url": "https://github.com/mitre-atlas/atlas-data/blob/main/LICENSE",
     "exige": {
       "es": "Conservar el aviso de copyright y la licencia en las copias de los datos.",

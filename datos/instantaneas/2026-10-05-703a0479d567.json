@@ -1,6 +1,6 @@
 {
   "formato": "hackguard/instantanea@1",
-  "fecha_evaluacion": "2026-10-04",
+  "fecha_evaluacion": "2026-10-05",
   "catalogo": {
     "familias": [
       {
@@ -676,16 +676,16 @@
       }
     ],
     "filtro": {
-      "version": "1",
-      "fecha": "2026-10-04"
+      "version": "2",
+      "fecha": "2026-10-05"
     },
     "marcos": [
       {
         "id": "cwe",
-        "nombre": "Common Weakness Enumeration (CWE) y CWE Top 25",
+        "nombre": "Common Weakness Enumeration (CWE)",
         "editor": "MITRE",
         "version_vigente": "4.20",
-        "fecha_version": null,
+        "fecha_version": "2026-04-30",
         "versiones_anteriores": [],
         "fuente_oficial": {
           "url": "https://cwe.mitre.org/data/index.html",
@@ -693,11 +693,16 @@
           "consultada": "2026-10-04"
         },
         "familias_aplicables": [
-          "software"
+          "software",
+          "agente",
+          "modelo_generativo"
         ],
-        "fecha_verificacion": "2026-10-04",
+        "fecha_verificacion": "2026-10-05",
         "licencia": {
-          "nombre": "Términos de uso de CWE (licencia no exclusiva y sin regalías)",
+          "nombre": {
+            "es": "Términos de uso de CWE (licencia no exclusiva y sin regalías)",
+            "en": "CWE terms of use (non-exclusive, royalty-free licence)"
+          },
           "url": "https://cwe.mitre.org/about/termsofuse.html",
           "exige": {
             "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",
@@ -728,11 +733,11 @@
           {
             "tipo": "archivo",
             "url": "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip",
-            "http": 206,
-            "consultada": "2026-10-04",
+            "http": 200,
+            "consultada": "2026-10-05",
             "nota": {
-              "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
-              "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+              "es": "Descargado entero el 2026-10-05: contiene cwec_v4.20.xml, cuya raíz declara Version=\"4.20\" Date=\"2026-04-30\".",
+              "en": "Downloaded whole on 2026-10-05: it holds cwec_v4.20.xml, whose root declares Version=\"4.20\" Date=\"2026-04-30\"."
             }
           }
         ],
@@ -740,12 +745,10 @@
           "cwe.mitre.org"
         ],
         "estado": "verificado",
-        "por_verificar": [
-          "fecha_version"
-        ],
+        "por_verificar": [],
         "notas": {
-          "es": "La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25; ninguna página consultada dice la fecha de la 4.20.",
-          "en": "The current list is 4.20 and the annual list is the 2025 CWE Top 25; no page consulted states 4.20's date."
+          "es": "La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25. La fecha de la 4.20 la declara el archivo de su vía «archivo»: cwec_v4.20.xml dice Version=\"4.20\" Date=\"2026-04-30\".",
+          "en": "The current list is 4.20 and the annual list is the 2025 CWE Top 25. The date of 4.20 is declared by the file of its «archivo» route: cwec_v4.20.xml says Version=\"4.20\" Date=\"2026-04-30\"."
         }
       },
       {
@@ -767,7 +770,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Copyright de ISO/IEC (texto no reproducible)",
+          "nombre": {
+            "es": "Copyright de ISO/IEC (texto no reproducible)",
+            "en": "ISO/IEC copyright (text not reproducible)"
+          },
           "url": "https://www.iso.org/standard/81230.html",
           "exige": {
             "es": "El texto de la norma no se reproduce; solo identificadores.",
@@ -805,8 +811,8 @@
       },
       {
         "id": "lista-decision-14",
-        "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist (lista de 14 ítems)",
-        "editor": "arXiv:2609.32160",
+        "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+        "editor": "Lijuan Tang, Yuemeng Zheng",
         "version_vigente": "v1",
         "fecha_version": "2026-09-26",
         "versiones_anteriores": [],
@@ -820,7 +826,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY 4.0",
+          "nombre": {
+            "es": "CC BY 4.0",
+            "en": "CC BY 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by/4.0/",
           "exige": {
             "es": "Atribución a los autores con enlace a la licencia.",
@@ -920,8 +929,8 @@
         "estado": "verificado",
         "por_verificar": [],
         "notas": {
-          "es": "Marco aceptado por E-23. Los 14 ítems se verificaron en el texto del artículo (§ 5.2); los nombres son paráfrasis breves en inglés.",
-          "en": "Framework accepted by E-23. The 14 items were checked in the paper's text (§ 5.2); names are short English paraphrases."
+          "es": "Lista de 14 ítems, de Lijuan Tang y Yuemeng Zheng (arXiv:2609.32160; autores leídos en la página del artículo, HTTP 200, 2026-10-05). Marco aceptado por E-23. Los 14 ítems se verificaron en el texto del artículo (§ 5.2); los nombres son paráfrasis breves en inglés.",
+          "en": "A 14-item checklist by Lijuan Tang and Yuemeng Zheng (arXiv:2609.32160; authors read on the paper's page, HTTP 200, 2026-10-05). Framework accepted by E-23. The 14 items were checked in the paper's text (§ 5.2); names are short English paraphrases."
         }
       },
       {
@@ -943,7 +952,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Apache-2.0 (datos de atlas-data)",
+          "nombre": {
+            "es": "Apache-2.0 (datos de atlas-data)",
+            "en": "Apache-2.0 (atlas-data data)"
+          },
           "url": "https://github.com/mitre-atlas/atlas-data/blob/main/LICENSE",
           "exige": {
             "es": "Conservar el aviso de copyright y la licencia en las copias de los datos.",
@@ -1017,7 +1029,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Términos de uso de ATT&CK (licencia no exclusiva y sin regalías)",
+          "nombre": {
+            "es": "Términos de uso de ATT&CK (licencia no exclusiva y sin regalías)",
+            "en": "ATT&CK terms of use (non-exclusive, royalty-free licence)"
+          },
           "url": "https://attack.mitre.org/resources/legal-and-branding/terms-of-use/",
           "exige": {
             "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",
@@ -1092,7 +1107,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+          "nombre": {
+            "es": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+            "en": "Work of NIST employees (not subject to copyright in the US; outside it, a royalty-free licence)"
+          },
           "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
           "exige": {
             "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",
@@ -1142,7 +1160,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+          "nombre": {
+            "es": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+            "en": "Work of NIST employees (not subject to copyright in the US; outside it, a royalty-free licence)"
+          },
           "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
           "exige": {
             "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",
@@ -1196,7 +1217,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+          "nombre": {
+            "es": "Obra de empleados de NIST (sin copyright en EE. UU.; fuera, licencia sin regalías)",
+            "en": "Work of NIST employees (not subject to copyright in the US; outside it, a royalty-free licence)"
+          },
           "url": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
           "exige": {
             "es": "Citar la publicación en el formato recomendado por NIST, seguido de «Republished courtesy of the National Institute of Standards and Technology.»",
@@ -1265,7 +1289,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY-SA 4.0",
+          "nombre": {
+            "es": "CC BY-SA 4.0",
+            "en": "CC BY-SA 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by-sa/4.0/",
           "exige": {
             "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
@@ -1376,7 +1403,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY-SA 4.0",
+          "nombre": {
+            "es": "CC BY-SA 4.0",
+            "en": "CC BY-SA 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by-sa/4.0/",
           "exige": {
             "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
@@ -1498,7 +1528,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY-SA 4.0",
+          "nombre": {
+            "es": "CC BY-SA 4.0",
+            "en": "CC BY-SA 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by-sa/4.0/",
           "exige": {
             "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
@@ -1625,7 +1658,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY-SA 4.0",
+          "nombre": {
+            "es": "CC BY-SA 4.0",
+            "en": "CC BY-SA 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by-sa/4.0/",
           "exige": {
             "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
@@ -1737,7 +1773,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "CC BY-SA 4.0",
+          "nombre": {
+            "es": "CC BY-SA 4.0",
+            "en": "CC BY-SA 4.0"
+          },
           "url": "https://creativecommons.org/licenses/by-sa/4.0/",
           "exige": {
             "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
@@ -1785,7 +1824,7 @@
       },
       {
         "id": "typesafe-jev",
-        "nombre": "TypeSafe — documentación de Jev (límites conocidos del modelo)",
+        "nombre": "Jev 1.13 jaggedness",
         "editor": "TypeSafe",
         "version_vigente": "jev-1.13",
         "fecha_version": "2026-10-02",
@@ -1800,7 +1839,10 @@
         ],
         "fecha_verificacion": "2026-10-04",
         "licencia": {
-          "nombre": "Sin licencia abierta declarada (términos de TypeSafe)",
+          "nombre": {
+            "es": "Sin licencia abierta declarada (términos de TypeSafe)",
+            "en": "No open licence declared (TypeSafe terms)"
+          },
           "url": "https://typesafe.ai/legal/terms",
           "exige": {
             "es": "Sin permiso de reproducción: solo se cita con atribución y se resume con palabras propias.",
@@ -1883,8 +1925,8 @@
         "estado": "verificado",
         "por_verificar": [],
         "notas": {
-          "es": "Marco aceptado por E-23 (documentación del fabricante con versión). La página dice «Applies to jev-1.13. Last reviewed 2026-10-02»; la fecha de versión es esa revisión. Hay sitios no oficiales que ofrecen claves: solo cuenta la lista blanca.",
-          "en": "Framework accepted by E-23 (versioned vendor documentation). The page says «Applies to jev-1.13. Last reviewed 2026-10-02»; the version date is that review. Unofficial sites offer keys: only the whitelist counts."
+          "es": "Documentación de los límites conocidos del modelo; el nombre es el título de la página (HTTP 200, 2026-10-05). Marco aceptado por E-23 (documentación del fabricante con versión). La página dice «Applies to jev-1.13. Last reviewed 2026-10-02»; la fecha de versión es esa revisión. Hay sitios no oficiales que ofrecen claves: solo cuenta la lista blanca.",
+          "en": "Documentation of the model's known limits; the name is the page's title (HTTP 200, 2026-10-05). Framework accepted by E-23 (versioned vendor documentation). The page says «Applies to jev-1.13. Last reviewed 2026-10-02»; the version date is that review. Unofficial sites offer keys: only the whitelist counts."
         }
       }
     ],
@@ -5798,8 +5840,8 @@
         "alias": [],
         "cambio_de_editor": [],
         "notas": {
-          "es": "0.17.0 se publicó en PyPI el 2026-09-09. El adaptador llega en el S3 sobre el informe de esa versión, que el spike de la F1 ya leyó. El umbral de los detectores no viaja en el informe: lo fija el paquete de ejecución (E-7).",
-          "en": "0.17.0 was published on PyPI on 2026-09-09. The adapter arrives in S3 on that version's report, which the F1 spike already read. The detector threshold does not travel in the report: the execution package sets it (E-7)."
+          "es": "0.17.0 se publicó en PyPI el 2026-09-09. El spike de la F1 leyó el informe de esa versión. El umbral de los detectores no viaja en el informe: lo fija el paquete de ejecución (E-7).",
+          "en": "0.17.0 was published on PyPI on 2026-09-09. The F1 spike read that version's report. The detector threshold does not travel in the report: the execution package sets it (E-7)."
         }
       },
       {
@@ -6284,8 +6326,8 @@
           }
         ],
         "notas": {
-          "es": "2.17.0 se publicó el 2025-12-15. El informe solo lista las alertas que se levantaron, no las reglas que corrieron: sin constancia de ejecución y cobertura, el adaptador del S3 sugiere «no ejecutada», nunca «superada» (E-6). ZAP se reporta como «Dev Build» y no declara la versión de su complemento de informes (E-26).",
-          "en": "2.17.0 was published on 2025-12-15. The report only lists the alerts that were raised, not the rules that ran: without proof of execution and coverage, the S3 adapter suggests “not run”, never “passed” (E-6). ZAP reports itself as “Dev Build” and does not declare the version of its report add-on (E-26)."
+          "es": "2.17.0 se publicó el 2025-12-15. El informe solo lista las alertas que se levantaron, no las reglas que corrieron: sin constancia de ejecución y cobertura, el veredicto que se sugiera es «no ejecutada», nunca «superada» (E-6). ZAP se reporta como «Dev Build» y no declara la versión de su complemento de informes (E-26).",
+          "en": "2.17.0 was published on 2025-12-15. The report only lists the alerts that were raised, not the rules that ran: without proof of execution and coverage, the suggested verdict is “not run”, never “passed” (E-6). ZAP reports itself as “Dev Build” and does not declare the version of its report add-on (E-26)."
         }
       }
     ],
@@ -7453,6 +7495,12 @@
             "http": 200,
             "consultada": "2026-10-04",
             "titulo": "promptfoo · bfla"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/agent_breaker.py",
+            "http": 200,
+            "consultada": "2026-10-05",
+            "titulo": "garak 0.17.0 · probes/agent_breaker"
           }
         ],
         "fecha_verificacion": "2026-10-04",
@@ -7730,6 +7778,12 @@
             "http": 200,
             "consultada": "2026-10-04",
             "titulo": "promptfoo · cross-session-leak"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/propile.py",
+            "http": 200,
+            "consultada": "2026-10-05",
+            "titulo": "garak 0.17.0 · probes/propile"
           }
         ],
         "fecha_verificacion": "2026-10-04",
@@ -7929,6 +7983,12 @@
             "http": 200,
             "consultada": "2026-10-04",
             "titulo": "garak 0.17.0 · probes/sysprompt_extraction"
+          },
+          {
+            "url": "https://www.promptfoo.dev/docs/red-team/plugins/prompt-extraction/",
+            "http": 200,
+            "consultada": "2026-10-05",
+            "titulo": "promptfoo · prompt-extraction"
           }
         ],
         "fecha_verificacion": "2026-10-04",
@@ -8316,8 +8376,8 @@
           "en": "For a yes-or-no question and its negation, the probabilities of “yes” add up to close to one."
         },
         "por_que_importa": {
-          "es": "Un modelo que dice sí a una afirmación y también a su contraria no está razonando sobre el caso; y esta prueba no necesita etiquetas, así que es la más barata de la familia.",
-          "en": "A model that says yes to a statement and also to its opposite is not reasoning about the case; and this test needs no labels, so it is the cheapest in the family."
+          "es": "Un modelo que dice sí a una afirmación y también a su contraria no está razonando sobre el caso; como la estabilidad y la invariancia, esta prueba no necesita etiquetas.",
+          "en": "A model that says yes to a statement and also to its opposite is not reasoning about the case; like stability and invariance, this test needs no labels."
         },
         "marco_id": "lista-decision-14",
         "version_marco": "v1",
@@ -10188,315 +10248,315 @@
       {
         "id": "PR-AG-CONF-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-EXF-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-HERR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-ID-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-LIM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-MEM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-MULTI-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-PERM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-REG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-CONT-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-DATO-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-ENC-002",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-FUGA-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-PINJ-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-RAG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-SAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-CAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-COH-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-DER-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-EST-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-ESTAB-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-INV-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-LIM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-PAR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-UMB-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-002",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-003",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-ACC-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-CLK-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-CSP-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-DEP-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-ERR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-LOG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-SES-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-SQLI-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-TS-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-XSS-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       }
     ],
     "marcos": [
       {
         "id": "cwe",
-        "fecha_verificacion": "2026-10-04",
+        "fecha_verificacion": "2026-10-05",
         "dias": 0,
         "estado": "vigente"
       },
       {
         "id": "iso-iec-42001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "lista-decision-14",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "mitre-atlas",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "mitre-attack",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-100-2",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-600-1",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-rmf",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "owasp-agentic-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "owasp-asvs",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "owasp-llm-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "owasp-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "owasp-wstg",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "typesafe-jev",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       }
     ],
@@ -10504,79 +10564,79 @@
       {
         "id": "checklist",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "evidently",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "garak",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "giskard",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "hackguard-revision",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "inspect",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "mapie",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "nuclei",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "promptfoo",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "pyrit",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "scikit-learn",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "textattack",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       },
       {
         "id": "zap",
         "fecha_verificacion": "2026-10-04",
-        "dias": 0,
+        "dias": 1,
         "estado": "vigente"
       }
     ],
@@ -10584,7 +10644,7 @@
       {
         "id": "software",
         "estado": "vigente",
-        "dias": 0,
+        "dias": 1,
         "desglose": {
           "vigente": 10,
           "por_revisar": 0,
@@ -10594,7 +10654,7 @@
       {
         "id": "agente",
         "estado": "vigente",
-        "dias": 0,
+        "dias": 1,
         "desglose": {
           "vigente": 9,
           "por_revisar": 0,
@@ -10604,7 +10664,7 @@
       {
         "id": "modelo_generativo",
         "estado": "vigente",
-        "dias": 0,
+        "dias": 1,
         "desglose": {
           "vigente": 7,
           "por_revisar": 0,
@@ -10614,7 +10674,7 @@
       {
         "id": "modelo_decision",
         "estado": "vigente",
-        "dias": 0,
+        "dias": 1,
         "desglose": {
           "vigente": 12,
           "por_revisar": 0,
@@ -10625,13 +10685,6 @@
   },
   "pendientes_de_revision": [],
   "advertencias": [
-    {
-      "regla": "marco/por-verificar",
-      "severidad": "nota",
-      "ruta": "datos/marcos/cwe.json",
-      "campo": "fecha_version",
-      "detalle": null
-    },
     {
       "regla": "marco/por-verificar",
       "severidad": "nota",
@@ -10724,5 +10777,5 @@
       "detalle": null
     }
   ],
-  "huella": "12d3b632a871cc7ceb06970036976e25542b7eab6bc58ebc63dc4db5f6495ce4"
+  "huella": "703a0479d56728bca8b22cb0ae8470d968a370c86dbc850cdeb93a9574bb5501"
 }

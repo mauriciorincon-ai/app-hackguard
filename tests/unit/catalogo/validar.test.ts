@@ -503,13 +503,22 @@ const CASOS: Caso[] = [
   {
     regla: "marco/por-verificar",
     que: "un dato por verificar",
-    preparar: () => CWE,
+    preparar: (c) => (
+      editar(
+        buscar(c.marcos, CWE),
+        (m) => (m.por_verificar = ["fecha_version"]),
+      ),
+      CWE
+    ),
   },
   {
     regla: "marco/nulo-sin-declarar",
     que: "fecha nula sin declarar",
     preparar: (c) => (
-      editar(buscar(c.marcos, CWE), (m) => (m.por_verificar = [])),
+      editar(buscar(c.marcos, CWE), (m) => {
+        m.fecha_version = null;
+        m.por_verificar = [];
+      }),
       CWE
     ),
   },
@@ -1015,6 +1024,27 @@ describe("el detalle de un campo que no cumple el esquema se lee en los dos idio
       regla: "esquema/campo-desconocido",
       campo: "resultado_esperado.extra",
     });
+  });
+});
+
+describe("aplicabilidad del marco", () => {
+  it("una referencia adicional a un marco que no aplica a la familia también es un error, en su campo", async () => {
+    const c = catalogoBase();
+    const ruta = conReferencia(c, (p) => {
+      p.referencias_adicionales = [
+        {
+          marco_id: "owasp-asvs",
+          version_marco: "5.0.0",
+          referencia_en_marco: "V1",
+        },
+      ];
+    });
+    const r = await validarCatalogo(c);
+    expect(
+      r.hallazgos
+        .filter((h) => h.regla === "prueba/marco-no-aplica" && h.ruta === ruta)
+        .map((h) => h.campo),
+    ).toEqual(["referencias_adicionales.0.marco_id"]);
   });
 });
 

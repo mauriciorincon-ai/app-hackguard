@@ -71,7 +71,7 @@
     --tinta: #1e2022; --tinta-suave: #5c6066;
     --acento: #2f4858; --acento-suave: #dde6ec;
     --alerta: #a4432f; --alerta-suave: #fbe4dd;
-    --ok: #4f7a4a; --pendiente: #8a6413; --pendiente-suave: #f8ead0;
+    --ok: #477043; --pendiente: #8a6413; --pendiente-suave: #f8ead0;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -169,7 +169,8 @@
       la norma. Deja fuera 0 pruebas ⭐, porque en este sprint el gate mínimo son las mismas 3 paradas.</p>
     <p class="chica"><strong>Gate mínimo ⭐: 3 pruebas · ~15 min.</strong> Son las decisiones sobre el contenido
       del catálogo que ninguna automatización puede tomar. Lo demás (bloques B a F) lo respalda la CI y se corre en
-      pases completos: 18 pruebas, ~22 min.</p>
+      pases completos: 18 pruebas, ~22 min. La excepción es E3, una lectura de redacción que ninguna prueba
+      automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
     <div class="url-caja">
       <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
       <p style="margin:0">Una terminal abierta en la carpeta del repositorio (<code>~/Code/app-hackguard</code>), en
@@ -199,10 +200,13 @@
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>docs/LICENCIAS-DE-MARCOS.md</code> · ~15 min · lo que solo una persona puede decidir sobre el contenido del catálogo</p>
     <ul class="pasos">
       <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a1"><label for="a1"><strong>¿Apruebas la tabla de marcos y licencias?</strong> Abre <code>docs/LICENCIAS-DE-MARCOS.md</code>
-        (doble clic, o en el editor) y recorre la tabla: cada marco con su versión, su fuente, su licencia y lo que
-        la licencia exige. Esta parada se adelantó al cierre de la fase 0 y la aprobaste el 2026-10-04 («Aprobados
-        lo marcos, continua»). Desde entonces ningún marco cambió su versión, su fuente ni su licencia. Al cierre,
-        confirma que sigues de acuerdo. <strong>Respuesta esperada: «confirmo» o el marco que quieres
+        (doble clic, o en el editor) y recorre sus dos tablas, «Marcos con versión y fuente (DA-01)» y «Tabla de
+        licencias»: cada marco con su versión, su fuente, su licencia y lo que la licencia exige. Esta parada se
+        adelantó al cierre de la fase 0 y la aprobaste el 2026-10-04 («Aprobados lo marcos, continua»). Desde
+        entonces ningún marco cambió su versión, su fuente ni su licencia; la auditoría cambió tres cosas: el nombre
+        de cada licencia está también en inglés, la fecha de CWE 4.20 dejó de estar por verificar (la declara su
+        propio archivo) y las atribuciones nombran autores, DOI y la dirección de cada obra. Al cierre, confirma que
+        sigues de acuerdo. <strong>Respuesta esperada: «confirmo» o el marco que quieres
         cambiar.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span>
         <span class="minimo">⭐ mínimo</span>
@@ -211,8 +215,9 @@
         filtro no marcó ninguna de las 38. Para confirmarlo, corre <code>pnpm catalogo:validar</code> y busca <code>filtro/marcada</code>: no
         debe aparecer. Luego abre tres pruebas de <code>datos/pruebas/</code>, una de <code>agente/</code>, una de
         <code>modelo_generativo/</code> y una de <code>software/</code>. Cada una tiene que decir qué se verifica,
-        por qué importa, con qué herramienta y qué se espera, y nunca cómo se ejecuta un ataque.
-        <strong>Respuesta esperada: «confirmo», o la prueba que quieres reescribir o retirar.</strong>
+        por qué importa, con qué herramienta y qué se espera, y nunca cómo se ejecuta un ataque. El filtro solo
+        reconoce siete formas (la lista está en el manual, «Lo que el filtro no ve»): por eso esta parada también es
+        leer. <strong>Respuesta esperada: «confirmo», o la prueba que quieres reescribir o retirar.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 2 de 3</span></label></li>
@@ -241,12 +246,12 @@
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:validar</code> · ~4 min · el validador sobre el catálogo real, en los dos idiomas y en JSON</p>
     <ul class="pasos">
       <li data-origen="nuevo"><input type="checkbox" id="b1"><label for="b1">Corre <code>pnpm catalogo:validar</code> y después <code>echo $?</code>. <strong>Primera línea «Catálogo: con advertencias»;
-        «38 pruebas (38 publicables, 0 pendientes de revisión)»; «0 errores · 10 advertencias · 4 notas»;
+        «38 pruebas (38 publicables, 0 pendientes de revisión)»; «0 errores · 10 advertencias · 3 notas»;
         código de salida 1.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="b2"><label for="b2">En la misma salida, lee las secciones de abajo. <strong>Las 10 advertencias son
-        <code>prueba/sin-control</code> de pruebas de software (<code>PR-SW-…</code>), y las 4 notas son
-        <code>marco/por-verificar</code>.</strong> Cada línea lleva su marca: ! para advertencia y · para nota.
+        <code>prueba/sin-control</code> de pruebas de software (<code>PR-SW-…</code>), y las 3 notas son
+        <code>marco/por-verificar</code>: la fecha y la fuente de ISO/IEC 42001, y la fecha de OWASP Top 10.</strong> Cada línea lleva su marca: ! para advertencia y · para nota.
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="b3"><label for="b3"><code>pnpm catalogo:validar --idioma en</code>. <strong>Primera línea «Catalog: with warnings», con
         los hallazgos en inglés.</strong>
@@ -273,8 +278,8 @@
         equivalencias la resuelve.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="c4"><label for="c4"><code>pnpm catalogo:validar --agregar docs/kit-de-prueba/semillas/SEMILLA-PATRON-PASOS.json</code>. <strong>«Catálogo:
-        con advertencias», «(38 publicables, 1 pendiente de revisión)» y dos «! … filtro/marcada … «pasos-imperativos»»:
-        el filtro la marca y no la rechaza.</strong>
+        con advertencias», «(38 publicables, 1 pendiente de revisión)» y dos «filtro/marcada … «Secuencia imperativa paso a paso»»:
+        el filtro la marca, nombra el patrón y no la rechaza.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="c5"><label for="c5"><code>pnpm vitest run tests/unit/instrumento</code>. <strong>Entre la salida, «C18 catálogo: bloquea 11
         de 11 semillas inválidas sembradas», y todas las pruebas en verde.</strong>
@@ -287,27 +292,32 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">D</span><h2>Instantánea y semáforo de vigencia</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard</code> · ~5 min · misma fecha, misma huella; el semáforo en sus tres estados</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard-d1</code> · ~5 min · misma fecha, misma huella; el semáforo en sus tres estados</p>
     <ul class="pasos">
-      <li data-origen="nuevo"><input type="checkbox" id="d1"><label for="d1">Corre tres veces <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard</code>.
-        (<code>--salida</code> la escribe fuera del repo; sin esa opción iría a <code>datos/instantaneas/</code>.)
-        <strong>Las tres veces «huella: e2858e62cd9e72af0baf1bf7b54c01f3c1cfc580b6f6afa21a19d700dabcd862», y en
-        <code>/tmp/hackguard</code> un solo archivo, <code>2026-10-15-e2858e62cd9e.json</code>.</strong>
+      <li data-origen="nuevo"><input type="checkbox" id="d1"><label for="d1">Corre tres veces <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard-d1</code>.
+        (<code>--salida</code> la escribe fuera del repo; sin esa opción iría a <code>datos/instantaneas/</code>. D1
+        tiene su propia carpeta para que repetir el bloque no cambie la cuenta.) <strong>Las tres veces «huella:
+        5bcb8a75e5ec56de533837de4b48fd1ad234917d3d902ed7b3696bb84628b55e», y en <code>/tmp/hackguard-d1</code> un solo
+        archivo, <code>2026-10-15-5bcb8a75e5ec.json</code>, aunque repitas el bloque.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="d2"><label for="d2">Repite con <code>--fecha 2026-11-03</code> y luego con <code>--fecha 2026-12-03</code>. <strong>En la
-        sección de vigencia, primero «! Por revisar 38 / 14 / 13 / 4» y después «✗ Vencido 38 / 14 / 13 / 4», con
-        otra huella cada vez.</strong> A la fecha del 2026-10-15 todo era «✓ Vigente».
+        sección de vigencia, el 2026-11-03: pruebas «! Por revisar 38», marcos «✓ Vigente 1 · ! Por revisar 13»,
+        herramientas «! Por revisar 13», familias «! Por revisar 4». El 2026-12-03: pruebas «✗ Vencido 38», marcos
+        «! Por revisar 1 · ✗ Vencido 13», herramientas «✗ Vencido 13», familias «✗ Vencido 4».</strong> El marco
+        que va un día atrás es CWE: se volvió a verificar el 2026-10-05, un día después que el resto. A la fecha del
+        2026-10-15 todo era «✓ Vigente».
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="d3"><label for="d3"><code>pnpm catalogo:instantanea --fecha 2026-09-30 --salida /tmp/hackguard</code> y <code>echo $?</code>.
         <strong>Un error que dice «la fecha de evaluación 2026-09-30 es anterior a la última verificación del
-        catálogo (2026-10-04)», código 3, y ningún archivo nuevo.</strong>
+        catálogo (2026-10-05)», código 3, y ningún archivo nuevo.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="d4"><label for="d4"><code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard --agregar docs/kit-de-prueba/semillas/SEMILLA-SIN-MARCO.json</code>.
         <strong>«Instantánea bloqueada: el catálogo es inválido (1 error). No se escribió nada.», código 2.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="d5"><label for="d5"><code>pnpm catalogo:instantanea --fecha 2026-10-04 --salida /tmp/hackguard</code>. <strong>Huella
-        «12d3b632a871cc7ceb06970036976e25542b7eab6bc58ebc63dc4db5f6495ce4», la misma de la primera instantánea
-        oficial, <code>datos/instantaneas/2026-10-04-12d3b632a871.json</code>.</strong>
+      <li data-origen="nuevo"><input type="checkbox" id="d5"><label for="d5"><code>pnpm catalogo:instantanea --fecha 2026-10-05 --salida /tmp/hackguard</code>. <strong>Huella
+        «703a0479d56728bca8b22cb0ae8470d968a370c86dbc850cdeb93a9574bb5501», la misma de la instantánea oficial,
+        <code>datos/instantaneas/2026-10-05-703a0479d567.json</code>, idéntica byte a byte.</strong> Esa instantánea
+        reemplazó en la auditoría a la del 2026-10-04, que el validador de hoy ya no acepta (ADR-002).
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
     </ul>
     <div class="tabla-scroll"><table>
@@ -327,8 +337,9 @@
         7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d» y las cifras de la tabla de
         abajo.</strong> Córrelo otra vez: la huella no cambia.
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="e2"><label for="e2"><code>pnpm clasificador:demo --idioma en</code>. <strong>«accuracy 20 of 26 · 25 of 26» y «English
-        accuracy minus Spanish accuracy is 19.2 points».</strong>
+      <li data-origen="nuevo"><input type="checkbox" id="e2"><label for="e2"><code>pnpm clasificador:demo --idioma en</code>. <strong>La fila «accuracy» de la decisión con 20 of 26 y 25
+        of 26, y «English accuracy minus Spanish accuracy is 19.2 points».</strong> Las opciones salen con su glosa:
+        «aprobar (approve) · rechazar (reject) · revisar (review)».
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="e3"><label for="e3">Abre <code>docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json</code> y lee las notas de
         <code>BIB-007</code> y <code>BIB-025</code> en los dos idiomas. <strong>Cada nota se lee natural en su
@@ -361,8 +372,9 @@
       <li data-origen="nuevo"><input type="checkbox" id="f1"><label for="f1">Corre <code>E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts</code>. La primera
         vez puede pedir instalar los navegadores con <code>pnpm exec playwright install firefox webkit</code>, que los
         descarga a la caché de Playwright. Tarda un par de minutos porque construye la app. <strong>«9 passed», y en
-        cada línea «determinismo · chromium / firefox / webkit · instantánea 2026-10-15 · e2858e62cd9e…» con la misma
-        huella que en Node.</strong>
+        las líneas de la instantánea «determinismo · chromium / firefox / webkit · instantánea 2026-10-16 ·
+        2c1c927d29db3437a464c0e2b70ce02e06d621d6dcde68297214cbf16015828a», la misma huella que en Node.</strong> El
+        spec fecha 11 días después de la última verificación del catálogo, que hoy es el 2026-10-05.
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
     </ul>
     <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un navegador con otra huella, o menos de 9 pruebas en verde.</p></div>
@@ -378,6 +390,10 @@
         <li><strong>S1 · 2026-10-04:</strong> nace la guía con 21 pruebas en 6 bloques. A tiene las tres paradas
           del gate ⭐; la parada 3 no corre. B a F prueban la validación, las semillas, la instantánea con su
           semáforo, el clasificador demo y el determinismo en navegadores. Ninguna eliminada.</li>
+        <li><strong>S1 · 2026-10-05 (auditoría):</strong> D1 escribe en su propia carpeta; D2, D3 y D5 dicen lo que
+          da el catálogo después de la auditoría (CWE verificado de nuevo el 2026-10-05; instantánea oficial del
+          2026-10-05); E2 cita la fila tal como sale; F1 cita la fecha del spec; A1 nombra las dos tablas; A2 dice
+          que el filtro reconoce siete formas. Contraste del tema claro corregido. Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>

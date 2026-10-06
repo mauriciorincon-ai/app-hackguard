@@ -96,6 +96,12 @@
       "http": 200,
       "consultada": "2026-10-04",
       "titulo": "promptfoo · cross-session-leak"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/propile.py",
+      "http": 200,
+      "consultada": "2026-10-05",
+      "titulo": "garak 0.17.0 · probes/propile"
     }
   ],
   "fecha_verificacion": "2026-10-04",

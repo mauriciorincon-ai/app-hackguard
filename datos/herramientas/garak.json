@@ -11,8 +11,14 @@
     "spdx": "Apache-2.0",
     "url": "https://raw.githubusercontent.com/NVIDIA/garak/main/LICENSE"
   },
-  "familias": ["modelo_generativo", "agente"],
-  "entornos_soportados": ["portatil", "contenedor"],
+  "familias": [
+    "modelo_generativo",
+    "agente"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "contenedor"
+  ],
   "formato_salida": "report.jsonl",
   "tiene_adaptador": true,
   "selector": "garak",
@@ -32,7 +38,7 @@
   "alias": [],
   "cambio_de_editor": [],
   "notas": {
-    "es": "0.17.0 se publicó en PyPI el 2026-09-09. El adaptador llega en el S3 sobre el informe de esa versión, que el spike de la F1 ya leyó. El umbral de los detectores no viaja en el informe: lo fija el paquete de ejecución (E-7).",
-    "en": "0.17.0 was published on PyPI on 2026-09-09. The adapter arrives in S3 on that version's report, which the F1 spike already read. The detector threshold does not travel in the report: the execution package sets it (E-7)."
+    "es": "0.17.0 se publicó en PyPI el 2026-09-09. El spike de la F1 leyó el informe de esa versión. El umbral de los detectores no viaja en el informe: lo fija el paquete de ejecución (E-7).",
+    "en": "0.17.0 was published on PyPI on 2026-09-09. The F1 spike read that version's report. The detector threshold does not travel in the report: the execution package sets it (E-7)."
   }
 }

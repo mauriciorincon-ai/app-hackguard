@@ -1,6 +1,6 @@
 {
   "id": "typesafe-jev",
-  "nombre": "TypeSafe — documentación de Jev (límites conocidos del modelo)",
+  "nombre": "Jev 1.13 jaggedness",
   "editor": "TypeSafe",
   "version_vigente": "jev-1.13",
   "fecha_version": "2026-10-02",
@@ -15,7 +15,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "Sin licencia abierta declarada (términos de TypeSafe)",
+    "nombre": {
+      "es": "Sin licencia abierta declarada (términos de TypeSafe)",
+      "en": "No open licence declared (TypeSafe terms)"
+    },
     "url": "https://typesafe.ai/legal/terms",
     "exige": {
       "es": "Sin permiso de reproducción: solo se cita con atribución y se resume con palabras propias.",
@@ -98,7 +101,7 @@
   "estado": "verificado",
   "por_verificar": [],
   "notas": {
-    "es": "Marco aceptado por E-23 (documentación del fabricante con versión). La página dice «Applies to jev-1.13. Last reviewed 2026-10-02»; la fecha de versión es esa revisión. Hay sitios no oficiales que ofrecen claves: solo cuenta la lista blanca.",
-    "en": "Framework accepted by E-23 (versioned vendor documentation). The page says «Applies to jev-1.13. Last reviewed 2026-10-02»; the version date is that review. Unofficial sites offer keys: only the whitelist counts."
+    "es": "Documentación de los límites conocidos del modelo; el nombre es el título de la página (HTTP 200, 2026-10-05). Marco aceptado por E-23 (documentación del fabricante con versión). La página dice «Applies to jev-1.13. Last reviewed 2026-10-02»; la fecha de versión es esa revisión. Hay sitios no oficiales que ofrecen claves: solo cuenta la lista blanca.",
+    "en": "Documentation of the model's known limits; the name is the page's title (HTTP 200, 2026-10-05). Framework accepted by E-23 (versioned vendor documentation). The page says «Applies to jev-1.13. Last reviewed 2026-10-02»; the version date is that review. Unofficial sites offer keys: only the whitelist counts."
   }
 }

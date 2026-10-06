@@ -72,7 +72,7 @@ describe("informeDeValidacion", () => {
     expect(texto).toContain(
       "“owasp-llm-top10 2025 LLM07” is LLM08 in version 2026",
     );
-    expect(texto).toContain("  · datos/marcos/cwe.json · fecha_version");
+    expect(texto).toContain("  · datos/marcos/owasp-top10.json · fecha_version");
   });
 
   it("un catálogo sin hallazgos no imprime secciones vacías", async () => {

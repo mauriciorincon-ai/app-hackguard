@@ -11,8 +11,8 @@
     "en": "For a yes-or-no question and its negation, the probabilities of “yes” add up to close to one."
   },
   "por_que_importa": {
-    "es": "Un modelo que dice sí a una afirmación y también a su contraria no está razonando sobre el caso; y esta prueba no necesita etiquetas, así que es la más barata de la familia.",
-    "en": "A model that says yes to a statement and also to its opposite is not reasoning about the case; and this test needs no labels, so it is the cheapest in the family."
+    "es": "Un modelo que dice sí a una afirmación y también a su contraria no está razonando sobre el caso; como la estabilidad y la invariancia, esta prueba no necesita etiquetas.",
+    "en": "A model that says yes to a statement and also to its opposite is not reasoning about the case; like stability and invariance, this test needs no labels."
   },
   "marco_id": "lista-decision-14",
   "version_marco": "v1",

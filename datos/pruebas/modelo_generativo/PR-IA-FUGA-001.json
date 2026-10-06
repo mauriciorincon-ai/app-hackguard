@@ -96,6 +96,12 @@
       "http": 200,
       "consultada": "2026-10-04",
       "titulo": "garak 0.17.0 · probes/sysprompt_extraction"
+    },
+    {
+      "url": "https://www.promptfoo.dev/docs/red-team/plugins/prompt-extraction/",
+      "http": 200,
+      "consultada": "2026-10-05",
+      "titulo": "promptfoo · prompt-extraction"
     }
   ],
   "fecha_verificacion": "2026-10-04",

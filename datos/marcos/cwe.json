@@ -1,9 +1,9 @@
 {
   "id": "cwe",
-  "nombre": "Common Weakness Enumeration (CWE) y CWE Top 25",
+  "nombre": "Common Weakness Enumeration (CWE)",
   "editor": "MITRE",
   "version_vigente": "4.20",
-  "fecha_version": null,
+  "fecha_version": "2026-04-30",
   "versiones_anteriores": [],
   "fuente_oficial": {
     "url": "https://cwe.mitre.org/data/index.html",
@@ -11,11 +11,16 @@
     "consultada": "2026-10-04"
   },
   "familias_aplicables": [
-    "software"
+    "software",
+    "agente",
+    "modelo_generativo"
   ],
-  "fecha_verificacion": "2026-10-04",
+  "fecha_verificacion": "2026-10-05",
   "licencia": {
-    "nombre": "Términos de uso de CWE (licencia no exclusiva y sin regalías)",
+    "nombre": {
+      "es": "Términos de uso de CWE (licencia no exclusiva y sin regalías)",
+      "en": "CWE terms of use (non-exclusive, royalty-free licence)"
+    },
     "url": "https://cwe.mitre.org/about/termsofuse.html",
     "exige": {
       "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",
@@ -46,11 +51,11 @@
     {
       "tipo": "archivo",
       "url": "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip",
-      "http": 206,
-      "consultada": "2026-10-04",
+      "http": 200,
+      "consultada": "2026-10-05",
       "nota": {
-        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
-        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+        "es": "Descargado entero el 2026-10-05: contiene cwec_v4.20.xml, cuya raíz declara Version=\"4.20\" Date=\"2026-04-30\".",
+        "en": "Downloaded whole on 2026-10-05: it holds cwec_v4.20.xml, whose root declares Version=\"4.20\" Date=\"2026-04-30\"."
       }
     }
   ],
@@ -58,11 +63,9 @@
     "cwe.mitre.org"
   ],
   "estado": "verificado",
-  "por_verificar": [
-    "fecha_version"
-  ],
+  "por_verificar": [],
   "notas": {
-    "es": "La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25; ninguna página consultada dice la fecha de la 4.20.",
-    "en": "The current list is 4.20 and the annual list is the 2025 CWE Top 25; no page consulted states 4.20's date."
+    "es": "La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25. La fecha de la 4.20 la declara el archivo de su vía «archivo»: cwec_v4.20.xml dice Version=\"4.20\" Date=\"2026-04-30\".",
+    "en": "The current list is 4.20 and the annual list is the 2025 CWE Top 25. The date of 4.20 is declared by the file of its «archivo» route: cwec_v4.20.xml says Version=\"4.20\" Date=\"2026-04-30\"."
   }
 }

@@ -1,6 +1,6 @@
 {
-  "version": "1",
-  "fecha": "2026-10-04",
+  "version": "2",
+  "fecha": "2026-10-05",
   "proposito": {
     "es": "Patrones de FORMA que sugieren contenido operativo (cargas o procedimientos). El filtro solo marca para revisión; nunca rechaza. Una persona decide (RF-01.3). Nombrar una técnica, citar la entrada de un marco o referenciar el módulo de una herramienta nunca marca.",
     "en": "FORM patterns that suggest operational content (payloads or procedures). The filter only flags for review; it never rejects. A person decides (RF-01.3). Naming a technique, citing a framework entry or referencing a tool module never flags."
@@ -55,10 +55,10 @@
         "en": "Long encoded string"
       },
       "por_que": {
-        "es": "Una tira larga en base64 o hexadecimal dentro de una prueba suele ser una carga escondida; una huella de 64 caracteres no alcanza el umbral.",
-        "en": "A long base64 or hexadecimal run inside a test is usually a hidden payload; a 64-character fingerprint does not reach the threshold."
+        "es": "Una tira de 80 caracteres o más en base64 o hexadecimal (el hexadecimal cabe en el alfabeto de base64) dentro de una prueba suele ser una carga escondida; una huella de 64 caracteres no alcanza el umbral.",
+        "en": "A run of 80 or more base64 or hexadecimal characters (hexadecimal fits in the base64 alphabet) inside a test is usually a hidden payload; a 64-character fingerprint does not reach the threshold."
       },
-      "expresion": "[A-Za-z0-9+/]{80,}={0,2}|\\b[0-9a-fA-F]{96,}\\b",
+      "expresion": "[A-Za-z0-9+/]{80,}={0,2}",
       "banderas": "",
       "carnadas": [
         "Cadena de muestra: QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB"
@@ -86,6 +86,66 @@
       "contraejemplos": [
         "Fuente: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
         "Ver https://ejemplo.invalid/buscar?q=libros"
+      ]
+    },
+    {
+      "id": "bloque-sin-lenguaje",
+      "nombre": {
+        "es": "Bloque de código sin lenguaje",
+        "en": "Code block without a language"
+      },
+      "por_que": {
+        "es": "Un bloque de código, aunque no diga para qué intérprete es, guarda algo para copiar y ejecutar; una prueba describe qué se verifica, no lo que se ejecuta.",
+        "en": "A code block, even one that names no interpreter, holds something to copy and run; a test describes what is verified, not what is run."
+      },
+      "expresion": "(?:^|\\n)[ \\t]*```[ \\t]*\\n[\\s\\S]*?\\n[ \\t]*```",
+      "banderas": "",
+      "carnadas": [
+        "Antes de empezar:\n```\ntexto de muestra\n```"
+      ],
+      "contraejemplos": [
+        "El campo `resultado_esperado` lleva el umbral de la regla.",
+        "Tres comillas invertidas sueltas, ```, sin bloque."
+      ]
+    },
+    {
+      "id": "etiqueta-html-activa",
+      "nombre": {
+        "es": "Etiqueta HTML activa",
+        "en": "Active HTML tag"
+      },
+      "por_que": {
+        "es": "Una etiqueta que ejecuta código (script, iframe, object, embed, svg) o un atributo de evento con valor es una carga lista para pegar; nombrar la técnica no necesita la etiqueta.",
+        "en": "A tag that runs code (script, iframe, object, embed, svg) or an event attribute with a value is a payload ready to paste; naming the technique does not need the tag."
+      },
+      "expresion": "<\\s*(?:script|iframe|object|embed|svg)\\b|\\bon[a-z]+\\s*=\\s*[\"']",
+      "banderas": "i",
+      "carnadas": [
+        "Ejemplo: <script></script>",
+        "Atributo: onload=\"x\""
+      ],
+      "contraejemplos": [
+        "Revisa que ninguna etiqueta script cargue código de un tercero.",
+        "El evento onload se menciona por su nombre, sin valor."
+      ]
+    },
+    {
+      "id": "recorrido-de-ruta",
+      "nombre": {
+        "es": "Recorrido de ruta",
+        "en": "Path traversal"
+      },
+      "por_que": {
+        "es": "Dos o más «../» seguidos son la forma de salir de una carpeta permitida: una cadena así es una carga, no la descripción de lo que se verifica.",
+        "en": "Two or more «../» in a row are how a path leaves an allowed folder: such a string is a payload, not a description of what is verified."
+      },
+      "expresion": "(?:\\.\\.[\\\\/]){2,}",
+      "banderas": "",
+      "carnadas": [
+        "Ruta: ../../archivo"
+      ],
+      "contraejemplos": [
+        "La ruta relativa ../datos sube un solo nivel."
       ]
     }
   ],

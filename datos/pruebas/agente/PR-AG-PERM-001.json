@@ -101,6 +101,12 @@
       "http": 200,
       "consultada": "2026-10-04",
       "titulo": "promptfoo · bfla"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/agent_breaker.py",
+      "http": 200,
+      "consultada": "2026-10-05",
+      "titulo": "garak 0.17.0 · probes/agent_breaker"
     }
   ],
   "fecha_verificacion": "2026-10-04",

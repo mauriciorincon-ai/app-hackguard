@@ -17,7 +17,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "Copyright de ISO/IEC (texto no reproducible)",
+    "nombre": {
+      "es": "Copyright de ISO/IEC (texto no reproducible)",
+      "en": "ISO/IEC copyright (text not reproducible)"
+    },
     "url": "https://www.iso.org/standard/81230.html",
     "exige": {
       "es": "El texto de la norma no se reproduce; solo identificadores.",

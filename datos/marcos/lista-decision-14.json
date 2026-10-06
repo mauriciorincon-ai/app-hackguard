@@ -1,7 +1,7 @@
 {
   "id": "lista-decision-14",
-  "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist (lista de 14 ítems)",
-  "editor": "arXiv:2609.32160",
+  "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+  "editor": "Lijuan Tang, Yuemeng Zheng",
   "version_vigente": "v1",
   "fecha_version": "2026-09-26",
   "versiones_anteriores": [],
@@ -15,7 +15,10 @@
   ],
   "fecha_verificacion": "2026-10-04",
   "licencia": {
-    "nombre": "CC BY 4.0",
+    "nombre": {
+      "es": "CC BY 4.0",
+      "en": "CC BY 4.0"
+    },
     "url": "https://creativecommons.org/licenses/by/4.0/",
     "exige": {
       "es": "Atribución a los autores con enlace a la licencia.",
@@ -115,7 +118,7 @@
   "estado": "verificado",
   "por_verificar": [],
   "notas": {
-    "es": "Marco aceptado por E-23. Los 14 ítems se verificaron en el texto del artículo (§ 5.2); los nombres son paráfrasis breves en inglés.",
-    "en": "Framework accepted by E-23. The 14 items were checked in the paper's text (§ 5.2); names are short English paraphrases."
+    "es": "Lista de 14 ítems, de Lijuan Tang y Yuemeng Zheng (arXiv:2609.32160; autores leídos en la página del artículo, HTTP 200, 2026-10-05). Marco aceptado por E-23. Los 14 ítems se verificaron en el texto del artículo (§ 5.2); los nombres son paráfrasis breves en inglés.",
+    "en": "A 14-item checklist by Lijuan Tang and Yuemeng Zheng (arXiv:2609.32160; authors read on the paper's page, HTTP 200, 2026-10-05). Framework accepted by E-23. The 14 items were checked in the paper's text (§ 5.2); names are short English paraphrases."
   }
 }
