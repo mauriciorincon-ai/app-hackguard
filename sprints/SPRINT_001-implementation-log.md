@@ -711,3 +711,19 @@ El usuario pausó el sprint hasta el día siguiente. Este es el estado exacto pa
    - ⭐ corto del usuario (3 paradas, la 3 declarada no corrida);
    - el usuario marca el PR listo y mergea con squash;
    - aviso «Sprint 001 de HackGuard cerrado — corre `/cierre-sprint hackguard` en la planeadora».
+
+## Reanudación (2026-10-05)
+
+- **Repo al retomar:** `git status` limpio en `c590c9e`. La corrida 37255787550 de ese commit terminó con `quality`
+  (2m40s), `e2e` (7m6s) y `lighthouse` (1m31s) en `success`.
+- **Auditor 4:** un auditor independiente nuevo, en solo lectura, revisó la lista «Lo que no alcancé a revisar» del
+  anexo C. Se le sumó la casilla 4 (frases caducadas), que ninguno de los tres había corrido.
+  - Entregó 0 altos, 3 medios y 6 bajos.
+  - Barrió 126 coincidencias de promesa aplazada y no encontró ninguna frase falsa nueva. Hay dos en datos que la
+    instantánea congela: AU-56.
+- **Consolidado:** `sprints/SPRINT_001-auditoria.md` junta los cuatro informes.
+  - 56 hallazgos sin duplicados: 0 críticos, 7 altos, 21 medios y 28 bajos. Cada uno con su auditor de origen.
+  - Cinco decisiones del usuario.
+  - Dos deudas imposibles de pagar en el S1: AU-14 y AU-20.
+  - El orden de pago de la Fase 2.
+- **Estado:** la Fase 1 queda completa y espera la aprobación del usuario. No hay ningún hallazgo pagado.

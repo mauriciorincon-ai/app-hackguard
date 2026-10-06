@@ -1,29 +1,159 @@
 # Sprint 001 — auditoría final (`/audita-sprint`)
 
-**Estado: Fase 1 en curso. Este archivo es un borrador.**
+**Estado:** la Fase 1 está completa y espera la aprobación del usuario (2026-10-05). La Fase 2 no ha empezado: no hay ningún hallazgo pagado.
 
-- El sprint se pausó el 2026-10-04 por la noche, a pedido del usuario.
-- Los informes de abajo se guardan tal como los entregaron sus auditores, para que no se pierdan con la sesión.
-- **Pendientes de la Fase 1:**
-  - consolidar los hallazgos sin duplicados, con el auditor de origen en cada uno;
-  - presentar el plan de ajustes al usuario;
-  - esperar su aprobación.
-- **Nada de la Fase 2 está pagado.**
-- **Lo que el auditor de motor no alcanzó a revisar** (anexo C) lo retoma mañana un auditor independiente nuevo, solo
-  sobre esa lista. De esa lista ya está resuelto «CI del HEAD»: la corrida 37254742220 de `10c277c` terminó con
-  `quality`, `e2e` y `lighthouse` en `success` (ver «CI de la fase 4» en la bitácora).
+**Veredicto: requiere ajustes.** No hay ningún hallazgo crítico. Quitando duplicados quedan **56 hallazgos: 7 altos, 21 medios y 28 bajos**.
 
-## Cómo se audita
+## Cómo se auditó
 
-El diff del sprint contra `main` tiene 169 archivos. Por eso la Fase 1 se partió por superficies (kit v1.38.0). Hay tres auditores independientes, que no construyeron el sprint. Cada uno trabajó en solo lectura sobre su tramo del diff.
+El diff del sprint contra `main` tiene 169 archivos, así que la Fase 1 se partió por superficies (kit v1.38.0). Los cuatro auditores son independientes: ninguno construyó el sprint, y todos trabajaron en solo lectura (las mutaciones, en copias dentro del scratchpad).
 
-| Superficie                                                   | Estado                                                  | Altos · medios · bajos | Recomendación    |
-| ------------------------------------------------------------ | ------------------------------------------------------- | ---------------------- | ---------------- |
-| Alcance y textos                                             | Entregado                                               | 2 · 8 · 8              | Requiere ajustes |
-| Hooks, privacidad, bilingüismo, guía y frontera de contenido | Entregado                                               | 3 · 5 · 4              | Requiere ajustes |
-| Motor, contrato, gates y dependencias                        | Entregado, con una lista de lo que no alcanzó a revisar | 2 · 7 · 8              | Requiere ajustes |
+| Auditor | Superficie                                                                                               | Altos · medios · bajos | Informe |
+| ------- | -------------------------------------------------------------------------------------------------------- | ---------------------- | ------- |
+| 1       | Alcance y textos                                                                                         | 2 · 8 · 8              | Anexo A |
+| 2       | Hooks, privacidad, bilingüismo, guía y frontera de contenido                                             | 3 · 5 · 4              | Anexo B |
+| 3       | Motor, contrato, gates y dependencias (cerró antes por la pausa del 2026-10-04)                          | 2 · 7 · 8              | Anexo C |
+| 4       | Lo que el auditor 3 no alcanzó a revisar, más la casilla 4 (frases caducadas), que ninguno había corrido | 0 · 3 · 6                 | Anexo D |
 
-Ningún auditor encontró un hallazgo crítico.
+**Cómo se lee el consolidado:**
+
+- Cada hallazgo trae su auditor de origen.
+- Cuando dos auditores encontraron lo mismo, se fusionó en una sola fila con la severidad mayor. El ajuste fusionado se escribe entero en la fila.
+- En los demás, el ajuste ejecutable completo (archivo, línea, cambio exacto) está en el anexo que se cita. La fila lo resume.
+
+## Decisiones del usuario
+
+Estas cinco las decide el usuario; el resto del plan no tiene opciones.
+
+1. **Los nombres y las licencias de los 14 marcos están escritos en un solo idioma** (AU-05).
+   - **Corregirlo ahora (recomendado):** pasan a español e inglés.
+     - Cuesta unos 30 minutos.
+     - Cambian las huellas de la instantánea, así que se actualizan la guía (D1, D2, D5 y F1) y el ADR-002.
+     - La instantánea del 2026-10-04 se conserva como registro histórico.
+   - **Dejarlo como deuda del S2:** hoy no se toca. El S2 lo paga antes de la primera pantalla que muestre marcos.
+2. **El filtro de contenido no ve una carga corta escrita dentro de una línea** (AU-06). Por ejemplo, una etiqueta `<script>` o una ruta con `../`.
+   - **Documentarlo y sumar tres patrones de forma (recomendado):**
+     - Los patrones nuevos son bloque de código sin lenguaje, etiqueta HTML activa y ruta con `../` repetido. Cada uno lleva su carnada inocua, su contraejemplo y su demo en rojo.
+     - La lista de patrones que aprobaste en la fase 0 pasa de 4 a 7.
+     - Lo que sigue sin verse, como una instrucción maliciosa escrita como frase normal, queda dicho en el manual y en la guía: el control es que una persona lea.
+     - Cuesta unos 45 minutos.
+   - **Solo documentarlo:** el manual y la guía dicen qué no ve, y los patrones se discuten en otro sprint. Cuesta unos 10 minutos.
+3. **La prueba de que el hook bloquea un secreto nunca corre en la CI,** porque el servidor no tiene gitleaks (AU-11).
+   - **Instalar gitleaks en la CI (recomendado):**
+     - Misma versión que tu máquina, con verificación de la suma.
+     - Una CI sin gitleaks pasa a salir en rojo en vez de saltarse la prueba.
+     - Cuesta unos 20 minutos, y `quality` tarda unos segundos más.
+   - **Declararla manual:** queda escrito que solo corre en tu máquina.
+4. **La guía de prueba está solo en español** (AU-47).
+   - **Dejarla en español y anotarlo para que decida la planeadora (recomendado):** la orden no lo pide, la guía es tu herramienta de gate y las apps hermanas lo resolvieron distinto.
+   - **Hacerla bilingüe ahora:** cuesta entre una hora y hora y media (21 pruebas redactadas en inglés, más el conmutador).
+5. **¿Las instantáneas que ya están en el repo se vuelven a validar con las reglas de hoy?** (AU-48)
+   - **Sí, y la que quede inválida se reemplaza (recomendado):**
+     - Una prueba nueva reconstruye cada instantánea guardada y le pasa el validador de hoy. Con eso, una edición a mano que la deje inválida sale en rojo.
+     - Dos correcciones de este plan dejan inválida la del 2026-10-04: las licencias bilingües (AU-05) y CWE en las referencias secundarias (AU-51). Por eso se reemplaza en este mismo PR por una re-emitida con la fecha del pago.
+     - Hoy no se pierde nada, porque ningún plan la cita todavía. Más adelante sí costaría.
+     - El ADR-002 deja escrita la regla.
+     - Cuesta unos 20 minutos.
+   - **No:** solo se corrige el comentario de la prueba para que diga lo que mide, y el ADR-002 declara que las instantáneas guardadas no se revalidan. AU-51 queda a medias: se corrigen los datos, pero el validador no se amplía.
+
+## Lo que no se puede pagar en este sprint (deuda declarada)
+
+- **AU-14 · Estados que el motor emite sin etiqueta.**
+  - **Cuáles son:** el motivo de las pruebas que esperan revisión y la familia sin pruebas publicadas.
+  - **Por qué no se paga aquí:**
+    - `datos/estados.json` tiene que ser idéntico a la maqueta (`tests/unit/catalogo/catalogo-real.test.ts:91-123`).
+    - Este sprint tiene prohibido tocar `scripts/maqueta/`.
+  - **Cuándo se paga:** en el S2, con la primera pantalla que muestre esos estados. Ahí cambian la maqueta y los datos juntos.
+  - **Qué queda hoy:** la nota en el ADR-003 y la deuda en el summary.
+- **AU-20 · § 11.2 (la escala de IA).**
+  - **Qué pasó:** la orden la nombraba entre los insumos, pero ni el plan aprobado ni `SPRINT_001.md` la incluyen.
+  - **Cómo se registra:** como desviación del plan en la bitácora y en el summary. El brief la asigna al S3 (C13).
+
+## Hallazgos consolidados
+
+### Altos
+
+| ID    | Hallazgo                                                                                                                                                                                                                | Ubicación                                                                                                                                                                                                 | Ajuste                                                                                                                                                                                                                                                                                                        | Verificación                                                                                                                                                          | Origen |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| AU-01 | **Las pruebas fechan contra el calendario.** Una entidad re-verificada después del 2026-10-15 rompe 13 pruebas. Con fechas de verificación separadas por más de 29 días, la matriz de envejecimiento ni siquiera carga. | `tests/unit/catalogo/envejecimiento.test.ts:35-46,55-58,125-140`; `instantanea.test.ts:13,60,80`; `informe.test.ts:124,162,169,180,192`; `cli.test.ts:96,113,137`; `tests/e2e/determinismo.spec.ts:19-21` | **Gate.** Fechas derivadas de la última verificación (`ULTIMA_VERIFICACION`, `FECHA_BASE` en `ayuda.ts`). En la matriz, filtrar las fechas anteriores a hoy y comparar pruebas, marcos y herramientas. En el e2e, las mismas fechas derivadas. Detalle en el anexo C, Alto 1.                                 | En una copia con `zap.json` en 2026-10-20 y `nuclei.json` en 2026-08-20, todo verde. `semaforo.ts:71` con `>` en vez de `>=` pone la matriz en rojo (`demo-rojo.sh`). | 3      |
+| AU-02 | **El lint de determinismo del motor deja pasar** `crypto.randomUUID`, `globalThis.Date`, `navigator` e `import()` dinámico.                                                                                             | `eslint.config.mjs:26-53`                                                                                                                                                                                 | **Gate.** `navigator`, `window`, `self`, `document` y `location` pasan a `no-restricted-globals`, y se agrega `no-restricted-syntax` con los 4 selectores del anexo C, Alto 2.                                                                                                                                | Una sonda de 8 líneas da 7 errores; `globalThis.crypto.subtle` pasa. `eslint src/engine src/cli` queda limpio. Demo con `crypto.randomUUID()` en `huella.ts`.         | 3      |
+| AU-03 | **La tabla de marcos aprobada en la parada 1 no está en ningún archivo,** y la guía manda a confirmarla en un documento que no la tiene.                                                                                | `docs/GUIA-DE-PRUEBA.html:199-209,228`; `docs/LICENCIAS-DE-MARCOS.md:22-33`                                                                                                                               | Sección «Marcos con versión y fuente (DA-01)», con 14 filas en español y 14 en inglés, sacadas de los datos. La guía, línea 201, nombra las dos tablas. Detalle en el anexo A, A1.                                                                                                                            | Las filas de tabla suben en 28, y cada versión y HTTP coincide con `datos/marcos/<id>.json`.                                                                          | 1      |
+| AU-04 | **Al manual le faltan 3 de los 5 contenidos de la DoD:** la estructura de `datos/`, cómo se agrega una prueba y cómo se registra la decisión de revisión.                                                               | `docs/MANUAL-DE-USO.md:33-92` (es), `:155-213` (en)                                                                                                                                                       | El texto del anexo A, A2, más su versión en inglés redactada. Lleva el paso de la huella a registrar que agrega AU-13.                                                                                                                                                                                        | `grep -c "datos/pruebas/<familia>\|revisada_y_aprobada"` da 4 o más.                                                                                                  | 1      |
+| AU-05 | **Los nombres y las licencias de los marcos están en un solo idioma,** y el esquema lo permite.                                                                                                                         | `src/engine/catalogo/esquemas.ts:81,97`; 11 archivos de `datos/marcos/`                                                                                                                                   | Según la decisión 1. Si es «ahora»: `licencia.nombre` pasa a `Texto`; se convierten los 14 archivos; se quitan las glosas de `nombre` y se llevan a `notas`; un invariante nuevo en `catalogo-real.test.ts` con su demo; y se actualizan las huellas de la guía y del ADR-002. Detalle en el anexo B, Alto 1. | El script del anexo devuelve `[]`, y `catalogo:validar` sale 1 con las mismas 10 advertencias y 4 notas.                                                              | 2      |
+| AU-06 | **El filtro no ve las cargas escritas en línea,** y la parada 2 lo presenta como prueba de que nada operativo pasó.                                                                                                     | `datos/filtro/patrones.json`; `docs/GUIA-DE-PRUEBA.html:210-215`; `docs/MANUAL-DE-USO.md:91,212`                                                                                                          | Según la decisión 2. Siempre: «Lo que el filtro no ve» en el manual (es y en) y una línea en la guía a2. Si se elige agregar los tres patrones: carnada, contraejemplo y demo en rojo de cada uno, comprobando que no marcan ninguna de las 38 pruebas. Detalle en el anexo B, Alto 2.                        | `grep -n "Lo que el filtro no ve"` y `"What the filter does not see"` dan 1 línea cada uno. Con los patrones, `catalogo:validar` sigue con 0 marcadas.                | 2      |
+| AU-07 | **Los errores del clasificador demo mezclan idiomas** y no respetan `--idioma`.                                                                                                                                         | `src/engine/demo/conjunto.ts:172-174`; `clasificador.ts:260-263`; `src/cli/clasificador-demo.ts:35`                                                                                                       | Mensajes bilingües con la ruta y el código de Zod, `readFileSync` envuelto, y las pruebas actualizadas. Detalle en el anexo B, Alto 3.                                                                                                                                                                        | Con `repeticiones: 1` y `--idioma en`, la salida es «invalid set at parametros.repeticiones (too_small)» y el código, 3.                                              | 2      |
+
+### Medios
+
+| ID    | Hallazgo                                                                                                                                           | Ubicación                                                                                | Ajuste                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Verificación                                                                                                                            | Origen                   |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| AU-08 | **Ninguna prueba falla si el orden de entrada cambia la huella.**                                                                                  | `tests/unit/catalogo/instantanea.test.ts:66-76`; `validar.test.ts:711-723`               | **Gate.** Agregar la prueba «catálogo real con cada lista invertida, misma huella», con la `FECHA` derivada de AU-01. Detalle en el anexo C, Medio 1.                                                                                                                                                                                                                                                                                                                                                                                                                                | Pasa sobre el código real y falla al mutar `validar.ts:905` (orden de entrada).                                                         | 3                        |
+| AU-09 | **«El manifiesto nombra cada semilla» no puede fallar.**                                                                                           | `tests/unit/instrumento/semillas-del-catalogo.test.ts:96-105`                            | **Gate.** Comparar el manifiesto con `readdirSync` de la carpeta. Detalle en el anexo C, Medio 2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Con una `SEMILLA-HUERFANA.json`, rojo.                                                                                                  | 3                        |
+| AU-10 | **La prueba del hook no cubre «falta solo una herramienta».**                                                                                      | `.claude/settings.json:12`; `tests/unit/hook-secretos.test.ts:48-73`                     | **Gate.** Dos pruebas: con jq pero sin gitleaks, y con gitleaks pero sin jq. Detalle en el anexo B, Medio 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Cambiar `\|\|` por `&&` en el hook pone las dos en rojo (`demo-rojo.sh`). Después, 5 de 5.                                              | 2                        |
+| AU-11 | **La prueba de la carnada nunca corre en la CI.**                                                                                                  | `tests/unit/hook-secretos.test.ts:62`; `.github/workflows/ci.yml:33`                     | **Gate.** Según la decisión 3. Si se elige «instalar»: gitleaks 8.30.1 con `sha256sum -c` en `quality`, y `runIf(hayHerramientas \|\| process.env.CI === "true")`. Detalle en el anexo B, Medio 2.                                                                                                                                                                                                                                                                                                                                                                                   | En el log de la CI, `hook-secretos.test.ts (3 tests)` sin «skipped». Demo: `CI=true` con un PATH sin gitleaks da rojo.                  | 2                        |
+| AU-12 | **`instantanea --agregar` publica una prueba de fuera** en `datos/instantaneas/`, versionada, con la ruta de la máquina dentro.                    | `src/cli/catalogo.ts:76-90`; `src/cli/cargar.ts:67`; `docs/MANUAL-DE-USO.md:60,182`      | **Fusionado, y es gate.** Tres cambios:<br>(1) En `catalogo.ts`, si `instantanea` trae `--agregar`, exige `--salida` fuera de `datos/` (`path.resolve` contra `datos`, con el prefijo y `path.sep`). Si no, `ErrorDeUso` bilingüe.<br>(2) En `cargar.ts:67`, un archivo agregado fuera de la raíz entra con la ruta `agregado/<nombre>`.<br>(3) Dos casos en `cli.test.ts`: sin `--salida` sale 3 y `datos/instantaneas` no cambia; un externo deja `ruta` = `agregado/<nombre>`.<br>Además, en el manual, «para probar sin tocar el repositorio, agrega `--salida /tmp/hackguard`». | Después del caso (a), `git status --porcelain datos/instantaneas` sale vacío. Demo en rojo de los dos casos.                            | 2 y 3 (y el anexo A, B4) |
+| AU-13 | **`revision.huella` no tiene productor:** nadie puede aprobar una prueba marcada sin escribir código.                                              | `src/engine/catalogo/validar.ts:453-464,1110-1137`                                       | **Fusionado.** Calcular `huellaActual` una sola vez y pasar como detalle `t("huella del contenido a revisar: …", "fingerprint of the content to review: …")` en `prueba/revision-sin-registro` y en `prueba/revision-desactualizada`. Las pruebas de esas dos reglas exigen la huella en el detalle. El manual lo explica dentro de AU-04.                                                                                                                                                                                                                                           | `catalogo:validar --agregar <semilla revisada_y_aprobada sin revision>` imprime los 64 hex. La instantánea oficial no cambia de huella. | 1 y 3                    |
+| AU-14 | **Estados que el motor emite sin etiqueta:** `pendientes_de_revision[].motivo` y la familia con `estado: null`, que la terminal imprime sin marca. | `src/engine/catalogo/instantanea.ts:34`; `semaforo.ts:19-23,41-43`; `informe.ts:153-160` | **Deuda del S2,** porque no se puede pagar aquí (ver arriba). Se agrega una consecuencia en el ADR-003 (anexo C, Medio 5) y la deuda en el summary.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `grep -n "pendiente_de_revision" decisions/003-*.md sprints/SPRINT_001-summary.md` da resultados.                                       | 2 y 3                    |
+| AU-15 | **El e2e de determinismo corre con reintentos en la CI,** así que una divergencia intermitente sale «flaky» en verde.                              | `playwright.config.ts:14`; `tests/e2e/determinismo.spec.ts:46`                           | **Gate.** `test.describe.configure({ mode: "serial", retries: 0 })`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `grep -n "retries: 0"`. Demo: un contador que cambia el formato una llamada sí y otra no da rojo, no flaky.                             | 3                        |
+| AU-16 | **Los selectores de Garak y ZAP están cableados en el esquema del núcleo.**                                                                        | `src/engine/catalogo/esquemas.ts:326-331,374-388`                                        | Un comentario con la razón sobre `TIPOS_DE_SELECTOR`, la misma frase en el ADR-002 y la tarea anotada para el S3 (mover los selectores a `src/engine/adaptadores/<id>/`).                                                                                                                                                                                                                                                                                                                                                                                                            | `grep -n "Un adaptador trae su selector"` encuentra el código y el ADR.                                                                 | 3                        |
+| AU-17 | **`LICENCIAS-DE-MARCOS.md` dice que el HTTP de cada licencia está registrado,** y no lo está.                                                      | `docs/LICENCIAS-DE-MARCOS.md:3,7`                                                        | Reescribirlo tal como dice el anexo A, M2.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `grep -n "URL de cada licencia"` no da resultados.                                                                                      | 1                        |
+| AU-18 | **Las atribuciones no cumplen lo que cada licencia exige.**                                                                                        | `docs/LICENCIAS-DE-MARCOS.md:37,49-53`; `datos/marcos/lista-decision-14.json`            | Los autores de arXiv:2609.32160, leídos con `curl` y no supuestos; las citas de NIST con título, número y DOI; y la URL de cada obra de OWASP. Detalle en el anexo A, M3.                                                                                                                                                                                                                                                                                                                                                                                                            | Las tres atribuciones llevan autor, DOI o URL de la obra.                                                                               | 1                        |
+| AU-19 | **La guía dice que la CI respalda los bloques B a F,** pero E3 es un juicio humano que no está declarado.                                          | `docs/GUIA-DE-PRUEBA.html:170-172,333-338`                                               | Agregar la frase del anexo A, M4.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `grep -c "excepción es E3"` da 1.                                                                                                       | 1                        |
+| AU-20 | **§ 11.2 (la escala de IA) no se hizo ni se declaró.**                                                                                             | `SPRINT_001-orden.md:56-57` (planeadora)                                                 | Una «Desviación del plan» en la bitácora y en el summary, con el texto del anexo A, M5.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `grep -n "11.2"` en la bitácora da 1 o más.                                                                                             | 1                        |
+| AU-21 | **La bitácora lista 3 campos `por_verificar`; los datos tienen 4.**                                                                                | `sprints/SPRINT_001-implementation-log.md:85-88,133`                                     | Después de AU-52 (la fecha de CWE ya consta en su archivo), los datos quedan con 3 campos en 2 marcos. La bitácora lista exactamente esos: fecha y fuente de ISO/IEC 42001, y fecha de OWASP Top 10.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `catalogo:validar \| grep -c marco/por-verificar` da 3, igual que las viñetas.                                                          | 1                        |
+| AU-22 | **El CLI exige Node 22.18 o posterior;** el manual dice 22 y no hay `engines`.                                                                     | `docs/MANUAL-DE-USO.md:27,149`; `package.json`                                           | **Fusionado.** El manual pasa a decir «Node 22.18 o posterior (el CLI usa el TypeScript nativo de Node)» en los dos idiomas, y `package.json` agrega `"engines": { "node": ">=22.18" }`.                                                                                                                                                                                                                                                                                                                                                                                             | `node -p process.features.typescript` da `strip`. `pnpm install` no avisa.                                                              | 1 y 3                    |
+| AU-23 | **`semillas.json` espera «ok» para la semilla de referencia,** pero su propio comando da «con advertencias».                                       | `docs/kit-de-prueba/semillas/semillas.json:6-19`                                         | Aclarar `como_correr` en es y en (anexo A, M8).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `tests/unit/instrumento` sigue 22 de 22.                                                                                                | 1                        |
+| AU-24 | **La guía tiene un contraste de 4,44:1** en las celdas de valor del tema claro.                                                                    | `docs/GUIA-DE-PRUEBA.html:74,146`                                                        | `--ok: #477043` en el `:root` claro.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | axe wcag2aa en tema claro: 0 violaciones en los tres motores.                                                                           | 2                        |
+| AU-25 | **D1 de la guía cuenta archivos sin decir desde qué estado parte.**                                                                                | `docs/GUIA-DE-PRUEBA.html:290-295`                                                       | D1 escribe en su propia carpeta, `/tmp/hackguard-d1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Correr D1, D2, D5 y otra vez D1: `ls /tmp/hackguard-d1 \| wc -l` da 1.                                                                  | 2                        |
+| AU-48 | **Nada vuelve a validar las instantáneas guardadas.** La prueba solo mide que el archivo sea coherente consigo mismo: una editada a mano con la huella recalculada pasa. | `tests/unit/catalogo/instantaneas-versionadas.test.ts:1-5,27-40` | **Gate.** Según la decisión 5. Si es «sí»: `reconstruir()` más la prueba `it.each` del anexo D (M4-1), la cabecera reescrita y la regla en el ADR-002. La instantánea inválida se re-emite en el mismo PR. | 3 de 3 en verde. `demo-rojo.sh` sobre el id de `PR-IA-PINJ-001` nombra «pasa hoy el validador». | 4 |
+| AU-49 | **`metricas.test.ts` tiene tres afirmaciones que no pueden fallar:** Brier sin ordenar por id, Brier sin ordenar las opciones y los bordes superior y del umbral de la banda. | `tests/unit/modelo-decision/metricas.test.ts:67-74,123-134` | **Gate.** Los casos del anexo D, M4-2: tres predicciones cuyo orden cambia la suma, tres opciones, y los bordes 0,8 y 0,7 de la banda. Lo esperado pasa a `{ n: 6, cuenta: 3, tasa: 0.5 }`. | Las 4 mutaciones de la tabla del anexo D salen en rojo (`demo-rojo.sh`, `--minimo-tests 19`). | 4 |
+| AU-50 | **`fecha.test.ts` no detecta una tabla de meses de 30 días equivocada:** sin junio, septiembre o noviembre, la suite entera sigue en verde. | `tests/unit/catalogo/fecha.test.ts:24-38,104`; `src/engine/fecha.ts:16` | **Gate.** Agregar `2026-06-31`, `2026-09-31`, `2026-11-31` y `2026-01-32` como fechas inválidas, y corregir el título («cada séptimo día»). | Cada una de las tres mutaciones de `[4, 6, 9, 11]` cae nombrando su fecha (`--minimo-tests 45`). | 4 |
+
+### Bajos
+
+| ID    | Hallazgo                                                                                                                                       | Ubicación                                                                                               | Ajuste                                                                                                                                                           | Origen |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| AU-26 | **Las aserciones «otra fecha, otra huella» las cumple también el defecto.**                                                                    | `tests/e2e/determinismo.spec.ts:147`; `envejecimiento.test.ts:135-137`; `instantanea.test.ts:78-84`     | En el e2e, devolver los estados y afirmar `por_revisar` en el umbral. En las pruebas unitarias, quitar la aserción de huella. Anexo C, Bajo 1.                   | 3      |
+| AU-27 | **Las probabilidades no suman 1 exacto en coma flotante,** y `margen` sale con ruido.                                                          | `src/engine/demo/clasificador.ts:3,8`; `conjunto.ts:261`; ADR-004:32; bitácora:510-511                  | Reescribir el texto («10 000 diezmilésimos…»), agregar una prueba con tolerancia de 1e-12 y redondear `margen` en diezmilésimos. Anexo C, Bajo 2.                | 3      |
+| AU-28 | **Las cardinalidades del catálogo están cableadas en las pruebas.**                                                                            | `instantanea.test.ts:43-51`; `informe.test.ts:41,83,130,136-138,154,172,175`; `validar.test.ts:694-708` | Sacar las cifras de `catalogoBase()`. Anexo C, Bajo 3.                                                                                                           | 3      |
+| AU-29 | **`erasableSyntaxOnly` no está activado.**                                                                                                     | `tsconfig.json`                                                                                         | `"erasableSyntaxOnly": true`; un `enum` en el motor tiene que dar TS1294.                                                                                        | 3      |
+| AU-30 | **`huellaDeInstantanea` elige los campos a mano.**                                                                                             | `src/engine/catalogo/instantanea.ts:60-79`                                                              | Usar desestructuración `{ huella, ...cuerpo }`. Anexo C, Bajo 6.                                                                                                 | 3      |
+| AU-31 | **La rama hexadecimal del patrón `cadena-codificada-larga` es código muerto.**                                                                 | `datos/filtro/patrones.json:61`                                                                         | Dejar solo la rama base64 y reescribir `por_que`. Anexo C, Bajo 7.                                                                                               | 3      |
+| AU-32 | **El informe del demo no muestra la advertencia del conjunto.**                                                                                | `src/engine/demo/conjunto.ts:284-365`                                                                   | Imprimir `advertencia[idioma]` después de la huella.                                                                                                             | 3      |
+| AU-33 | **La salida en inglés trae identificadores en español** (opciones del demo, nombre del patrón, `--fecha AAAA-MM-DD`, `--agregar` inexistente). | `conjunto.ts:333,351`; `validar.ts:900,926,1146`; `src/cli/catalogo.ts:65,79`                           | El nombre `{es,en}` del patrón, glosas en el informe en inglés y `ErrorDeUso` bilingüe. Anexo B, Bajo 1.                                                         | 2      |
+| AU-34 | **El tiempo de `catalogo:validar` no está medido.**                                                                                            | Bitácora, fase 4                                                                                        | Medir los tres comandos con la máquina quieta y registrar el rango.                                                                                              | 1      |
+| AU-35 | **La corrección `0a8228a` no está en la bitácora.**                                                                                            | Bitácora, fase 4                                                                                        | Abrir la sección «Bugs y resoluciones» de la fase 4.                                                                                                             | 1      |
+| AU-36 | **`PR-MD-DER-001` es `emergente` sin declararlo frente a E-23.**                                                                               | `datos/pruebas/modelo_decision/PR-MD-DER-001.json:64`; `decisions/004-…md:22-23`                        | Agregar la frase del anexo A, B3, al ADR-004.                                                                                                                    | 1      |
+| AU-37 | **El manual tiene tres afirmaciones inexactas:** 13 herramientas «verificadas», «el mismo formato que Jev» y el ejemplo sin `--salida`.        | `docs/MANUAL-DE-USO.md:39/161,99/221,60/182`                                                            | Reescribir según el anexo A, B4. El ejemplo sin `--salida` se cubre en AU-12.                                                                                    | 1      |
+| AU-38 | **El cuerpo del PR #8 quedó en la fase 0.**                                                                                                    | PR #8                                                                                                   | Hacer `gh pr edit 8 --body-file` al cierre.                                                                                                                      | 1      |
+| AU-39 | **Hay cuatro textos desfasados en la constitución y los comandos.**                                                                            | `CLAUDE.md:11,81,96,110-119`; `.claude/commands/plan-sprint.md:74`                                      | Aplicar (a) a (c) del anexo A, B6. (d) se registra como K-S1-4, sin editar la regla.                                                                             | 1      |
+| AU-40 | **El ADR-002 describe mal lo que contiene la instantánea.**                                                                                    | `decisions/002-…md:38-39`                                                                               | Usar el texto del anexo A, B7.                                                                                                                                   | 1      |
+| AU-41 | **La cita del usuario no coincide entre la guía y la bitácora.**                                                                               | `docs/GUIA-DE-PRUEBA.html:203-204`; bitácora:132                                                        | **Fusionado.** Verificado contra la transcripción: el usuario escribió «Aprobados lo marcos, continua» (2026-10-04, 23:08 UTC). La guía ya lo cita bien; la bitácora:132 pasa a esa cita con «(sic)».                             | 1 y 2  |
+| AU-42 | **E2 de la guía cita una línea que el programa no imprime.**                                                                                   | `docs/GUIA-DE-PRUEBA.html` (E2)                                                                         | Escribir «la fila "accuracy" con 20 of 26 y 25 of 26».                                                                                                           | 1      |
+| AU-43 | **«Es la más barata de la familia» no tiene sustento.**                                                                                        | `datos/pruebas/modelo_decision/PR-MD-COH-001.json:14-15`                                                | Usar el texto del anexo A, B8(c). Cambia la huella: se hace junto con AU-05 y AU-44.                                                                             | 1      |
+| AU-44 | **Ninguna prueba compara las huellas que cita la guía con las del motor.**                                                                     | `docs/GUIA-DE-PRUEBA.html` (D1, D2, D5 y F1); ADR-002                                                   | **Gate.** Una prueba que extrae las huellas de 64 hex de la guía y las compara con `construirInstantanea` en esas fechas. D5 se redacta como registro histórico. Además, `conjunto.test.ts:66` fija `huella_de_respuestas` = `7d94f4a1…` (anexo D: invertir el sorteo de Noul la cambia y hoy nada cae). | 1 y 4      |
+| AU-45 | **garak y ZAP dicen `tiene_adaptador: true`,** pero ningún adaptador existe en el código.                                                            | `datos/herramientas/garak.json`, `zap.json`; manual (limitaciones)                                      | Agregar en las limitaciones del manual: «HackGuard no lee hoy los informes de garak ni de ZAP: `tiene_adaptador` marca las herramientas para las que § 10.4 prevé un lector» (sin prometer sprint).                                                                     | 1      |
+| AU-46 | **El `README.md` es el texto de create-next-app.**                                                                                             | `README.md`                                                                                             | Que apunte a `docs/MANUAL-DE-USO.md` y a la ruta real `src/app/`, sin URL.                                                                                       | 1      |
+| AU-47 | **La guía está solo en español.**                                                                                                              | `docs/GUIA-DE-PRUEBA.html`                                                                              | Según la decisión 4.                                                                                                                                             | 2      |
+| AU-51 | **`prueba/marco-no-aplica` solo mira la referencia principal.** Cuatro pruebas de agente y de modelo generativo citan CWE, que declara aplicar solo a software. | `src/engine/catalogo/validar.ts:960-976`; `datos/marcos/cwe.json:13` | (a) En `cwe.json`, `familias_aplicables` pasa a `["software", "agente", "modelo_generativo"]`. (b) **Gate,** si la decisión 5 es «sí»: la regla revisa también las `referencias_adicionales`. Anexo D, B4-1. | 4 |
+| AU-52 | **La fecha de CWE 4.20 está en su propia vía de acceso,** y la bitácora dice que ninguna página la da. | `datos/marcos/cwe.json:6,61-64`; bitácora:87 | Poner `fecha_version` en 2026-04-30 y vaciar `por_verificar`, con la nota es/en. Re-descargar el archivo para fechar la consulta. Ajustar las pruebas y la guía de 4 a 3 notas. Anexo D, B4-2. | 4 |
+| AU-53 | **Tres selectores no tienen fuente en `fuentes`:** garak `agent_breaker` y `propile`, y promptfoo `prompt-extraction`. | `datos/pruebas/agente/PR-AG-PERM-001.json:92`; `modelo_generativo/PR-IA-DATO-001.json:87`; `PR-IA-FUGA-001.json:87` | Agregar la fuente de cada uno, con su HTTP medido con `curl` el día del pago. Anexo D, B4-3. | 4 |
+| AU-54 | **El CLI no dice qué archivo falla y no avisa lo que ignora:** un archivo que no es UTF-8, un BOM, extensiones distintas y carpetas mal escritas. | `src/cli/cargar.ts:15-18,39`; `src/engine/catalogo/validar.ts:105-111`; `src/cli/catalogo.ts:67` | **Gate.** El error de lectura nombra el archivo. `noLeidos()` avisa por stderr en los dos idiomas. Un BOM tiene su propio detalle. Nueva `tests/unit/catalogo/cargar.test.ts` (3 casos). Anexo D, B4-4. | 4 |
+| AU-55 | **Cuatro conteos de la fase 2 en la bitácora no coinciden con los datos** (sondas de garak, complementos de promptfoo, Inspect, CWE) y no tienen corrida. | Bitácora:289,291-293,298 | Reescribirlos con las cifras del auditor 4, medidas el 2026-10-05. Anexo D, B4-5. | 4 |
+| AU-56 | **Dos promesas aplazadas en los datos que la instantánea congela:** «el adaptador llega en el S3» (garak) y «el adaptador del S3 sugiere» (ZAP). | `datos/herramientas/garak.json:34-37`; `zap.json:75-78` | Usar la redacción en presente del anexo D, B4-6, en el mismo lote de datos. | 4 |
+
+## Orden de pago de la Fase 2
+
+1. **Primero, los que crean o amplían gates,** cada uno con su demo en `scripts/demo-rojo.sh`: AU-02, AU-01, AU-50, AU-49, AU-08, AU-09, AU-10, AU-11, AU-12, AU-54, AU-15, AU-26. Antes de cada demo se cuentan las pruebas para `--minimo-tests`.
+2. **Después, código:** AU-07, AU-13, AU-22, AU-27, AU-29, AU-30, AU-32, AU-33 y AU-28.
+3. **Luego, datos según las decisiones,** en un solo lote y después de AU-01: AU-05, AU-06, AU-31, AU-43, AU-51, AU-52, AU-53 y AU-56. Al terminar se cierran los gates que dependen de los datos:
+   - AU-48: re-emitir la instantánea oficial, si la decisión 5 es «sí»;
+   - AU-44: las huellas que cita la guía, con su prueba.
+4. **Al final, documentos:** AU-03, AU-04, AU-14, AU-16, AU-17, AU-18, AU-19, AU-20, AU-21, AU-23, AU-24, AU-25, AU-34 a AU-42, AU-45, AU-46, AU-47 y AU-55.
+5. **Cierre de la fase:**
+   - los gates nuevos corren sobre el árbol completo: `typecheck`, `lint`, `test` con cobertura, `build`, `build-como-proveedor` y el e2e en los tres navegadores;
+   - push y `gh pr checks`;
+   - **segunda pasada** de frases caducadas y de frases de evidencia, hecha por otro auditor independiente sobre el diff completo, summary incluido.
 
 ## Anexo A — Informe del auditor «alcance y textos», tal como lo entregó
 
@@ -1042,3 +1172,395 @@ No toqué el repo: `git status` sale limpio y no hay stash. Lo único que se mov
   - si `@types/node` 22 cubre lo que usa el CLI con Node 24;
   - el comportamiento del CLI ante un BOM (`cargar.ts:13`, `ignoreBOM: true` lo reporta como JSON inválido) y ante archivos con extensión distinta de `.json` bajo `datos/`, que se ignoran sin aviso.
 - **ADRs y bitácora:** solo contrasté los ADR-002, ADR-003 y ADR-004 y la bitácora en los puntos citados. No revisé todas las cifras de la bitácora contra corridas (casilla de la regla 27).
+
+## Anexo D — Informe del auditor 4 («lo que el anexo C no alcanzó a revisar» y la casilla 4), tal como lo entregó
+
+### Auditor 4: lo que el anexo C no alcanzó a revisar, más la casilla 4
+
+#### Veredicto: requiere ajustes
+
+Encontré **0 críticos, 0 altos, 3 medios y 6 bajos**. Los medios son pruebas que no pueden fallar ante el defecto que dicen vigilar (regla 15). No hay ningún defecto en el código de producción de mi tramo.
+
+El repo quedó intacto: `git status` sin líneas, HEAD en `c590c9e`, sin stash. Todas las mutaciones se hicieron en `…/scratchpad/auditor4/copia`.
+
+**Lo que corrí:**
+- Una reimplementación independiente en Python del clasificador y las métricas, con fracciones exactas.
+- Mutaciones con vitest en la copia.
+- Un barrido exhaustivo de `fecha.ts`.
+- Un cruce de `datos/` contra fuentes oficiales descargadas: ATLAS-2026.09.yaml, cwec_v4.20.xml, el paquete de garak 0.17.0, las páginas de alertas de ZAP y de promptfoo, y PyPI/npm/GitHub.
+- La reconstrucción de la instantánea versionada y su revalidación.
+- `pnpm peers check` y `pnpm audit`.
+- `gh run view` de 7 corridas de CI, con sus logs.
+- El barrido de la casilla 4.
+
+---
+
+#### Hallazgos
+
+##### MEDIO
+
+###### M4-1 · Nada vuelve a validar las instantáneas versionadas
+**Ubicación:** `tests/unit/catalogo/instantaneas-versionadas.test.ts:1-5` y `:27-40`
+
+**Qué pasa (CONFIRMADO):**
+- La cabecera dice «nadie la reformateó ni la editó a mano», pero la prueba solo comprueba que el archivo es coherente consigo mismo.
+- En la copia edité la instantánea a mano: `PR-IA-PINJ-001` pasó a citar `version_marco: "2019"` y le puse tres pasos numerados. Recalculé la huella con `huellaDeInstantanea` y renombré el archivo. **La prueba siguió en verde, 2 de 2.**
+- El archivo real, reconstruido desde su propio contenido, sí pasa hoy el validador: 0 errores, 10 advertencias y 4 notas. Además se re-emite con la huella idéntica, `12d3b632…`.
+
+**Por qué importa:** un archivo versionado esquiva el gate de publicación (RF-10.6), y la cabecera promete más de lo que la prueba mide.
+
+**Ajuste (verificado en la copia: 3 de 3 en verde, `tsc` y `eslint` limpios):**
+- En `instantaneas-versionadas.test.ts`, añadir a los imports:
+  - `construirInstantanea`;
+  - `import type { ArchivoDeDatos, CatalogoEnBruto } from "../../../src/engine/catalogo/tipos.ts";`
+  - `import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";`
+- Tras `const archivos = …`, añadir:
+```ts
+const deDatos = (relativa: string) =>
+  JSON.parse(readFileSync(path.join(RAIZ, relativa), "utf8")) as Record<string, unknown>;
+
+/** Los archivos de `datos/` que darían esta instantánea. Ella no lleva los patrones del filtro ni el propósito
+ * de los estados: se toman de hoy, y `mismoFiltro` dice si el filtro de hoy es la versión y fecha que ella cita. */
+function reconstruir(s: Instantanea): { bruto: CatalogoEnBruto; mismoFiltro: boolean } {
+  const filtro = deDatos("datos/filtro/patrones.json");
+  const c = s.catalogo;
+  const a = (ruta: string, v: unknown): ArchivoDeDatos => ({ ruta, texto: JSON.stringify(v) });
+  const conId = (carpeta: string, xs: { id: string }[]) => xs.map((x) => a(`${carpeta}/${x.id}.json`, x));
+  return {
+    mismoFiltro: filtro.version === c.filtro?.version && filtro.fecha === c.filtro?.fecha,
+    bruto: {
+      familias: a("datos/familias.json", { familias: c.familias }),
+      reglas_de_veredicto: a("datos/reglas-de-veredicto.json", { reglas: c.reglas_de_veredicto }),
+      rasgos: a("datos/rasgos-de-perfil.json", { rasgos: c.rasgos }),
+      filtro: a("datos/filtro/patrones.json", filtro),
+      umbrales: a("datos/umbrales.json", c.umbrales),
+      estados: a("datos/estados.json", { proposito: deDatos("datos/estados.json").proposito, vocabularios: c.estados }),
+      marcos: conId("datos/marcos", c.marcos),
+      equivalencias: conId("datos/marcos/equivalencias", c.equivalencias),
+      controles: conId("datos/controles", c.controles),
+      herramientas: conId("datos/herramientas", c.herramientas),
+      pruebas: c.pruebas.map((p) => a(`datos/pruebas/${p.familia}/${p.id}.json`, p)),
+    },
+  };
+}
+```
+- Dentro del `describe`, al final:
+```ts
+  it.each(archivos)(
+    "%s: su propio catálogo pasa hoy el validador y, con el mismo filtro, se re-emite idéntica",
+    async (nombre) => {
+      const s = JSON.parse(readFileSync(path.join(CARPETA, nombre), "utf8")) as Instantanea;
+      const { bruto, mismoFiltro } = reconstruir(s);
+      const v = await validarCatalogo(bruto);
+      expect(v.hallazgos.filter((h) => h.severidad === "error").map((h) => `${h.regla} ${h.ruta}`)).toEqual([]);
+      if (mismoFiltro) {
+        const r = await construirInstantanea(bruto, s.fecha_evaluacion);
+        expect(r.emitida && r.instantanea.huella).toBe(s.huella);
+      }
+    },
+  );
+```
+- Las líneas 2 a 5 de la cabecera pasan a decir: «Cada una es autoconsistente: su huella es la de su contenido, su nombre es su fecha más los 12 primeros caracteres de su huella y sus bytes son los que escribe el CLI, sin reformatear. Su propio catálogo, reconstruido desde el archivo, pasa el validador de hoy; y si el filtro de hoy es la versión que ella cita, re-emitirla da su misma huella. Una edición a mano que deje el catálogo inválido, o que toque el semáforo, los pendientes o las advertencias, no pasa aunque recalcule la huella; una que lo deje válido sí pasa, y su registro es git. No se exige que coincida con el catálogo de hoy.»
+
+**Límite medido:** una edición del semáforo con la huella recalculada cae. Una edición textual válida pasa, por diseño.
+
+**Decisión para el usuario (obligatoria si se aplica este ajuste):**
+- El ajuste exige que cada instantánea versionada pase el validador **de hoy**.
+- Dos ajustes ya propuestos la vuelven inválida:
+  - el Alto 1 del anexo B, porque `licencia.nombre` pasa a `{es,en}` y el esquema rechaza la instantánea vieja;
+  - B4-1(b) de abajo. Lo medí: la nueva prueba da 4 `prueba/marco-no-aplica`.
+- **Opción A:** registrar en ADR-002 que «una instantánea versionada que el validador de hoy rechaza se reemplaza en el mismo PR por una re-emitida, mientras ningún plan la cite». En el S1 ningún plan cita instantáneas.
+- **Opción B:** no aplicar la prueba nueva; solo corregir la cabecera para que diga lo que mide, y declarar en ADR-002 que las instantáneas versionadas no se revalidan.
+
+**Verificación:**
+- La prueba da 3 de 3 en verde.
+- Demo en rojo, probada en la copia: el gate falla nombrando «pasa hoy el validador» y vuelve a 3 de 3 al restaurar.
+```
+scripts/demo-rojo.sh --archivo datos/instantaneas/2026-10-04-12d3b632a871.json --buscar '"id": "PR-IA-PINJ-001",
+        "nombre": {' --reemplazar '"id": "PR-IA-PINJ-1",
+        "nombre": {' --gate 'npx vitest run tests/unit/catalogo/instantaneas-versionadas.test.ts' --debe-nombrar 'pasa hoy el validador' --esperar-verde 'npx vitest run tests/unit/catalogo/instantaneas-versionadas.test.ts' --minimo-tests 3
+```
+
+###### M4-2 · `metricas.test.ts`: tres afirmaciones no pueden fallar
+**Ubicación:** `tests/unit/modelo-decision/metricas.test.ts:67-74` y `:123-134`; código en `src/engine/modelo-decision/metricas.ts:57`, `:62`, `:138` y `:142`
+
+**Qué pasa (CONFIRMADO con mutaciones; en cada caso 65 de 65 en verde sobre `tests/unit/{modelo-decision,demo}`):**
+- **Brier sin ordenar por id** (`for (const p of porId(ps))` → `for (const p of ps)`): la prueba «no depende del orden de las predicciones» sigue en verde. Con sus valores, la suma en coma flotante da lo mismo en los dos órdenes.
+- **Brier sin ordenar las opciones** (`[...opciones].sort(comparar)` → `opciones`): también sigue en verde, porque con 2 opciones la suma es conmutativa.
+- **Bordes de la banda:** cambiar `<= banda.hasta` por `<`, o `>= banda.umbral` por `>`, deja todo en verde. Solo el borde `desde` está probado.
+
+**Por qué importa:**
+- La convención «toda suma recorre por id» sostiene que el navegador y Node den los mismos bytes.
+- `p ≥ umbral` es la definición del error en banda (E-17), y un proveedor real redondea sus probabilidades, así que un valor de 0,70 exacto puede llegar de verdad.
+
+**Ajuste (verificado: 19 de 19 en verde; cada mutación pone su prueba en rojo):**
+- Reemplazar `:67-74` por:
+```ts
+  it("no depende del orden de las predicciones ni del de las opciones", () => {
+    // En el orden de entrada, la media sale 0,5900000000000002 en vez de 0,5900000000000001: solo el orden por id las iguala.
+    const ps = [
+      p("1", { a: 0.35, b: 0.65 }, "b"),
+      p("2", { a: 0.35, b: 0.65 }, "b"),
+      p("3", { a: 0.2, b: 0.8 }, "a"),
+    ];
+    expect(brier([...ps].reverse(), ["a", "b"])).toBe(brier(ps, ["a", "b"]));
+    // Con tres opciones, 1,34 o 1,3399999999999999 según el orden en que se sumen.
+    const q = [p("1", { a: 0.1, b: 0.2, c: 0.7 }, "a")];
+    expect(brier(q, ["c", "b", "a"])).toBe(brier(q, ["a", "b", "c"]));
+  });
+```
+- En `:131`, tras el caso `"7"`, añadir:
+  - `p("8", { aprobar: 0.8, revisar: 0.2 }, "aprobar"), // borde superior incluido, aprueba, bien`
+  - `p("9", { aprobar: 0.7, revisar: 0.3 }, "revisar"), // justo en el umbral aprueba, mal`
+- En `:133`, el resultado esperado pasa a `{ n: 6, cuenta: 3, tasa: 0.5 }`.
+
+**Verificación:** cuatro demos con `demo-rojo.sh`, todas con `--gate 'npx vitest run tests/unit/modelo-decision/metricas.test.ts' --minimo-tests 19`:
+
+| `--buscar` → `--reemplazar` | `--debe-nombrar` |
+|---|---|
+| `for (const p of porId(ps)) {` → `for (const p of ps) {` | `del de las opciones` |
+| `[...opciones].sort(comparar)` → `[...opciones]` | `del de las opciones` |
+| `<= banda.hasta` → `< banda.hasta` | `cuenta, dentro de la banda` |
+| `>= banda.umbral` → `> banda.umbral` | `cuenta, dentro de la banda` |
+
+###### M4-3 · `fecha.test.ts` no detecta una tabla de meses de 30 días equivocada
+**Ubicación:** `tests/unit/catalogo/fecha.test.ts:24-38` y `:104`; código en `src/engine/fecha.ts:16`
+
+**Qué pasa (CONFIRMADO):**
+- Si se quita junio, septiembre o noviembre de `[4, 6, 9, 11]`, el archivo sigue en verde, y también **la suite unitaria entera, 1.149 de 1.149**.
+- Con eso, `2026-09-31` pasaría como `fecha_verificacion` o `consultada` válidas.
+- `fecha.ts` está bien hoy. Lo barrí entero: 3.652.059 días de 0001-01-01 a 9999-12-31 comparados contra `Date` con `setUTCFullYear`, más 4.620.000 combinaciones de año, mes y día (incluidos el año 0000, los meses 0 y 13 y los días 0 y 32). Cero discrepancias.
+- Además, el título de `:104` dice «cada día», pero el bucle avanza de 7 en 7.
+
+**Ajuste (verificado: 45 de 45 en verde; cada mutación cae):**
+- En `:29`, tras `"2026-04-31",`, añadir `"2026-06-31",`, `"2026-09-31",`, `"2026-11-31"` y `"2026-01-32",`.
+- En `:104`, «en cada día de cuatro siglos» pasa a «cada séptimo día de cuatro siglos».
+
+**Verificación:** `scripts/demo-rojo.sh --archivo src/engine/fecha.ts --buscar '[4, 6, 9, 11]' --reemplazar '[4, 6, 9]' --gate 'npx vitest run tests/unit/catalogo/fecha.test.ts' --debe-nombrar '2026-11-31' --minimo-tests 45`. Lo mismo con `[4, 9, 11]` → `2026-06-31` y con `[4, 6, 11]` → `2026-09-31`.
+
+##### BAJO
+
+###### B4-1 · `prueba/marco-no-aplica` solo mira la referencia principal
+**Ubicación:** `src/engine/catalogo/validar.ts:960-976`; `datos/marcos/cwe.json:13`
+
+**Qué pasa (CONFIRMADO):**
+- Cuatro pruebas que no son de software citan CWE en `referencias_adicionales`: `PR-AG-HERR-001` y `PR-IA-PINJ-001` (CWE-1427), `PR-AG-ID-001` (CWE-269) y `PR-AG-LIM-001` (CWE-770).
+- `cwe.json` declara `familias_aplicables: ["software"]`.
+- Si esas citas fueran la referencia principal, el validador las rechazaría con un error. CWE-1427 es justamente «Improper Neutralization of Input Used for LLM Prompting».
+
+**Ajuste:**
+- (a) **Datos:** en `cwe.json:13`, `familias_aplicables` pasa a `["software", "agente", "modelo_generativo"]`.
+- (b) **Opcional:** cambiar `:961-963` por un `forEach` con llaves que, tras `revisarReferencia(...)`, compruebe `marcos.get(r.marco_id)?.familias_aplicables.includes(p.familia)`. Si falla, llama a `registro.agregar("prueba/marco-no-aplica", ruta, \`referencias_adicionales.${i}.marco_id\`, comillas(r.marco_id))`.
+- (b) **solo junto con la opción A de M4-1**, porque invalida la instantánea del 2026-10-04.
+
+**Verificación (medida en la copia):**
+- Solo (b) da salida 2 y nombra las 4 pruebas.
+- (a) más (b) da salida 1 con 0 errores, 10 advertencias y 4 notas, y 1.149 de 1.149 en verde.
+- Cambiar datos mueve las huellas: la guía (D1, D2, D5, F1), ADR-002 y la bitácora se actualizan en el mismo lote que el Alto 1 del anexo B.
+
+###### B4-2 · La fecha de CWE 4.20 está en su propia vía de acceso, y la bitácora dice que no
+**Ubicación:**
+- `datos/marcos/cwe.json:6` (`fecha_version: null`), `:61-63` (`por_verificar`) y `:64` (`notas`, «ninguna página consultada dice la fecha»);
+- `sprints/SPRINT_001-implementation-log.md:87`.
+
+**Qué pasa (CONFIRMADO):** la vía `archivo` registrada, `cwec_latest.xml.zip`, contiene `cwec_v4.20.xml`, y su raíz dice `Version="4.20" Date="2026-04-30"`. La descargué el 2026-10-05.
+
+**Ajuste (verificado: 1.149 de 1.149 en verde; el validador da «0 errores · 10 advertencias · 3 notas»):**
+- **`cwe.json`:**
+  - `"fecha_version": "2026-04-30"`;
+  - `"por_verificar": []`;
+  - `notas.es`: «La lista vigente es la 4.20 y la lista anual es la 2025 CWE Top 25. La fecha de la 4.20 la declara el archivo de su vía «archivo»: cwec_v4.20.xml dice Version="4.20" Date="2026-04-30".»
+  - `notas.en`: «The current list is 4.20 and the annual list is the 2025 CWE Top 25. The date of 4.20 is declared by the file of its «archivo» route: cwec_v4.20.xml says Version="4.20" Date="2026-04-30".»
+  - Re-descargar el archivo y actualizar `fecha_verificacion` con la fecha de esa consulta. **Aplicar después del Alto 1 del anexo C**, porque mezcla fechas.
+- **`tests/unit/catalogo/validar.test.ts`:**
+  - `:505`, `preparar: () => CWE,` pasa a `preparar: (c) => (editar(buscar(c.marcos, CWE), (m) => (m.por_verificar = ["fecha_version"])), CWE),`.
+  - `:511`, `(m) => (m.por_verificar = [])` pasa a `(m) => { m.fecha_version = null; m.por_verificar = []; }`.
+  - Borrar `:695`.
+  - `:707`, `notas: 4` pasa a `notas: 3`.
+- **`tests/unit/catalogo/informe.test.ts`:**
+  - `:43`, `4 notas` pasa a `3 notas`.
+  - `:49`, `Notas (4)` pasa a `Notas (3)`.
+  - `:72`, `cwe.json · fecha_version` pasa a `owasp-top10.json · fecha_version`.
+  - `:130`, `advertencias y notas: 4` pasa a `advertencias y notas: 3`.
+- **Guía:** en `docs/GUIA-DE-PRUEBA.html:244`, «4 notas» pasa a «3 notas»; en `:248`, «las 4 notas» pasa a «las 3 notas».
+- **Bitácora `:87`:** «la fecha de CWE 4.20 (ninguna página consultada la dice)» pasa a «la fecha de CWE 4.20: ninguna página HTML la dice, pero el archivo `cwec_v4.20.xml` de su vía «archivo» declara `Date="2026-04-30"` (contrastado por el auditor 4 el 2026-10-05)».
+- El M6 del anexo A pasa a «3 campos `por_verificar` en 2 marcos».
+
+###### B4-3 · Tres selectores sin fuente en `fuentes`
+**Ubicación:**
+- `datos/pruebas/agente/PR-AG-PERM-001.json:92` (garak `agent_breaker`);
+- `datos/pruebas/modelo_generativo/PR-IA-DATO-001.json:87` (garak `propile`);
+- `datos/pruebas/modelo_generativo/PR-IA-FUGA-001.json:87` (promptfoo `prompt-extraction`).
+
+**Qué pasa (CONFIRMADO):** son la segunda herramienta recomendada en cada prueba. Los tres selectores existen (los verifiqué en el paquete 0.17.0 y en la página de promptfoo), pero ninguna fuente los respalda. Las otras 35 pruebas sí traen la fuente de su selector.
+
+**Ajuste:** añadir a cada arreglo `fuentes` un objeto `{ "url", "http", "consultada", "titulo" }`. Medir cada URL con `curl -s -o /dev/null -w '%{http_code}' <url>` el día de aplicar y poner esa fecha. Yo medí 200 el 2026-10-05.
+
+| Prueba | `url` | `titulo` |
+|---|---|---|
+| PR-AG-PERM-001 | `https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/agent_breaker.py` | `garak 0.17.0 · probes/agent_breaker` |
+| PR-IA-DATO-001 | `https://raw.githubusercontent.com/NVIDIA/garak/v0.17.0/garak/probes/propile.py` | `garak 0.17.0 · probes/propile` |
+| PR-IA-FUGA-001 | `https://www.promptfoo.dev/docs/red-team/plugins/prompt-extraction/` | `promptfoo · prompt-extraction` |
+
+**Verificación:** cada herramienta recomendada tiene en `fuentes` una URL que contiene su nombre (script de cruce, 0 faltantes). `pnpm catalogo:validar` sigue en salida 1.
+
+###### B4-4 · El CLI no dice qué archivo falla ni avisa lo que ignora
+**Ubicación:** `src/cli/cargar.ts:15-18` y `:39`; `src/engine/catalogo/validar.ts:105-111`; `src/cli/catalogo.ts:67`
+
+**Qué pasa (CONFIRMADO en la copia):**
+- **Prueba guardada en ANSI (cp1252):** el CLI imprime «error de lectura / read error: The encoded data was not valid for encoding utf-8» y sale 3, **sin nombrar el archivo**.
+- **Archivo con BOM:** sale «archivo/json-invalido: El archivo no es JSON válido», sin decir por qué, y arrastra 9 errores en cascada.
+- **Archivos que no se leen, sin aviso:** `PR-…-002.JSON`, `PR-…-003.json.txt`, `datos/herramientas/viejas/zap.json` y `datos/marco/cwe.json` se ignoran en silencio. El CLI dice «38 pruebas» y la CI queda en verde.
+
+**Ajuste (verificado: 1.149 de 1.149 en verde, `eslint` limpio; los `.DS_Store` no generan aviso):**
+- **`cargar.ts`, en `leer`:** leer los bytes y envolver `utf8.decode(bytes)` en `try { … } catch { throw new Error(\`${ruta}: no es UTF-8 válido, guárdalo como UTF-8 / is not valid UTF-8, save it as UTF-8\`); }`.
+- **`cargar.ts`:** exportar `noLeidos(raiz, entrada)`.
+  - Recorre `datos/` de forma recursiva y omite los nombres que empiezan por «.».
+  - Excluye `datos/privado/` y `datos/instantaneas/`.
+  - Devuelve las rutas con «/» que no estén entre las rutas de `entrada`.
+- **`catalogo.ts:67`:** tras `cargarCatalogo`, escribir en stderr, por cada ruta: `aviso: ${ruta} no se lee (el catálogo solo lee los .json de sus carpetas) / warning: ${ruta} is not read (the catalog only reads the .json files in its folders)`.
+- **`validar.ts:109`:** pasar como 4.º argumento, si `archivo.texto.startsWith("﻿")`, `t("empieza con una marca de orden de bytes (BOM): guárdalo como UTF-8 sin BOM", "starts with a byte order mark (BOM): save it as UTF-8 without a BOM")`; si no, `null`.
+- **Prueba nueva `tests/unit/catalogo/cargar.test.ts` (verificada: 3 de 3 con el ajuste, 3 en rojo sin él):**
+  - en un `mkdtemp`, `noLeidos` devuelve exactamente `["datos/herramientas/viejas/zap.json", "datos/marco/cwe.json", "datos/pruebas/software/PR-SW-X-002.JSON"]`, con `privado/`, `instantaneas/` y `.DS_Store` presentes;
+  - un archivo con los bytes `7b e9 7d` hace que `cargarCatalogo` lance `/^datos\/herramientas\/ansi\.json: no es UTF-8 válido/`;
+  - `cwe.texto` con `﻿` delante da un detalle con «BOM» en `es` y en `en`.
+
+###### B4-5 · Regla 27: cuatro conteos de la fase 2 sin corrida, y no coinciden con los datos
+**Ubicación:** `sprints/SPRINT_001-implementation-log.md:289`, `:291-292`, `:293` y `:298`
+
+**Qué pasa (CONFIRMADO contra los datos):**
+
+| La bitácora dice | Las pruebas citan |
+|---|---|
+| garak: «8 sondas y 10 módulos de detectores» | 7 sondas y 9 detectores de 8 módulos |
+| promptfoo: «14 complementos», con `pii:session` | 10 complementos, sin `pii:session` |
+| Inspect: «`agentdojo` y `agentharm`» | solo `agentdojo` |
+| «16 páginas de CWE» | 15 identificadores |
+
+No queda ningún artefacto de esa investigación.
+
+**Ajuste (cada cifra con mi corrida del 2026-10-05):**
+- `:289`: «garak 0.17.0: las 7 sondas y los 9 detectores (de 8 módulos) que citan las pruebas, leídos en la etiqueta `v0.17.0` con sus clases; el auditor 4 los encontró todos en el paquete 0.17.0 de PyPI.»
+- `:291-292`: «promptfoo: los 10 complementos que citan las pruebas, en sus páginas (HTTP 200). `agentic:memory-poisoning` se confirmó dentro del HTML, porque las etiquetas partían el id.»
+- `:293`: «Inspect: `inspect_evals/agentdojo`.»
+- `:298`: «Los 15 identificadores CWE que citan las pruebas; el auditor 4 los encontró todos en `cwec_v4.20.xml`.»
+
+###### B4-6 · Casilla 4: dos promesas aplazadas en datos que la instantánea congela
+**Ubicación:** `datos/herramientas/garak.json:34-37` («El adaptador llega en el S3») y `datos/herramientas/zap.json:75-78` («el adaptador del S3 sugiere», en presente, de algo que no existe)
+
+**Qué pasa:** no son falsas hoy, pero ya viajan en la instantánea oficial y la pantalla del S2 las va a mostrar.
+
+**Ajuste (opcional, en el mismo lote de datos):**
+- **garak**
+  - `es`: «0.17.0 se publicó en PyPI el 2026-09-09. El spike de la F1 leyó el informe de esa versión. El umbral de los detectores no viaja en el informe: lo fija el paquete de ejecución (E-7).»
+  - `en`: «0.17.0 was published on PyPI on 2026-09-09. The F1 spike read that version's report. The detector threshold does not travel in the report: the execution package sets it (E-7).»
+- **zap:** cambiar solo la frase central.
+  - `es`: «…sin constancia de ejecución y cobertura, el veredicto que se sugiera es «no ejecutada», nunca «superada» (E-6)…»
+  - `en`: «…without proof of execution and coverage, the suggested verdict is “not run”, never “passed” (E-6)…»
+
+---
+
+#### Evidencia que cambia el ajuste de un anexo (una línea cada una)
+
+- **Anexo A, B8(c):** la huella del demo que la guía promete en E1 (`7d94f4a1…`) tampoco está fijada. Invertir el orden de sorteo de Noul la cambia a `0eed9399…` y la suite sigue en 65 de 65. Añadir en `tests/unit/demo/conjunto.test.ts:66`: `expect(evaluacion.huella_de_respuestas).toBe("7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d");`.
+- **Anexo B, Alto 1** (nombres de licencia `{es,en}`) **y M4-1:** el cambio de esquema invalida la instantánea versionada. Hay que decidir la opción A o la B de M4-1 antes de aplicar los dos.
+- **Anexo C, Alto 1:** B4-1(a), B4-2, B4-3 y B4-6 tocan datos. Si se mueve `fecha_verificacion`, aplicarlos después de ese ajuste.
+
+#### Casilla 4: frases caducadas
+
+**126 coincidencias revisadas:**
+
+| Dónde | Coincidencias |
+|---|---|
+| `docs/MANUAL-DE-USO.md` | 8 |
+| `README.md` | 0 |
+| `docs/CHANGELOG.md` | 1 |
+| `docs/LICENCIAS-DE-MARCOS.md` | 0 |
+| ADRs 002 a 004 | 6 |
+| `docs/GUIA-DE-PRUEBA.html` | 3 |
+| `CLAUDE.md` | 8 |
+| Textos `{es,en}` de `datos/` y `docs/kit-de-prueba/` (952 textos) | 94 |
+| Cuerpo del PR #8 | 2 (ya en el B5 del anexo A) |
+| Copy que imprime `src/` | 4 |
+
+**Frases falsas o caducadas nuevas: 0.** Además de B4-6, comprobé las siguientes contra lo que es cierto hoy, y siguen siendo ciertas:
+
+| Frase | Estado hoy |
+|---|---|
+| MANUAL `:22`, `:83`, `:89`, `:144`, `:204`, `:210` y CHANGELOG `:8`: «sin pantallas» / «no screens yet» | `src/app/page.tsx` sigue siendo la plantilla de Next |
+| ADR-004 `:26`: MAPIE no está recomendado | Ninguna prueba lo cita |
+| ADR-004 `:26`: `inspect-typesafe` no está en PyPI | 404 hoy |
+| ADR-004 `:26` y `promptfoo.json`: el proveedor de TypeSafe no está en ninguna versión publicada | npm latest sigue en 0.123.1 (2026-09-18) |
+| `owasp-llm-top10.json`: la página de archivo muestra 2025 | La página «LLMRisks Archive» lo sigue haciendo |
+| `hackguard-revision.json`: el repo no declara licencia | No hay LICENSE ni `license` en `package.json` |
+| `reglas.ts:166`: «todavía / yet» | Las 10 pruebas de software siguen sin control |
+| «todavía puede llegar a 3/k» | Es la cota estadística, no una promesa |
+
+Caducarán solas en el S2 o el S3: MANUAL `:83` y `:204` («llega en los sprints siguientes») y ADR-004 `:72-73`.
+
+#### Lo comprobado sin hallazgo
+
+**Cifras del demo, recalculadas de forma independiente:**
+- Mi reimplementación del clasificador (mulberry32, FNV-1a, JCS y resto mayor) da las 52 respuestas idénticas a `clasificador:demo --json`.
+- Con fracciones exactas:
+
+| Medida | Español | Inglés |
+|---|---|---|
+| Exactitud | 20 | 25 |
+| Brier | 0,374221 | 0,226655 |
+| ECE con 4 bins de igual masa | 0,085458 | 0,291358 |
+| Error en la banda | 1 de 7 | 1 de 9 |
+| Exactitud de la urgencia | 23 | 25 |
+
+- Paridad: 19,2308 puntos y 19 de 26 casos con la misma elección. Re-ejecución: 1 de 52 cambios y 0 distribuciones idénticas.
+- Todas las cifras escritas a mano en `metricas.test.ts` y `clasificador.test.ts` son correctas.
+- La mutación «semilla sin mezclar el estado» la detecta `conjunto.test.ts` (5 fallas).
+- No hay pruebas tautológicas fuera de M4-2.
+
+**E-15 y equivalencias:**
+- Los 10 pares 2025→2026 son coherentes nombre a nombre; solo LLM07→LLM08 lleva `nombre` en `cambios`.
+- Las mutaciones E1–E3 sobre `equivalencias.ts` caen.
+- E4 (`?? []` → `?? [e]`) sobrevive, pero esa rama es inalcanzable con datos válidos por `equivalencias/entrada-sin-mapa`.
+
+**Scripts del kit:**
+- `ci.yml` es el del kit más 3 añadidos de HackGuard. `build-como-proveedor.mjs` sin argumentos es lo correcto en el perfil estático.
+- La corrida 37254742220 compara 50 páginas, entre ellas las de `out/diseno/`.
+- `lighthouse-margen` usa la ruta por defecto y `["/"]` cae bajo `/*`. `verificar-dependencias` corre solo en PR, tras el `fetch`.
+- Las dos pruebas del kit pueden fallar (árboles y lockfiles sintéticos) y son idénticas byte a byte a las del kit.
+- La CI de HEAD `c590c9e` (37255787550) tiene `quality`, `e2e` y `lighthouse` en `success`.
+
+**Coherencia de `datos/`:**
+- Cada herramienta recomendada existe y admite la familia y el entorno de su prueba. Ninguna `version_minima` supera la verificada, y `medido_con` siempre está entre las recomendadas.
+- La regla de veredicto es coherente con la herramienta y la familia: ZAP → determinista; garak, promptfoo e Inspect → asimétrica con k = 20; las métricas → umbral con k de 5 o 10; `hackguard-revision` → revisión de diseño.
+- Los 38 ids de control son el conjunto del Anexo A, y todo control citado existe.
+- Las 201 equivalencias usan 60 subcategorías NIST, todas dentro de las 72 de AI RMF 1.0 (lista de memoria; ver «Lo que no alcancé»).
+- Los 14 ids de ATLAS están en ATLAS-2026.09.yaml (208 técnicas) y sus temas cuadran con cada prueba. Los 15 de CWE están en `cwec_v4.20.xml`.
+- garak: las 7 sondas y los 9 detectores están en el paquete 0.17.0. ZAP: los 12 `pluginids` corresponden a su alerta. promptfoo: las 10 páginas responden 200 con el id. Inspect y Nuclei responden 200.
+- Las 12 versiones de herramientas son la última de su registro hoy, con la fecha de publicación que dicen las notas.
+
+**Dependencias y CLI:**
+- `pnpm peers check`: sin problemas.
+- `pnpm audit --audit-level high`: sale 0 con 1 alta ignorada. GHSA-vfj7-8cjw-p6xm sigue con `first_patched_version: null`, `braces` latest es 3.0.3 y la ruta de dependencia coincide con ADR-001.
+- `@types/node` 22.20.5 cubre todo lo que usa `src/cli`, que existe desde Node 22.0. La CI usa Node 22.23.3.
+
+**Regla 27 en la bitácora (todo coincide):**
+- Las 21 duraciones y conclusiones de jobs de las 7 corridas.
+- Los totales de pruebas: 720, 990, 1.028, 1.083, 1.148 y 1.149. En CI siempre hay 1 saltada, ya reportada en el anexo B.
+- Cada «N de N» de las tablas de demos contra los conteos por archivo de CI.
+- La cobertura de las fases 1, 2, 3A y 3B contra las tablas de CI.
+- Las citas de la CI: 50 páginas, `lighthouse-margen`, las líneas del paso «Catálogo válido», C18, Node 22.23.3 y las 14 pruebas de `cli.test.ts`.
+- `cca0e8a58446`, reproducida 3 veces en `215d195`.
+- 70 archivos y 4.695 cadenas.
+- El barrido de ruido: de 60 a 120 → 0 cambios y 21/25; 150 → 1 cambio y 20/25; 200 → 4 cambios y 20/24.
+- BIB-018: sin ruido elige «aprobar» (0,52) y la primera corrida lo voltea.
+- Los bins del inglés, de 0,54 a 0,79.
+- El reparto de controles del Anexo A.
+- 59 → 61 reglas; 30 + 2 categorías; 6 + 19 rasgos.
+- Versiones: TypeScript 6.0.3, React 19.3.0, Vitest 5.0.3, Next 16.3.8, gitleaks 8.30.1. Y los 24.301 bytes de la maqueta.
+
+#### Lo que no alcancé
+
+- No contrasté los pares control → subcategoría contra el PDF del cruce de NIST: la validez de las 60 subcategorías la comprobé contra la lista de AI RMF 1.0 que conozco, de memoria.
+- No contrasté con sus fuentes oficiales las entradas ASI01–10 de `owasp-agentic-top10` ni las C1–C14 de `lista-decision-14`.
+- Los tiempos de la bitácora (0,28–0,30 s, 0,33–0,37 s y las medianas del punto de reanudación) y la salida «+5 −3» del install no tienen una corrida equivalente que re-correr.
+- Fuera de mi alcance: el e2e y la lógica interna de los scripts del kit.
