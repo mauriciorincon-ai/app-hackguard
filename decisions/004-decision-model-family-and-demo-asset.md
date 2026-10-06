@@ -21,6 +21,8 @@ mean a third-party API, a key, and non-reproducible runs inside the deterministi
 
    Of the 12 tests in this family, 9 are `emergente` and 3 are `propia`. «Valid but wrong» is split into three
    separate checks (E-22).
+   - Drift (`PR-MD-DER-001`) is `emergente`, one more than the four that E-23 names. It is anchored on item R1 of
+     the 14-item checklist, which E-23 accepts as a framework.
 
 2. **Tools.** The tests recommend scikit-learn, CheckList, TextAttack and Evidently. Three tests are human design
    reviews (`hackguard-revision`). MAPIE is registered but not yet recommended. The TypeSafe provider for promptfoo
@@ -29,7 +31,8 @@ mean a third-party API, a key, and non-reproducible runs inside the deterministi
 3. **The demo asset is a classifier of our own** (`src/engine/demo/clasificador.ts`). It imitates Jev's
    **response contract** without being Jev:
    - **Response:** `{model, answers, usage}`.
-   - **Choice:** `choice`, `probabilities` summing to 1, and `confidence = (p_max − 1/n)/(1 − 1/n)`.
+   - **Choice:** `choice`, `probabilities` summing to 10,000 ten-thousandths, and
+     `confidence = (p_max − 1/n)/(1 − 1/n)`. In floating point the sum may differ from 1 in the last bit.
    - **Noul:** `noul`, the probability of «yes».
    - **Ours, not the vendor's:** indexing `answers` by question id. The vendor does not document the nesting.
    - **Domain:** synthetic triage of members' requests to a municipal library.

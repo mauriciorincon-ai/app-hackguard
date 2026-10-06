@@ -78,7 +78,8 @@ huellas y CVSS 4.0; código desechable, jamás se copia como producto).
     pruebas, escalas y plantillas viven en archivos versionados; agregar una familia, un marco o un
     adaptador no toca el núcleo. Una referencia de marco sin versión se rechaza al cargar.
 11. **NORMAS Y MARCOS.** De ISO/IEC solo identificadores y resúmenes con palabras propias, jamás su
-    texto; atribución según la licencia de cada marco (se fija en la fase 0 del S1).
+    texto; atribución según la licencia de cada marco (fijada en la fase 0 del S1: `docs/LICENCIAS-DE-MARCOS.md` y
+    `licencia` en cada `datos/marcos/<id>.json`).
 12. **EL COLOR NUNCA SOLO.** Semáforo de vigencia, veredictos y estados = símbolo + texto + color.
 
 ## Stack
@@ -93,7 +94,7 @@ huellas y CVSS 4.0; código desechable, jamás se copia como producto).
   servidor: `pnpm start` sirve `out/` con `serve` (versión exacta) y así Lighthouse y Playwright corren
   igual que en el perfil web. Sin Server Actions, sin rutas dinámicas sin `generateStaticParams`, sin
   `next/image` con el loader por defecto (`unoptimized`).
-  **La CI construye COMO EL PROVEEDOR (kit v1.39.0):** `scripts/build-como-proveedor.mjs` corre en `quality` tras
+  **La CI construye COMO EL PROVEEDOR (kit v1.39.0) — lo que el proveedor publica no es lo que el build escribe:** `scripts/build-como-proveedor.mjs` corre en `quality` tras
   `pnpm build`; si `next.config.*` declara `output: "export"`, hace `vercel build` sin conexión con el adapter de Next
   (`NEXT_ENABLE_ADAPTER=1`, CLI fijado en el script) y exige que **cada página de `.vercel/output/static/` sea idéntica
   byte a byte a la de `out/`** (`scripts/verificar-salida-publicada.mjs`). En Vercel, Next 16 copia las páginas durante
@@ -110,6 +111,7 @@ huellas y CVSS 4.0; código desechable, jamás se copia como producto).
 ```
 src/
 ├─ app/            (App Router, export estático)
+├─ cli/            (E/S del catálogo: lee `datos/` y llama al motor)
 ├─ components/     (UI sin lógica de negocio)
 ├─ engine/         (núcleo determinista: catálogo, planificador, libro, severidad, brecha, huellas)
 │  └─ adaptadores/ (Garak, ZAP — interfaz común)

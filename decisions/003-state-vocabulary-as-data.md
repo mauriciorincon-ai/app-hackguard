@@ -38,5 +38,15 @@ engine and the future screens read it.
   fidelity test goes red.
 - **No unlabelled state can be published.** A state the engine computes but the vocabulary does not name makes
   the catalog invalid before any snapshot is written.
+- **Two states the engine emits have no label yet.** The snapshot publishes `pendientes_de_revision[].motivo`
+  (`propuesta`, `marcada_para_revision`, `revision_desactualizada`), and a family with no published tests gets
+  `estado: null`. Neither has a label in the vocabulary. Adding one means changing the mock-up, which Sprint 001 may
+  not touch, so it is debt for Sprint 2:
+  - the labels arrive with the first screen that shows these states, in a `pendiente_de_revision` vocabulary and a
+    «no published tests» state;
+  - `ESTADOS_QUE_CALCULA_EL_MOTOR` gains them in that same sprint.
+
+  Until then, the terminal prints «sin pruebas publicadas» without a mark. No family reaches that state today:
+  each of the four has tests. This debt comes from audit finding AU-14.
 - **The aging matrix uses the vocabulary.** `tests/unit/catalogo/envejecimiento.test.ts` builds the real catalog's
   snapshot on every date a state changes, and checks that each computed state has its label in both languages.

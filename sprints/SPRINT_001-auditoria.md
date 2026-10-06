@@ -1,8 +1,20 @@
 # Sprint 001 — auditoría final (`/audita-sprint`)
 
-**Estado:** la Fase 1 está completa y espera la aprobación del usuario (2026-10-05). La Fase 2 no ha empezado: no hay ningún hallazgo pagado.
+**Estado:**
 
-**Veredicto: requiere ajustes.** No hay ningún hallazgo crítico. Quitando duplicados quedan **56 hallazgos: 7 altos, 21 medios y 28 bajos**.
+- **Fase 1:** completa; el usuario la aprobó el 2026-10-05 con «apruebo», con las cinco recomendaciones.
+- **Fase 2:** correcciones pagadas el 2026-10-05.
+  - **Pagados:** 52 de los 56 hallazgos, cada uno con su commit y, los que crean gates, con su demo en rojo. El
+    registro está en «Fase 2 de la auditoría» de `sprints/SPRINT_001-implementation-log.md`.
+  - **Deuda declarada, con su registro hecho:**
+    - AU-14 (al S2, nota en el ADR-003);
+    - AU-20 (al S3, desviación en la bitácora);
+    - AU-47 (decide la planeadora).
+  - **Al cierre:** AU-38 (el cuerpo del PR).
+- **Falta:** la segunda pasada independiente de frases caducadas y de evidencia.
+
+**Veredicto de la Fase 1: requiere ajustes.** No hubo ningún hallazgo crítico. Quitando duplicados quedaron **56
+hallazgos: 7 altos, 21 medios y 28 bajos**.
 
 ## Cómo se auditó
 

@@ -82,9 +82,12 @@ Ajustes de la app que acompañan al delta:
       `GenAI-LLM-Top10/2026/final` y `crosswalk/MIGRATION.md`, CC BY-SA 4.0).
     - Ese mapa nombra dos entradas 2025 como en la edición 2023; los identificadores coinciden.
   - **ISO/IEC 42001:** iso.org responde **403** a un agente (`fuente_no_accesible_al_agente`).
-  - **`por_verificar`:**
+  - **`por_verificar`** (cuatro campos en tres marcos):
     - el día de la fecha del OWASP Top 10:2025 (la fuente solo da el año);
-    - la fecha de CWE 4.20 (ninguna página consultada la dice);
+    - la fecha de CWE 4.20: ninguna página HTML la dice. *Corregido en la auditoría (AU-52, 2026-10-05):* el
+      archivo `cwec_v4.20.xml` de su propia vía «archivo» declara `Date="2026-04-30"`, y la fecha ya no está por
+      verificar;
+    - la fecha exacta de ISO/IEC 42001:2023 (la fuente responde 403; solo consta el año);
     - la fuente de ISO/IEC 42001.
   - **NIST:** la licencia de su serie técnica se leyó en su página propia («not subject to Copyright
     protection within the United States»); la primera URL que escribí trataba de software y se corrigió antes
@@ -119,6 +122,11 @@ Ajustes de la app que acompañan al delta:
   sangrías de `.claude/commands/*.md`, y en `plan-sprint.md` movió una línea bajo otro inciso. Se
   restauraron y `CLAUDE.md`, `AGENTS.md`, `CHANGELOG.md`, `.claude/` y `docs/*.plantilla.*` entraron en
   `.prettierignore`.
+- **K-S1-4 — la regla 10 del `CLAUDE.md` del kit dice «dos clases de mirada», y `plan-sprint.md` v1.36 dice
+  «tres».** La contradicción se hereda del kit; no se edita la regla (registrado en la auditoría, AU-39).
+- **K-S1-5 — `scripts/demo-rojo.sh` interpreta las barras invertidas de `--buscar`.** Un texto con `\uFEFF` o con
+  las barras de una expresión regular en JSON nunca coincide. El script lo detecta («la mutación no aplica a
+  nada») y no lo cuenta como rojo, pero obliga a elegir fragmentos sin barras (fase 2 de la auditoría).
 
 ### CI de la fase 0 (PR #8, commit `8e86733`)
 
@@ -129,8 +137,9 @@ Ajustes de la app que acompañan al delta:
   - «✓ lighthouse-margen: ninguna mediana a menos del 10 % de su presupuesto; 1 URL con presupuesto».
 
 **STOP de la fase 0 (parada 1 del ⭐):** tabla DA-01 y tabla de licencias presentadas al usuario el 2026-10-04.
-**Veredicto del usuario, 2026-10-04: «Aprobados los marcos, continúa».** Se aprueba la tabla tal como se presentó,
-con sus 14 marcos (el OWASP Top 10 web 2025 incluido) y con las tres filas `por_verificar` declaradas. La fase 1
+**Veredicto del usuario, 2026-10-04: «Aprobados lo marcos, continua» (sic).** Se aprueba la tabla tal como se
+presentó, con sus 14 marcos (el OWASP Top 10 web 2025 incluido) y con sus cuatro campos `por_verificar` en tres
+marcos. La fase 1
 arranca sobre estos datos.
 
 ## Fase 1 — Esquemas, validador, filtro, huella y CLI (2026-10-04)
@@ -286,16 +295,21 @@ arranca sobre este validador.
   - promptfoo: pasó a OpenAI el 2026-03-09 (blog, 200).
   - PyRIT: archivó `Azure/PyRIT` y sigue en `microsoft/PyRIT`.
 - **Selectores, uno por uno:**
-  - garak 0.17.0: 8 sondas y 10 módulos de detectores leídos en la etiqueta `v0.17.0`, con sus clases.
+  - garak 0.17.0: las 7 sondas y los 9 detectores (de 8 módulos) que citan las pruebas, leídos en la etiqueta
+    `v0.17.0` con sus clases. *Cifra corregida en la auditoría (AU-55): decía «8 sondas y 10 módulos»; el auditor
+    4 los encontró todos en el paquete 0.17.0 de PyPI el 2026-10-05.*
   - ZAP: 12 alertas en `zaproxy.org/docs/alerts/<id>/`.
-  - promptfoo: 14 complementos en sus páginas. `pii:session` y `agentic:memory-poisoning` se confirmaron dentro del
-    HTML, porque las etiquetas partían el id.
-  - Inspect: `inspect_evals/agentdojo` y `agentharm`.
+  - promptfoo: los 10 complementos que citan las pruebas, en sus páginas (HTTP 200). `agentic:memory-poisoning` se
+    confirmó dentro del HTML, porque las etiquetas partían el id. *Cifra corregida en la auditoría (AU-55): decía
+    «14 complementos» e incluía `pii:session`, que ninguna prueba cita.*
+  - Inspect: `inspect_evals/agentdojo` (*corregido en la auditoría: decía también `agentharm`, que ninguna prueba
+    cita*).
   - Nuclei: `http/exposures/configs`.
   - Las funciones de scikit-learn, más las clases `DataDriftPreset` (Evidently), `INV` y `DIR` (CheckList) y
     `EmbeddingAugmenter` (TextAttack), en sus archivos.
 - **Referencias adicionales:**
-  - 16 páginas de CWE 4.20.
+  - Los 15 identificadores CWE que citan las pruebas; el auditor 4 los encontró todos en `cwec_v4.20.xml`
+    (*corregido en la auditoría, AU-55: decía «16 páginas»*).
   - Los identificadores de MITRE ATLAS, leídos en `ATLAS-2026.09.yaml` (208 técnicas).
 - **Hallazgos que quedan como dato:**
   - El proveedor TypeSafe de promptfoo se fusionó el 2026-10-02, pero ninguna versión publicada lo trae. Por eso
@@ -511,7 +525,8 @@ Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correc
 - **`answers` va indexado por el id de la pregunta.** El fabricante no documenta la anidación; es nuestra y el ADR
   de la familia lo dirá. `usage` va en cero porque el demo no consume tokens.
 - **Probabilidades exactas.** Salen de pesos enteros por regla y se reparten en diezmilésimos por resto mayor, con
-  empates rotos por id: suman exactamente 1 y dan los mismos bytes en cualquier motor.
+  empates rotos por id: suman exactamente 10 000 diezmilésimos (en coma flotante, la suma puede diferir de 1 en el
+  último bit; *precisado en la auditoría, AU-27*) y dan los mismos bytes en cualquier motor.
 - **Ruido sembrado.** Cada peso se perturba con mulberry32, sembrado con la semilla XOR FNV-1a del estado canónico.
   Los sorteos van en un orden fijo, así que ni el orden ni el subconjunto de opciones que pide la pregunta
   cambian la respuesta.
@@ -646,6 +661,30 @@ Huellas completas:
   serial.
 - **Verde tras restaurar:** 9 de 9.
 
+### Bugs y resoluciones
+
+- La línea de conteos en español no concordaba en número («1 publicables», «1 pendientes de revisión»). `0a8228a`
+  lo corrige, con su prueba en `tests/unit/catalogo/informe.test.ts` (registrado en la auditoría, AU-35).
+
+### Desviación del plan
+
+- **§ 11.2 (escala de IA) no se deja en datos en el S1.** La orden la nombraba entre los insumos, pero ni el plan
+  aprobado ni `SPRINT_001.md` la incluyen. El brief asigna C13 al S3, y la regla dura 7 sustituye la suma de
+  dimensiones por una tabla de prioridad de acción (registrado en la auditoría, AU-20).
+
+### Tiempos
+
+Medidos el 2026-10-05, después de la fase 2 de la auditoría:
+
+- **Cómo:** 7 corridas por comando, con `node` directo (sin el arranque de `pnpm`), Node v24.18.0. La carga media
+  de un minuto era 3,98 antes y después: la máquina no estaba del todo quieta (VS Code y su sesión abiertos).
+- **Resultados (mediana, con mínimo y máximo):**
+  - `validar`: 0,093 s (0,092–0,122);
+  - `instantanea --fecha 2026-10-15`: 0,096 s (0,095–0,100);
+  - `clasificador:demo`: 0,078 s (0,077–0,082).
+- **Con `pnpm`:** a través de `pnpm`, cada comando suma su arranque. El auditor 1 midió `pnpm catalogo:validar`
+  entre 0,30 y 0,36 s.
+
 ### CI de la fase 4 (PR #8)
 
 Leída con `gh run view` el 2026-10-04, después de cada corrida. Los tres jobs requeridos terminaron con conclusión propia `success` en las dos corridas.
@@ -739,3 +778,95 @@ El usuario pausó el sprint hasta el día siguiente. Este es el estado exacto pa
 5. Revalidar las instantáneas guardadas y reemplazar la del 2026-10-04 en este PR (AU-48).
 
 La Fase 2 arranca con los hallazgos que crean gates.
+
+## Fase 2 de la auditoría — correcciones (2026-10-05)
+
+Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-auditoria.md`, 56 hallazgos.
+
+### Lo que se pagó, por commit
+
+| Commit | Bloque | Hallazgos |
+|---|---|---|
+| `9dfa994` | Gates | AU-01, 02, 08, 09, 10, 11, 12, 15, 26, 49, 50, 54 |
+| `5b0d6c1` | Dependencias (fuera del plan, ver «Desviaciones») | ADR-005: `compression` 1.8.2 bajo `serve` |
+| `efb547a` | Código | AU-07, 13, 16, 22, 27, 28, 29, 30, 32, 33 |
+| `d53b05a` | Datos, más la guía y el ADR-002 que el gate de huellas ata a ellos | AU-05, 06, 31, 43, 44, 48, 51, 52, 53, 56 |
+| (este commit) | Documentos | AU-03, 04, 14, 17, 18, 19, 20, 21, 23, 24, 25, 34 a 42, 45, 46, 47, 55 |
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, salvo donde se dice)
+
+| Gate | Mutación | Gate corrido | Resultado con la mutación | Tras restaurar |
+|---|---|---|---|---|
+| AU-02 lint de determinismo | `huella.ts`: `void crypto.randomUUID();` tras el digest | `npx eslint src/engine` | rojo: «74:81 … solo usa globalThis.crypto.subtle (no-restricted-syntax)», 1 error | verde tras restaurar |
+| AU-01 matriz de envejecimiento | `semaforo.ts`: `dias >= umbrales.vencido` → `>` | `vitest run envejecimiento.test.ts` | rojo: «2 failed \| 25 passed (27)»: «2026-12-03: cada entidad está en el estado que le toca» y «el semáforo cambia el día de cada umbral» | 27 de 27 |
+| AU-01 fechas mezcladas (no es demo: prueba de robustez) | `zap.json` 2026-10-20, `nuclei.json` 2026-08-20 (restaurados con git checkout) | `vitest run tests/unit` | verde: 40 archivos, 1.166 de 1.166 | — |
+| AU-50 meses de 30 días (×3) | `fecha.ts`: `[4, 6, 9, 11]` → `[4, 9, 11]` / `[4, 6, 11]` / `[4, 6, 9]` | `vitest run fecha.test.ts` | rojo, cada una «1 failed \| 44 passed (45)» nombrando 2026-06-31 / 2026-09-31 / 2026-11-31 | 45 de 45 |
+| AU-49 Brier sin orden por id | `metricas.ts`: `for (const p of porId(ps))` → `for (const p of ps)` | `vitest run metricas.test.ts` | rojo «1 failed \| 18 passed (19)»: «no depende del orden de las predicciones ni del de las opciones» | 19 de 19 |
+| AU-49 Brier sin ordenar opciones | `[...opciones].sort(comparar)` → `[...opciones]` | ídem | rojo, misma prueba | 19 de 19 |
+| AU-49 borde superior de la banda | `<= banda.hasta` → `<` | ídem | rojo «cuenta, dentro de la banda…» | 19 de 19 |
+| AU-49 borde del umbral | `>= banda.umbral` → `>` | ídem | rojo «cuenta, dentro de la banda…» | 19 de 19 |
+| AU-08 orden de entrada de las pruebas | `validar.ts`: tras `leerColeccion(entrada.pruebas…)`, `pruebasLeidas.sort(…)` por posición de entrada | `vitest run instantanea.test.ts` | rojo «1 failed \| 12 passed (13)»: «el catálogo real, con cada lista invertida, da la misma huella» (`5a70…` ≠ `6f32…`); la prueba vieja de orden siguió verde | 13 de 13 |
+| (descartada) AU-08, primer intento | mutación sobre todas las colecciones | ídem | rojo en 2 pruebas, pero `--minimo-tests 20` mal contado (eran 13): demo-rojo la rechazó; se repitió arriba con una mutación solo de pruebas | — |
+| AU-09 semilla fuera del manifiesto | `semillas.json`: se quita la entrada de `SEMILLA-VERSION-ANTERIOR.json` (el archivo sigue en la carpeta) | `vitest run semillas-del-catalogo.test.ts` | rojo «1 failed \| 20 passed (21)»: «el manifiesto nombra cada semilla del directorio…» | 22 de 22 (`--minimo-tests 21`, piso por debajo del conteo real de 22) |
+| AU-10 hook con una sola herramienta | `.claude/settings.json`: `… gitleaks … \|\| ! command -v jq` → `&&` | `vitest run hook-secretos.test.ts` | rojo «2 failed \| 3 passed (5)»: «con jq pero sin gitleaks bloquea» y «con gitleaks pero sin jq bloquea» | 5 de 5 |
+| AU-11 la carnada no se salta en CI (simulación local, sin mutación de archivo: no es demo-rojo) | `CI=true` y un PATH sin `/opt/homebrew/bin` (sin gitleaks) | `vitest run hook-secretos.test.ts` | rojo «1 failed \| 4 passed (5)»: «con las herramientas: deja pasar lo limpio y bloquea la carnada»; sin `CI`, la misma corrida da «3 passed \| 2 skipped» | `CI=true` con gitleaks: 5 de 5 |
+| AU-12 guard de `--agregar` | `catalogo.ts`: `if (o.agregar.length > 0) {` → `> 99` | `vitest run cli.test.ts` | rojo «1 failed \| 16 passed (17)»: «con --agregar, sin --salida o con --salida dentro de datos/, sale 3…». La corrida mutada dejó `datos/instantaneas/2026-10-15-6ee314cc72ff.json` (con la semilla adentro: el defecto mismo); se borró a mano | 17 de 17 |
+| AU-12 ruta de un archivo de fuera | `cargar.ts`: condición de `agregado/` → `if (false)` | ídem | rojo «1 failed \| 16 passed (17)»: «una prueba agregada desde fuera del repo entra como agregado/<nombre>…» | 17 de 17 |
+| AU-54 lo que no se lee | `cargar.ts`: `else if (!leidas.has(hija))` → `else if (false)` | `vitest run cargar.test.ts` | rojo «1 failed \| 2 passed (3)»: «lista lo que hay en datos/ y no se lee…» | 3 de 3 |
+| AU-54 UTF-8 | `cargar.ts`: `fatal: true` → `fatal: false` | ídem | rojo: «un archivo que no es UTF-8 detiene la carga nombrando el archivo» | 3 de 3 |
+| AU-54 BOM | `validar.ts`: `archivo.texto.startsWith(` → `endsWith(` (un primer intento con `\uFEFF` en `--buscar` no aplicó: demo-rojo lo dijo y no contó como rojo) | ídem | rojo: «un JSON con BOM es inválido y el hallazgo dice por qué…» | 3 de 3 |
+| AU-15 sin reintentos en el e2e | `determinismo.spec.ts`: la primera aserción falla solo en el primer intento (`test.info().retry > 0 ? huella : "primer intento"`) | `CI=true … playwright test determinismo.spec.ts --project desktop-chromium` | rojo «1 failed», «2 did not run» (serial) | 3 de 3. Contraste a mano, sin `retries: 0`: «1 flaky · 2 passed» (verde) |
+| AU-13 huella a registrar en el detalle | `validar.ts`: `revision-sin-registro` con detalle `null` en vez de `conHuella` | `vitest run validar.test.ts` | rojo «1 failed \| 90 passed (91)»: «el hallazgo da la huella a registrar, y con ella registrada la prueba se publica» | 91 de 91 |
+| AU-29 sintaxis borrable | `fecha.ts`: `export enum Sonda { A }` | `pnpm -s typecheck` | rojo: «error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled» | verde |
+| AU-44 huella del demo fijada | `clasificador.ts`: el sorteo de Noul en orden inverso | `vitest run conjunto.test.ts` | rojo «1 failed \| 18 passed (19)»: «da la misma huella de respuestas…» (`0eed9399…` ≠ `7d94f4a1…`); un primer intento con `--minimo-tests 29` mal escrito (eran 19) fue rechazado por demo-rojo y se repitió con el conteo medido | 19 de 19 |
+| AU-05 nombres de marco sin glosa | `cwe.json`: `"nombre"` vuelve a «… (CWE) y CWE Top 25» | `vitest run catalogo-real.test.ts` | rojo «1 failed \| 39 passed (40)»: «el nombre de cada marco es su título propio, sin glosas en español» | 40 de 40 |
+| AU-51 referencia adicional que no aplica | `validar.ts`: la llamada `aplica(r.marco_id, …)` → `void aplica;` | `vitest run validar.test.ts` | rojo «1 failed \| 91 passed (92)»: «una referencia adicional a un marco que no aplica…». Además, antes del arreglo de datos, el validador ampliado dio «inválido, 4 errores» nombrando las 4 pruebas que citan CWE | 92 de 92 |
+| (descartada) AU-51, primer intento | ídem | ídem | la base ya estaba en rojo (2 casos de reglas dependían del `por_verificar` de CWE que AU-52 quitó); demo-rojo lo detectó («el gate sigue en rojo tras restaurar»); se ajustaron esos casos y se repitió arriba | — |
+| AU-06 bloque sin lenguaje | `patrones.json`: `]*```` → `]*``Z`` | `vitest run filtro.test.ts` | rojo «2 failed \| 33 passed (35)»: «bloque-sin-lenguaje marca su carnada» y el autochequeo | 35 de 35 |
+| AU-06 bloque sin lenguaje, expresión corregida | `patrones.json`: `]*?` → `]*?ZZ` (la primera expresión marcaba también la valla de cierre de un bloque con lenguaje; lo vieron dos pruebas de `validar.test.ts`) | `vitest run filtro.test.ts` | rojo «2 failed \| 34 passed (36)»: «bloque-sin-lenguaje marca su carnada» | 36 de 36 |
+| AU-06 recorrido de ruta | `]){2,}` → `]){9,}` | ídem | rojo, «recorrido-de-ruta marca su carnada» | 35 de 35 |
+| AU-06 etiqueta HTML activa | `"expresion": "<` → `"expresion": "ZZZ<` | ídem | rojo, «etiqueta-html-activa marca su carnada» | 35 de 35 |
+| AU-48 instantánea guardada inválida | `2026-10-05-703a0479d567.json`: `"id": "PR-IA-PINJ-001",` → `"PR-IA-PINJ-1"` | `vitest run instantaneas-versionadas.test.ts` | rojo «2 failed \| 1 passed (3)»: «…pasa hoy el validador…» (y la autoconsistencia) | 3 de 3 |
+| AU-48 edición a mano con la huella recalculada (archivo temporal, sin demo-rojo: es un archivo nuevo, no una mutación) | copia de la oficial con `PR-IA-PINJ-001.version_marco = "2019"`, huella recalculada y nombre `2026-10-05-46ba5b3e4ad7.json` | ídem | rojo «1 failed \| 4 passed (5)»: solo «…pasa hoy el validador…»; su autoconsistencia pasó. Archivo borrado | — |
+| AU-48 rojo natural | la instantánea del 2026-10-04 contra el validador de hoy (licencias bilingües) | ídem | rojo: errores en cascada `referencia/marco-inexistente`; se reemplazó por `2026-10-05-703a0479d567.json` | — |
+| AU-44 huellas de los documentos | `GUIA-DE-PRUEBA.html`: último carácter de la huella de D1 | `vitest run guia-huellas.test.ts` | rojo «1 failed \| 3 passed (4)»: «docs/GUIA-DE-PRUEBA.html: cada huella completa es la de una instantánea…» | 4 de 4. Rojo natural antes: el ADR-002 citaba `e2858e62cd9e…` |
+
+### Evidencia de las correcciones
+
+- 2026-10-05 curl https://arxiv.org/abs/2609.32160 → 200; citation_author: Tang, Lijuan · Zheng, Yuemeng; title «Typed Decision Models: An Early Evidence Audit and Evaluation Checklist».
+- 2026-10-05 doi.org 10.6028/NIST.AI.100-1, NIST.AI.600-1, NIST.AI.100-2e2025 → 302 a nvlpubs (PDF).
+- 2026-10-05 gitleaks 8.30.1: los dos assets del release responden 200; la línea de checksums.txt del tar linux_x64 verifica OK con shasum -a 256 -c; el tar trae `gitleaks` en la raíz.
+- K-S1-5 (fricción del kit): demo-rojo.sh interpreta las barras invertidas de --buscar; un texto con \uFEFF no coincide nunca. El script lo detecta («la mutación no aplica a nada») y no lo cuenta como rojo.
+- 2026-10-05 títulos NIST verificados: AI 100-2 E2025 en el <title> de csrc (200); AI 600-1 en el /Title del PDF (doi 200); AI 100-1 en la portada del PDF (pdftotext).
+- e2e determinismo local (E2E_PUERTO=3217), tras AU-01/AU-08/AU-15/AU-26: 9 passed (15.8s); Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6; huellas e2858e62… (10-15), 0b24f1ab… (11-03), 7d94f4a1… (clasificador), con las listas invertidas en el navegador.
+- Suite unitaria tras el bloque de gates: 41 archivos, 1.161 de 1.161; cobertura total 99,36 % sentencias, 95,27 % ramas, 99,56 % funciones, 99,4 % líneas.
+- CI 37401498633 (`9dfa994`): quality en rojo SOLO por `pnpm audit`: GHSA-vc2v-76pw-4v95 (compression <1.8.2 vía serve), publicada 2026-10-05T23:28Z; e2e y lighthouse quedaron «skipping». Arreglo: override `serve>compression: 1.8.2` (ADR-005). Local: audit 1 high (1 ignored); verificar-dependencias 681 paquetes, ninguno por debajo; peers sin problemas; serve enlaza compression 1.8.2; determinismo desktop-chromium 3 passed.
+- 2026-10-05 sondas del auditor 2 sobre el filtro real (7 patrones): marca `<script>alert(1)</script>`, `../../../../etc/passwd`, un bloque ``` sin lenguaje y `?q=<script>`; no ve `' OR '1'='1' --`, «Ignore all previous instructions…», `` `; cat /etc/passwd` ``, `{{7*7}}`, viñetas y un `curl` sangrado. El catálogo real sigue con 0 marcas.
+- 2026-10-05 CWE: cwec_latest.xml.zip descargado entero (HTTP 200): cwec_v4.20.xml, raíz Version="4.20" Date="2026-04-30".
+- 2026-10-05 TypeSafe: https://docs.typesafe.ai/model-jaggedness/jev-1.13.md → 200; título «Jev 1.13 jaggedness».
+- 2026-10-05 instantánea oficial nueva: `pnpm catalogo:instantanea --fecha 2026-10-05` → 2026-10-05-703a0479d567.json (703a0479…5501); re-emitida en /tmp idéntica byte a byte (cmp). La del 2026-10-04 (12d3b632…) se retiró con git rm.
+- 2026-10-05 huellas para la guía: 10-15 5bcb8a75…b55e (×3 iguales); 11-03 5df38fdb…; 12-03 0a6772a4…; 10-16 2c1c927d…; 11-04 d8c379af…; 09-30 → error «anterior a la última verificación (2026-10-05)».
+- 2026-10-05 e2e determinismo (3 navegadores) con los datos del bloque de datos: 9 passed (7.5s); 10-16 2c1c927d…, 11-04 d8c379af…, clasificador 7d94f4a1… en Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6.
+- CI 37401801459 (5b0d6c1): quality, e2e, lighthouse success; gitleaks_8.30.1_linux_x64.tar.gz: OK y «8.30.1»; Test Files 41 passed (41), Tests 1161 passed (1161), sin saltadas; hook-secretos.test.ts (5 tests).
+
+### Desviaciones del plan de la auditoría
+
+- **`compression` (ADR-005), fuera del plan.** GHSA-vc2v-76pw-4v95 se publicó a mitad de la fase 2 y dejó `pnpm audit`
+  en rojo en la corrida 37401498633. Tiene parche, así que la regla 18 obliga a subir la dependencia; `serve` 14.2.6
+  la fija exacta, y el override va en `pnpm-workspace.yaml`.
+- **AU-23:** la aclaración va en `proposito` y no en `como_correr`, que es un comando para copiar.
+- **AU-06:** la primera expresión de `bloque-sin-lenguaje` marcaba también la valla de cierre de un bloque con
+  lenguaje. Se corrigió para exigir un bloque entero, y su demo se repitió.
+- **AU-48:** la instantánea oficial pasa a ser la del 2026-10-05. Ningún plan citaba la del 2026-10-04, que se
+  retiró en el mismo PR.
+- **Conteos de `--minimo-tests`:** dos demos se rechazaron por un conteo mal escrito y se repitieron con el conteo
+  medido por comando. Es la cuarta vez en el sprint; desde ahí el conteo sale de un comando y no de la memoria.
+
+### Deuda que queda
+
+- **AU-14 (al S2):** etiquetas para `pendientes_de_revision[].motivo` y para la familia sin pruebas publicadas.
+  Exigen tocar la maqueta, prohibida en este sprint (ADR-003).
+- **AU-20 (al S3):** § 11.2, la escala de IA (ver «Desviación del plan» de la fase 4).
+- **AU-47 (decide la planeadora):** la guía de prueba está solo en español. La orden no lo pide, y las apps hermanas
+  lo resolvieron distinto: planlang la tiene bilingüe y big-d no.
+- **AU-38 (al cierre):** el cuerpo del PR #8 se actualiza con el summary.
