@@ -1576,3 +1576,158 @@ Caducarán solas en el S2 o el S3: MANUAL `:83` y `:204` («llega en los sprints
 - No contrasté con sus fuentes oficiales las entradas ASI01–10 de `owasp-agentic-top10` ni las C1–C14 de `lista-decision-14`.
 - Los tiempos de la bitácora (0,28–0,30 s, 0,33–0,37 s y las medianas del punto de reanudación) y la salida «+5 −3» del install no tienen una corrida equivalente que re-correr.
 - Fuera de mi alcance: el e2e y la lógica interna de los scripts del kit.
+
+## Anexo E — Segunda pasada (frases caducadas y de evidencia), tal como la entregó su auditor
+
+Auditor independiente, 2026-10-05. Las sondas literales del filtro que citaba se describen en vez de copiarse (regla dura 3).
+
+### Segunda pasada de la Fase 2 del S1 de HackGuard: casilla 4 y regla 27
+
+**Veredicto: requiere ajustes.** Encontré 5 hallazgos medios y 7 bajos. No hay ningún crítico ni alto. El barrido de cero enlaces sale limpio.
+
+**Estado del repo:**
+- Al empezar, `git status --short` daba `?? sprints/SPRINT_001-summary.md`. Mientras yo trabajaba, otra sesión comiteó `c924422` (summary y punto de reanudación). Por eso hoy `git status --short` sale vacío. Yo no toqué ni el repo ni su git.
+- Todas mis salidas fueron a `…/scratchpad/auditor5/`. Hubo una sola excepción: un `/tmp/x.txt` que creé y borré en el acto.
+
+#### Qué corrí
+
+- **Barrido de enlaces:** `git grep -nE "vercel[.]app|workers[.]dev|pages[.]dev" -- ':!pnpm-lock.yaml'` sale vacío (exit 1). El summary tampoco tiene ninguno; su único URL es el del PR.
+- **CLI:**
+  - `pnpm catalogo:validar` en español, `--idioma en` y `--json`: «con advertencias», 10 advertencias, 3 notas, exit 1.
+  - Las semillas SIN-MARCO (exit 2), SIN-VERSION (exit 2), VERSION-ANTERIOR (exit 1) y PATRON-PASOS («1 pendiente», dos `filtro/marcada`).
+  - `catalogo:instantanea` en estas fechas, con su huella:
+    - 2026-10-15 ×3: `5bcb8a75…`, un solo archivo;
+    - 2026-11-03: `5df38fdb…`;
+    - 2026-12-03: `0a6772a4…`;
+    - 2026-10-16: `2c1c927d…`;
+    - 2026-11-04: `d8c379af…`;
+    - 2026-10-05: `703a0479…`, y `cmp` contra `datos/instantaneas/2026-10-05-703a0479d567.json` da idéntico.
+  - Los dos casos que deben fallar: la fecha 2026-09-30 sale con exit 3 y sin archivo; `--agregar` con una semilla inválida sale con exit 2 y «No se escribió nada».
+  - `pnpm clasificador:demo` en los dos idiomas: las 7 filas de la tabla E coinciden y la huella es `7d94f4a1…`.
+- **Vitest, sin cobertura:** los 14 archivos de la tabla de demos dan 353 de 353, y los conteos por archivo cuadran con la bitácora. `instrumento` imprime «C18 … 11 de 11».
+- **Cobertura:** la recalculé desde `coverage/coverage-final.json` (21:26). En los 14 archivos de `src/engine/` da 99,38 / 94,86 / 99,57 / 99,42 %, exactamente lo que dice el summary.
+- **CI con `gh run view`:**
+  - 37401498633 (`9dfa994`): `quality` en rojo solo en `pnpm audit`. Los pasos de gitleaks y de test sí corrieron; `e2e` y `lighthouse` quedaron skipped.
+  - 37401801459 (`5b0d6c1`): 41 archivos, 1.161 pruebas, 99,36/95,27/99,56/99,4 %, checksum de gitleaks OK, «8.30.1», «1053 passed».
+  - 37403300877 (`d53b05a`) y 37404065721 (`09842c8`): 42 archivos y 1.186 pruebas. En los tres navegadores aparecen `2c1c927d…`, `d8c379af…` y `7d94f4a1…`, y «1053 passed».
+  - 37404800509 (`c924422`): a las 02:45 UTC, `quality` y `lighthouse` en success y `e2e` todavía en curso.
+- **Fuentes externas con `curl`:**
+  - arXiv da 200 y los autores Tang y Zheng;
+  - los 3 DOI de NIST dan 302 hacia nvlpubs, y el título de csrc coincide;
+  - TypeSafe da 200 con «Jev 1.13 jaggedness»;
+  - iso.org da 403;
+  - el zip de CWE baja entero y declara `Version="4.20" Date="2026-04-30"`;
+  - los assets de gitleaks 8.30.1 dan 200.
+- **Seguridad:**
+  - en las advisories de GitHub, braces sigue sin parche; la de compression se publicó el 2026-10-05T23:28Z, parche 1.8.2;
+  - en npm, `serve` 14.2.6 es la última y fija 1.8.1, y compression 1.8.2 solo suma `destroy` 1.2.0;
+  - `pnpm audit` da «1 high (1 ignored)»;
+  - `verificar-dependencias` da 681 paquetes;
+  - `gitleaks git origin/main..HEAD` no encuentra nada.
+- **Tiempos:** los re-medí con 7 corridas, en carga 10: 0,093, 0,098 y 0,079 s, coherentes con lo registrado.
+- **Filtro:** probé el filtro real con las sondas de la bitácora y el resultado es el que dice la línea 844.
+
+#### Hallazgos medios
+
+**M1. Una frase caducó en los datos y en el ADR-004: promptfoo ya publicó el proveedor de TypeSafe. CONFIRMADO.**
+- **Dónde:** `datos/herramientas/promptfoo.json:56-57` y `decisions/004-decision-model-family-and-demo-asset.md:28-30`. La instantánea oficial congela la misma nota, pero es un registro y no se toca.
+- **Qué pasa:** la nota dice «0.123.1 es la última versión publicada … ninguna versión publicada lo trae todavía». Pero `npm view promptfoo time` da `0.124.0` publicada el 2026-10-06T01:35:42Z (el 2026-10-05 a las 20:35 hora local, antes de `d53b05a`). Su tarball trae `dist/src/typesafe-*.js` («TypeSafe provider for Jev», `jev-1.13.0`). `inspect-typesafe` sigue en 404 en PyPI, así que esa mitad es cierta.
+- **Por qué importa:** son datos vivos y un ADR que afirman hoy algo falso, junto con la razón de una decisión de catálogo.
+- **Ajuste del ADR-004 (barato, sin huellas).** Las líneas 28-30 pasan a:
+  `MAPIE is registered but not recommended by any test. The TypeSafe provider for promptfoo was merged on 2026-10-02; when the tools were verified (2026-10-04) no published release shipped it, and promptfoo 0.124.0, published on 2026-10-06 (UTC), does. `inspect-typesafe` is not on PyPI (HTTP 404 on 2026-10-05). No test in this sprint recommends either one.`
+- **Ajuste de los datos.** Elige uno de dos:
+  - **(a) Corregir ya.** `notas` queda así:
+    - `es`: «Al verificarla, el 2026-10-04, 0.123.1 era la última versión publicada (2026-09-18) y ninguna versión publicada traía el proveedor para modelos de decisión de TypeSafe, que se fusionó el 2026-10-02. Por eso ninguna prueba de modelo_decision la recomienda. La 0.124.0, publicada el 2026-10-06 (UTC), ya lo trae; recomendarla exige volver a verificar la herramienta en esa versión.»
+    - `en`: «When it was verified, on 2026-10-04, 0.123.1 was the latest published version (2026-09-18), and no published version shipped the provider for TypeSafe decision models, merged on 2026-10-02. That is why no modelo_decision test recommends it. Version 0.124.0, published on 2026-10-06 (UTC), ships it; recommending it requires verifying the tool again at that version.»
+    - **Cascada:** cambian todas las huellas. Hay que actualizar la guía en D1 (huella y nombre de archivo), D5 y F1, el ADR-002:73, el summary en :51, :94 y :96, el CHANGELOG (la instantánea oficial) y re-emitir la oficial del 2026-10-05. `tests/unit/guia-huellas.test.ts` nombra cada huella que quede vieja.
+  - **(b) Declararlo deuda antes del merge.** Una fila en «Deuda técnica aceptada» del summary:
+    `| promptfoo.json: la nota dice que 0.123.1 es la última versión y que ninguna trae el proveedor de TypeSafe; la 0.124.0 (2026-10-06 UTC) ya lo trae | Corregirla cambia todas las huellas, la instantánea oficial y la guía | S2, al volver a verificar promptfoo |`
+
+**M2. «Cada gate nuevo tiene su demo en rojo» no vale para AU-26. CONFIRMADO.**
+- **Dónde:**
+  - `sprints/SPRINT_001-summary.md:135`;
+  - `sprints/SPRINT_001-auditoria.md:7-8` («los que crean gates, con su demo en rojo»);
+  - el cuerpo del PR #8 («each new gate shown red with `scripts/demo-rojo.sh`»).
+- **Qué pasa:** el orden de pago pone AU-26 entre los gates con demo (`auditoria.md:159`). Sin embargo, AU-26 solo aparece en la bitácora en `:841`, en una corrida verde.
+  - La demo de AU-01 sí enrojeció la aserción reescrita de `envejecimiento` («el semáforo cambia el día de cada umbral»).
+  - Nunca se vieron en rojo las aserciones nuevas `tests/e2e/determinismo.spec.ts:175` (`expect(estados).toContain("por_revisar")`) ni `tests/unit/catalogo/instantanea.test.ts:83`.
+  - En el PR, además, AU-11 se demostró con una simulación, sin `demo-rojo.sh`, como dice la propia bitácora en `:812`.
+- **Ajuste: dos demos.** Las filas de la tabla se escriben después, con la salida real.
+  ```
+  scripts/demo-rojo.sh --archivo src/engine/catalogo/semaforo.ts --buscar 'if (dias >= umbrales.por_revisar) return "por_revisar";' --reemplazar 'if (dias >= umbrales.por_revisar) return "vigente";' --gate 'npx vitest run tests/unit/catalogo/instantanea.test.ts' --debe-nombrar 'otra fecha de evaluación cambia el semáforo' --esperar-verde 'npx vitest run tests/unit/catalogo/instantanea.test.ts' --minimo-tests 13
+  scripts/demo-rojo.sh --archivo src/engine/catalogo/semaforo.ts --buscar 'if (dias >= umbrales.por_revisar) return "por_revisar";' --reemplazar 'if (dias >= umbrales.por_revisar) return "vigente";' --gate 'E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts --project desktop-chromium' --debe-nombrar 'algo pasa a «por revisar»' --puerto 3217 --esperar-verde 'E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts --project desktop-chromium' --minimo-tests 3
+  ```
+  - El literal aparece una sola vez en `semaforo.ts:72`.
+  - En la fecha del umbral (2026-11-04) los marcos verificados el 10-04 llevan 31 días y CWE lleva 30. Con la mutación todo sale «vigente», así que las dos aserciones tienen que caer.
+- **Texto del PR, después de las demos:** «52 are paid; each new gate was shown red, with `scripts/demo-rojo.sh` except AU-11, shown red by a simulation without a file mutation.»
+
+**M3. «Pagados: 52 de 56, en cinco commits» no coincide con la tabla de la bitácora. CONFIRMADO.**
+- **Dónde:** `summary.md:132-133` y `:136`.
+- **Qué pasa:**
+  - `09842c8` no paga ningún hallazgo AU: es el fix del `/deploy-check`. Los 52 se pagaron en cuatro commits (bitácora `:786-794`).
+  - AU-38 (el cuerpo del PR) ya está cerrado. Lo dice el punto de reanudación de `c924422` y lo comprobé con `gh pr view 8`: el cuerpo cubre las cinco fases y la auditoría. Sin embargo, el summary no lo nombra.
+- **Ajuste.** Reemplazar las líneas 132-133 por:
+  ```
+    - **Pagados:** 53 de 56: 52 en cuatro commits (`9dfa994` gates, `efb547a` código, `d53b05a` datos y `7ce50d7`
+      documentos) y AU-38, con el cuerpo del PR #8 puesto al día.
+    - **Fix del `/deploy-check`:** `09842c8`, lo que escribe `--agregar` nace con permisos 600 (regla 17-bis a).
+  ```
+
+**M4. «El conteo a mano falló cuatro veces» no coincide con la bitácora. CONFIRMADO.**
+- **Dónde:** `summary.md:176`.
+- **Qué pasa:** la bitácora registra tropiezos en cuatro fases: `:249`, `:413`, `:501`, `:591`, `:809` y `:821`. Son más de cuatro corridas rechazadas.
+- **Ajuste:** «El conteo a mano falló en cuatro fases de este sprint (bitácora: fases 1, 2 y 3, y la Fase 2 de la auditoría).»
+
+**M5. La fecha de verificación de `LICENCIAS-DE-MARCOS.md` es hermana de «la última verificación pasó al 2026-10-05» y quedó vieja. CONFIRMADO.**
+- **Dónde:** `docs/LICENCIAS-DE-MARCOS.md:3` y `:7`.
+- **Qué pasa:** el documento dice «Verificado el 2026-10-04». Pero la fila de CWE («2026-04-30», «archivo 200») sale de la descarga del 2026-10-05, y los autores y los DOI se resolvieron ese día.
+- **Ajuste:**
+  - `:3`: «> Verificado el 2026-10-04 (S1, fase 0) y, en la auditoría, el 2026-10-05: ese día se descargó entero el archivo de CWE (de ahí su fecha y su «archivo 200») y se resolvieron los autores de arXiv:2609.32160 y los DOI de NIST. La fuente oficial y las vías de acceso…» (el resto igual).
+  - `:7`: «> Checked on 2026-10-04 (S1, phase 0) and, in the audit, on 2026-10-05: that day CWE's archive was downloaded whole (hence its date and its "file 200"), and the arXiv:2609.32160 authors and the NIST DOIs were resolved. Each framework's official source…» (el resto igual).
+
+#### Hallazgos bajos
+
+- **B1. La fila CI/CD del summary ya se puede llenar** (`summary.md:78`; «siguen en curso» ya no es cierto). Texto propuesto, de la corrida 37404065721:
+  `| CI/CD | ✓ | Corrida 37404065721 (`09842c8`): `quality` 2 min 47 s, `e2e` 9 min 58 s y `lighthouse` 1 min 50 s, cada uno con conclusión propia `success`. En `quality`: 42 archivos y 1.186 de 1.186 pruebas, gitleaks 8.30.1 con la suma verificada, «C18 catálogo: bloquea 11 de 11» y `pnpm audit` con 1 alta, ignorada. En `e2e`: «1053 passed (8.1m)» y `2c1c927d…` en Chromium, Firefox y WebKit. |`
+  Antes de cerrar hay que leer también la corrida del commit que finalmente lleve el summary. La de `c924422` (37404800509) tenía el `e2e` en curso.
+- **B2. Las paradas A1 y A2 de la guía se quedaron cortas** frente a lo que cambió la auditoría (`docs/GUIA-DE-PRUEBA.html:206-209` y `:214`).
+  - **A2:** «En el cierre de la fase 2 el filtro no marcó ninguna de las 38.» pasa a «Con los siete patrones de hoy, el filtro no marca ninguna de las 38.» (comprobado: 0 pendientes de revisión).
+  - **A1:** «la auditoría cambió tres cosas: … propio archivo) y las atribuciones…» pasa a «la auditoría cambió cuatro cosas: el nombre de cada licencia está también en inglés; la fecha de CWE 4.20 dejó de estar por verificar (la declara su propio archivo, descargado entero el 2026-10-05); CWE aplica ahora también a pruebas de agente y de modelo generativo (AU-51); y las atribuciones nombran autores, DOI y la dirección de cada obra.»
+  - Lo de AU-51 sale del diff de `d53b05a`: `cwe.json`, `familias_aplicables`.
+- **B3. La lista de reglas de ESLint del ADR-002 no incluye `no-restricted-syntax`** (`decisions/002-…md:32-33`; es hermana de AU-02). Texto: «ESLint enforces it with `no-restricted-globals`, `no-restricted-properties`, `no-restricted-imports` and `no-restricted-syntax`; the last one, added in the audit (AU-02), blocks any `globalThis` or `crypto` access other than `crypto.subtle`, and dynamic `import()`.»
+- **B4. La tabla de pagos de la bitácora dice «(este commit)».** En `implementation-log.md:794`, «(este commit)» pasa a `` `7ce50d7` ``.
+- **B5. El paréntesis del nivel de ruido del ADR-004 es ambiguo:** «1 of 52» parece la tasa de Jev, pero es la del demo (`decisions/004-…md:65`). Texto: «**Noise level:** 150 was chosen by measurement: of the levels tried, it gives the change rate closest to the ~1.5% measured for Jev (the demo changes 1 of 52 answers, 1.92%).» Lo sostienen la salida del demo y la bitácora en `:544-550`.
+- **B6. Hay cargas literales en la bitácora, contra la regla dura 3** («el repo jamás contiene cargas»). Es fuera de casilla, para que decidas tú.
+  - **Dónde:** `implementation-log.md:844`, agregada en `7ce50d7`. La sección «tal como lo entregó» de `auditoria.md:600-605` (Fase 1) trae las mismas.
+  - **Texto para `:844`:** «- 2026-10-05 sondas del auditor 2 sobre el filtro real (7 patrones): marca una etiqueta de script en línea, un recorrido de ruta hacia un archivo del sistema, un bloque de código sin lenguaje y una dirección con una etiqueta de script en el parámetro; no ve una tautología de SQL tras una comilla, una instrucción maliciosa escrita como frase, un comando encadenado dentro de una línea, una expresión de plantilla, viñetas ni un comando de red sangrado. El catálogo real sigue con 0 marcas.»
+  - Lo re-sondeé y el resultado es el mismo.
+- **B7. «Deuda que queda: AU-38 (al cierre)»** (`implementation-log.md:885`) quedó superado por el punto de reanudación. Se corrige junto con M3: «AU-38: cerrado; el cuerpo del PR #8 está al día.»
+
+#### Conteos
+
+- **Promesas aplazadas:** revisé 143 líneas distintas.
+  - 45 son de la lente pedida, 10 de ellas en la instantánea congelada.
+  - 105 son de una segunda lente (`todavía`, `aún`, `yet`, `still`, `until`, `latest`, `hoy`, `today`); 7 se repiten en las dos. Fue la segunda lente la que atrapó a promptfoo: su frase dice «todavía» sin un «no» detrás.
+  - Además seguí 9 cambios de la Fase 2 hasta sus frases hermanas en todo el repo:
+    - la instantánea vieja y sus huellas `e2858e62` y `0b24f1ab`;
+    - el filtro de 4 a 7 patrones;
+    - las notas de 4 a 3;
+    - el `por_verificar` de CWE;
+    - la última verificación del 2026-10-05;
+    - el lint de AU-02;
+    - los nombres de los marcos;
+    - AU-38.
+  - **Caducadas:** M1, M5, B1, B2, B3 y B7. Todo lo demás es cierto hoy, lo que incluye WSTG 4.2, NIST AI RMF 1.0 «en revisión» y «sin licencia» del repo.
+- **Frases de evidencia:** verifiqué 51 del summary, las 15 líneas de «Evidencia de las correcciones», las 33 filas de la tabla de demos (coherencia por archivo), `/deploy-check`, los tiempos y los documentos:
+  - la guía: B1-F1 y la tabla de E;
+  - las 14 filas de LICENCIAS contra los datos;
+  - los ADR 002, 003 y 005;
+  - el CHANGELOG y el manual.
+  - **No coinciden:** las 4 de M2, M3, M4 y M5, más B5, que es ambigua. Todas las demás cuadran con la corrida.
+
+#### Lo que no alcancé
+
+- No re-corrí el e2e completo ni la suite con cobertura: para esas cifras me apoyé en las corridas de CI.
+- No vi terminar la CI de `c924422`.
+- No verifiqué los 14 marcos contra sus fuentes uno por uno: solo los que la Fase 2 tocó o los que afirman ser la «última» versión.
+- No revisé el archivo `auditoria.md` entero, solo sus frases hermanas.

@@ -899,11 +899,27 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 
 1. **CI:** leer la de los últimos pushes (`d53b05a`, `7ce50d7`, `09842c8` y el de este commit) con
    `gh run view <id> --json jobs`. Cada job requerido tiene que tener su conclusión propia `success`.
-2. **Segunda pasada:** un auditor independiente la lanzó en solo lectura (casilla 4 por promesa aplazada,
-   siguiendo cada ajuste hasta sus frases hermanas, más las frases de evidencia de la regla 27, sobre el diff
-   completo y el summary).
-   - Si su informe no llega, se relanza con ese mismo encargo.
-   - Sus hallazgos se pagan y se registran aquí y en el summary.
+2. **Segunda pasada: ENTREGADA** (anexo E de `sprints/SPRINT_001-auditoria.md`).
+   - Encontró 5 medios y 7 bajos, ninguno crítico ni alto, y el barrido de enlaces sale limpio.
+   - Hay que pagarlos todos con el ajuste exacto del anexo E:
+     - **M1, promptfoo 0.124.0 ya trae el proveedor de TypeSafe:**
+       - el ADR-004;
+       - la nota de `datos/herramientas/promptfoo.json`. Corregir la nota cambia todas las huellas: re-emitir la
+         instantánea oficial y actualizar la guía (D1, D5 y F1), el ADR-002, el summary y el CHANGELOG.
+         `guia-huellas.test.ts` nombra lo que quede viejo.
+     - **M2, las demos que faltan:** dos demos de AU-26 (`demo-rojo.sh`; los comandos están en el anexo E).
+       Después, corregir «cada gate nuevo con su demo» en el summary, en la auditoría y en el PR, nombrando la
+       simulación de AU-11.
+     - **M3 y B7:** son 53 pagados (52 en cuatro commits, más AU-38); `09842c8` es el fix del `/deploy-check`.
+     - **M4:** el conteo a mano falló «en cuatro fases».
+     - **M5:** la fecha de verificación de `docs/LICENCIAS-DE-MARCOS.md`.
+     - **B1:** la fila CI/CD del summary, con la corrida 37404065721 y la del commit final.
+     - **B2:** las paradas A1 y A2 de la guía.
+     - **B3:** `no-restricted-syntax` en el ADR-002.
+     - **B4:** «(este commit)» → `7ce50d7`.
+     - **B5:** el nivel de ruido en el ADR-004.
+     - **B6 (regla dura 3):** quitar las cargas literales de la bitácora (la línea de las sondas del filtro) y del
+       anexo B de la auditoría, describiéndolas en prosa.
 3. **Summary:** completar la fila CI/CD con los números de corrida, y la línea de la segunda pasada.
 4. **⭐ corto con el usuario,** parada a parada, desde `docs/GUIA-DE-PRUEBA.html`, bloque A:
    - parada 1: confirmar la tabla de marcos y licencias;
