@@ -12,9 +12,25 @@ import {
 
 const utf8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
 
+/** La ruta relativa a la raíz, con «/». Un archivo de fuera de la raíz entra como `agregado/<nombre>`: la ruta de
+ * la máquina no viaja al informe ni a la instantánea. */
+function rutaDe(raiz: string, absoluta: string): string {
+  const relativa = path.relative(raiz, absoluta);
+  if (relativa.startsWith("..") || path.isAbsolute(relativa))
+    return `agregado/${path.basename(absoluta)}`;
+  return relativa.split(path.sep).join("/");
+}
+
 function leer(raiz: string, absoluta: string): ArchivoDeDatos {
-  const ruta = path.relative(raiz, absoluta).split(path.sep).join("/");
-  return { ruta, texto: utf8.decode(readFileSync(absoluta)) };
+  const ruta = rutaDe(raiz, absoluta);
+  const bytes = readFileSync(absoluta);
+  try {
+    return { ruta, texto: utf8.decode(bytes) };
+  } catch {
+    throw new Error(
+      `${ruta}: no es UTF-8 válido, guárdalo como UTF-8 / is not valid UTF-8, save it as UTF-8`,
+    );
+  }
 }
 
 function leerUnico(raiz: string, relativa: string): ArchivoDeDatos | null {
@@ -67,4 +83,34 @@ export function cargarCatalogo(
       ...agregar.map((archivo) => leer(raiz, path.resolve(archivo))),
     ],
   };
+}
+
+/** Carpetas de `datos/` que el catálogo no lee a propósito. */
+const NO_SON_CATALOGO = ["datos/privado", "datos/instantaneas"];
+
+/**
+ * Los archivos de `datos/` que `cargarCatalogo` no leyó: otra extensión, una carpeta mal escrita o una subcarpeta
+ * que no se recorre. Ignora los nombres que empiezan por «.» y las carpetas que no son catálogo. El CLI los
+ * avisa, para que un archivo que no se lee no pase en silencio.
+ */
+export function noLeidos(raiz: string, entrada: CatalogoEnBruto): string[] {
+  const leidas = new Set<string>(
+    Object.values(entrada).flatMap((v: ArchivoDeDatos | ArchivoDeDatos[] | null) =>
+      v === null ? [] : Array.isArray(v) ? v.map((a) => a.ruta) : [v.ruta],
+    ),
+  );
+  const fuera: string[] = [];
+  const recorrer = (relativa: string) => {
+    const absoluta = path.join(raiz, relativa);
+    if (!existsSync(absoluta)) return;
+    for (const nombre of readdirSync(absoluta).sort()) {
+      if (nombre.startsWith(".")) continue;
+      const hija = `${relativa}/${nombre}`;
+      if (NO_SON_CATALOGO.includes(hija)) continue;
+      if (statSync(path.join(raiz, hija)).isDirectory()) recorrer(hija);
+      else if (!leidas.has(hija)) fuera.push(hija);
+    }
+  };
+  recorrer("datos");
+  return fuera;
 }

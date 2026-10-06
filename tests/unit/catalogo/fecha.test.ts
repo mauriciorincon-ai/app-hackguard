@@ -27,6 +27,10 @@ describe("esFechaCivil", () => {
     "2026-13-01",
     "2026-00-10",
     "2026-04-31",
+    "2026-06-31",
+    "2026-09-31",
+    "2026-11-31",
+    "2026-01-32",
     "2026-10-00",
     "0000-01-01",
     "2026-1-04",
@@ -101,7 +105,7 @@ describe("fechaMasDias", () => {
     expect(fechaMasDias("2026-10-04", 0)).toBe("2026-10-04");
   });
 
-  it("es el inverso de diasEntre en cada día de cuatro siglos alrededor de la época", () => {
+  it("es el inverso de diasEntre cada séptimo día de cuatro siglos alrededor de la época", () => {
     let fecha = "1900-01-01";
     for (let i = 0; i < 146_097; i += 7) {
       const siguiente = fechaMasDias("1900-01-01", i);

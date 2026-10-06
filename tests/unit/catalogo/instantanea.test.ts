@@ -8,7 +8,14 @@ import {
   huellaDeInstantanea,
   nombreDeInstantanea,
 } from "../../../src/engine/catalogo/instantanea.ts";
-import { catalogoBase, conPrueba, referencia } from "./ayuda.ts";
+import { fechaMasDias } from "../../../src/engine/fecha.ts";
+import {
+  catalogoBase,
+  catalogoReal,
+  conPrueba,
+  referencia,
+  ULTIMA_VERIFICACION,
+} from "./ayuda.ts";
 
 const FECHA = "2026-10-15";
 
@@ -75,12 +82,34 @@ describe("construirInstantanea", () => {
     expect(huellas.size).toBe(1);
   });
 
-  it("otra fecha de evaluación da otra huella", async () => {
-    const a = await construirInstantanea(catalogoBase(), FECHA);
-    const b = await construirInstantanea(catalogoBase(), "2026-12-01");
-    expect(
-      a.emitida && b.emitida && a.instantanea.huella !== b.instantanea.huella,
-    ).toBe(true);
+  it("otra fecha de evaluación cambia el semáforo, no solo la huella", async () => {
+    // La huella cambia siempre, porque la fecha está en el contenido: lo que se mide es el estado.
+    const estados = async (fecha: string) => {
+      const r = await construirInstantanea(catalogoBase(), fecha);
+      if (!r.emitida) throw new Error("debía emitirse");
+      const s = r.instantanea.semaforo;
+      return new Set([...s.marcos, ...s.herramientas].map((v) => v.estado));
+    };
+    expect(await estados(FECHA)).toEqual(new Set(["vigente"]));
+    expect(await estados("2026-12-01")).toEqual(new Set(["por_revisar"]));
+  });
+
+  it("el catálogo real, con cada lista invertida, da la misma huella", async () => {
+    const fecha = fechaMasDias(ULTIMA_VERIFICACION, 11);
+    const directo = await construirInstantanea(catalogoReal(), fecha);
+    const c = catalogoReal();
+    for (const lista of [
+      c.marcos,
+      c.equivalencias,
+      c.controles,
+      c.herramientas,
+      c.pruebas,
+    ])
+      lista.reverse();
+    const invertido = await construirInstantanea(c, fecha);
+    if (!directo.emitida || !invertido.emitida)
+      throw new Error("debía emitirse");
+    expect(invertido.instantanea.huella).toBe(directo.instantanea.huella);
   });
 
   it("publica las pruebas aprobadas y lista aparte las que esperan revisión", async () => {

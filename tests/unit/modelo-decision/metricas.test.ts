@@ -64,13 +64,18 @@ describe("brier", () => {
     expect(brier([p("1", { a: 1 }, "c")], ["a", "c"])).toBe(2);
   });
 
-  it("no depende del orden de las predicciones", () => {
+  it("no depende del orden de las predicciones ni del de las opciones", () => {
+    // En el orden de entrada, la media sale 0,5900000000000002 y no 0,5900000000000001: solo recorrer por id las
+    // iguala.
     const ps = [
-      p("2", { a: 0.4, b: 0.6 }, "a"),
-      p("1", { a: 0.7, b: 0.3 }, "a"),
-      p("3", { a: 0.1, b: 0.9 }, "b"),
+      p("1", { a: 0.35, b: 0.65 }, "b"),
+      p("2", { a: 0.35, b: 0.65 }, "b"),
+      p("3", { a: 0.2, b: 0.8 }, "a"),
     ];
-    expect(brier(ps, ["b", "a"])).toBe(brier([...ps].reverse(), ["a", "b"]));
+    expect(brier([...ps].reverse(), ["a", "b"])).toBe(brier(ps, ["a", "b"]));
+    // Con tres opciones, 1,34 o 1,3399999999999999 según el orden en que se sumen.
+    const q = [p("1", { a: 0.1, b: 0.2, c: 0.7 }, "a")];
+    expect(brier(q, ["c", "b", "a"])).toBe(brier(q, ["a", "b", "c"]));
   });
 });
 
@@ -129,8 +134,10 @@ describe("errorEnBanda", () => {
       p("5", { aprobar: 0.9, revisar: 0.1 }, "revisar"), // fuera de la banda
       p("6", null, "aprobar"), // inválida: fuera
       p("7", { revisar: 1 }, "revisar"), // sin la opción: p = 0, fuera
+      p("8", { aprobar: 0.8, revisar: 0.2 }, "aprobar"), // borde superior incluido, aprueba, bien
+      p("9", { aprobar: 0.7, revisar: 0.3 }, "revisar"), // justo en el umbral aprueba, mal
     ];
-    expect(errorEnBanda(ps, banda)).toEqual({ n: 4, cuenta: 2, tasa: 0.5 });
+    expect(errorEnBanda(ps, banda)).toEqual({ n: 6, cuenta: 3, tasa: 0.5 });
   });
 
   it("sin nada en la banda no hay tasa", () => {

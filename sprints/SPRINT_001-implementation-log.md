@@ -727,3 +727,15 @@ El usuario pausó el sprint hasta el día siguiente. Este es el estado exacto pa
   - Dos deudas imposibles de pagar en el S1: AU-14 y AU-20.
   - El orden de pago de la Fase 2.
 - **Estado:** la Fase 1 queda completa y espera la aprobación del usuario. No hay ningún hallazgo pagado.
+
+### Aprobación de la Fase 1 de la auditoría
+
+**El usuario aprobó el plan el 2026-10-05, con un «apruebo»**, y se quedó con las cinco recomendaciones:
+
+1. Licencias y nombres de los marcos en español e inglés ya (AU-05).
+2. Documentar lo que el filtro no ve y sumar tres patrones de forma (AU-06).
+3. Instalar gitleaks en la CI (AU-11).
+4. Guía en español, anotado para que decida la planeadora (AU-47).
+5. Revalidar las instantáneas guardadas y reemplazar la del 2026-10-04 en este PR (AU-48).
+
+La Fase 2 arranca con los hallazgos que crean gates.

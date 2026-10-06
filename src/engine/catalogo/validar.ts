@@ -106,7 +106,18 @@ function leerJson(archivo: ArchivoDeDatos, registro: Registro): unknown {
   try {
     return JSON.parse(archivo.texto) as unknown;
   } catch {
-    registro.agregar("archivo/json-invalido", archivo.ruta);
+    // Un BOM delante es JSON inválido para `JSON.parse`, y quien lo ve no sabe por qué: se dice.
+    registro.agregar(
+      "archivo/json-invalido",
+      archivo.ruta,
+      "",
+      archivo.texto.startsWith("\uFEFF")
+        ? t(
+            "empieza con una marca de orden de bytes (BOM): guárdalo como UTF-8 sin BOM",
+            "starts with a byte order mark (BOM): save it as UTF-8 without a BOM",
+          )
+        : null,
+    );
     return NO_LEIDO;
   }
 }

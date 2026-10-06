@@ -3,7 +3,9 @@
 // sobre el `datos/` del repo. Se prueban los códigos de salida, la escritura de la instantánea y el gate.
 import { spawnSync } from "node:child_process";
 import {
+  copyFileSync,
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
@@ -12,7 +14,14 @@ import {
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { RAIZ, SEMILLAS } from "./ayuda.ts";
+import { fechaMasDias } from "../../../src/engine/fecha.ts";
+import { RAIZ, SEMILLAS, ULTIMA_VERIFICACION } from "./ayuda.ts";
+
+// Fechas relativas a la última verificación de `datos/`, no al calendario: re-verificar una entidad no rompe
+// estas pruebas.
+const FECHA = fechaMasDias(ULTIMA_VERIFICACION, 11);
+const OTRA_FECHA = fechaMasDias(ULTIMA_VERIFICACION, 12);
+const ANTERIOR = fechaMasDias(ULTIMA_VERIFICACION, -1);
 
 function catalogo(...argumentos: string[]) {
   const r = spawnSync(
@@ -65,7 +74,10 @@ describe("catalogo validar", () => {
 
   it.each([
     [["validar", "--idioma", "fr"], "--idioma"],
-    [["validar", "--agregar", "no-existe.json"], "--agregar no-existe.json"],
+    [
+      ["validar", "--agregar", "no-existe.json"],
+      "--agregar: no existe no-existe.json / does not exist: no-existe.json",
+    ],
     [["validar", "sobra"], "sobra"],
     [["validar", "--opcion-que-no-existe"], "opcion-que-no-existe"],
     [["otro-comando"], "otro-comando"],
@@ -93,13 +105,13 @@ describe("catalogo instantanea", () => {
     const r = catalogo(
       "instantanea",
       "--fecha",
-      "2026-10-03",
+      ANTERIOR,
       "--salida",
       temporal,
     );
     expect(r.codigo).toBe(3);
     expect(r.errores).toContain(
-      "la fecha de evaluación 2026-10-03 es anterior a la última verificación del catálogo (2026-10-04)",
+      `la fecha de evaluación ${ANTERIOR} es anterior a la última verificación del catálogo (${ULTIMA_VERIFICACION})`,
     );
     expect(readdirSync(temporal)).toEqual([]);
   });
@@ -110,7 +122,7 @@ describe("catalogo instantanea", () => {
       const r = catalogo(
         "instantanea",
         "--fecha",
-        "2026-10-15",
+        FECHA,
         "--salida",
         temporal,
         "--json",
@@ -119,7 +131,7 @@ describe("catalogo instantanea", () => {
       const json = JSON.parse(r.salida) as { huella: string; archivo: string };
       huellas.add(json.huella);
       expect(json.archivo).toBe(
-        `${temporal}/2026-10-15-${json.huella.slice(0, 12)}.json`,
+        `${temporal}/${FECHA}-${json.huella.slice(0, 12)}.json`,
       );
       const escrita = JSON.parse(readFileSync(json.archivo, "utf8")) as {
         huella: string;
@@ -134,13 +146,13 @@ describe("catalogo instantanea", () => {
     const r = catalogo(
       "instantanea",
       "--fecha",
-      "2026-10-16",
+      OTRA_FECHA,
       "--salida",
       temporal,
     );
     expect(r.codigo).toBe(0);
     expect(r.salida).toMatch(
-      /^Instantánea emitida: .*2026-10-16-[0-9a-f]{12}\.json\n/,
+      new RegExp(`^Instantánea emitida: .*${OTRA_FECHA}-[0-9a-f]{12}\\.json\\n`),
     );
   });
 
@@ -149,7 +161,7 @@ describe("catalogo instantanea", () => {
     const r = catalogo(
       "instantanea",
       "--fecha",
-      "2026-10-15",
+      FECHA,
       "--salida",
       destino,
       "--agregar",
@@ -158,6 +170,48 @@ describe("catalogo instantanea", () => {
     expect(r.codigo).toBe(2);
     expect(r.salida).toContain("No se escribió nada");
     expect(existsSync(destino)).toBe(false);
+  });
+
+  it("con --agregar, sin --salida o con --salida dentro de datos/, sale 3 y no escribe en datos/instantaneas", () => {
+    const antes = readdirSync(path.join(RAIZ, "datos/instantaneas")).sort();
+    for (const salida of [[], ["--salida", "datos/instantaneas"], ["--salida", "datos/otra"]]) {
+      const r = catalogo(
+        "instantanea",
+        "--fecha",
+        FECHA,
+        ...salida,
+        "--agregar",
+        `${SEMILLAS}/SEMILLA-REFERENCIA.json`,
+      );
+      expect(r.codigo, salida.join(" ")).toBe(3);
+      expect(r.errores).toContain("exige --salida fuera de datos/");
+    }
+    expect(readdirSync(path.join(RAIZ, "datos/instantaneas")).sort()).toEqual(antes);
+    expect(existsSync(path.join(RAIZ, "datos/otra"))).toBe(false);
+  });
+
+  it("una prueba agregada desde fuera del repo entra como agregado/<nombre>, sin la ruta de la máquina", () => {
+    const fuera = path.join(temporal, "fuera");
+    mkdirSync(fuera);
+    const copia = path.join(fuera, "SEMILLA-SIN-CONTROL.json");
+    copyFileSync(path.join(RAIZ, SEMILLAS, "SEMILLA-SIN-CONTROL.json"), copia);
+    const destino = path.join(temporal, "agregada");
+    const r = catalogo(
+      "instantanea",
+      "--fecha",
+      FECHA,
+      "--salida",
+      destino,
+      "--agregar",
+      copia,
+      "--json",
+    );
+    expect(r.codigo).toBe(0);
+    const { archivo } = JSON.parse(r.salida) as { archivo: string };
+    const escrita = readFileSync(archivo, "utf8");
+    expect(escrita).toContain('"ruta": "agregado/SEMILLA-SIN-CONTROL.json"');
+    expect(escrita).not.toContain(fuera);
+    expect(escrita).not.toContain('"ruta": "../');
   });
 
   it("un archivo de datos ilegible es un error de lectura (3), no un catálogo inválido", () => {

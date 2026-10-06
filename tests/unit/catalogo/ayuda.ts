@@ -13,17 +13,50 @@ export const SEMILLAS = "docs/kit-de-prueba/semillas";
 
 const base = cargarCatalogo(RAIZ);
 
+const fechaDe = (a: ArchivoDeDatos): string =>
+  (JSON.parse(a.texto) as { fecha_verificacion?: string }).fecha_verificacion ??
+  "";
+
+/**
+ * La última verificación del catálogo real: la fecha más temprana en que se puede evaluar. Las pruebas que
+ * corren sobre `datos/` fechan contra ella, no contra el calendario, para que re-verificar una entidad no las
+ * rompa.
+ */
+export const ULTIMA_VERIFICACION = [
+  ...base.marcos,
+  ...base.herramientas,
+  ...base.pruebas,
+]
+  .map(fechaDe)
+  .reduce((max, f) => (f > max ? f : max), "");
+
+/** La fecha de verificación que `catalogoBase()` da a todos sus marcos y herramientas. */
+export const FECHA_BASE = "2026-10-04";
+
+function conFechaBase(archivo: ArchivoDeDatos): ArchivoDeDatos {
+  const datos = JSON.parse(archivo.texto) as Record<string, unknown>;
+  datos.fecha_verificacion = FECHA_BASE;
+  return { ...archivo, texto: JSON.stringify(datos) };
+}
+
 /** Una copia del catálogo real que cada prueba puede editar sin tocar a las demás. */
 export function catalogoReal(): CatalogoEnBruto {
   return structuredClone(base);
 }
 
 /**
- * El catálogo real sin sus pruebas: marcos, controles, herramientas y vocabulario de `datos/`. Las pruebas del
- * motor parten de aquí, para que sumar una prueba real al catálogo no cambie lo que miden.
+ * El catálogo real sin sus pruebas: marcos, controles, herramientas y vocabulario de `datos/`, todos verificados
+ * el `FECHA_BASE`. Las pruebas del motor parten de aquí, para que sumar o re-verificar algo en el catálogo real
+ * no cambie lo que miden.
  */
 export function catalogoBase(): CatalogoEnBruto {
-  return { ...structuredClone(base), pruebas: [] };
+  const c = structuredClone(base);
+  return {
+    ...c,
+    marcos: c.marcos.map(conFechaBase),
+    herramientas: c.herramientas.map(conFechaBase),
+    pruebas: [],
+  };
 }
 
 export type Json = Record<string, unknown>;

@@ -40,13 +40,40 @@ function pathSinHerramientas(): string {
   return dir;
 }
 
-const hayHerramientas =
-  spawnSync("/bin/bash", ["-c", "command -v gitleaks && command -v jq"])
-    .status === 0;
+const hay = (b: string) =>
+  spawnSync("/bin/bash", ["-c", `command -v ${b}`]).status === 0;
+const hayHerramientas = hay("gitleaks") && hay("jq");
+// En la CI las herramientas se instalan (job `quality`): si faltan, estas pruebas fallan en vez de saltarse.
+const enCI = process.env.CI === "true";
+
+/** `pathSinHerramientas()` más los binarios nombrados, enlazados desde el PATH real. */
+function pathCon(extras: string[]): string {
+  const dir = pathSinHerramientas();
+  for (const b of extras) {
+    const r = spawnSync("/bin/bash", ["-c", `command -v ${b}`], {
+      encoding: "utf8",
+    });
+    if (r.stdout.trim().startsWith("/"))
+      symlinkSync(r.stdout.trim(), join(dir, b));
+  }
+  return dir;
+}
 
 describe("hook PreToolUse de secretos (kit v1.37.0; origen planlang AU-S2-B12)", () => {
   it("sin gitleaks ni jq bloquea, y lo dice", () => {
     const r = correr("hola", { PATH: pathSinHerramientas() });
+    expect(r.status).toBe(2);
+    expect(r.stdout).toContain("falta gitleaks o jq");
+  });
+
+  it.runIf(hay("jq") || enCI)("con jq pero sin gitleaks bloquea", () => {
+    const r = correr("hola", { PATH: pathCon(["jq"]) });
+    expect(r.status).toBe(2);
+    expect(r.stdout).toContain("falta gitleaks o jq");
+  });
+
+  it.runIf(hay("gitleaks") || enCI)("con gitleaks pero sin jq bloquea", () => {
+    const r = correr("hola", { PATH: pathCon(["gitleaks"]) });
     expect(r.status).toBe(2);
     expect(r.stdout).toContain("falta gitleaks o jq");
   });
@@ -59,7 +86,7 @@ describe("hook PreToolUse de secretos (kit v1.37.0; origen planlang AU-S2-B12)",
     expect(r.status).toBe(0);
   });
 
-  it.runIf(hayHerramientas)(
+  it.runIf(hayHerramientas || enCI)(
     "con las herramientas: deja pasar lo limpio y bloquea la carnada",
     () => {
       expect(correr("const x = 1;", process.env).status).toBe(0);

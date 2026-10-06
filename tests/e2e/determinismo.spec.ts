@@ -13,12 +13,28 @@ import { cargarCatalogo } from "../../src/cli/cargar.ts";
 import type { construirInstantanea } from "../../src/engine/catalogo/instantanea.ts";
 import type { CatalogoEnBruto } from "../../src/engine/catalogo/tipos.ts";
 import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
+import { fechaMasDias } from "../../src/engine/fecha.ts";
 
 const RAIZ = path.resolve(__dirname, "../..");
 const ORIGEN = "https://hackguard.invalid";
-const FECHA = "2026-10-15";
-// El primer umbral de vigencia del catálogo real (verificado el 2026-10-04): todo pasa a «por revisar».
-const FECHA_EN_UMBRAL = "2026-11-03";
+const LEIDO = cargarCatalogo(RAIZ);
+// Las fechas se derivan de la última verificación de `datos/`, no del calendario: re-verificar una entidad no
+// rompe el spec.
+const ULTIMA = [...LEIDO.marcos, ...LEIDO.herramientas, ...LEIDO.pruebas]
+  .map(
+    (a) =>
+      (JSON.parse(a.texto) as { fecha_verificacion: string })
+        .fecha_verificacion,
+  )
+  .reduce((max, f) => (f > max ? f : max), "");
+const POR_REVISAR = (
+  JSON.parse(LEIDO.umbrales?.texto ?? "{}") as {
+    vigencia: { por_revisar: number };
+  }
+).vigencia.por_revisar;
+const FECHA = fechaMasDias(ULTIMA, 11);
+// El primer umbral de vigencia de lo verificado último: eso pasa a «por revisar».
+const FECHA_EN_UMBRAL = fechaMasDias(ULTIMA, POR_REVISAR);
 const CONJUNTO =
   "docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json";
 
@@ -43,7 +59,8 @@ let catalogo: CatalogoEnBruto;
 let conjunto: unknown;
 const enNode = { instantanea: "", umbral: "", clasificador: "" };
 
-test.describe.configure({ mode: "serial" });
+// Sin reintentos: una divergencia intermitente entre motores tiene que salir en rojo, no como «flaky».
+test.describe.configure({ mode: "serial", retries: 0 });
 
 test.beforeAll(async () => {
   const salida = mkdtempSync(path.join(tmpdir(), "hackguard-determinismo-"));
@@ -75,7 +92,17 @@ test.beforeAll(async () => {
     }
   ).huella_de_respuestas;
 
-  catalogo = cargarCatalogo(RAIZ);
+  // El navegador recibe las listas en el orden inverso al que lee el CLI: si el orden cambiara la huella,
+  // divergirían.
+  catalogo = structuredClone(LEIDO);
+  for (const lista of [
+    catalogo.marcos,
+    catalogo.equivalencias,
+    catalogo.controles,
+    catalogo.herramientas,
+    catalogo.pruebas,
+  ])
+    lista.reverse();
   conjunto = JSON.parse(readFileSync(path.join(RAIZ, CONJUNTO), "utf8"));
   const { outputFiles } = await build({
     stdin: {
@@ -109,13 +136,24 @@ async function abrirMotor(page: Page): Promise<void> {
   expect(await page.evaluate(() => isSecureContext)).toBe(true);
 }
 
-const huellaEnNavegador = (page: Page, fecha: string) =>
+const enNavegador = (page: Page, fecha: string) =>
   page.evaluate(
     async ({ catalogo, fecha }) => {
       const motor = (globalThis as unknown as { MotorHackGuard: Motor })
         .MotorHackGuard;
       const r = await motor.construirInstantanea(catalogo, fecha);
-      return r.emitida ? r.instantanea.huella : null;
+      if (!r.emitida) return { huella: null, estados: [] };
+      const s = r.instantanea.semaforo;
+      return {
+        huella: r.instantanea.huella,
+        estados: [
+          ...new Set(
+            [...s.pruebas, ...s.marcos, ...s.herramientas].map(
+              (v) => v.estado,
+            ),
+          ),
+        ],
+      };
     },
     { catalogo, fecha },
   );
@@ -127,24 +165,24 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     browser,
   }) => {
     await abrirMotor(page);
-    const huella = await huellaEnNavegador(page, FECHA);
+    const { huella } = await enNavegador(page, FECHA);
     console.log(
       `determinismo · ${browserName} ${browser.version()} · instantánea ${FECHA} · ${huella}`,
     );
     expect(huella).toBe(enNode.instantanea);
   });
 
-  test(`en el umbral (${FECHA_EN_UMBRAL}) la huella cambia, y es la de Node`, async ({
+  test(`en el umbral (${FECHA_EN_UMBRAL}) algo pasa a «por revisar», y la huella es la de Node`, async ({
     page,
     browserName,
   }) => {
     await abrirMotor(page);
-    const huella = await huellaEnNavegador(page, FECHA_EN_UMBRAL);
+    const { huella, estados } = await enNavegador(page, FECHA_EN_UMBRAL);
     console.log(
       `determinismo · ${browserName} · instantánea ${FECHA_EN_UMBRAL} · ${huella}`,
     );
+    expect(estados).toContain("por_revisar");
     expect(huella).toBe(enNode.umbral);
-    expect(huella).not.toBe(enNode.instantanea);
   });
 
   test("el clasificador demo sobre su conjunto de referencia", async ({

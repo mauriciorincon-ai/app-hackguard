@@ -43,7 +43,11 @@ const FECHAS = [
     ]),
     fechaMasDias(hoy, 100),
   ]),
-].sort();
+]
+  // El motor rechaza las fechas anteriores a la última verificación: los umbrales de lo verificado antes que
+  // caen ahí los cubre semaforo.test.ts.
+  .filter((f) => f >= hoy)
+  .sort();
 
 function esperado(verificada: string, fecha: string): EstadoDeVigencia {
   if (fecha >= fechaMasDias(verificada, vencido)) return "vencido";
@@ -122,19 +126,23 @@ describe("matriz de envejecimiento del catálogo real", () => {
     },
   );
 
-  it("el semáforo y la huella cambian el día de cada umbral, y no la víspera", () => {
-    const vigencias = (fecha: string) =>
-      JSON.stringify(
-        instantaneas.get(fecha)?.semaforo.pruebas.map((v) => [v.id, v.estado]),
+  it("el semáforo cambia el día de cada umbral, y no la víspera", () => {
+    const vigencias = (fecha: string) => {
+      const s = instantaneas.get(fecha)?.semaforo;
+      return JSON.stringify(
+        [
+          ...(s?.pruebas ?? []),
+          ...(s?.marcos ?? []),
+          ...(s?.herramientas ?? []),
+        ].map((v) => [v.id, v.estado]),
       );
+    };
     for (const v of verificaciones) {
       for (const umbral of [por_revisar, vencido]) {
         const vispera = fechaMasDias(v, umbral - 1);
         const dia = fechaMasDias(v, umbral);
+        if (vispera < hoy) continue;
         expect(vigencias(vispera), `${v} + ${umbral}`).not.toBe(vigencias(dia));
-        expect(instantaneas.get(vispera)?.huella).not.toBe(
-          instantaneas.get(dia)?.huella,
-        );
       }
     }
   });

@@ -3,7 +3,7 @@
 // se agrega SOLA al catálogo real y el validador tiene que responder lo que el manifiesto espera: las
 // inválidas se rechazan nombrando su regla, la sin control se acepta con advertencia y las que tienen forma
 // de procedimiento quedan marcadas sin rechazarse. Se cuenta cuántas bloquea sobre cuántas se sembraron.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";
 import { catalogoReal, RAIZ, SEMILLAS } from "../catalogo/ayuda.ts";
@@ -94,10 +94,12 @@ describe("semillas del catálogo (C18 · RF-10.1 · E-15)", () => {
   });
 
   it("el manifiesto nombra cada semilla del directorio, y cada semilla tiene textos en los dos idiomas", () => {
-    const enDisco = readFileSync(`${RAIZ}/${SEMILLAS}/semillas.json`, "utf8");
+    const enCarpeta = readdirSync(`${RAIZ}/${SEMILLAS}`)
+      .filter((n) => n.startsWith("SEMILLA-") && n.endsWith(".json"))
+      .sort();
+    expect(manifiesto.semillas.map((s) => s.archivo).sort()).toEqual(enCarpeta);
     for (const s of manifiesto.semillas) {
       expect(s.que_siembra.es).not.toBe(s.que_siembra.en);
-      expect(enDisco).toContain(s.archivo);
     }
     expect(new Set(manifiesto.semillas.map((s) => s.archivo)).size).toBe(
       manifiesto.semillas.length,
