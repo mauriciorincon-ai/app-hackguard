@@ -941,11 +941,23 @@ eligió la opción (a), corregir ya.
 | B5 | ADR-004 | El nivel de ruido: la tasa de 1 de 52 es la del demo. |
 | B6 | bitácora y anexo B de la auditoría | Las sondas, en prosa. |
 
+## Gate ⭐ corto (2026-10-05)
+
+Parada a parada, desde el bloque A de `docs/GUIA-DE-PRUEBA.html`.
+
+| Parada | Qué | Respuesta del usuario | Ajustes en caliente |
+|---|---|---|---|
+| 1 de 3 | La tabla de marcos y licencias (`docs/LICENCIAS-DE-MARCOS.md`), con los cuatro cambios de la auditoría | «Arpobadas las tablas» (sic) | ninguno |
+| 2 de 3 | `pnpm catalogo:validar` sin `filtro/marcada` («38 publicables, 0 pendientes de revisión», corrido por el constructor antes de la parada) y la lectura de `agente/PR-AG-PERM-001`, `modelo_generativo/PR-IA-PINJ-001` y `software/PR-SW-SQLI-001` | «confirmo» | ninguno |
+| 3 de 3 | Los resúmenes del Anexo A contra la norma | no corrida: sin texto de ISO/IEC 42001 (G-Plan P1) | deuda antes de G-Release |
+
+Nada va a backlog desde el gate.
+
 ## Punto de reanudación (antes de compactar, 2026-10-05)
 
 > **Al retomar, tras compactar:** la corrida de `c924422` (37404800509) terminó con `quality`, `e2e` y `lighthouse`
-> en `success`. Los pasos 1 a 3 están hechos (sección anterior; los pagos en `bf878e4`, con su CI en verde). Quedan
-> el ⭐ corto (paso 4) y el cierre (paso 5).
+> en `success`. Los pasos 1 a 3 están hechos (los pagos en `bf878e4`, con su CI en verde), y el 4 también (sección
+> «Gate ⭐ corto»). El paso 5 cierra el summary; el merge y `/cierre-sprint` los hace el usuario.
 
 **Hecho:**
 

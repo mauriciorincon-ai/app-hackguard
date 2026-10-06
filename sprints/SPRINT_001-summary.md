@@ -1,9 +1,9 @@
 ---
 sprint: 001
 app: hackguard
-status: open
+status: closed
 opened: 2026-10-04
-closed:
+closed: 2026-10-05
 branch: sprint-001/catalogo-vivo-nucleo
 pr: https://github.com/mauriciorincon-ai/app-hackguard/pull/8
 ---
@@ -119,7 +119,13 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
 | Pasada de capturas del builder | No aplica: el sprint no tiene pantalla. Por eso el ⭐ no se difiere (`SPRINT_001.md`, `gate_estrella: obligatorio-corto`). |
 | e2e de `reduced-motion`        | No aplica: sin UI ni animaciones nuevas. La suite e2e heredada pasa entera («1053 passed (3.4m)» en local, el 2026-10-05). |
 
-**⭐ OBLIGATORIO corto: pendiente.** Se corre con el usuario después de este summary, parada a parada, y el resultado se escribe aquí. Son 3 paradas: la 1 y la 2 son efectivas, y la 3 está declarada no corrida. Deja 0 ⭐ al acumulado.
+**⭐ OBLIGATORIO corto: corrido parada a parada el 2026-10-05,** desde el bloque A de `docs/GUIA-DE-PRUEBA.html`. Deja 0 ⭐ al acumulado.
+
+| Parada | Qué                                                                                                                                                                 | Respuesta del usuario                                                                                            | Ajustes en caliente      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| 1 de 3 | La tabla de marcos y licencias, con los cuatro cambios de la auditoría                                                                                              | «Arpobadas las tablas» (sic)                                                                                     | ninguno                  |
+| 2 de 3 | `pnpm catalogo:validar` sin `filtro/marcada` (0 pendientes de revisión) y la lectura de PR-AG-PERM-001, PR-IA-PINJ-001 y PR-SW-SQLI-001 al nivel de la regla dura 3 | «confirmo»                                                                                                       | ninguno                  |
+| 3 de 3 | Los resúmenes del Anexo A contra la norma                                                                                                                           | no corrida: no hay texto de ISO/IEC 42001 (G-Plan P1); los controles siguen con `verificado_contra_norma: false` | deuda antes de G-Release |
 
 ## Auditoría (`/audita-sprint`)
 
