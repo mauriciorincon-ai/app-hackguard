@@ -849,6 +849,19 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 - 2026-10-05 e2e determinismo (3 navegadores) con los datos del bloque de datos: 9 passed (7.5s); 10-16 2c1c927d…, 11-04 d8c379af…, clasificador 7d94f4a1… en Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6.
 - CI 37401801459 (5b0d6c1): quality, e2e, lighthouse success; gitleaks_8.30.1_linux_x64.tar.gz: OK y «8.30.1»; Test Files 41 passed (41), Tests 1161 passed (1161), sin saltadas; hook-secretos.test.ts (5 tests).
 
+### `/deploy-check` (2026-10-05)
+
+- **Sección 12, lo que la app escribe en disco:** una instantánea con `--agregar` puede derivar de un archivo de
+  `datos/privado/`, y nacía con permisos 644. Ahora nace con 600 (regla 17-bis a), y lo prueba
+  `tests/unit/catalogo/cli.test.ts`.
+  - **Demo:** `catalogo.ts` con `mode: 0o644` fijo da rojo en `cli.test.ts`, «1 failed», «expected 420 to be 384»,
+    en la prueba de `agregado/<nombre>`. Tras restaurar, 17 de 17.
+  - **Advertencia:** una primera corrida de esa demo, con la máquina en carga 22,8 porque el e2e completo corría en
+    paralelo, también hizo caer «emite un archivo nombrado por su huella». No se reprodujo al repetir: la prueba
+    lanza el CLI tres veces y es sensible a la carga.
+- **e2e completo en local** (`E2E_PUERTO=3217 pnpm test:e2e`): «1053 passed (3.4m)», sin fallas, sin flaky y sin
+  saltadas.
+
 ### Desviaciones del plan de la auditoría
 
 - **`compression` (ADR-005), fuera del plan.** GHSA-vc2v-76pw-4v95 se publicó a mitad de la fase 2 y dejó `pnpm audit`

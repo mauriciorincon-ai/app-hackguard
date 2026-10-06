@@ -106,9 +106,12 @@ async function principal(argv: string[]): Promise<number> {
       mkdirSync(carpeta, { recursive: true });
       ruta = path.join(carpeta, resultado.archivo).split(path.sep).join("/");
       const contenido = `${JSON.stringify(resultado.instantanea, null, 2)}\n`;
-      // El nombre lleva la huella: si ya existe, el contenido es el mismo y no se reescribe.
+      // El nombre lleva la huella: si ya existe, el contenido es el mismo y no se reescribe. Con `--agregar`, lo
+      // agregado puede venir de `datos/privado/`: el derivado nace solo legible por su dueño (regla 17-bis a).
       if (!existsSync(ruta) || readFileSync(ruta, "utf8") !== contenido)
-        writeFileSync(ruta, contenido);
+        writeFileSync(ruta, contenido, {
+          mode: o.agregar.length > 0 ? 0o600 : 0o644,
+        });
     }
     if (o.json) imprimir(salidaJsonDeInstantanea(resultado, ruta));
     else process.stdout.write(informeDeInstantanea(resultado, ruta, o.idioma));

@@ -10,6 +10,7 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
+  statSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -210,6 +211,8 @@ describe("catalogo instantanea", () => {
     const { archivo } = JSON.parse(r.salida) as { archivo: string };
     const escrita = readFileSync(archivo, "utf8");
     expect(escrita).toContain('"ruta": "agregado/SEMILLA-SIN-CONTROL.json"');
+    // Lo agregado puede venir de datos/privado/: la instantánea nace solo legible por su dueño (regla 17-bis a).
+    expect(statSync(archivo).mode & 0o777).toBe(0o600);
     expect(escrita).not.toContain(fuera);
     expect(escrita).not.toContain('"ruta": "../');
   });
