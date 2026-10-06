@@ -14,6 +14,7 @@ import {
   buscar,
   catalogoBase,
   conPrueba,
+  CUENTAS_BASE,
   editar,
   fijar,
   leer,
@@ -691,20 +692,30 @@ describe("el catálogo base (el real sin sus pruebas)", () => {
     const r = await validarCatalogo(catalogoBase());
     expect(r.estado).toBe("ok");
     expect(r.hallazgos.filter((h) => h.severidad !== "nota")).toEqual([]);
-    expect(r.hallazgos.map((h) => `${h.ruta} · ${h.campo}`)).toEqual([
-      "datos/marcos/cwe.json · fecha_version",
-      "datos/marcos/iso-iec-42001.json · fecha_version",
-      "datos/marcos/iso-iec-42001.json · fuente_oficial",
-      "datos/marcos/owasp-top10.json · fecha_version",
-    ]);
+    // Una nota por cada campo `por_verificar` de cada marco, sacados de los datos.
+    const porVerificar = catalogoBase()
+      .marcos.flatMap((a) =>
+        (
+          (JSON.parse(a.texto) as { por_verificar?: string[] })
+            .por_verificar ?? []
+        ).map((campo) => `${a.ruta} · ${campo}`),
+      )
+      .sort();
+    expect(porVerificar.length).toBe(CUENTAS_BASE.notas);
+    expect(r.hallazgos.map((h) => `${h.ruta} · ${h.campo}`).sort()).toEqual(
+      porVerificar,
+    );
+    expect(r.hallazgos.every((h) => h.regla === "marco/por-verificar")).toBe(
+      true,
+    );
     expect(r.conteos).toMatchObject({
-      marcos: 14,
-      equivalencias: 1,
-      controles: 38,
-      herramientas: 13,
+      marcos: CUENTAS_BASE.marcos,
+      equivalencias: CUENTAS_BASE.mapas,
+      controles: CUENTAS_BASE.controles,
+      herramientas: CUENTAS_BASE.herramientas,
       errores: 0,
       advertencias: 0,
-      notas: 4,
+      notas: CUENTAS_BASE.notas,
     });
   });
 
@@ -1004,5 +1015,44 @@ describe("el detalle de un campo que no cumple el esquema se lee en los dos idio
       regla: "esquema/campo-desconocido",
       campo: "resultado_esperado.extra",
     });
+  });
+});
+
+describe("aprobar una prueba revisada (§ 6.4)", () => {
+  it("el hallazgo da la huella a registrar, y con ella registrada la prueba se publica", async () => {
+    const c = catalogoBase();
+    const p = referencia();
+    p.id = "PR-CASO-001";
+    p.revision_contenido = "revisada_y_aprobada";
+    const ruta = conPrueba(c, p);
+    const esperada = await huellaDeRevision(Prueba.parse(p));
+
+    const antes = await validarCatalogo(c);
+    const h = antes.hallazgos.find(
+      (x) => x.regla === "prueba/revision-sin-registro" && x.ruta === ruta,
+    );
+    expect(h?.detalle?.es).toBe(`huella del contenido a revisar: ${esperada}`);
+    expect(h?.detalle?.en).toBe(
+      `fingerprint of the content to review: ${esperada}`,
+    );
+
+    const registrada = catalogoBase();
+    conPrueba(registrada, {
+      ...p,
+      revision: {
+        fecha: "2026-10-05",
+        por: "revisora",
+        decision: { es: "Revisada y aprobada.", en: "Reviewed and approved." },
+        huella: esperada,
+      },
+    });
+    const despues = await validarCatalogo(registrada);
+    expect(
+      despues.hallazgos.filter((x) => x.regla.startsWith("prueba/revision")),
+    ).toEqual([]);
+    expect(
+      despues.catalogo.pruebas.find((x) => x.prueba.id === "PR-CASO-001")
+        ?.publicable,
+    ).toBe(true);
   });
 });

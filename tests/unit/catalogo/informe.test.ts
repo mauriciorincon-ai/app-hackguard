@@ -12,7 +12,10 @@ import {
 } from "../../../src/engine/catalogo/informe.ts";
 import { construirInstantanea } from "../../../src/engine/catalogo/instantanea.ts";
 import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";
-import { catalogoBase, conPrueba, referencia } from "./ayuda.ts";
+import { catalogoBase, conPrueba, CUENTAS_BASE, referencia } from "./ayuda.ts";
+
+const { marcos, mapas, controles, herramientas, familias, notas } = CUENTAS_BASE;
+const inventario = `${marcos} marcos · ${mapas} mapa${mapas === 1 ? "" : "s"} de equivalencias · ${controles} controles · ${herramientas} herramientas`;
 
 async function conSemilla(cambio: (p: Record<string, unknown>) => void) {
   const c = catalogoBase();
@@ -38,15 +41,15 @@ describe("informeDeValidacion", () => {
     const texto = informeDeValidacion(r, "es");
     expect(texto.split("\n")[0]).toBe("Catálogo: inválido");
     expect(texto).toContain(
-      "14 marcos · 1 mapa de equivalencias · 38 controles · 13 herramientas · 0 pruebas",
+      `${inventario} · 0 pruebas`,
     );
-    expect(texto).toContain("1 error · 0 advertencias · 4 notas");
+    expect(texto).toContain(`1 error · 0 advertencias · ${notas} notas`);
     expect(texto).toContain("Errores (1)");
     expect(texto).toContain(
       "  ✗ datos/pruebas/SEMILLA-REFERENCIA.json · marco_id",
     );
     expect(texto).toContain("prueba/sin-marco: La prueba no cita un marco");
-    expect(texto).toContain("Notas (4)");
+    expect(texto).toContain(`Notas (${notas})`);
     expect(texto.endsWith("\n")).toBe(true);
   });
 
@@ -80,7 +83,7 @@ describe("informeDeValidacion", () => {
       conteos: { ...r.conteos, notas: 0 },
     };
     expect(informeDeValidacion(sinNotas, "es")).toBe(
-      "Catálogo: ok\n  14 marcos · 1 mapa de equivalencias · 38 controles · 13 herramientas · 0 pruebas (0 publicables, 0 pendientes de revisión)\n  0 errores · 0 advertencias · 0 notas\n",
+      `Catálogo: ok\n  ${inventario} · 0 pruebas (0 publicables, 0 pendientes de revisión)\n  0 errores · 0 advertencias · 0 notas\n`,
     );
   });
 
@@ -127,22 +130,22 @@ describe("informe de la instantánea", () => {
     expect(es).toContain("Instantánea emitida: datos/instantaneas/x.json");
     expect(es).toContain(`  huella: ${r.instantanea.huella}`);
     expect(es).toContain(
-      "pruebas publicadas: 0 · pendientes de revisión: 0 · advertencias y notas: 4",
+      `pruebas publicadas: 0 · pendientes de revisión: 0 · advertencias y notas: ${notas}`,
     );
     expect(es).toContain(
       [
         "  vigencia (por revisar desde 30 días, vencido desde 60):",
         "    pruebas: ninguna",
-        "    marcos: ✓ Vigente 14",
-        "    herramientas: ✓ Vigente 13",
-        "    familias: ninguna · sin pruebas publicadas 4",
+        `    marcos: ✓ Vigente ${marcos}`,
+        `    herramientas: ✓ Vigente ${herramientas}`,
+        `    familias: ninguna · sin pruebas publicadas ${familias}`,
       ].join("\n"),
     );
     const en = informeDeInstantanea(r, null, "en");
     expect(en).toContain(`Snapshot written: ${r.archivo}`);
     expect(en).toContain("evaluation date: 2026-10-15");
     expect(en).toContain(
-      "  freshness (review due from 30 days, overdue from 60):\n    tests: none\n    frameworks: ✓ Current 14",
+      `  freshness (review due from 30 days, overdue from 60):\n    tests: none\n    frameworks: ✓ Current ${marcos}`,
     );
     expect(salidaJsonDeInstantanea(r, null)).toMatchObject({
       emitida: true,
@@ -151,7 +154,7 @@ describe("informe de la instantánea", () => {
       huella: r.instantanea.huella,
       vigencia: {
         pruebas: { vigente: 0, por_revisar: 0, vencido: 0 },
-        marcos: { vigente: 14, por_revisar: 0, vencido: 0 },
+        marcos: { vigente: marcos, por_revisar: 0, vencido: 0 },
       },
     });
     expect(salidaJsonDeInstantanea(r, "a/b.json").archivo).toBe("a/b.json");
@@ -164,15 +167,15 @@ describe("informe de la instantánea", () => {
     const es = informeDeInstantanea(r, null, "es");
     expect(es).toContain("    pruebas: ! Por revisar 1\n");
     expect(es).toContain(
-      "    familias: ! Por revisar 1 · sin pruebas publicadas 3\n",
+      `    familias: ! Por revisar 1 · sin pruebas publicadas ${familias - 1}\n`,
     );
     const tarde = await construirInstantanea(c, "2026-12-15");
     if (!tarde.emitida) throw new Error("debía emitirse");
     expect(informeDeInstantanea(tarde, null, "en")).toContain(
-      "    frameworks: ✗ Overdue 14\n",
+      `    frameworks: ✗ Overdue ${marcos}\n`,
     );
     expect(informeDeInstantanea(tarde, null, "en")).toContain(
-      "    families: ✗ Overdue 1 · no published tests 3\n",
+      `    families: ✗ Overdue 1 · no published tests ${familias - 1}\n`,
     );
   });
 
@@ -182,7 +185,7 @@ describe("informe de la instantánea", () => {
     const sinEtiquetas = structuredClone(r);
     sinEtiquetas.instantanea.catalogo.estados = [];
     expect(informeDeInstantanea(sinEtiquetas, null, "es")).toContain(
-      "    marcos: vigente 14\n",
+      `    marcos: vigente ${marcos}\n`,
     );
   });
 

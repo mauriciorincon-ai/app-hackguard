@@ -31,7 +31,13 @@ async function principal(argv: string[]): Promise<number> {
   if (positionals.length > 0) throw new RangeError(positionals.join(" "));
   if (values.idioma !== "es" && values.idioma !== "en")
     throw new RangeError("--idioma es|en");
-  const datos = JSON.parse(readFileSync(values.conjunto, "utf8")) as unknown;
+  let datos: unknown;
+  try {
+    datos = JSON.parse(readFileSync(values.conjunto, "utf8")) as unknown;
+  } catch (e) {
+    const detalle = e instanceof Error ? e.message : String(e);
+    throw new Error(`error de lectura / read error: ${values.conjunto}: ${detalle}`);
+  }
   const evaluacion = await evaluarConjunto(datos);
   process.stdout.write(
     values.json

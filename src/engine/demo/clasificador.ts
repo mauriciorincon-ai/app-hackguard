@@ -1,12 +1,14 @@
 // Activo demo de la familia `modelo_decision` (E-17 a E-23): un clasificador determinista propio que imita el
 // CONTRATO DE RESPUESTA de Jev (TypeSafe) sin ser Jev. Recibe un estado tipado y preguntas tipadas y devuelve
-// `{model, answers, usage}`: una pregunta Choice con `choice`, `probabilities` que suman 1 y `confidence =
-// (p_max − 1/n)/(1 − 1/n)`, y una pregunta Noul con `noul` (probabilidad de «sí»), como documenta el fabricante.
+// `{model, answers, usage}`: una pregunta Choice con `choice`, `probabilities` que suman 10 000 diezmilésimos y
+// `confidence = (p_max − 1/n)/(1 − 1/n)`, y una pregunta Noul con `noul` (probabilidad de «sí»), como documenta el
+// fabricante.
 // Que `answers` vaya indexado por el id de la pregunta es nuestro: el fabricante no documenta la anidación.
 //
 // El dominio es neutro y sintético: el triaje de solicitudes de socios de una biblioteca municipal. Las
-// probabilidades salen de pesos enteros por regla, en diezmilésimos por resto mayor, así que suman exactamente
-// 1 y dan los mismos bytes en cualquier motor. Tres imperfecciones son A PROPÓSITO, para que las pruebas de la
+// probabilidades salen de pesos enteros por regla, en diezmilésimos por resto mayor: suman exactamente 10 000
+// diezmilésimos (en coma flotante, la suma puede diferir de 1 en el último bit) y dan los mismos bytes en
+// cualquier motor. Tres imperfecciones son A PROPÓSITO, para que las pruebas de la
 // familia tengan algo que medir:
 //   1. el léxico de la nota cubre el inglés y solo parte del español (Jev pierde exactitud en español);
 //   2. busca palabras sin entender la negación («I wasn't ill» cuenta como enfermedad);
@@ -257,8 +259,10 @@ function elegir(diezmilesimos: Readonly<Record<string, number>>): string {
 
 function invalida(error: z.ZodError): RangeError {
   const p = error.issues[0];
+  const ruta = p.path.map(String).join(".") || "(raíz / root)";
+  // El mensaje de Zod viene en inglés: se usa su código, que no tiene idioma.
   return new RangeError(
-    `petición inválida: ${p.path.map(String).join(".") || "(raíz)"}: ${p.message}`,
+    `petición inválida en ${ruta} (${p.code}) / invalid request at ${ruta} (${p.code})`,
   );
 }
 

@@ -596,6 +596,16 @@ export async function validarCatalogo(
   }
 
   let patrones: PatronCompilado[] = [];
+  // El hallazgo `filtro/marcada` nombra el patrón con su nombre en cada idioma, no con su id.
+  const nombresDePatron = new Map(
+    (filtroDatos?.patrones ?? []).map((p) => [p.id, p.nombre]),
+  );
+  const patronMarcado = (id: string): Texto => {
+    const nombre = nombresDePatron.get(id);
+    return nombre === undefined
+      ? comillas(id)
+      : t(`«${nombre.es}»`, `“${nombre.en}”`);
+  };
   if (filtroDatos !== null) {
     const compilado = compilarPatrones(filtroDatos);
     patrones = compilado.patrones;
@@ -908,7 +918,7 @@ export async function validarCatalogo(
   ];
   for (const { ruta, datos } of resto) {
     for (const m of filtrar(datos, patrones)) {
-      registro.agregar("filtro/marcada", ruta, m.campo, comillas(m.patron));
+      registro.agregar("filtro/marcada", ruta, m.campo, patronMarcado(m.patron));
     }
   }
 
@@ -934,7 +944,7 @@ export async function validarCatalogo(
         "filtro/marcada",
         archivo.ruta,
         m.campo,
-        comillas(m.patron),
+        patronMarcado(m.patron),
       );
     }
   }
@@ -1118,9 +1128,15 @@ export async function validarCatalogo(
     });
 
     // Revisión de contenido (§ 6.4): el filtro marca; solo una persona aprueba lo marcado.
+    // La huella del contenido revisado se muestra en el detalle: es lo que la persona registra en
+    // `revision.huella` al aprobar, y no hay otra forma de obtenerla sin escribir código.
+    const huellaActual = await huellaDeRevision(p);
     const revisionAlDia =
-      p.revision !== undefined &&
-      (await huellaDeRevision(p)) === p.revision.huella;
+      p.revision !== undefined && huellaActual === p.revision.huella;
+    const conHuella = t(
+      `huella del contenido a revisar: ${huellaActual}`,
+      `fingerprint of the content to review: ${huellaActual}`,
+    );
     if (
       p.estado_aprobacion === "aprobada" &&
       p.revision_contenido === "marcada_para_revision"
@@ -1129,13 +1145,19 @@ export async function validarCatalogo(
         "prueba/aprobada-sin-revision",
         ruta,
         "revision_contenido",
+        conHuella,
       );
     }
     if (
       p.revision_contenido === "revisada_y_aprobada" &&
       p.revision === undefined
     ) {
-      registro.agregar("prueba/revision-sin-registro", ruta, "revision");
+      registro.agregar(
+        "prueba/revision-sin-registro",
+        ruta,
+        "revision",
+        conHuella,
+      );
     } else if (
       p.revision_contenido === "revisada_y_aprobada" &&
       !revisionAlDia
@@ -1144,6 +1166,7 @@ export async function validarCatalogo(
         "prueba/revision-desactualizada",
         ruta,
         "revision.huella",
+        conHuella,
       );
     }
     const revisadaAlDia =
@@ -1154,7 +1177,7 @@ export async function validarCatalogo(
         revisadaAlDia ? "filtro/marcada-y-revisada" : "filtro/marcada",
         ruta,
         m.campo,
-        comillas(m.patron),
+        patronMarcado(m.patron),
       );
     }
 

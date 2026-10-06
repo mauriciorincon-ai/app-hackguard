@@ -56,26 +56,16 @@ export type ResultadoDeInstantanea =
 export const nombreDeInstantanea = (fecha: string, huellaCompleta: string) =>
   `${fecha}-${huellaCompleta.slice(0, 12)}.json`;
 
-/** La huella de una instantánea se calcula sobre todo menos el propio campo `huella`. */
+/**
+ * La huella de una instantánea se calcula sobre todo menos el propio campo `huella`. Se quita ese campo en vez
+ * de elegir los demás: un campo nuevo entra solo en la huella.
+ */
 export function huellaDeInstantanea(
-  instantanea: Omit<Instantanea, "huella">,
+  instantanea: Omit<Instantanea, "huella"> | Instantanea,
 ): Promise<string> {
-  const {
-    formato,
-    fecha_evaluacion,
-    catalogo,
-    semaforo,
-    pendientes_de_revision,
-    advertencias,
-  } = instantanea;
-  return huella({
-    formato,
-    fecha_evaluacion,
-    catalogo,
-    semaforo,
-    pendientes_de_revision,
-    advertencias,
-  });
+  const cuerpo: Record<string, unknown> = { ...instantanea };
+  delete cuerpo.huella;
+  return huella(cuerpo);
 }
 
 /**

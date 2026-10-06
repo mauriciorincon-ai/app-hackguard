@@ -29,7 +29,10 @@ describe("la evaluación del conjunto de referencia", () => {
     for (let i = 0; i < 2; i++)
       huellas.add((await evaluarConjunto(leer())).huella_de_respuestas);
     expect(huellas.size).toBe(1);
-    expect(evaluacion.huella_de_respuestas).toMatch(/^[0-9a-f]{64}$/);
+    // La huella que la guía (E1) y el e2e de determinismo prometen: un cambio en el sorteo o en los pesos la mueve.
+    expect(evaluacion.huella_de_respuestas).toBe(
+      "7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d",
+    );
   });
 
   it("mide 26 casos en los dos idiomas con los parámetros del conjunto", () => {
@@ -37,6 +40,7 @@ describe("la evaluación del conjunto de referencia", () => {
       id: "biblioteca-municipal",
       version: "1.0.0",
       casos: 26,
+      advertencia: leer().advertencia,
     });
     expect(evaluacion.parametros).toMatchObject({
       semilla: 20261004,
@@ -98,18 +102,18 @@ describe("un conjunto inválido no se evalúa", () => {
     [
       "un caso repetido",
       (c: ReturnType<typeof leer>) => c.casos.push(c.casos[0]),
-      /casos: casos con id repetido/,
+      /conjunto inválido en casos \(casos con id repetido \/ repeated case ids\)/,
     ],
     [
       "una regla que la política no tiene",
       (c: ReturnType<typeof leer>) => (c.casos[0].regla = "otra"),
-      /casos\.0\.regla: regla inexistente: otra/,
+      /en casos\.0\.regla \(regla inexistente \/ no such rule: otra\)/,
     ],
     [
       "una nota igual en los dos idiomas",
       (c: ReturnType<typeof leer>) =>
         (c.casos[0].nota = { es: "Lo mismo.", en: "Lo mismo." }),
-      /casos\.0\.nota: la nota es igual en los dos idiomas/,
+      /en casos\.0\.nota \(la nota es igual en los dos idiomas \/ the note is the same in both languages\)/,
     ],
     [
       "una banda que no contiene su umbral",
@@ -120,12 +124,12 @@ describe("un conjunto inválido no se evalúa", () => {
           desde: 0.6,
           hasta: 0.8,
         }),
-      /parametros\.banda: la banda no contiene el umbral/,
+      /en parametros\.banda \(la banda no contiene el umbral \/ the band does not contain the threshold\)/,
     ],
     [
       "un campo que no existe",
       (c: ReturnType<typeof leer>) => (c.extra = 1),
-      /conjunto inválido: \(raíz\)/,
+      /^conjunto inválido en \(raíz \/ root\) \(unrecognized_keys\) \/ invalid set at \(raíz \/ root\)/,
     ],
   ])("%s", async (_, cambio, error) => {
     const c = leer();
@@ -204,7 +208,7 @@ describe("pnpm clasificador:demo", () => {
   it.each([
     [["--idioma", "fr"], "--idioma es|en"],
     [["sobra"], "sobra"],
-    [["--conjunto", "no-existe.json"], "no-existe.json"],
+    [["--conjunto", "no-existe.json"], "error de lectura / read error: no-existe.json"],
     [["--conjunto", "package.json"], "conjunto inválido"],
     [["--opcion-que-no-existe"], "opcion-que-no-existe"],
   ])("sale 3 y dice por qué: %j", (argumentos, menciona) => {

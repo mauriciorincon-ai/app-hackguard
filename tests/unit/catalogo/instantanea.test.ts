@@ -13,6 +13,7 @@ import {
   catalogoBase,
   catalogoReal,
   conPrueba,
+  CUENTAS_BASE,
   referencia,
   ULTIMA_VERIFICACION,
 } from "./ayuda.ts";
@@ -47,15 +48,12 @@ describe("construirInstantanea", () => {
     const r = await construirInstantanea(catalogoBase(), FECHA);
     if (!r.emitida) throw new Error("debía emitirse");
     const { semaforo } = r.instantanea;
-    expect(semaforo.marcos).toHaveLength(14);
-    expect(semaforo.herramientas).toHaveLength(13);
+    expect(semaforo.marcos).toHaveLength(CUENTAS_BASE.marcos);
+    expect(semaforo.herramientas).toHaveLength(CUENTAS_BASE.herramientas);
     expect(semaforo.marcos.every((m) => m.estado === "vigente")).toBe(true);
-    expect(semaforo.familias.map((f) => f.estado)).toEqual([
-      null,
-      null,
-      null,
-      null,
-    ]);
+    expect(semaforo.familias.map((f) => f.estado)).toEqual(
+      Array<null>(CUENTAS_BASE.familias).fill(null),
+    );
     const { huella, ...cuerpo } = r.instantanea;
     const otro = structuredClone(cuerpo);
     otro.semaforo.marcos[0].estado = "vencido";

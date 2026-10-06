@@ -109,3 +109,31 @@ export function conPrueba(
   catalogo.pruebas.push({ ruta: destino, texto: JSON.stringify(prueba) });
   return destino;
 }
+
+/**
+ * Las cuentas del catálogo base, sacadas de los datos: las pruebas que imprimen o comparan conteos las usan, para
+ * que agregar un marco, una herramienta o una familia no rompa pruebas que no miden eso.
+ */
+export const CUENTAS_BASE = {
+  marcos: base.marcos.length,
+  mapas: base.equivalencias.length,
+  controles: base.controles
+    .map(
+      (a) =>
+        JSON.parse(a.texto) as { areas: { controles: unknown[] }[] },
+    )
+    .reduce(
+      (n, capa) => n + capa.areas.reduce((m, ar) => m + ar.controles.length, 0),
+      0,
+    ),
+  herramientas: base.herramientas.length,
+  familias: (
+    JSON.parse(base.familias?.texto ?? '{"familias":[]}') as {
+      familias: unknown[];
+    }
+  ).familias.length,
+  /** Una nota por cada campo `por_verificar` de cada marco (`marco/por-verificar`). */
+  notas: base.marcos
+    .map((a) => JSON.parse(a.texto) as { por_verificar?: unknown[] })
+    .reduce((n, m) => n + (m.por_verificar?.length ?? 0), 0),
+};

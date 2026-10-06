@@ -79,7 +79,7 @@ export const ConjuntoDeReferencia = z
     if (new Set(ids).size !== ids.length)
       ctx.addIssue({
         code: "custom",
-        message: "casos con id repetido",
+        message: "casos con id repetido / repeated case ids",
         path: ["casos"],
       });
     const reglas = new Set(c.politica.map((r) => r.id));
@@ -87,13 +87,13 @@ export const ConjuntoDeReferencia = z
       if (!reglas.has(x.regla))
         ctx.addIssue({
           code: "custom",
-          message: `regla inexistente: ${x.regla}`,
+          message: `regla inexistente / no such rule: ${x.regla}`,
           path: ["casos", i, "regla"],
         });
       if (x.nota.es === x.nota.en)
         ctx.addIssue({
           code: "custom",
-          message: "la nota es igual en los dos idiomas",
+          message: "la nota es igual en los dos idiomas / the note is the same in both languages",
           path: ["casos", i, "nota"],
         });
     });
@@ -101,7 +101,7 @@ export const ConjuntoDeReferencia = z
     if (!(desde <= umbral && umbral <= hasta))
       ctx.addIssue({
         code: "custom",
-        message: "la banda no contiene el umbral",
+        message: "la banda no contiene el umbral / the band does not contain the threshold",
         path: ["parametros", "banda"],
       });
   });
@@ -132,7 +132,7 @@ export interface MedidasDeIdioma {
 
 export interface EvaluacionDelDemo {
   modelo: string;
-  conjunto: { id: string; version: string; casos: number };
+  conjunto: { id: string; version: string; casos: number; advertencia: Texto };
   parametros: ConjuntoDeReferencia["parametros"];
   /** Huella de las respuestas de la primera corrida en los dos idiomas: la misma entrada da la misma huella. */
   huella_de_respuestas: string;
@@ -169,8 +169,12 @@ export async function evaluarConjunto(
   const leido = ConjuntoDeReferencia.safeParse(datos);
   if (!leido.success) {
     const p = leido.error.issues[0];
+    const ruta = p.path.map(String).join(".") || "(raíz / root)";
+    // El mensaje de Zod viene en inglés: se usa su código, que no tiene idioma. Las comprobaciones propias
+    // (`custom`) traen su mensaje en los dos idiomas.
+    const detalle = p.code === "custom" ? p.message : p.code;
     throw new RangeError(
-      `conjunto inválido: ${p.path.map(String).join(".") || "(raíz)"}: ${p.message}`,
+      `conjunto inválido en ${ruta} (${detalle}) / invalid set at ${ruta} (${detalle})`,
     );
   }
   const c = leido.data;
@@ -236,7 +240,12 @@ export async function evaluarConjunto(
 
   return {
     modelo: MODELO_DEMO,
-    conjunto: { id: c.id, version: c.version, casos: c.casos.length },
+    conjunto: {
+      id: c.id,
+      version: c.version,
+      casos: c.casos.length,
+      advertencia: c.advertencia,
+    },
     parametros: c.parametros,
     huella_de_respuestas: await huella(primera),
     decision: {
@@ -258,7 +267,11 @@ export async function evaluarConjunto(
         etiqueta: etiquetaDe(r.id).decision,
         eleccion: eleccion(d.probabilities),
         probabilidades: d.probabilities,
-        margen: (d.probabilities[banda.opcion] ?? 0) - banda.umbral,
+        // En diezmilésimos enteros, como las probabilidades: la resta en coma flotante deja ruido (0,0482…02).
+        margen:
+          (Math.round((d.probabilities[banda.opcion] ?? 0) * 10000) -
+            Math.round(banda.umbral * 10000)) /
+          10000,
         urgente: etiquetaDe(r.id).urgente,
         noul: noulDe(r.respuesta).noul,
       };
@@ -278,6 +291,15 @@ const numero = (x: number | null, idioma: Idioma, decimales = 4) =>
 const deCuantos = (t: Tasa, idioma: Idioma) =>
   idioma === "es" ? `${t.cuenta} de ${t.n}` : `${t.cuenta} of ${t.n}`;
 
+/** Las opciones del contrato son identificadores en español: en el informe en inglés llevan su glosa. */
+const GLOSA_EN: Record<string, string> = {
+  aprobar: "approve",
+  rechazar: "reject",
+  revisar: "review",
+};
+const conGlosa = (opcion: string) =>
+  GLOSA_EN[opcion] === undefined ? opcion : `${opcion} (${GLOSA_EN[opcion]})`;
+
 const fila = (rotulo: string, es: string, en: string) =>
   `  ${rotulo.padEnd(30)}${es.padEnd(16)}${en}`;
 
@@ -293,6 +315,7 @@ export function informeDelDemo(e: EvaluacionDelDemo, idioma: Idioma): string {
         `Clasificador demo ${e.modelo} sobre «${e.conjunto.id}» ${e.conjunto.version}`,
         `  ${e.conjunto.casos} casos en español y en inglés · semilla ${p.semilla} · ${p.repeticiones} corridas con ruido de ${p.ruido_por_mil} por mil`,
         `  huella de las respuestas: ${e.huella_de_respuestas}`,
+        `  ${e.conjunto.advertencia.es}`,
         "",
         `Decisión (Choice: ${OPCIONES_DE_DECISION.join(" · ")}), medida sobre las probabilidades y no sobre «confidence»`,
         fila("", "español", "inglés"),
@@ -329,8 +352,9 @@ export function informeDelDemo(e: EvaluacionDelDemo, idioma: Idioma): string {
         `Demo classifier ${e.modelo} on “${e.conjunto.id}” ${e.conjunto.version}`,
         `  ${e.conjunto.casos} cases in Spanish and in English · seed ${p.semilla} · ${p.repeticiones} runs with ${p.ruido_por_mil} per mille noise`,
         `  response fingerprint: ${e.huella_de_respuestas}`,
+        `  ${e.conjunto.advertencia.en}`,
         "",
-        `Decision (Choice: ${OPCIONES_DE_DECISION.join(" · ")}), measured on the probabilities, not on “confidence”`,
+        `Decision (Choice: ${OPCIONES_DE_DECISION.map(conGlosa).join(" · ")}), measured on the probabilities, not on “confidence”`,
         fila("", "Spanish", "English"),
         fila(
           "accuracy",
@@ -348,7 +372,7 @@ export function informeDelDemo(e: EvaluacionDelDemo, idioma: Idioma): string {
           deCuantos(d.es.banda, idioma),
           deCuantos(d.en.banda, idioma),
         ),
-        `  the band: “${b.opcion}” without a person if p ≥ ${numero(b.umbral, idioma, 2)}; measured between ${numero(b.desde, idioma, 2)} and ${numero(b.hasta, idioma, 2)}`,
+        `  the band: “${conGlosa(b.opcion)}” without a person if p ≥ ${numero(b.umbral, idioma, 2)}; measured between ${numero(b.desde, idioma, 2)} and ${numero(b.hasta, idioma, 2)}`,
         "",
         "Urgency (Noul)",
         fila(

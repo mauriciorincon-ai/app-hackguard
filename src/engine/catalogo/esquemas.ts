@@ -323,6 +323,10 @@ export type CapaDeControles = z.infer<typeof CapaDeControles>;
 
 // ── Herramienta de prueba (§ 6.3, E-26) ──────────────────────────────────────────────────────────
 
+// Un adaptador trae su selector: agregar uno (promptfoo, PyRIT, Inspect) añade aquí su forma, que es el contrato
+// del adaptador. Es una lista declarada a propósito, no una cardinalidad oculta: en el S3, cuando lleguen los
+// adaptadores, cada selector pasa a `src/engine/adaptadores/<id>/selector.ts` y esta unión se arma desde ese
+// registro (ADR-002, decisión 6; hallazgo AU-16).
 export const TIPOS_DE_SELECTOR = [
   "garak",
   "zap",

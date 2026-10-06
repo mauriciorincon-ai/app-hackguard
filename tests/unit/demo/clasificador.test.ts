@@ -98,7 +98,7 @@ describe("el contrato de respuesta", () => {
   });
 });
 
-describe("las distribuciones suman exactamente 1", () => {
+describe("las distribuciones suman exactamente 10 000 diezmilésimos", () => {
   it("en cada caso del conjunto, en los dos idiomas, sin ruido y con ruido en cinco semillas", () => {
     let revisadas = 0;
     for (const caso of conjunto.casos) {
@@ -116,6 +116,9 @@ describe("las distribuciones suman exactamente 1", () => {
           );
           const p = decision(r).probabilities;
           expect(diezmilesimos(p), `${caso.id} ${idioma}`).toBe(10000);
+          // En coma flotante, la suma puede diferir de 1 en el último bit (0,9999999999999999), nunca más.
+          const suma = Object.values(p).reduce((a, x) => a + x, 0);
+          expect(Math.abs(suma - 1)).toBeLessThanOrEqual(1e-12);
           expect(Object.values(p).every((x) => x > 0 && x < 1)).toBe(true);
           expect(noul(r) > 0 && noul(r) < 1).toBe(true);
           revisadas += 1;
@@ -246,7 +249,7 @@ describe("peticiones inválidas", () => {
     ],
     ["sin preguntas", { state: ESTADO, questions: [] }],
   ] as [string, PeticionDemo][])("%s", (_, p) => {
-    expect(() => clasificar(p)).toThrow(/^petición inválida: /);
+    expect(() => clasificar(p)).toThrow(/^petición inválida en .* \/ invalid request at /);
   });
 
   it.each([
