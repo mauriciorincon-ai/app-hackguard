@@ -53,7 +53,7 @@
     }
   ],
   "notas": {
-    "es": "0.123.1 es la última versión publicada (2026-09-18). El proveedor para modelos de decisión de TypeSafe se fusionó el 2026-10-02 y ninguna versión publicada lo trae todavía; por eso ninguna prueba de modelo_decision la recomienda aún.",
-    "en": "0.123.1 is the latest published version (2026-09-18). The provider for TypeSafe decision models was merged on 2026-10-02 and no published version ships it yet; that is why no modelo_decision test recommends it yet."
+    "es": "Al verificarla, el 2026-10-04, 0.123.1 era la última versión publicada (2026-09-18) y ninguna versión publicada traía el proveedor para modelos de decisión de TypeSafe, que se fusionó el 2026-10-02. Por eso ninguna prueba de modelo_decision la recomienda. La 0.124.0, publicada el 2026-10-06 (UTC), ya lo trae; recomendarla exige volver a verificar la herramienta en esa versión.",
+    "en": "When it was verified, on 2026-10-04, 0.123.1 was the latest published version (2026-09-18), and no published version shipped the provider for TypeSafe decision models, merged on 2026-10-02. That is why no modelo_decision test recommends it. Version 0.124.0, published on 2026-10-06 (UTC), ships it; recommending it requires verifying the tool again at that version."
   }
 }

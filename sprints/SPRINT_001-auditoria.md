@@ -4,14 +4,17 @@
 
 - **Fase 1:** completa; el usuario la aprobó el 2026-10-05 con «apruebo», con las cinco recomendaciones.
 - **Fase 2:** correcciones pagadas el 2026-10-05.
-  - **Pagados:** 52 de los 56 hallazgos, cada uno con su commit y, los que crean gates, con su demo en rojo. El
-    registro está en «Fase 2 de la auditoría» de `sprints/SPRINT_001-implementation-log.md`.
+  - **Pagados:** 53 de los 56 hallazgos: 52 en cuatro commits y AU-38 con el cuerpo del PR #8 al día.
+    - Los que crean gates se vieron en rojo con `scripts/demo-rojo.sh`, salvo AU-11, que se vio en rojo con una
+      simulación sin mutar archivos.
+    - Las dos aserciones de AU-26 se demostraron en la segunda pasada.
+    - El registro está en «Fase 2 de la auditoría» de `sprints/SPRINT_001-implementation-log.md`.
   - **Deuda declarada, con su registro hecho:**
     - AU-14 (al S2, nota en el ADR-003);
     - AU-20 (al S3, desviación en la bitácora);
     - AU-47 (decide la planeadora).
-  - **Al cierre:** AU-38 (el cuerpo del PR).
-- **Falta:** la segunda pasada independiente de frases caducadas y de evidencia.
+- **Segunda pasada:** la hizo otro auditor independiente el 2026-10-05 (anexo E). Encontró 5 medios y 7 bajos, y
+  sus pagos están en «Segunda pasada» de la bitácora.
 
 **Veredicto de la Fase 1: requiere ajustes.** No hubo ningún hallazgo crítico. Quitando duplicados quedaron **56
 hallazgos: 7 altos, 21 medios y 28 bajos**.
@@ -596,17 +599,17 @@ El repo queda intacto: `git status` está limpio y el HEAD sigue en `10c277c`. T
 ##### [ALTO] El filtro de contenido no ve las cargas escritas dentro de una línea, y la parada 2 lo presenta como prueba de que nada operativo pasó
 
 - **Ubicación:** `datos/filtro/patrones.json:19,40,61,81`; `docs/GUIA-DE-PRUEBA.html:210-215`; `docs/MANUAL-DE-USO.md:91` y `:212`.
-- **Qué pasa (confirmado con una sonda en Node sobre los patrones reales):** ninguno de estos textos se marca:
-  - `<script>alert(1)</script>`
-  - `' OR '1'='1' --`
-  - «Ignore all previous instructions…»
-  - `../../../../etc/passwd`
-  - `` `; cat /etc/passwd` ``
-  - `{{7*7}}`
-  - un bloque con triple comilla invertida sin lenguaje
-  - pasos en viñetas
-  - un `curl` sangrado
-  - `?q=<script>` sin codificar
+- **Qué pasa (confirmado con una sonda en Node sobre los patrones reales):** ninguno de estos textos se marca. Las sondas literales se describen en prosa, sin copiarlas (regla dura 3):
+  - una etiqueta de script en línea;
+  - una tautología de SQL tras una comilla;
+  - una instrucción maliciosa escrita como frase;
+  - un recorrido de ruta hacia un archivo del sistema;
+  - un comando encadenado dentro de una línea;
+  - una expresión de plantilla;
+  - un bloque con triple comilla invertida sin lenguaje;
+  - pasos en viñetas;
+  - un comando de red sangrado;
+  - una dirección con una etiqueta de script sin codificar en el parámetro.
 
   Solo se marcan las cuatro formas que fijó DA-03. Hay que precisar dos cosas:
   - Las cuatro formas son exactamente las de la orden: no hay desvío del plan.
@@ -1579,7 +1582,7 @@ Caducarán solas en el S2 o el S3: MANUAL `:83` y `:204` («llega en los sprints
 
 ## Anexo E — Segunda pasada (frases caducadas y de evidencia), tal como la entregó su auditor
 
-Auditor independiente, 2026-10-05. Las sondas literales del filtro que citaba se describen en vez de copiarse (regla dura 3).
+Auditor independiente, 2026-10-05. Las sondas literales del filtro que citaba se describen en vez de copiarse (regla dura 3). Lo mismo se hizo en el anexo B al pagar B6.
 
 ### Segunda pasada de la Fase 2 del S1 de HackGuard: casilla 4 y regla 27
 

@@ -48,7 +48,7 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
   - umbrales de 30 y 60 días como dato;
   - la matriz de envejecimiento como gate (regla 23).
 - **Instantáneas:**
-  - `datos/instantaneas/2026-10-05-703a0479d567.json` es la oficial;
+  - `datos/instantaneas/2026-10-05-739ed8c104f0.json` es la oficial;
   - su gate de publicación;
   - la revalidación de las instantáneas guardadas.
 - **El clasificador demo y sus métricas puras:**
@@ -90,14 +90,14 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
 
 - **Determinismo (RNF-01):**
   - `tests/e2e/determinismo.spec.ts` evalúa 11 días después de la última verificación del catálogo.
-  - El 2026-10-05 eso dio la instantánea del 2026-10-16, con la huella
-    `2c1c927d29db3437a464c0e2b70ce02e06d621d6dcde68297214cbf16015828a` en Node (tres corridas del CLI) y en Chromium
-    153.0.8010.12, Firefox 155.0 y WebKit 26.6.
-  - El umbral (2026-11-04) da `d8c379af…`, con estados en «por revisar».
+  - El 2026-10-05, después de corregir la nota de promptfoo en la segunda pasada, eso dio la instantánea del
+    2026-10-16, con la huella `2c062f72ce57175c3d5ee8eb497024c693f4a23164721859beaf5829c706c302` en Node (tres
+    corridas del CLI) y en Chromium 153.0.8010.12, Firefox 155.0 y WebKit 26.6 («9 passed» en local).
+  - El umbral (2026-11-04) da `9b1f7542…`, con estados en «por revisar».
   - El clasificador da `7d94f4a1…` en los cuatro motores.
   - El navegador recibe las listas en orden inverso.
 - **Cobertura ≥ 90 % en `src/engine/`:** 99,38 % de sentencias, 94,86 % de ramas, 99,57 % de funciones y 99,42 % de líneas en los 14 archivos de `src/engine/`, calculado desde `coverage/coverage-final.json` de la corrida de `pnpm test` del 2026-10-05. El umbral del 90 % lo aplica `vitest.config.ts` en cada corrida de `pnpm test`, también en la CI.
-- **`demo-rojo.sh` enrojece el validador, el filtro y el gate de publicación:** en las fases 1 a 4, más 29 corridas válidas en la fase 2 de la auditoría y 1 en el `/deploy-check` (bitácora).
+- **`demo-rojo.sh`:** enrojece el validador, el filtro y el gate de publicación en las fases 1 a 4. Después hubo 29 corridas válidas en la fase 2 de la auditoría, 1 en el `/deploy-check` y 2 en la segunda pasada, sobre las aserciones del semáforo de AU-26 (bitácora).
 - **Tiempos:** ver Performance.
 - **`por_verificar` (aceptación: el summary los lista todos), 3 campos en 2 marcos:**
   - la fecha exacta de ISO/IEC 42001:2023 (solo consta el año);
@@ -129,10 +129,13 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
   - El detalle está en `sprints/SPRINT_001-auditoria.md`.
   - El usuario aprobó el plan el 2026-10-05, con cinco decisiones.
 - **Fase 2:**
-  - **Pagados:** 52 de 56, en cinco commits (`9dfa994` gates, `efb547a` código, `d53b05a` datos, `7ce50d7`
-    documentos y `09842c8` el fix del `/deploy-check`).
+  - **Pagados:** 53 de 56: 52 en cuatro commits (`9dfa994` gates, `efb547a` código, `d53b05a` datos y `7ce50d7`
+    documentos) y AU-38, con el cuerpo del PR #8 puesto al día.
+  - **Fix del `/deploy-check`:** `09842c8`, lo que escribe `--agregar` nace con permisos 600 (regla 17-bis a).
   - **Dependencia fuera del plan:** `5b0d6c1`, `compression` (ADR-005).
-  - **Demos:** cada gate nuevo tiene su demo en rojo en la bitácora.
+  - **Demos:** cada gate nuevo se vio en rojo con `scripts/demo-rojo.sh`, salvo AU-11, que se vio en rojo con una
+    simulación sin mutar archivos. Las dos aserciones de AU-26 se demostraron en la segunda pasada. Todo está en
+    la bitácora.
 - **Deuda declarada:** AU-14 (S2), AU-20 (S3) y AU-47 (decide la planeadora). Ver «Deuda técnica aceptada».
 - **Segunda pasada** de frases caducadas y de evidencia, con otro auditor independiente: pendiente al escribir este summary; su resultado se registra aquí.
 
@@ -140,7 +143,8 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
 
 - **ADR-002 (ampliado en la auditoría):**
   - Una instantánea guardada que el validador de hoy rechaza se reemplaza en el mismo PR, mientras ningún plan la
-    cite. Así la del 2026-10-04 pasó a ser la del 2026-10-05.
+    cite. Así la del 2026-10-04 pasó a ser la del 2026-10-05, que se volvió a emitir en la segunda pasada al
+    corregir la nota de promptfoo.
   - Los selectores de adaptador son una lista declarada del esquema hasta el S3.
 - **ADR-005:** `serve` 14.2.6 fija `compression` 1.8.1, y GHSA-vc2v-76pw-4v95 (alta, publicada el 2026-10-05) tiene
   parche en 1.8.2. Va un override acotado en `pnpm-workspace.yaml`, con su condición de retiro.
@@ -173,7 +177,8 @@ Sin pantallas: `src/app/`, `docs/diseno/`, `scripts/maqueta/` y `design-system.m
 ## Sugerencias de mejora al método
 
 - **`demo-rojo.sh`** podría contar las pruebas del verde por sí mismo antes de mutar, y dejar `--minimo-tests` como
-  piso opcional. El conteo a mano falló cuatro veces en este sprint.
+  piso opcional. El conteo a mano falló en cuatro fases de este sprint (bitácora: fases 1, 2 y 3, y la Fase 2 de la
+  auditoría).
 - **`demo-rojo.sh`** debería tratar `--buscar` como literal, sin interpretar barras invertidas (K-S1-5).
 - **La casilla 4 de `/audita-sprint`:** cuando la Fase 1 se parte por superficies, conviene asignarla explícitamente a
   un auditor. En este sprint ninguno de los tres la corrió, y la cubrió el cuarto.

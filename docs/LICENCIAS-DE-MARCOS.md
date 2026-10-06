@@ -1,11 +1,15 @@
 # Licencias de los marcos · Framework licences
 
-> Verificado el 2026-10-04 (S1, fase 0). La fuente oficial y las vías de acceso de cada marco se consultaron con
-> `curl`, y su código HTTP está registrado en `datos/marcos/<id>.json`; la URL de la licencia se registra sin código
-> HTTP. La licencia de cada marco es dato: este documento la explica y dice cómo la cumple HackGuard.
+> Verificado el 2026-10-04 (S1, fase 0) y, en la auditoría, el 2026-10-05: ese día se descargó entero el archivo de
+> CWE (de ahí su fecha y su «archivo 200») y se resolvieron los autores de arXiv:2609.32160 y los DOI de NIST. La
+> fuente oficial y las vías de acceso de cada marco se consultaron con `curl`, y su código HTTP está registrado en
+> `datos/marcos/<id>.json`; la URL de la licencia se registra sin código HTTP. La licencia de cada marco es dato:
+> este documento la explica y dice cómo la cumple HackGuard.
 >
-> Checked on 2026-10-04 (S1, phase 0). Each framework's official source and access routes were fetched with `curl`,
-> and their HTTP codes are recorded in `datos/marcos/<id>.json`; the licence URL is recorded without an HTTP code.
+> Checked on 2026-10-04 (S1, phase 0) and, in the audit, on 2026-10-05: that day CWE's archive was downloaded whole
+> (hence its date and its "file 200"), and the arXiv:2609.32160 authors and the NIST DOIs were resolved. Each
+> framework's official source and access routes were fetched with `curl`, and their HTTP codes are recorded in
+> `datos/marcos/<id>.json`; the licence URL is recorded without an HTTP code.
 > Each framework's licence is data; this document explains it and how HackGuard complies.
 
 ## Español

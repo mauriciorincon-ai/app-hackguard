@@ -791,7 +791,7 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 | `5b0d6c1` | Dependencias (fuera del plan, ver «Desviaciones») | ADR-005: `compression` 1.8.2 bajo `serve` |
 | `efb547a` | Código | AU-07, 13, 16, 22, 27, 28, 29, 30, 32, 33 |
 | `d53b05a` | Datos, más la guía y el ADR-002 que el gate de huellas ata a ellos | AU-05, 06, 31, 43, 44, 48, 51, 52, 53, 56 |
-| (este commit) | Documentos | AU-03, 04, 14, 17, 18, 19, 20, 21, 23, 24, 25, 34 a 42, 45, 46, 47, 55 |
+| `7ce50d7` | Documentos | AU-03, 04, 14, 17, 18, 19, 20, 21, 23, 24, 25, 34 a 42, 45, 46, 47, 55 |
 
 ### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, salvo donde se dice)
 
@@ -841,7 +841,7 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 - e2e determinismo local (E2E_PUERTO=3217), tras AU-01/AU-08/AU-15/AU-26: 9 passed (15.8s); Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6; huellas e2858e62… (10-15), 0b24f1ab… (11-03), 7d94f4a1… (clasificador), con las listas invertidas en el navegador.
 - Suite unitaria tras el bloque de gates: 41 archivos, 1.161 de 1.161; cobertura total 99,36 % sentencias, 95,27 % ramas, 99,56 % funciones, 99,4 % líneas.
 - CI 37401498633 (`9dfa994`): quality en rojo SOLO por `pnpm audit`: GHSA-vc2v-76pw-4v95 (compression <1.8.2 vía serve), publicada 2026-10-05T23:28Z; e2e y lighthouse quedaron «skipping». Arreglo: override `serve>compression: 1.8.2` (ADR-005). Local: audit 1 high (1 ignored); verificar-dependencias 681 paquetes, ninguno por debajo; peers sin problemas; serve enlaza compression 1.8.2; determinismo desktop-chromium 3 passed.
-- 2026-10-05 sondas del auditor 2 sobre el filtro real (7 patrones): marca `<script>alert(1)</script>`, `../../../../etc/passwd`, un bloque ``` sin lenguaje y `?q=<script>`; no ve `' OR '1'='1' --`, «Ignore all previous instructions…», `` `; cat /etc/passwd` ``, `{{7*7}}`, viñetas y un `curl` sangrado. El catálogo real sigue con 0 marcas.
+- 2026-10-05 sondas del auditor 2 sobre el filtro real (7 patrones): marca una etiqueta de script en línea, un recorrido de ruta hacia un archivo del sistema, un bloque de código sin lenguaje y una dirección con una etiqueta de script en el parámetro; no ve una tautología de SQL tras una comilla, una instrucción maliciosa escrita como frase, un comando encadenado dentro de una línea, una expresión de plantilla, viñetas ni un comando de red sangrado. El catálogo real sigue con 0 marcas.
 - 2026-10-05 CWE: cwec_latest.xml.zip descargado entero (HTTP 200): cwec_v4.20.xml, raíz Version="4.20" Date="2026-04-30".
 - 2026-10-05 TypeSafe: https://docs.typesafe.ai/model-jaggedness/jev-1.13.md → 200; título «Jev 1.13 jaggedness».
 - 2026-10-05 instantánea oficial nueva: `pnpm catalogo:instantanea --fecha 2026-10-05` → 2026-10-05-703a0479d567.json (703a0479…5501); re-emitida en /tmp idéntica byte a byte (cmp). La del 2026-10-04 (12d3b632…) se retiró con git rm.
@@ -873,7 +873,8 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 - **AU-48:** la instantánea oficial pasa a ser la del 2026-10-05. Ningún plan citaba la del 2026-10-04, que se
   retiró en el mismo PR.
 - **Conteos de `--minimo-tests`:** dos demos se rechazaron por un conteo mal escrito y se repitieron con el conteo
-  medido por comando. Es la cuarta vez en el sprint; desde ahí el conteo sale de un comando y no de la memoria.
+  medido por comando. Es la cuarta fase del sprint en que pasa; desde ahí el conteo sale de un comando y no de la
+  memoria.
 
 ### Deuda que queda
 
@@ -882,9 +883,63 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 - **AU-20 (al S3):** § 11.2, la escala de IA (ver «Desviación del plan» de la fase 4).
 - **AU-47 (decide la planeadora):** la guía de prueba está solo en español. La orden no lo pide, y las apps hermanas
   lo resolvieron distinto: planlang la tiene bilingüe y big-d no.
-- **AU-38 (al cierre):** el cuerpo del PR #8 se actualiza con el summary.
+- **AU-38:** cerrado; el cuerpo del PR #8 está al día.
+
+## Segunda pasada de la auditoría — pagos (2026-10-05)
+
+El informe está en el anexo E de `sprints/SPRINT_001-auditoria.md`: 5 medios y 7 bajos, ninguno crítico ni alto. Se
+pagaron con el ajuste exacto del anexo, primero lo que crea evidencia de gate (M2) y después el resto. Para M1 se
+eligió la opción (a), corregir ya.
+
+### Demos en rojo (`scripts/demo-rojo.sh`)
+
+`--minimo-tests` salió de un comando antes de cada demo: 13 en la unitaria y 3 en la e2e de `desktop-chromium`.
+
+| Gate | Mutación | Gate corrido | Resultado con la mutación | Tras restaurar |
+|---|---|---|---|---|
+| AU-26, aserción unitaria | `semaforo.ts:72`: `return "por_revisar";` → `return "vigente";` en la rama del umbral | `npx vitest run tests/unit/catalogo/instantanea.test.ts` | rojo: «otra fecha de evaluación cambia el semáforo, no solo la huella», `expected Set{ 'vigente' } to deeply equal Set{ 'por_revisar' }`; 1 de 13 cae | verde, 13 de 13 |
+| AU-26, aserción e2e | la misma | `E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts --project desktop-chromium` (`--puerto 3217`) | rojo: «en el umbral (2026-11-04) algo pasa a «por revisar»…», `Expected value: "por_revisar"`, `Received array: ["vigente"]`; 1 falla, 1 pasa y 1 no corre (modo serial) | verde, 3 de 3 |
+
+### Evidencia de los pagos
+
+- 2026-10-05 promptfoo: `npm view promptfoo time` da 0.124.0 publicada el 2026-10-06T01:35:42Z (UTC). Su tarball
+  trae cuatro `dist/src/typesafe-*.js`, con «TypeSafe provider for Jev» y `jev-1.13.0`; el de 0.123.1 no trae
+  ninguno. `inspect-typesafe` sigue en 404 en PyPI.
+- 2026-10-05 huellas con la nota corregida, `pnpm catalogo:instantanea --json`:
+  - 10-15 `486e3e50…30e0ed` en tres corridas iguales;
+  - 11-03 `645b0d24…`, 12-03 `18c7463c…`, 11-04 `9b1f7542…`;
+  - 10-16 `2c062f72…c302` en tres corridas iguales.
+- 2026-10-05 instantánea oficial: `pnpm catalogo:instantanea --fecha 2026-10-05` escribe
+  `2026-10-05-739ed8c104f0.json` (`739ed8c1…47a2`). Es idéntica byte a byte (`cmp`) a la emitida con `--salida` en el
+  scratchpad. La del 2026-10-05 anterior (`703a0479…`) se retiró con `git rm`; ningún plan la citaba (ADR-002).
+- 2026-10-05 e2e de determinismo en local, `E2E_PUERTO=3217`, los tres navegadores: «9 passed (9.7s)». Chromium
+  153.0.8010.12, Firefox 155.0 y WebKit 26.6 dan `2c062f72…` (10-16), `9b1f7542…` (11-04) y `7d94f4a1…`
+  (clasificador).
+- `npx vitest run tests/unit/guia-huellas.test.ts tests/unit/catalogo`: 14 archivos, 377 de 377, con la guía y el
+  ADR-002 citando las huellas nuevas.
+- B6: `git grep` de las sondas literales sobre los archivos versionados no encuentra ninguna. Siguen en la historia
+  de la rama; el merge con squash deja en `main` solo el árbol final.
+
+### Lo que se pagó
+
+| Hallazgo | Archivo | Ajuste |
+|---|---|---|
+| M1 | `datos/herramientas/promptfoo.json`, `decisions/004-…md` | La nota y el ADR dicen lo que era cierto al verificar y que la 0.124.0 ya trae el proveedor. Cascada: instantánea oficial, guía (D1, D5 y F1), ADR-002, CHANGELOG y summary. |
+| M2 | bitácora, summary, auditoría y PR | Las dos demos de arriba, y el texto que nombra la simulación de AU-11. |
+| M3 y B7 | summary, bitácora | 53 pagados (52 en cuatro commits, más AU-38); `09842c8` es el fix del `/deploy-check`. |
+| M4 | summary, más su hermana en la bitácora (Desviaciones) | «en cuatro fases». |
+| M5 | `docs/LICENCIAS-DE-MARCOS.md` | La cabecera, en los dos idiomas, dice lo que se verificó el 2026-10-05. |
+| B1 | summary | La fila CI/CD se llena con la corrida del commit que lleva estos pagos, después de leerla. |
+| B2 | guía, A1 y A2 | Las cuatro cosas que cambió la auditoría; lo que el filtro marca hoy. |
+| B3 | ADR-002 | `no-restricted-syntax` en la lista de reglas. |
+| B4 | bitácora | «(este commit)» → `7ce50d7`. |
+| B5 | ADR-004 | El nivel de ruido: la tasa de 1 de 52 es la del demo. |
+| B6 | bitácora y anexo B de la auditoría | Las sondas, en prosa. |
 
 ## Punto de reanudación (antes de compactar, 2026-10-05)
+
+> **Al retomar, tras compactar:** la corrida de `c924422` (37404800509) terminó con `quality`, `e2e` y `lighthouse`
+> en `success`. El paso 2 está pagado (sección anterior). Quedan los pasos 3 a 5.
 
 **Hecho:**
 

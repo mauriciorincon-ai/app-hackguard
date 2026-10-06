@@ -203,16 +203,17 @@
         (doble clic, o en el editor) y recorre sus dos tablas, «Marcos con versión y fuente (DA-01)» y «Tabla de
         licencias»: cada marco con su versión, su fuente, su licencia y lo que la licencia exige. Esta parada se
         adelantó al cierre de la fase 0 y la aprobaste el 2026-10-04 («Aprobados lo marcos, continua»). Desde
-        entonces ningún marco cambió su versión, su fuente ni su licencia; la auditoría cambió tres cosas: el nombre
-        de cada licencia está también en inglés, la fecha de CWE 4.20 dejó de estar por verificar (la declara su
-        propio archivo) y las atribuciones nombran autores, DOI y la dirección de cada obra. Al cierre, confirma que
+        entonces ningún marco cambió su versión, su fuente ni su licencia; la auditoría cambió cuatro cosas: el
+        nombre de cada licencia está también en inglés; la fecha de CWE 4.20 dejó de estar por verificar (la declara
+        su propio archivo, descargado entero el 2026-10-05); CWE aplica ahora también a pruebas de agente y de modelo
+        generativo; y las atribuciones nombran autores, DOI y la dirección de cada obra. Al cierre, confirma que
         sigues de acuerdo. <strong>Respuesta esperada: «confirmo» o el marco que quieres
         cambiar.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 1 de 3</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a2"><label for="a2"><strong>¿Qué hacemos con las pruebas que el filtro marcó?</strong> En el cierre de la fase 2 el
-        filtro no marcó ninguna de las 38. Para confirmarlo, corre <code>pnpm catalogo:validar</code> y busca <code>filtro/marcada</code>: no
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="a2"><label for="a2"><strong>¿Qué hacemos con las pruebas que el filtro marcó?</strong> Con los siete patrones de
+        hoy, el filtro no marca ninguna de las 38. Para confirmarlo, corre <code>pnpm catalogo:validar</code> y busca <code>filtro/marcada</code>: no
         debe aparecer. Luego abre tres pruebas de <code>datos/pruebas/</code>, una de <code>agente/</code>, una de
         <code>modelo_generativo/</code> y una de <code>software/</code>. Cada una tiene que decir qué se verifica,
         por qué importa, con qué herramienta y qué se espera, y nunca cómo se ejecuta un ataque. El filtro solo
@@ -297,8 +298,8 @@
       <li data-origen="nuevo"><input type="checkbox" id="d1"><label for="d1">Corre tres veces <code>pnpm catalogo:instantanea --fecha 2026-10-15 --salida /tmp/hackguard-d1</code>.
         (<code>--salida</code> la escribe fuera del repo; sin esa opción iría a <code>datos/instantaneas/</code>. D1
         tiene su propia carpeta para que repetir el bloque no cambie la cuenta.) <strong>Las tres veces «huella:
-        5bcb8a75e5ec56de533837de4b48fd1ad234917d3d902ed7b3696bb84628b55e», y en <code>/tmp/hackguard-d1</code> un solo
-        archivo, <code>2026-10-15-5bcb8a75e5ec.json</code>, aunque repitas el bloque.</strong>
+        486e3e507c874b745f08ae53e3509081daf6528053d99c2334a368062b30e0ed», y en <code>/tmp/hackguard-d1</code> un solo
+        archivo, <code>2026-10-15-486e3e507c87.json</code>, aunque repitas el bloque.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="d2"><label for="d2">Repite con <code>--fecha 2026-11-03</code> y luego con <code>--fecha 2026-12-03</code>. <strong>En la
         sección de vigencia, el 2026-11-03: pruebas «! Por revisar 38», marcos «✓ Vigente 1 · ! Por revisar 13»,
@@ -315,9 +316,10 @@
         <strong>«Instantánea bloqueada: el catálogo es inválido (1 error). No se escribió nada.», código 2.</strong>
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="d5"><label for="d5"><code>pnpm catalogo:instantanea --fecha 2026-10-05 --salida /tmp/hackguard</code>. <strong>Huella
-        «703a0479d56728bca8b22cb0ae8470d968a370c86dbc850cdeb93a9574bb5501», la misma de la instantánea oficial,
-        <code>datos/instantaneas/2026-10-05-703a0479d567.json</code>, idéntica byte a byte.</strong> Esa instantánea
-        reemplazó en la auditoría a la del 2026-10-04, que el validador de hoy ya no acepta (ADR-002).
+        «739ed8c104f0fd56e964a26fd328204a5299d4fdd974fb7784d171eba35547a2», la misma de la instantánea oficial,
+        <code>datos/instantaneas/2026-10-05-739ed8c104f0.json</code>, idéntica byte a byte.</strong> Esa instantánea
+        reemplazó en la auditoría a la del 2026-10-04, que el validador de hoy ya no acepta, y se volvió a emitir al
+        corregir la nota de promptfoo (ADR-002).
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
     </ul>
     <div class="tabla-scroll"><table>
@@ -373,7 +375,7 @@
         vez puede pedir instalar los navegadores con <code>pnpm exec playwright install firefox webkit</code>, que los
         descarga a la caché de Playwright. Tarda un par de minutos porque construye la app. <strong>«9 passed», y en
         las líneas de la instantánea «determinismo · chromium / firefox / webkit · instantánea 2026-10-16 ·
-        2c1c927d29db3437a464c0e2b70ce02e06d621d6dcde68297214cbf16015828a», la misma huella que en Node.</strong> El
+        2c062f72ce57175c3d5ee8eb497024c693f4a23164721859beaf5829c706c302», la misma huella que en Node.</strong> El
         spec fecha 11 días después de la última verificación del catálogo, que hoy es el 2026-10-05.
         <span class="origen origen-nuevo">Nuevo · S1</span></label></li>
     </ul>
@@ -394,6 +396,9 @@
           da el catálogo después de la auditoría (CWE verificado de nuevo el 2026-10-05; instantánea oficial del
           2026-10-05); E2 cita la fila tal como sale; F1 cita la fecha del spec; A1 nombra las dos tablas; A2 dice
           que el filtro reconoce siete formas. Contraste del tema claro corregido. Ninguna eliminada.</li>
+        <li><strong>S1 · 2026-10-05 (segunda pasada):</strong> D1, D5 y F1 citan las huellas nuevas (la nota de
+          promptfoo se corrigió y la instantánea oficial se volvió a emitir); A1 nombra las cuatro cosas que cambió la
+          auditoría; A2 dice lo que el filtro marca hoy. Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>

@@ -27,7 +27,7 @@ The catalog core as validated data with a fingerprint. No user interface yet.
 - **Snapshots** (`pnpm catalogo:instantanea --fecha YYYY-MM-DD`):
   - the approved catalog, the state vocabulary, the thresholds and the freshness semaphore;
   - a publication gate: nothing is written when the catalog is invalid.
-  - Official snapshot: `datos/instantaneas/2026-10-05-703a0479d567.json`.
+  - Official snapshot: `datos/instantaneas/2026-10-05-739ed8c104f0.json`.
 - **Freshness semaphore** per test, framework, tool and family: review due from 30 days, overdue from 60. Every
   state carries a symbol and a name.
 - **Demo classifier for `modelo_decision`** (`pnpm clasificador:demo`):

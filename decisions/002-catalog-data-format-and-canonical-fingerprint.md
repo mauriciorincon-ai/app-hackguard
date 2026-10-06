@@ -29,9 +29,10 @@ the authoring format.
    - Lone surrogates, non-finite numbers, `undefined`, cycles and non-plain objects are rejected.
    - Because the hash is taken over the parsed value, formatting on disk (indentation, key order, Prettier) never
      changes a fingerprint.
-4. **The engine is pure.** `src/engine/` reads no files, no clock and no randomness; ESLint enforces it with
-   `no-restricted-globals`, `no-restricted-properties` and `no-restricted-imports`. The evaluation date is an
-   input. `src/cli/cargar.ts` is the only catalog piece that touches the file system: it hands the engine the
+4. **The engine is pure.** `src/engine/` reads no files, no clock and no randomness. ESLint enforces it with
+   `no-restricted-globals`, `no-restricted-properties`, `no-restricted-imports` and `no-restricted-syntax`; the last
+   one, added in the audit (AU-02), blocks any `globalThis` or `crypto` access other than `crypto.subtle`, and
+   dynamic `import()`. The evaluation date is an input. `src/cli/cargar.ts` is the only catalog piece that touches the file system: it hands the engine the
    file texts and their paths.
 5. **Snapshots** are written as `datos/instantaneas/<date>-<first 12 hex of the fingerprint>.json` with format
    `hackguard/instantanea@1`.
@@ -49,7 +50,8 @@ the authoring format.
    - **A snapshot that today's validator rejects is replaced in the same PR by a re-emitted one,** as long as no
      plan cites it (audit finding AU-48).
      - **Sprint 001:** the audit made licence names bilingual, which rejects `2026-10-04-12d3b632a871.json`. It
-       was replaced by `2026-10-05-703a0479d567.json`.
+       was replaced by a snapshot of 2026-10-05. The second audit pass corrected the promptfoo note, and that
+       snapshot was emitted again: today it is `2026-10-05-739ed8c104f0.json`.
      - **From Sprint 2:** once plans cite snapshots, a schema change that rejects one needs a migration decided
        in its own ADR.
 6. **Tool selectors are part of the schema, one shape per adapter.**
@@ -70,7 +72,7 @@ the authoring format.
 - **The same code, the same fingerprint everywhere.**
   - `tests/e2e/determinismo.spec.ts` bundles the engine with esbuild. It evaluates 11 days after the catalog's
     latest verification.
-  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `2c1c927d29db…` in Node (three CLI runs) and in
+  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `2c062f72ce57…` in Node (three CLI runs) and in
     Chromium 153, Firefox 155 and WebKit 26.6.
   - `tests/unit/guia-huellas.test.ts` checks that the fingerprints this ADR and the test guide cite are the
     engine's.

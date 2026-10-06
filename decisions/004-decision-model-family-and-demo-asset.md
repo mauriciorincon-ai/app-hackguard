@@ -25,9 +25,10 @@ mean a third-party API, a key, and non-reproducible runs inside the deterministi
      the 14-item checklist, which E-23 accepts as a framework.
 
 2. **Tools.** The tests recommend scikit-learn, CheckList, TextAttack and Evidently. Three tests are human design
-   reviews (`hackguard-revision`). MAPIE is registered but not yet recommended. The TypeSafe provider for promptfoo
-   was merged on 2026-10-02 but is in no published release, and `inspect-typesafe` is not on PyPI. Neither is
-   recommended until it is.
+   reviews (`hackguard-revision`). MAPIE is registered but not recommended by any test. The TypeSafe provider for
+   promptfoo was merged on 2026-10-02; when the tools were verified (2026-10-04) no published release shipped it,
+   and promptfoo 0.124.0, published on 2026-10-06 (UTC), does. `inspect-typesafe` is not on PyPI (HTTP 404 on
+   2026-10-05). No test in this sprint recommends either one.
 3. **The demo asset is a classifier of our own** (`src/engine/demo/clasificador.ts`). It imitates Jev's
    **response contract** without being Jev:
    - **Response:** `{model, answers, usage}`.
@@ -62,8 +63,8 @@ mean a third-party API, a key, and non-reproducible runs inside the deterministi
    - **Labels:** they follow a written five-rule policy.
    - **Parameters:** seed 20261004, 5 runs, noise of 150 per mille, 4 ECE bins, and a band of 0.60–0.80 around an
      approval threshold of 0.70.
-   - **Noise level:** 150 was chosen by measurement, as the closest to the ~1.5% change rate measured for Jev
-     (1 of 52 answers).
+   - **Noise level:** 150 was chosen by measurement: of the levels tried, it gives the change rate closest to the
+     ~1.5% measured for Jev (the demo changes 1 of 52 answers, 1.92%).
    - **Warning:** the set states that the same hand wrote it and the classifier.
 
 ## Consequences
