@@ -883,3 +883,33 @@ Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-
 - **AU-47 (decide la planeadora):** la guía de prueba está solo en español. La orden no lo pide, y las apps hermanas
   lo resolvieron distinto: planlang la tiene bilingüe y big-d no.
 - **AU-38 (al cierre):** el cuerpo del PR #8 se actualiza con el summary.
+
+## Punto de reanudación (antes de compactar, 2026-10-05)
+
+**Hecho:**
+
+- La Fase 2 de la auditoría está pagada (commits `9dfa994` … `09842c8`), y el `/deploy-check` corrió.
+- `sprints/SPRINT_001-summary.md` está escrito, con tres pendientes marcados:
+  - la fila CI/CD;
+  - el ⭐ corto;
+  - la segunda pasada.
+- El cuerpo del PR #8 está al día (AU-38): ya no dice «this push».
+
+**Pendiente, en orden:**
+
+1. **CI:** leer la de los últimos pushes (`d53b05a`, `7ce50d7`, `09842c8` y el de este commit) con
+   `gh run view <id> --json jobs`. Cada job requerido tiene que tener su conclusión propia `success`.
+2. **Segunda pasada:** un auditor independiente la lanzó en solo lectura (casilla 4 por promesa aplazada,
+   siguiendo cada ajuste hasta sus frases hermanas, más las frases de evidencia de la regla 27, sobre el diff
+   completo y el summary).
+   - Si su informe no llega, se relanza con ese mismo encargo.
+   - Sus hallazgos se pagan y se registran aquí y en el summary.
+3. **Summary:** completar la fila CI/CD con los números de corrida, y la línea de la segunda pasada.
+4. **⭐ corto con el usuario,** parada a parada, desde `docs/GUIA-DE-PRUEBA.html`, bloque A:
+   - parada 1: confirmar la tabla de marcos y licencias;
+   - parada 2: el filtro sin marcas, y leer tres pruebas;
+   - parada 3: declarada no corrida.
+
+   El resultado se escribe en el summary, sección «Gate ⭐», y aquí.
+5. **Cierre:** `status: closed` en el summary, push, `gh pr checks 8`, y avisar al usuario: «marca el PR listo,
+   squash, borra la rama; luego `/cierre-sprint hackguard` en la planeadora».
