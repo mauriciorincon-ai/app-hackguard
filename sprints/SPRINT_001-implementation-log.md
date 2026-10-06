@@ -919,6 +919,11 @@ eligió la opción (a), corregir ya.
   ADR-002 citando las huellas nuevas.
 - B6: `git grep` de las sondas literales sobre los archivos versionados no encuentra ninguna. Siguen en la historia
   de la rama; el merge con squash deja en `main` solo el árbol final.
+- CI 37405859067 (`a072b0f`): `quality`, `e2e` y `lighthouse` en `success`.
+- CI 37406823175 (`bf878e4`, estos pagos): `quality` 2 min 50 s, `e2e` 11 min 34 s y `lighthouse` 2 min 4 s, los tres
+  en `success`. En `quality`: 42 archivos, 1.186 de 1.186, gitleaks 8.30.1 con la suma OK, «C18 catálogo: bloquea 11
+  de 11» y `pnpm audit` «1 high (1 ignored)». En `e2e`: «1053 passed (9.8m)», sin flaky; `2c062f72…`, `9b1f7542…` y
+  `7d94f4a1…` en Chromium, Firefox y WebKit.
 
 ### Lo que se pagó
 
@@ -929,7 +934,7 @@ eligió la opción (a), corregir ya.
 | M3 y B7 | summary, bitácora | 53 pagados (52 en cuatro commits, más AU-38); `09842c8` es el fix del `/deploy-check`. |
 | M4 | summary, más su hermana en la bitácora (Desviaciones) | «en cuatro fases». |
 | M5 | `docs/LICENCIAS-DE-MARCOS.md` | La cabecera, en los dos idiomas, dice lo que se verificó el 2026-10-05. |
-| B1 | summary | La fila CI/CD se llena con la corrida del commit que lleva estos pagos, después de leerla. |
+| B1 | summary | La fila CI/CD cita la corrida 37406823175 de `bf878e4`, leída antes de escribirla. |
 | B2 | guía, A1 y A2 | Las cuatro cosas que cambió la auditoría; lo que el filtro marca hoy. |
 | B3 | ADR-002 | `no-restricted-syntax` en la lista de reglas. |
 | B4 | bitácora | «(este commit)» → `7ce50d7`. |
@@ -939,7 +944,8 @@ eligió la opción (a), corregir ya.
 ## Punto de reanudación (antes de compactar, 2026-10-05)
 
 > **Al retomar, tras compactar:** la corrida de `c924422` (37404800509) terminó con `quality`, `e2e` y `lighthouse`
-> en `success`. El paso 2 está pagado (sección anterior). Quedan los pasos 3 a 5.
+> en `success`. Los pasos 1 a 3 están hechos (sección anterior; los pagos en `bf878e4`, con su CI en verde). Quedan
+> el ⭐ corto (paso 4) y el cierre (paso 5).
 
 **Hecho:**
 
