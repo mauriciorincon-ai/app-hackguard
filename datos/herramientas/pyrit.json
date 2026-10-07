@@ -1,0 +1,50 @@
+{
+  "id": "pyrit",
+  "nombre": "PyRIT",
+  "editor": "Microsoft",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Marco para orquestar pruebas de riesgo de IA generativa, también de varias vueltas de conversación.",
+    "en": "Framework for orchestrating generative AI risk tests, including multi-turn conversations."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/microsoft/PyRIT/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_generativo",
+    "agente"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "1.1.0",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/pyrit/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/microsoft/PyRIT",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [
+    {
+      "nombre": "Azure/PyRIT",
+      "nota": {
+        "es": "Repositorio anterior, hoy archivado: el proyecto sigue en microsoft/PyRIT.",
+        "en": "Former repository, now archived: the project continues at microsoft/PyRIT."
+      }
+    }
+  ],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "1.1.0 se publicó en PyPI el 2026-09-04. Recomendable sin adaptador.",
+    "en": "1.1.0 was published on PyPI on 2026-09-04. Recommended, without an adapter."
+  }
+}

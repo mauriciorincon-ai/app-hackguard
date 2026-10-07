@@ -1,0 +1,101 @@
+{
+  "id": "PR-SW-SES-001",
+  "nombre": {
+    "es": "Cookies de sesión protegidas",
+    "en": "Protected session cookies"
+  },
+  "familia": "software",
+  "categoria": "autenticacion_y_sesion",
+  "que_verifica": {
+    "es": "Las cookies de sesión llevan los atributos que impiden leerlas desde un script, enviarlas sin cifrar o adjuntarlas a peticiones de otros sitios.",
+    "en": "Session cookies carry the attributes that stop them from being read by a script, sent unencrypted or attached to requests from other sites."
+  },
+  "por_que_importa": {
+    "es": "Una cookie de sesión sin esos atributos puede terminar en manos de otro, y con ella su sesión.",
+    "en": "A session cookie without those attributes can end up in someone else's hands, and the session with it."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A07",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-1004"
+    },
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-614"
+    },
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-1275"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10010,
+          10011,
+          10054
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ninguna cookie de sesión del alcance aparece sin alguno de los tres atributos.",
+      "en": "No session cookie in scope appears without any of the three attributes."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10010, 10011 o 10054 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10010, 10011 o 10054 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_sesiones",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si los usuarios del activo inician sesión.",
+      "en": "Applies if the asset's users sign in."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10010/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10010"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

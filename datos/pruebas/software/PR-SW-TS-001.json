@@ -1,0 +1,89 @@
+{
+  "id": "PR-SW-TS-001",
+  "nombre": {
+    "es": "Transporte cifrado obligatorio",
+    "en": "Mandatory encrypted transport"
+  },
+  "familia": "software",
+  "categoria": "configuracion_y_cabeceras",
+  "que_verifica": {
+    "es": "El sitio obliga al navegador a usar siempre una conexión cifrada.",
+    "en": "The site forces the browser to always use an encrypted connection."
+  },
+  "por_que_importa": {
+    "es": "Sin esa obligación, la primera visita puede viajar sin cifrar y alguien en la misma red puede leerla o cambiarla.",
+    "en": "Without that requirement, the first visit can travel unencrypted and someone on the same network can read or change it."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A04",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-319"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10035
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Todas las respuestas del alcance declaran la obligación de usar conexión cifrada.",
+      "en": "Every response in scope declares the requirement to use an encrypted connection."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10035 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10035 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "se_publica_en_internet",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo se sirve por internet con un dominio propio.",
+      "en": "Applies if the asset is served over the internet on its own domain."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10035/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10035"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

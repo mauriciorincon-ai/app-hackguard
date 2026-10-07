@@ -1,0 +1,81 @@
+{
+  "id": "owasp-asvs",
+  "nombre": "OWASP Application Security Verification Standard",
+  "editor": "OWASP",
+  "version_vigente": "5.0.0",
+  "fecha_version": "2025-05-30",
+  "versiones_anteriores": [
+    {
+      "version": "4.0.3",
+      "fecha": "2021-10-28"
+    }
+  ],
+  "fuente_oficial": {
+    "url": "https://owasp.org/www-project-application-security-verification-standard/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "software"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "exige": {
+      "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
+      "en": "Attribution to OWASP with a link to the licence; adapted material is shared under the same licence."
+    },
+    "como_cumple": {
+      "es": "La app cita identificador y nombre de cada entrada, con atribución y enlace en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios y no se copia el texto del marco.",
+      "en": "The app cites each entry's identifier and name, with attribution and a link in docs/LICENCIAS-DE-MARCOS.md; summaries are its own and the framework's text is not copied."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://owasp.org/www-project-application-security-verification-standard/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/OWASP/ASVS/releases",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://github.com/OWASP/ASVS/releases/download/v5.0.0_release/OWASP_Application_Security_Verification_Standard_5.0.0_en.json",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://github.com/OWASP/ASVS/releases.atom",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "owasp.org",
+    "github.com/OWASP"
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "El release «latest» del repositorio es la rama en desarrollo (bleeding edge); la versión publicada vigente es 5.0.0.",
+    "en": "The repository's «latest» release is the development branch (bleeding edge); the current published version is 5.0.0."
+  }
+}

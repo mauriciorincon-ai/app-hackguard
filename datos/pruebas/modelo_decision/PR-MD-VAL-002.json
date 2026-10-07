@@ -1,0 +1,86 @@
+{
+  "id": "PR-MD-VAL-002",
+  "nombre": {
+    "es": "Exactitud entre las decisiones más seguras",
+    "en": "Accuracy among the most confident decisions"
+  },
+  "familia": "modelo_decision",
+  "categoria": "valido_pero_equivocado",
+  "que_verifica": {
+    "es": "Entre las decisiones que el modelo da con más seguridad, la exactitud real es la que la aplicación supone al no revisarlas.",
+    "en": "Among the decisions the model gives with the most certainty, the real accuracy is what the application assumes by not reviewing them."
+  },
+  "por_que_importa": {
+    "es": "Las decisiones más seguras son las que nadie revisa; si ahí el modelo se equivoca más de lo previsto, el error pasa directo.",
+    "en": "The most confident decisions are the ones nobody reviews; if the model is wrong there more often than expected, the error goes straight through."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "C2",
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "scikit-learn",
+      "entorno": "portatil",
+      "version_minima": "1.9.1",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "sklearn.metrics.accuracy_score"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La exactitud en la banda de mayor probabilidad alcanza el mínimo que la aplicación declaró antes de la prueba.",
+      "en": "Accuracy in the highest-probability band reaches the minimum the application declared before the test."
+    },
+    "medido_con": "scikit-learn"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la exactitud en esa banda queda bajo el mínimo fijado antes de la prueba. Cada caso se repite 5 veces.",
+      "en": "“Failed” if accuracy in that band falls under the minimum set before the test. Each case is repeated 5 times."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      },
+      {
+        "rasgo": "dispone_de_casos_etiquetados",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas y hay casos etiquetados.",
+      "en": "Applies if the asset returns typed decisions and there are labelled cases."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "propia",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "scikit-learn · accuracy_score"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

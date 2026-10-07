@@ -1,0 +1,174 @@
+{
+  "id": "owasp-llm-top10",
+  "nombre": "OWASP Top 10 for LLM Applications",
+  "editor": "OWASP GenAI Security Project",
+  "version_vigente": "2026",
+  "fecha_version": "2026-08-03",
+  "versiones_anteriores": [
+    {
+      "version": "2025",
+      "fecha": "2024-11-18",
+      "equivalencias": "owasp-llm-2025-a-2026",
+      "entradas": [
+        {
+          "id": "LLM01",
+          "nombre": "Prompt Injection"
+        },
+        {
+          "id": "LLM02",
+          "nombre": "Sensitive Information Disclosure"
+        },
+        {
+          "id": "LLM03",
+          "nombre": "Supply Chain"
+        },
+        {
+          "id": "LLM04",
+          "nombre": "Data and Model Poisoning"
+        },
+        {
+          "id": "LLM05",
+          "nombre": "Improper Output Handling"
+        },
+        {
+          "id": "LLM06",
+          "nombre": "Excessive Agency"
+        },
+        {
+          "id": "LLM07",
+          "nombre": "System Prompt Leakage"
+        },
+        {
+          "id": "LLM08",
+          "nombre": "Vector and Embedding Weaknesses"
+        },
+        {
+          "id": "LLM09",
+          "nombre": "Misinformation"
+        },
+        {
+          "id": "LLM10",
+          "nombre": "Unbounded Consumption"
+        }
+      ]
+    }
+  ],
+  "fuente_oficial": {
+    "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente",
+    "modelo_generativo"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "exige": {
+      "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
+      "en": "Attribution to OWASP with a link to the licence; adapted material is shared under the same licence."
+    },
+    "como_cumple": {
+      "es": "La app cita identificador y nombre de cada entrada, con atribución y enlace en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios y no se copia el texto del marco.",
+      "en": "The app cites each entry's identifier and name, with attribution and a link in docs/LICENCIAS-DE-MARCOS.md; summaries are its own and the framework's text is not copied."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/genai-security-project/GenAI-LLM-Top10",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://raw.githubusercontent.com/genai-security-project/crosswalk/main/MIGRATION.md",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Mapa oficial 2025 → 2026, legible por máquina (tabla).",
+        "en": "Official 2025 → 2026 map, machine-readable (table)."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://genai.owasp.org/feed/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "descarga",
+      "url": "https://genai.owasp.org/download/56857/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Descarga condicionada: redirige a una página de acceso restringido (formulario). No se elude; la lista se lee del repositorio oficial.",
+        "en": "Gated download: it redirects to a restricted-access page (form). It is not bypassed; the list is read from the official repository."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "genai.owasp.org",
+    "github.com/genai-security-project",
+    "owasp.org"
+  ],
+  "entradas": [
+    {
+      "id": "LLM01",
+      "nombre": "Prompt Injection"
+    },
+    {
+      "id": "LLM02",
+      "nombre": "Sensitive Information Disclosure"
+    },
+    {
+      "id": "LLM03",
+      "nombre": "Excessive Agency"
+    },
+    {
+      "id": "LLM04",
+      "nombre": "Supply Chain"
+    },
+    {
+      "id": "LLM05",
+      "nombre": "Data and Model Poisoning"
+    },
+    {
+      "id": "LLM06",
+      "nombre": "Unbounded Consumption"
+    },
+    {
+      "id": "LLM07",
+      "nombre": "Misinformation"
+    },
+    {
+      "id": "LLM08",
+      "nombre": "Hidden Context Exposure"
+    },
+    {
+      "id": "LLM09",
+      "nombre": "Vector and Embedding Weaknesses"
+    },
+    {
+      "id": "LLM10",
+      "nombre": "Improper Output Handling"
+    }
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "La página de archivo /llm-top-10/ todavía presenta la edición 2025; la edición vigente es la 2026, según su página de recurso (publicada el 2026-08-03) y el anuncio del proyecto del 2026-09-01. Los nombres de las entradas 2026 vienen del repositorio oficial. El mapa del crosswalk nombra dos entradas 2025 como en la edición 2023 (Supply Chain Vulnerabilities, Insecure Output Handling); los identificadores coinciden y aquí se usan los nombres de la página 2025.",
+    "en": "The /llm-top-10/ archive page still presents the 2025 edition; the current edition is 2026, per its resource page (published 2026-08-03) and the project's 2026-09-01 announcement. The 2026 entry names come from the official repository. The crosswalk map names two 2025 entries as in the 2023 edition (Supply Chain Vulnerabilities, Insecure Output Handling); identifiers match and the 2025 page's names are used here."
+  }
+}

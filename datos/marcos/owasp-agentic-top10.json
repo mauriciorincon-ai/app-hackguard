@@ -1,0 +1,109 @@
+{
+  "id": "owasp-agentic-top10",
+  "nombre": "OWASP Top 10 for Agentic Applications",
+  "editor": "OWASP GenAI Security Project",
+  "version_vigente": "2026",
+  "fecha_version": "2025-12-10",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "exige": {
+      "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
+      "en": "Attribution to OWASP with a link to the licence; adapted material is shared under the same licence."
+    },
+    "como_cumple": {
+      "es": "La app cita identificador y nombre de cada entrada, con atribución y enlace en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios y no se copia el texto del marco.",
+      "en": "The app cites each entry's identifier and name, with attribution and a link in docs/LICENCIAS-DE-MARCOS.md; summaries are its own and the framework's text is not copied."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://github.com/genai-security-project/crosswalk/tree/main/data/entries",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Una entrada por archivo JSON (ASI01.json…ASI10.json).",
+        "en": "One entry per JSON file (ASI01.json…ASI10.json)."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://genai.owasp.org/feed/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "genai.owasp.org",
+    "github.com/genai-security-project",
+    "owasp.org"
+  ],
+  "entradas": [
+    {
+      "id": "ASI01",
+      "nombre": "Agent Goal Hijack"
+    },
+    {
+      "id": "ASI02",
+      "nombre": "Tool Misuse and Exploitation"
+    },
+    {
+      "id": "ASI03",
+      "nombre": "Identity and Privilege Abuse"
+    },
+    {
+      "id": "ASI04",
+      "nombre": "Agentic Supply Chain"
+    },
+    {
+      "id": "ASI05",
+      "nombre": "Unexpected Code Execution"
+    },
+    {
+      "id": "ASI06",
+      "nombre": "Memory and Context Poisoning"
+    },
+    {
+      "id": "ASI07",
+      "nombre": "Insecure Inter-Agent Communications"
+    },
+    {
+      "id": "ASI08",
+      "nombre": "Cascading Agent Failures"
+    },
+    {
+      "id": "ASI09",
+      "nombre": "Human-Agent Trust Exploitation"
+    },
+    {
+      "id": "ASI10",
+      "nombre": "Rogue Agents"
+    }
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "La fecha es la de publicación de su página de recurso. El crosswalk marca sus entradas con la revisión 2026-Q3 sin cambiar identificadores.",
+    "en": "The date is its resource page's publication date. The crosswalk tags its entries with revision 2026-Q3 without changing identifiers."
+  }
+}

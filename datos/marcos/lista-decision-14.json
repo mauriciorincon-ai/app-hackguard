@@ -1,0 +1,124 @@
+{
+  "id": "lista-decision-14",
+  "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+  "editor": "Lijuan Tang, Yuemeng Zheng",
+  "version_vigente": "v1",
+  "fecha_version": "2026-09-26",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://arxiv.org/abs/2609.32160",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY 4.0",
+      "en": "CC BY 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "exige": {
+      "es": "Atribución a los autores con enlace a la licencia.",
+      "en": "Attribution to the authors with a link to the licence."
+    },
+    "como_cumple": {
+      "es": "La app cita el artículo y el identificador de cada ítem, con atribución en docs/LICENCIAS-DE-MARCOS.md.",
+      "en": "The app cites the paper and each item's identifier, with attribution in docs/LICENCIAS-DE-MARCOS.md."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "interfaz",
+      "url": "https://export.arxiv.org/api/query?id_list=2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "API de arXiv (Atom).",
+        "en": "arXiv API (Atom)."
+      }
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://arxiv.org/pdf/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04"
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "arxiv.org",
+    "export.arxiv.org"
+  ],
+  "entradas": [
+    {
+      "id": "B1",
+      "nombre": "Log-probability baseline"
+    },
+    {
+      "id": "B2",
+      "nombre": "Cheap generative cascade baseline"
+    },
+    {
+      "id": "B3",
+      "nombre": "Task-specific model baseline"
+    },
+    {
+      "id": "T1",
+      "nombre": "Spread between models"
+    },
+    {
+      "id": "T2",
+      "nombre": "Agreement under repeated, reordered or rephrased requests"
+    },
+    {
+      "id": "T3",
+      "nombre": "Option-name invariance"
+    },
+    {
+      "id": "T4",
+      "nombre": "Data provenance"
+    },
+    {
+      "id": "R1",
+      "nombre": "Exact model version and run date"
+    },
+    {
+      "id": "R2",
+      "nombre": "Intervals and run-to-run instability"
+    },
+    {
+      "id": "R3",
+      "nombre": "Choices made after seeing test data"
+    },
+    {
+      "id": "C1",
+      "nombre": "Calibration on held-out data"
+    },
+    {
+      "id": "C2",
+      "nombre": "Accuracy among the most confident"
+    },
+    {
+      "id": "C3",
+      "nombre": "Thresholds fixed before or outside the evaluation"
+    },
+    {
+      "id": "C4",
+      "nombre": "Latency with and without cache"
+    }
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "Lista de 14 ítems, de Lijuan Tang y Yuemeng Zheng (arXiv:2609.32160; autores leídos en la página del artículo, HTTP 200, 2026-10-05). Marco aceptado por E-23. Los 14 ítems se verificaron en el texto del artículo (§ 5.2); los nombres son paráfrasis breves en inglés.",
+    "en": "A 14-item checklist by Lijuan Tang and Yuemeng Zheng (arXiv:2609.32160; authors read on the paper's page, HTTP 200, 2026-10-05). Framework accepted by E-23. The 14 items were checked in the paper's text (§ 5.2); names are short English paraphrases."
+  }
+}

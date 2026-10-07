@@ -1,0 +1,93 @@
+{
+  "id": "PR-SW-DEP-001",
+  "nombre": {
+    "es": "Librerías del navegador sin vulnerabilidades conocidas",
+    "en": "Browser libraries without known vulnerabilities"
+  },
+  "familia": "software",
+  "categoria": "dependencias_vulnerables",
+  "que_verifica": {
+    "es": "Las librerías de terceros que cargan las páginas no tienen vulnerabilidades publicadas para su versión.",
+    "en": "The third-party libraries the pages load have no published vulnerabilities for their version."
+  },
+  "por_que_importa": {
+    "es": "Una vulnerabilidad publicada es conocida por todos; una librería que la arrastra la trae a cada página.",
+    "en": "A published vulnerability is known to everyone; a library that carries it brings it to every page."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A03",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-1395"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10003
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ninguna librería cargada por las páginas del alcance aparece con una vulnerabilidad publicada.",
+      "en": "No library loaded by the pages in scope appears with a published vulnerability."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10003 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10003 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_interfaz_web",
+        "valor": true
+      },
+      {
+        "rasgo": "usa_dependencias_de_terceros",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si las páginas cargan librerías de JavaScript de terceros.",
+      "en": "Applies if the pages load third-party JavaScript libraries."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10003/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10003"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

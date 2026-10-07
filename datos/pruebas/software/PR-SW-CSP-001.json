@@ -1,0 +1,89 @@
+{
+  "id": "PR-SW-CSP-001",
+  "nombre": {
+    "es": "Política de contenido declarada",
+    "en": "Content policy declared"
+  },
+  "familia": "software",
+  "categoria": "configuracion_y_cabeceras",
+  "que_verifica": {
+    "es": "Las respuestas con página declaran una política que limita de dónde se cargan los scripts.",
+    "en": "Responses that carry a page declare a policy that limits where scripts can load from."
+  },
+  "por_que_importa": {
+    "es": "Sin esa política el navegador carga scripts de cualquier origen, y un descuido de codificación en una página pesa mucho más.",
+    "en": "Without that policy the browser loads scripts from any origin, and one encoding slip on a page weighs far more."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A02",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-693"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10038
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Todas las respuestas con página declaran la política, y la política no admite scripts de cualquier origen.",
+      "en": "Every response that carries a page declares the policy, and the policy does not allow scripts from any origin."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10038 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10038 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_interfaz_web",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo sirve páginas a un navegador.",
+      "en": "Applies if the asset serves pages to a browser."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10038/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10038"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

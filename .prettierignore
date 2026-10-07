@@ -5,3 +5,12 @@ public/diseno/
 # Bundle del design system: lo escribe scripts/design-sync/generar.mjs y tests/unit/design-sync.test.ts lo
 # compara byte a byte.
 design-sync/
+# Documentos que estampa el kit (constitución, comandos, plantillas): se mantienen con el formato del kit para
+# que el delta de cada versión sea un diff limpio. El hook de prettier los reescribía.
+CLAUDE.md
+AGENTS.md
+CHANGELOG.md
+.claude/
+docs/*.plantilla.*
+# Instantáneas del catálogo: las escribe `pnpm catalogo:instantanea` y su nombre lleva su huella.
+datos/instantaneas/

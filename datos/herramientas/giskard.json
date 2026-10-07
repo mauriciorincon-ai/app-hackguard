@@ -1,0 +1,42 @@
+{
+  "id": "giskard",
+  "nombre": "Giskard",
+  "editor": "Giskard AI",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería abierta de evaluación de aplicaciones con modelos de lenguaje que busca debilidades y genera informes.",
+    "en": "Open library for evaluating language-model applications that looks for weaknesses and produces reports."
+  },
+  "licencia": {
+    "spdx": "Apache-2.0",
+    "url": "https://github.com/Giskard-AI/giskard-oss/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_generativo"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "plan_gratuito"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "3.0.1",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/giskard/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/Giskard-AI/giskard-oss",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "3.0.1 se publicó en PyPI el 2026-10-02. Recomendable sin adaptador.",
+    "en": "3.0.1 was published on PyPI on 2026-10-02. Recommended, without an adapter."
+  }
+}

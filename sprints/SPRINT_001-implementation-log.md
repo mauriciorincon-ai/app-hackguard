@@ -1,0 +1,1004 @@
+# Sprint 001 — «El catálogo vivo» · bitácora de implementación
+
+Orden: `portafolio/hackguard/ordenes/SPRINT_001-orden.md` (planeadora, solo lectura). Plan:
+`sprints/SPRINT_001.md` de la planeadora. Rama `sprint-001/catalogo-vivo-nucleo` desde `main` en `41eaad0`.
+Plan aprobado y «construye» del usuario: 2026-10-04. Sin PRs de dependabot abiertos al arrancar (el #6 se
+reemplazó por el #7 antes del sprint).
+
+## Fase 0 — Setup, delta del kit y decisiones abiertas (2026-10-04)
+
+### Verificación de supuestos del kit
+
+- **Hooks:** `githooks/pre-commit` está en 100755 y `core.hooksPath` apunta a `githooks`. gitleaks 8.30.1 y jq
+  están en el PATH de la sesión.
+- **Versiones:** TypeScript 6.0.3 y React 19.3 conviven con Vitest 5.0.3 y Next 16.3.8. typecheck, lint, test y
+  build pasan en verde en local antes de tocar nada.
+- **`pnpm audit`:** ADR-001 sigue vigente: `braces` 3.0.3 es todavía la última versión publicada.
+
+### Delta del kit v1.34.0 → v1.39.0, por nombre
+
+| Versión            | Pieza                                                                                                                                                                                           | Qué se hizo                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.35 / 1.38        | `scripts/demo-rojo.sh`                                                                                                                                                                          | Copiado en 100755; con él se corrieron todas las demos de esta fase                                                                                                                                                                                                                                                                                                                                                                     |
+| 1.35 / 1.37 / 1.39 | `scripts/verificar-dependencias.mjs` (falla cerrado, degradaciones permitidas, bajadas forzadas) + `scripts/degradaciones-permitidas.json` (`[]`) + `tests/unit/verificar-dependencias.test.ts` | Copiados juntos (el test importa funciones que la versión v1.33 no exportaba)                                                                                                                                                                                                                                                                                                                                                           |
+| 1.37               | Hook PreToolUse de secretos que falla cerrado (`.claude/settings.json`) + `tests/unit/hook-secretos.test.ts`                                                                                    | Copiados juntos                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| 1.37               | `scripts/lighthouse-margen.mjs`                                                                                                                                                                 | Al final del job `lighthouse`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 1.39               | `scripts/build-como-proveedor.mjs` + `scripts/verificar-salida-publicada.mjs` + `tests/unit/salida-publicada.test.ts`                                                                           | Paso nuevo en `quality` tras `pnpm build`. Corrido en local antes de empujar: **50 páginas publicadas idénticas a `out/`**, maqueta incluida                                                                                                                                                                                                                                                                                            |
+| 1.35 / 1.36 / 1.38 | `.claude/commands/audita-sprint.md`, `deploy-check.md`                                                                                                                                          | Reemplazados por los del kit (la app no los había adaptado)                                                                                                                                                                                                                                                                                                                                                                             |
+| 1.36               | `.claude/commands/plan-sprint.md`                                                                                                                                                               | **Solo** el cambio (f), tres clases de mirada. Se conservan el paso 10 y «`gh pr checks` tras cada push» (ver K-S1-2)                                                                                                                                                                                                                                                                                                                   |
+| 1.38               | `.claude/COMANDOS.md`                                                                                                                                                                           | Copiado; la fila `/release-check` dice que no se estampa en el perfil estático                                                                                                                                                                                                                                                                                                                                                          |
+| 1.35               | Cabecera de `.github/dependabot.yml`                                                                                                                                                            | Copiada (solo el comentario de la versión)                                                                                                                                                                                                                                                                                                                                                                                              |
+| 1.38               | `docs/SPIKE-DE-COSTOS.plantilla.md`                                                                                                                                                             | Copiada                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 1.34–1.39          | Constitución (`CLAUDE.md`)                                                                                                                                                                      | Stack v1.39; regla 10 (página guardada); regla 15 (demo-rojo); regla 18 (falla cerrado, excepciones de auditoría, bajadas forzadas); reglas 24 y 25 declaradas **no aplicables** por nombre; reglas 26 «Worktrees prohibidos» y 27 «La evidencia se escribe DESPUÉS del hecho»; PR en borrador con la línea del merge; sección «Para mergear» en la plantilla del summary. Cabecera con las dos frases centinela, cada una en una línea |
+| 1.37               | Cambio al README de diseño                                                                                                                                                                      | **No se aplica**: la orden prohíbe tocar `docs/diseno/`                                                                                                                                                                                                                                                                                                                                                                                 |
+
+Ajustes de la app que acompañan al delta:
+
+- `.vercel/**` entra en los ignorados de ESLint.
+- `.demo-rojo/` entra en `.gitignore`.
+- `datos/privado/` pasa a `datos/privado/*` con `!datos/privado/README.md`.
+- Los documentos que estampa el kit entran en `.prettierignore` (ver K-S1-3).
+
+**Cobertura:**
+
+- `test` pasa a `vitest run --coverage`.
+- `src/engine/**` sube a 90 %; el 70 % global y el 80 % de `src/lib/**` se mantienen.
+- `tests/unit/observability.test.ts` cubre `src/lib/observability.ts`, que era el único módulo sin prueba y habría
+  dejado la CI en rojo.
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, restauradas con Python + `cmp`)
+
+| Gate                                                                 | Mutación                                                                                                  | Rojo que dio                                                                                                                 | Verde tras restaurar          |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Salida publicada = `out/` (kit v1.39)                                | `data-tocado-tras-el-build="1"` en `.vercel/output/static/diseno/index.html`                              | «diseno/index.html: distinta de la de out (24331 vs 24301 bytes)»                                                            | 50 páginas idénticas          |
+| Hook de secretos que falla cerrado (kit v1.37)                       | Sin gitleaks ni jq, el hook sale 0 en vez de 2                                                            | «× sin gitleaks ni jq bloquea, y lo dice»                                                                                    | 3 de 3                        |
+| `verificar-dependencias` (kit v1.39)                                 | Toda bajada se acepta en vez de quedar como degradación                                                   | «× rojo: una bajada que el rango declarado admite es pnpm degradando» y «× rojo: sin registro (la consulta falla)…»          | 6 de 6                        |
+| Margen de Lighthouse (kit v1.37)                                     | El presupuesto pasa de `/*` a `/otra-ruta/*`                                                              | «✗ lighthouse-margen: la URL medida / no cae bajo ningún path de perf-budget.json»                                           | Verde                         |
+| Umbral de cobertura                                                  | `describe.skip` sobre el test de `observability`                                                          | «ERROR: Coverage for lines (0%) does not meet "src/lib/**/*.ts" threshold (80%)» (y las otras tres métricas)                 | 3 de 3                        |
+| `datos/privado/` no versionado (`tests/unit/datos-privados.test.ts`) | `git add -f datos/privado/sobre-de-demo.json` (mutación del índice, a mano: `demo-rojo.sh` muta archivos) | «expected [ 'datos/privado/README.md', …(1) ] to deeply equal [ 'datos/privado/README.md' ]», nombrando `sobre-de-demo.json` | 2 de 2 tras `git rm --cached` |
+
+### Decisiones abiertas de la especificación, como datos con fuente
+
+**DA-01 y DA-10:** 14 marcos en `datos/marcos/<id>.json`.
+
+- **Cada marco lleva:**
+  - versión y fecha;
+  - fuente oficial con su código HTTP y fecha de consulta;
+  - licencia con qué exige y cómo se cumple;
+  - vías de acceso (página, repositorio, archivo legible por máquina, canal de novedades, interfaz) con su
+    HTTP;
+  - lista blanca de fuentes (E-14);
+  - sus entradas cuando el marco las publica.
+- **Cómo se consultó:**
+  - Todo con `curl` y el user-agent por defecto, sin eludir nada.
+  - Los archivos grandes se pidieron por rango de un byte, que responde 206.
+  - Lo consultado quedó en el scratchpad, fuera del repo.
+- **Hallazgos:**
+  - **OWASP LLM Top 10:** la edición vigente es la **2026**, publicada el 2026-08-03 según su página de recurso;
+    el anuncio del proyecto es del 2026-09-01.
+    - La página de archivo `/llm-top-10/` todavía muestra la 2025, y el PDF de la 2026 es una **descarga
+      condicionada**: redirige a una página de acceso restringido. No se eludió.
+    - Las entradas 2026 y el mapa 2025 → 2026 se leyeron del repositorio oficial (`genai-security-project`:
+      `GenAI-LLM-Top10/2026/final` y `crosswalk/MIGRATION.md`, CC BY-SA 4.0).
+    - Ese mapa nombra dos entradas 2025 como en la edición 2023; los identificadores coinciden.
+  - **ISO/IEC 42001:** iso.org responde **403** a un agente (`fuente_no_accesible_al_agente`).
+  - **`por_verificar`** (cuatro campos en tres marcos):
+    - el día de la fecha del OWASP Top 10:2025 (la fuente solo da el año);
+    - la fecha de CWE 4.20: ninguna página HTML la dice. *Corregido en la auditoría (AU-52, 2026-10-05):* el
+      archivo `cwec_v4.20.xml` de su propia vía «archivo» declara `Date="2026-04-30"`, y la fecha ya no está por
+      verificar;
+    - la fecha exacta de ISO/IEC 42001:2023 (la fuente responde 403; solo consta el año);
+    - la fuente de ISO/IEC 42001.
+  - **NIST:** la licencia de su serie técnica se leyó en su página propia («not subject to Copyright
+    protection within the United States»); la primera URL que escribí trataba de software y se corrigió antes
+    de comitear.
+
+**DA-03:** `datos/filtro/patrones.json`.
+
+- Cuatro patrones de forma:
+  - bloque de código con intérprete;
+  - secuencia imperativa paso a paso;
+  - cadena codificada larga (umbral por encima de una huella de 64);
+  - dirección con parámetros de inyección.
+- Cada uno lleva carnada inocua y contraejemplo, más contraejemplos generales que nombran técnicas, marcos y
+  módulos.
+- **Comprobado con el motor de expresiones de JavaScript:** cada patrón marca sus carnadas y ninguno marca un
+  contraejemplo. El gate formal nace con el filtro, en la fase 1. gitleaks no ve secretos en `datos/`.
+
+**Licencias:** `docs/LICENCIAS-DE-MARCOS.md` en es y en.
+
+- Tabla marco · licencia · qué exige · cómo se cumple.
+- Avisos de MITRE y de NIST citados textualmente desde sus páginas.
+
+### Fricciones del kit (K#)
+
+- **K-S1-1 — constitución de la planeadora incompleta y sin frase centinela.** `ordenes/CLAUDE-md-para-app.md`
+  seguía en v1.33 más los deltas 1.38 y 1.39, y no declaraba frase centinela. Los textos de 1.34 a 1.37
+  salieron del `CLAUDE.md` del kit. La app declara dos frases centinela en su cabecera.
+- **K-S1-2 — `plan-sprint.md` del kit (v1.36.0) perdió contenido.** Al reescribir la (f) se borró el paso 10
+  (`/audita-sprint` obligatoria) y «`gh pr checks` tras cada push». Se fusionó solo la (f) y se conservó lo
+  demás.
+- **K-S1-3 — el hook de prettier reformatea los documentos que estampa el kit.** Cambiaba cursivas y
+  sangrías de `.claude/commands/*.md`, y en `plan-sprint.md` movió una línea bajo otro inciso. Se
+  restauraron y `CLAUDE.md`, `AGENTS.md`, `CHANGELOG.md`, `.claude/` y `docs/*.plantilla.*` entraron en
+  `.prettierignore`.
+- **K-S1-4 — la regla 10 del `CLAUDE.md` del kit dice «dos clases de mirada», y `plan-sprint.md` v1.36 dice
+  «tres».** La contradicción se hereda del kit; no se edita la regla (registrado en la auditoría, AU-39).
+- **K-S1-5 — `scripts/demo-rojo.sh` interpreta las barras invertidas de `--buscar`.** Un texto con `\uFEFF` o con
+  las barras de una expresión regular en JSON nunca coincide. El script lo detecta («la mutación no aplica a
+  nada») y no lo cuenta como rojo, pero obliga a elegir fragmentos sin barras (fase 2 de la auditoría).
+
+### CI de la fase 0 (PR #8, commit `8e86733`)
+
+- **Checks requeridos:** `quality` (2 min 30 s), `e2e` (10 min 30 s) y `lighthouse` (1 min 28 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Primeras corridas en CI** (sin histórico, no se afirma regresión ni no-regresión):
+  - «✓ build-como-proveedor: 50 páginas publicadas idénticas a out»;
+  - «✓ lighthouse-margen: ninguna mediana a menos del 10 % de su presupuesto; 1 URL con presupuesto».
+
+**STOP de la fase 0 (parada 1 del ⭐):** tabla DA-01 y tabla de licencias presentadas al usuario el 2026-10-04.
+**Veredicto del usuario, 2026-10-04: «Aprobados lo marcos, continua» (sic).** Se aprueba la tabla tal como se
+presentó, con sus 14 marcos (el OWASP Top 10 web 2025 incluido) y con sus cuatro campos `por_verificar` en tres
+marcos. La fase 1
+arranca sobre estos datos.
+
+## Fase 1 — Esquemas, validador, filtro, huella y CLI (2026-10-04)
+
+### Qué se construyó
+
+- **Motor puro en `src/engine/`** (sin disco, sin reloj, sin azar; corre igual en Node y en navegador):
+  - `fecha.ts`: fechas civiles y días entre fechas con aritmética entera, sin `Date`.
+  - `huella.ts`: JCS (RFC 8785) + SHA-256 con `crypto.subtle`, escrito desde el RFC. Rechaza no finitos,
+    surrogates solitarios, `undefined`, objetos no planos y ciclos.
+  - `catalogo/esquemas.ts`: Zod 4 para marco, mapa de equivalencias, familias, reglas de veredicto, rasgos del
+    perfil, capa de controles, herramienta, prueba y patrones del filtro. Los esquemas validan y nunca
+    transforman: la huella se calcula sobre lo que está escrito.
+  - `catalogo/reglas.ts`: 59 reglas con nombre, severidad (error · advertencia · nota) y texto `{es, en}`.
+  - `catalogo/validar.ts`: el validador de carga. Un campo obligatorio ausente se reporta con su regla propia
+    (`prueba/sin-marco`, `referencia/sin-version`…), no como «esquema». Calcula qué prueba entra a una
+    instantánea y por qué espera la que no entra.
+  - `catalogo/filtro.ts`: aplica los patrones a todo texto de una entrada, en los dos idiomas. Solo marca;
+    el hallazgo nombra patrón y campo, nunca el fragmento. Al cargar, comprueba que cada patrón marca sus
+    carnadas y ningún contraejemplo.
+  - `catalogo/equivalencias.ts`: resuelve una referencia de una versión anterior a la vigente, salto a salto.
+  - `catalogo/instantanea.ts`: la instantánea con huella y su gate de publicación. El semáforo entra en la fase 3.
+  - `catalogo/informe.ts`: la salida en texto (`es` o `en`) y en JSON, con los códigos de salida.
+- **CLI en `src/cli/`** con el TypeScript nativo de Node: `cargar.ts` lee `datos/` y `catalogo.ts` hace la E/S.
+  - `pnpm catalogo:validar [--json] [--idioma es|en] [--agregar <prueba.json>]…`
+  - `pnpm catalogo:instantanea --fecha AAAA-MM-DD [--json] [--idioma] [--salida <carpeta>] [--agregar …]`
+  - Salidas: validar 0 ok · 1 con advertencias · 2 inválido · 3 uso o lectura; instantánea 0 emitida · 2
+    bloqueada sin escribir · 3 uso o lectura. Sin `--fecha` la instantánea no corre: la fecha jamás sale del reloj.
+- **Datos estructurales:** `datos/familias.json` (las 4 familias, cuáles son estocásticas, la madurez que
+  admiten y las 30 categorías de § 10.1, § 10.2 y E-22), `datos/reglas-de-veredicto.json` (4 reglas, la
+  asimétrica de E-2 con la cota 3/k), `datos/rasgos-de-perfil.json` (6 rasgos, incluido el tipo de acceso de
+  E-16).
+- **Semillas de C18** en `docs/kit-de-prueba/semillas/`: 19 pruebas (la de referencia y 18 con un solo defecto
+  cada una) y su manifiesto `semillas.json` con lo que el validador debe responder a cada una.
+- **ESLint:** sobre `src/engine/**` prohíbe `Math.random`, `Date`, `performance`, `process`, temporizadores,
+  `fetch`, `Intl`, los métodos `toLocale*` y `localeCompare`, y los módulos de Node.
+- **CI:** paso nuevo en `quality`, «Catálogo válido»: `pnpm catalogo:validar || [ $? -eq 1 ]`.
+- **`tsconfig.json`:** `allowImportingTsExtensions`. `next build` y `build-como-proveedor` pasan con él
+  (50 páginas publicadas idénticas a `out/`).
+
+### Desviaciones del plan
+
+- **Entraron en la fase 1 tres cosas que el plan ponía en la fase 2**, porque el validador las necesita para
+  aceptar el catálogo real:
+  - el mapa `datos/marcos/equivalencias/owasp-llm-2025-a-2026.json`: `owasp-llm-top10.json` ya lo cita desde la
+    fase 0, y un mapa citado que no existe es un error (`marco/equivalencias-inexistentes`). Sus pares son los del
+    mapa oficial (`crosswalk/MIGRATION.md`, HTTP 200 el 2026-10-04, idéntico al de la fase 0);
+  - `datos/herramientas/garak.json`: las semillas recomiendan garak. Versión 0.17.0 verificada en PyPI (HTTP 200,
+    publicada el 2026-09-09), Apache-2.0 según el `LICENSE` del repositorio (HTTP 200);
+  - las familias, las reglas de veredicto y los rasgos, que el plan solo nombraba.
+- **Un dato aprobado en la fase 0 cambió de esquema, no de contenido:** el validador rechazó la vía «interfaz»
+  de `lista-decision-14.json` porque era `http://`. La misma dirección con `https://` responde 200 con el mismo
+  artículo; quedó en https.
+- **Herramientas y controles reales siguen siendo de la fase 2.** La prueba de referencia de las semillas no
+  cita control, así que hoy sale «con advertencias» (`prueba/sin-control`); cuando existan los controles del
+  Anexo A, la referencia citará uno y el manifiesto se actualiza.
+
+### Bugs y resoluciones
+
+- **La herramienta de edición convirtió escapes `\uXXXX` en caracteres** dentro de un archivo de prueba: la
+  muestra del RFC 8785 dejó de ser la del RFC y el test falló. Las dos muestras viven ahora en
+  `tests/unit/catalogo/rfc8785/*.json.txt`, escritas byte a byte con Python, y la prueba compara contra los bytes
+  UTF-8 que el RFC publica en § 3.2.4. El regex de surrogates del motor se revisó: quedó intacto.
+- **Node avisa en cada corrida del CLI** que el `package.json` no declara `"type"`. Se silencia solo ese aviso
+  con `--disable-warning=MODULE_TYPELESS_PACKAGE_JSON` en los dos scripts; poner `"type": "module"` habría
+  cambiado cómo se cargan las configuraciones de Next, Vitest y Playwright.
+- **`z.int()` describe un texto como «se esperaba un número»** y un decimal como «se esperaba un entero». La
+  prueba del detalle bilingüe cubre los dos.
+
+### Pruebas (corrida final de la fase, después de las demos)
+
+- `pnpm test`: **990 pruebas en 33 archivos, todas en verde** (720 de la fase 0 + 270 nuevas). `pnpm typecheck` y
+  `pnpm lint` limpios; `pnpm build` y `build-como-proveedor` en verde.
+- Las 270 nuevas, por archivo de `tests/unit/`:
+  - `catalogo/huella.test.ts`: la muestra de § 3.2.2 contra los bytes de § 3.2.4, el orden de claves de § 3.2.3,
+    los 24 números del Apéndice B, NaN e infinitos, surrogates solitarios, ciclos y objetos no planos;
+    SHA-256 contra `node:crypto`.
+  - `catalogo/validar.test.ts`: **un caso por cada una de las 59 reglas**, y una prueba que falla si una regla
+    queda sin caso. Además: el catálogo real, el orden de los archivos, qué prueba entra a una instantánea, capas
+    de controles y el detalle bilingüe de cada tipo de error de esquema.
+  - `catalogo/{fecha,filtro,equivalencias,instantanea,informe,cli}.test.ts`. El CLI se prueba como proceso aparte
+    con el TypeScript nativo de Node.
+  - `instrumento/semillas-del-catalogo.test.ts`: C18 sobre las 19 semillas. Con la salida de la consola activa
+    (`--silent=false`) imprime «C18 catálogo: bloquea 11 de 11 semillas inválidas sembradas».
+- **Cobertura de `src/engine/`** (umbral 90 %): `validar.ts` 98,25 % de sentencias, 93,83 % de ramas, 96,96 % de
+  funciones y 98,1 % de líneas; `equivalencias.ts` 95,83 % de ramas; `informe.ts` 96,15 % de ramas; los otros
+  siete archivos al 100 % en las cuatro métricas.
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, restauradas con Python + `cmp`)
+
+| Gate                               | Mutación                                                  | Rojo que dio                                                                                         | Verde tras restaurar |
+| ---------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------- |
+| Lint de determinismo: azar         | `+ Math.random()` en `huella.ts`                          | «'Math.random' is restricted… Sin azar en el núcleo» (`no-restricted-properties`)                    | lint limpio          |
+| Lint de determinismo: Node         | `import { readFileSync } from "node:fs"` en `validar.ts`  | «'node:fs' import is restricted…» (`no-restricted-imports`)                                          | lint limpio          |
+| Validador sobre las semillas       | La regla de k compara con `-1` en vez de `undefined`      | «× SEMILLA-ESTOCASTICA-SIN-K.json (E-2)» y «× bloquea N de N sembradas»                              | 22 de 22             |
+| E-15: referencia sin versión       | Se quita la regla propia de `version_marco` ausente       | «× SEMILLA-SIN-VERSION.json (E-15)»: sigue rechazada, pero ya no nombra su regla                     | 22 de 22             |
+| Filtro: carnadas y contraejemplos  | `{80,}` → `{800,}` en `cadena-codificada-larga`           | «× cadena-codificada-larga marca su carnada» y «× compilan y se comprueban a sí mismos»              | 27 de 27             |
+| Huella JCS                         | Claves ordenadas con `localeCompare`                      | «× ordena las claves por unidades UTF-16 (§ 3.2.3)»                                                  | 47 de 47             |
+| Gate de publicación                | El gate compara con un estado que no existe               | «× no emite nada si el catálogo es inválido» y «× con un catálogo inválido sale 2 y no escribe nada» | 24 de 24 (ver nota)  |
+| Datos bilingües                    | La comparación es = en nunca se cumple                    | «× texto/idioma-repetido: un texto largo igual en los dos idiomas»                                   | 87 de 87             |
+| Procedencia de marcos              | Se quita la regla propia de `fuente_oficial.http` ausente | «× marco/sin-procedencia: sin código HTTP de la fuente»                                              | 87 de 87             |
+| ¿Puede fallar? Toda regla con caso | Una regla nueva en `reglas.ts` sin caso                   | «× ninguna regla queda sin un caso que la haga saltar»                                               | 87 de 87             |
+| CI: «Catálogo válido»              | `cwe.json` sin `fecha_version` en `por_verificar`         | «✗ datos/marcos/cwe.json · fecha_version» (`marco/nulo-sin-declarar`), salida 2                      | salida 0             |
+| Cobertura del motor ≥ 90 %         | `describe.skip` sobre la tabla de reglas                  | «ERROR: Coverage for branches (86.63%) does not meet "src/engine/**/*.ts" threshold (90%)»           | 990 de 990           |
+
+Nota sobre la demo del gate de publicación: la primera corrida dio el rojo correcto y restauró, pero falló en el
+último paso porque le pedí `--minimo-tests 25` y el verde corre 24. Se repitió con 24 y salió limpia.
+
+### CI de la fase 1 (PR #8, commit `c5086d8`, corrida 37245076348)
+
+- **Checks requeridos:** `quality` (2 min 38 s), `e2e` (10 min 25 s) y `lighthouse` (1 min 37 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Node v22.23.3 en la CI:** el CLI corre con el TypeScript nativo de Node 22 (las 14 pruebas de `cli.test.ts`
+  lanzan el proceso aparte). Primera corrida del paso «Catálogo válido»: «Catálogo: ok · 14 marcos · 1 mapa de
+  equivalencias · 0 controles · 1 herramienta · 0 pruebas · 0 errores · 0 advertencias · 4 notas». C18 en la CI:
+  «bloquea 11 de 11 semillas inválidas sembradas».
+
+**STOP de la fase 1:** demo del validador con las 19 semillas presentada al usuario el 2026-10-04 (11 inválidas
+salen con código 2 y su regla; la de referencia, la sin control, la de versión anterior y las cinco marcadas por el
+filtro salen con código 1, sin rechazo). **Veredicto del usuario, 2026-10-04: «continúa».** La fase 2
+arranca sobre este validador.
+
+## Fase 2 — Los datos del catálogo (2026-10-04)
+
+### Fuentes verificadas en esta fase (con `curl`, sin eludir nada; caché en el scratchpad)
+
+- **Anexo A de ISO/IEC 42001:** el esquema público de CISO Assistant (`iso42001-2023.yaml`, HTTP 200) confirma
+  38 controles en 9 áreas, de A.2 a A.10. De ahí salieron **solo los identificadores**; nombre y resumen de cada
+  control están escritos con palabras propias.
+- **Cruce NIST AI RMF ↔ ISO/IEC 42001** (PDF de NIST, HTTP 200): 201 pares control → subcategoría, uno o más para
+  cada uno de los 38 controles. El cruce se hizo contra el borrador final (FDIS) y cita el Anexo B, la guía de cada
+  control, con la misma numeración que el Anexo A. Por eso toda equivalencia queda «parcial», con esa nota.
+- **Herramientas, en su registro:**
+
+  | Herramienta  | Versión | Fecha      |
+  | ------------ | ------- | ---------- |
+  | PyRIT        | 1.1.0   | 2026-09-04 |
+  | Inspect      | 0.3.276 | 2026-10-02 |
+  | Giskard      | 3.0.1   | 2026-10-02 |
+  | promptfoo    | 0.123.1 | 2026-09-18 |
+  | ZAP          | 2.17.0  | 2025-12-15 |
+  | Nuclei       | 3.11.1  | 2026-08-08 |
+  | scikit-learn | 1.9.1   | 2026-09-10 |
+  | MAPIE        | 1.5.0   | 2026-08-05 |
+  | Evidently    | 0.7.23  | 2026-09-11 |
+  | CheckList    | 0.0.11  | 2021       |
+  | TextAttack   | 0.3.11  | 2026-08-14 |
+
+  Los repositorios y las licencias respondieron 200. La de scikit-learn está en `COPYING`.
+
+- **Cambios de editor, con fuente:**
+  - ZAP: de OWASP pasó al Software Security Project el 2023-08-01, y a Checkmarx el 2024-09-24 (blog oficial, 200).
+  - promptfoo: pasó a OpenAI el 2026-03-09 (blog, 200).
+  - PyRIT: archivó `Azure/PyRIT` y sigue en `microsoft/PyRIT`.
+- **Selectores, uno por uno:**
+  - garak 0.17.0: las 7 sondas y los 9 detectores (de 8 módulos) que citan las pruebas, leídos en la etiqueta
+    `v0.17.0` con sus clases. *Cifra corregida en la auditoría (AU-55): decía «8 sondas y 10 módulos»; el auditor
+    4 los encontró todos en el paquete 0.17.0 de PyPI el 2026-10-05.*
+  - ZAP: 12 alertas en `zaproxy.org/docs/alerts/<id>/`.
+  - promptfoo: los 10 complementos que citan las pruebas, en sus páginas (HTTP 200). `agentic:memory-poisoning` se
+    confirmó dentro del HTML, porque las etiquetas partían el id. *Cifra corregida en la auditoría (AU-55): decía
+    «14 complementos» e incluía `pii:session`, que ninguna prueba cita.*
+  - Inspect: `inspect_evals/agentdojo` (*corregido en la auditoría: decía también `agentharm`, que ninguna prueba
+    cita*).
+  - Nuclei: `http/exposures/configs`.
+  - Las funciones de scikit-learn, más las clases `DataDriftPreset` (Evidently), `INV` y `DIR` (CheckList) y
+    `EmbeddingAugmenter` (TextAttack), en sus archivos.
+- **Referencias adicionales:**
+  - Los 15 identificadores CWE que citan las pruebas; el auditor 4 los encontró todos en `cwec_v4.20.xml`
+    (*corregido en la auditoría, AU-55: decía «16 páginas»*).
+  - Los identificadores de MITRE ATLAS, leídos en `ATLAS-2026.09.yaml` (208 técnicas).
+- **Hallazgos que quedan como dato:**
+  - El proveedor TypeSafe de promptfoo se fusionó el 2026-10-02, pero ninguna versión publicada lo trae. Por eso
+    ninguna prueba de `modelo_decision` lo recomienda todavía.
+  - `inspect-typesafe` existe en GitHub (MIT) pero no en PyPI (404).
+  - CheckList no recibe cambios desde 2024.
+  - El repositorio de HackGuard no declara licencia: la herramienta propia dice `NOASSERTION` y lo anota como
+    decisión pendiente del dueño.
+
+### Qué se escribió
+
+- **`datos/controles/iso42001-anexo-a.json`:** capa `por_defecto`.
+  - 9 áreas con los nombres propios que se aprobaron en la maqueta.
+  - 38 controles con nombre y resumen `{es, en}` propios, todos con `verificado_contra_norma: false`.
+  - 201 equivalencias con NIST AI RMF 1.0.
+- **`datos/herramientas/`:** 12 herramientas nuevas, 13 en total.
+  - Las de la especificación: ZAP con adaptador, más PyRIT, promptfoo, Inspect, Giskard y Nuclei.
+  - Las de E-25: scikit-learn, MAPIE, Evidently, CheckList y TextAttack.
+  - `hackguard-revision`, herramienta propia para las pruebas que decide una persona revisando diseño o código.
+- **`datos/pruebas/<familia>/`:** 38 pruebas, todas `aprobada` y `limpia`:
+  - software: 10;
+  - agente: 9;
+  - modelo generativo: 7;
+  - modelo de decisión: 12, con las cuatro nuevas de E-22 y «válido pero equivocado» partido en tres.
+
+  Cada una dice qué se verifica, por qué importa, con qué herramienta y selector verificados y qué se espera. Lleva
+  además marco con versión y entrada, referencias adicionales (CWE, ATLAS), regla de veredicto con k cuando mide
+  sobre un activo estocástico, aplicabilidad por rasgos, prioridad, madurez (E-23) y fuentes con su HTTP.
+
+- **Vocabulario:**
+  - 2 categorías nuevas que pedían las pruebas de la maqueta: «Registro de las acciones» en agente y «Manejo de la
+    salida» en modelo generativo.
+  - 19 rasgos de perfil nuevos, 25 en total.
+- **Semillas:** la de referencia ahora cita el control A.6.2.4 y sale «ok». El manifiesto se actualizó y las 19
+  siguen respondiendo lo esperado.
+
+### Desviaciones del plan
+
+- **El filtro recorre ahora todo el catálogo dentro del validador:** marcos, mapas, controles, herramientas y
+  vocabulario, además de las pruebas. Fuera de las pruebas no hay estado de aprobación, así que una marca es una
+  advertencia.
+  - Corrida a mano antes de cambiar el validador: 70 archivos, 4.695 textos, 0 marcas.
+  - Con el validador: 0 marcas.
+- **Las 10 pruebas de software nacen sin control** (`control_pendiente`): la capa por defecto es el Anexo A de
+  ISO/IEC 42001, que gobierna sistemas de IA. Esperan una capa propia de controles de software (D12).
+- **Cambios frente a la maqueta:**
+  - `PR-IA-FUGA-001` cita LLM08 de 2026 en vez de LLM07 de 2025.
+  - `PR-IA-DATO-001`, que la maqueta mostraba marcada, no la marca el filtro con el texto real.
+  - Las referencias numéricas de la maqueta a la lista de 14 ítems (`3`, `7`…) pasan a sus identificadores reales
+    (`C1`, `C3`…).
+- **Las pruebas del motor parten ahora de `catalogoBase()`:** el catálogo real sin sus pruebas, para que sumar una
+  prueba real no cambie lo que miden. Las cifras del catálogo real tienen su propio archivo,
+  `tests/unit/catalogo/catalogo-real.test.ts`.
+
+### Inventario (salida del validador sobre `datos/`)
+
+«Catálogo: con advertencias»:
+
+- 14 marcos, 1 mapa, 38 controles, 13 herramientas y 38 pruebas: 38 publicables, 0 pendientes;
+- 0 errores, 10 advertencias (todas `prueba/sin-control`, de software) y 4 notas `por_verificar`.
+
+| Familia            | Pruebas | Madurez                | Categorías cubiertas |
+| ------------------ | ------- | ---------------------- | -------------------- |
+| Software           | 10      | 10 estándar            | 7 de 7               |
+| Agente             | 9       | 8 estándar · 1 propia  | 8 de 8               |
+| Modelo generativo  | 7       | 7 estándar             | 7 de 7               |
+| Modelo de decisión | 12      | 9 emergente · 3 propia | 10 de 10             |
+
+- **Marcadas por el filtro:** ninguna.
+- **Sin control:** las 10 de software.
+- **Controles del Anexo A con pruebas:** A.6.2.4 (12), A.9.2 (5), A.6.2.6 (5), A.9.4 (2), A.6.2.8, A.7.4, A.7.5 y
+  A.6.2.2 (1 cada uno).
+- **Herramientas registradas sin prueba que las recomiende:** Giskard, MAPIE y PyRIT. Quedan en el catálogo como
+  recomendables, como pide § 10.4.
+
+### Pruebas (corrida final de la fase, después de las demos)
+
+- `pnpm test`: **1.028 pruebas en 34 archivos, todas en verde**. `pnpm typecheck` y `pnpm lint` limpios.
+- **Archivo nuevo, `catalogo/catalogo-real.test.ts`, con 37 pruebas:**
+  - una por cada una de las 32 categorías;
+  - cinco invariantes: sin errores, con solo las advertencias esperadas; cada prueba en la carpeta de su familia;
+    ningún control verificado contra la norma; toda herramienta pública con su registro en 200; k ≥ 5 en las
+    pruebas estocásticas que miden sobre el activo.
+- **Cobertura de `src/engine/`:**
+  - `validar.ts`: 98,56 % de sentencias, 94,25 % de ramas, 98,5 % de funciones y 98,44 % de líneas.
+  - `equivalencias.ts`: 95,83 % de ramas. `informe.ts`: 96,15 % de ramas.
+  - Los demás archivos, al 100 %.
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`)
+
+| Gate                                      | Mutación                                   | Rojo que dio                                                                                       | Verde tras restaurar |
+| ----------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------- | -------------------- |
+| Toda categoría tiene prueba               | `PR-SW-LOG-001` pasa a `control_de_acceso` | «× software · registro_y_monitoreo tiene al menos una prueba»                                      | 37 de 37             |
+| Ningún control verificado contra la norma | El primer control dice `true`              | «× ningún control del Anexo A dice estar verificado contra la norma (G-Plan P1)»                   | 37 de 37             |
+| Cada prueba en la carpeta de su familia   | `PR-SW-LOG-001` dice `agente`              | «× cada prueba vive en datos/pruebas/<su familia>/» (también nombró el error y la categoría vacía) | 37 de 37             |
+| Registro de herramienta en 200            | El registro de garak dice 404              | «× toda herramienta pública tiene su registro consultado con 200»                                  | 37 de 37             |
+| k en pruebas estocásticas                 | `PR-AG-PERM-001` con k = 3                 | «× toda prueba de una familia estocástica que mide sobre el activo declara k»                      | 37 de 37             |
+| El filtro recorre todo el catálogo        | El bucle recorre una lista vacía           | «× el filtro recorre también herramientas, marcos y controles, y marca con advertencia»            | 88 de 88             |
+
+Nota: la primera corrida de las cinco demos de datos dio el rojo correcto y restauró, pero falló en el último paso
+porque pedí `--minimo-tests 40` y el verde corre 37. Se repitieron con 37 y salieron limpias.
+
+### CI de la fase 2 (PR #8, commit `215d195`, corrida 37249090787)
+
+- **Checks requeridos:** `quality` (2 min 15 s), `e2e` (8 min 42 s) y `lighthouse` (1 min 31 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Paso «Catálogo válido» en Node v22.23.3:** «Catálogo: con advertencias · 14 marcos · 1 mapa de equivalencias
+  · 38 controles · 13 herramientas · 38 pruebas (38 publicables, 0 pendientes de revisión) · 0 errores ·
+  10 advertencias · 4 notas». El paso aceptó la salida 1. C18 en la CI: «bloquea 11 de 11 semillas inválidas
+  sembradas».
+- **Instantánea con el catálogo completo, en local:** misma huella en tres corridas (`cca0e8a58446…` con
+  `--fecha 2026-10-15`), entre 0,33 y 0,37 s cada una. No se comitea: la primera instantánea oficial sale en la
+  fase 3, con el semáforo.
+
+**STOP de la fase 2 (parada 2 del ⭐; la parada 3 no corre por el G-Plan P1):** inventario, marcadas (ninguna) y
+pruebas sin control (las 10 de software) presentados al usuario el 2026-10-04. **Veredicto del usuario, 2026-10-04: «Contunua»** (sic). Con cero pruebas marcadas no había nada que decidir prueba por prueba; las 38 nacen `aprobada` / `limpia` como se presentaron. No es una mirada: la fase no produjo ningún artefacto visual.
+
+## Fase 3 — Semáforo, instantáneas y la familia `modelo_decision`
+
+Arranca el 2026-10-04 tras el «continúa» de la fase 2.
+
+### Bloque A — semáforo de vigencia, vocabulario de estados e instantánea con semáforo
+
+**Qué se construyó:**
+
+- `datos/umbrales.json`: por revisar desde 30 días y vencido desde 60, con su origen (RF-01.5 y la maqueta).
+- `datos/estados.json`: el vocabulario completo de la maqueta aprobada, 9 vocabularios y 33 estados, cada uno con
+  papel de color, símbolo y nombre `{es, en}`. Se generó desde `scripts/maqueta/nucleo/estados.mjs` (solo
+  lectura) y una prueba exige que los dos sigan iguales estado por estado.
+- `src/engine/catalogo/semaforo.ts`: días y estado de cada prueba publicada, marco y herramienta; la familia
+  toma el estado de su prueba más atrasada y lleva el desglose de todas. Una familia sin pruebas publicadas
+  queda con estado `null`.
+- `src/engine/fecha.ts`: `fechaMasDias`, el inverso del algoritmo civil (Hinnant), para la matriz.
+- Validador: lee los dos archivos nuevos y suma dos reglas, `umbrales/orden-invalido` y `estados/sin-etiqueta`
+  (61 reglas). La segunda exige que cada estado que el motor calcula tenga nombre y símbolo. El filtro recorre
+  también estos dos archivos.
+- Instantánea: el catálogo suma `umbrales` y `estados`, y la instantánea suma `semaforo`, que entra en la huella.
+  El formato sigue en `hackguard/instantanea@1` porque todavía no había ninguna versionada.
+- Informe de `instantanea`: una sección de vigencia con marca, nombre y cifra por estado; los ceros no se
+  dibujan. La salida `--json` suma el desglose.
+
+**Decisiones:**
+
+- **El semáforo cubre pruebas publicadas, marcos, herramientas y familias** (RF-01.5 y E-26). No cubre
+  controles ni mapas de equivalencias: ningún requisito lo pide.
+- **Una fecha de evaluación anterior a la última verificación del catálogo se rechaza.** El motor lanza
+  `RangeError`, que el CLI trata como error de uso (código 3) con un mensaje en los dos idiomas. Una instantánea
+  no puede decir que algo estaba vigente antes de que alguien lo verificara.
+- **Las instantáneas versionadas son registros históricos.** Su prueba exige autoconsistencia (huella =
+  contenido, nombre = fecha + huella, bytes = los del CLI), no que coincidan con el catálogo de hoy.
+
+**Primera instantánea oficial:** `datos/instantaneas/2026-10-04-12d3b632a871.json` (502.746 bytes), emitida con
+`pnpm catalogo:instantanea --fecha 2026-10-04`. Las tres corridas dieron la misma huella
+(`12d3b632a871cc7ceb06970036976e25542b7eab6bc58ebc63dc4db5f6495ce4`). Cada una tardó entre 0,28 y 0,30 s
+medidos con `time -p`, incluido el arranque de pnpm. En esa fecha todo está vigente: el catálogo entero se
+verificó el 2026-10-04.
+
+**El semáforo sobre datos reales, en sus tres estados** (corridas a una carpeta temporal):
+
+| Fecha      | Pruebas          | Marcos           | Herramientas     | Familias        | Huella                                       |
+| ---------- | ---------------- | ---------------- | ---------------- | --------------- | -------------------------------------------- |
+| 2026-10-04 | ✓ Vigente 38     | ✓ Vigente 14     | ✓ Vigente 13     | ✓ Vigente 4     | `12d3b632a871…`                              |
+| 2026-11-03 | ! Por revisar 38 | ! Por revisar 14 | ! Por revisar 13 | ! Por revisar 4 | `0b24f1abde9c…`                              |
+| 2026-12-03 | ✗ Vencido 38     | ✗ Vencido 14     | ✗ Vencido 13     | ✗ Vencido 4     | `39f851ad3f55…`                              |
+| 2026-09-30 | —                | —                | —                | —               | rechazada: anterior a la última verificación |
+
+**Matriz de envejecimiento** (`tests/unit/catalogo/envejecimiento.test.ts`, regla 23): construye la instantánea
+del catálogo real en 6 fechas. Son el día de la última verificación, la víspera y el día de cada umbral, y +100
+días. En cada fecha exige la instantánea emitida, días enteros no negativos, el estado esperado de cada entidad
+(calculado comparando fechas, no días), la familia como su prueba más atrasada y la etiqueta de cada estado. 27
+pruebas. Los estados mezclados se prueban aparte, con casos armados a mano en `semaforo.test.ts`: el catálogo
+real tiene una sola fecha de verificación y no los tendría.
+
+**Pruebas:** 1.083 en 37 archivos, en verde con cobertura. El motor del catálogo queda en 99,12 % de sentencias y
+94,48 % de ramas. `semaforo.ts`, `instantanea.ts` y `fecha.ts` están al 100 %, y por eso la tabla no los lista.
+
+**Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
+
+| Gate                                   | Mutación                                                          | Rojo que dio                                                                                                           | Verde tras restaurar |
+| -------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Matriz de envejecimiento               | `dias >= umbrales.vencido` pasa a `>` (el umbral se corre un día) | «× 2026-12-03: cada entidad está en el estado que le toca» y «× el semáforo y la huella cambian el día de cada umbral» | 27 de 27             |
+| Vocabulario = maqueta                  | «Por revisar» pasa a «Pendiente» en `datos/estados.json`          | «× el vocabulario de estados es el de la maqueta aprobada en G-Diseño»                                                 | 39 de 39             |
+| Umbrales de RF-01.5                    | `"vencido": 60` pasa a 61                                         | «× los umbrales de vigencia son los de RF-01.5»                                                                        | 39 de 39             |
+| Regla `estados/sin-etiqueta`           | La condición nunca se cumple                                      | «× estados/sin-etiqueta: el vocabulario de vigencia sin «vencido»»                                                     | 90 de 90             |
+| Fecha anterior a la verificación       | La comparación con la última verificación nunca se cumple         | «× rechaza una fecha anterior a la última verificación del catálogo»                                                   | 12 de 12             |
+| Instantánea versionada autoconsistente | La fecha de la instantánea versionada pasa a 2026-10-05           | «× 2026-10-04-12d3b632a871.json: su huella es la de su contenido…» (huella `95265a1c60ce…` en vez de `12d3b632a871…`)  | 2 de 2               |
+
+Nota: la primera corrida de la demo de `estados/sin-etiqueta` dio el rojo correcto y restauró, pero falló en el
+último paso porque pedí `--minimo-tests 100` y el archivo corre 90. Se repitió con 90 y salió limpia.
+
+**CI del bloque A (PR #8, commit `97b712a`, corrida 37251673371):** `quality` (2 min 32 s), `e2e` (7 min 15 s) y
+`lighthouse` (1 min 27 s), cada uno con conclusión propia `success`, y Vercel también.
+
+### Bloque B — clasificador demo, métricas y conjunto de referencia
+
+**Qué se construyó:**
+
+- `src/engine/demo/clasificador.ts`: el activo demo de `modelo_decision`. Imita el contrato de respuesta de Jev
+  (`{model, answers, usage}`, Choice con `choice`, `probabilities` y `confidence = (p_max − 1/n)/(1 − 1/n)`, y
+  Noul con `noul`) sobre un dominio neutro: el triaje de solicitudes de socios de una biblioteca municipal.
+- `src/engine/modelo-decision/metricas.ts`: funciones puras sobre probabilidades. Exactitud, Brier multiclase,
+  ECE con bins de igual masa, error en la banda del umbral, tasa de cambio por re-ejecución y paridad ES/EN.
+- `src/engine/demo/conjunto.ts`: el esquema del conjunto de referencia, su evaluación (cada caso en los dos
+  idiomas, k corridas con la semilla del conjunto) y el informe en español o en inglés.
+- `docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json`: 26 casos sintéticos con estado tipado y una
+  nota redactada en cada idioma, etiquetados según una política escrita de 5 reglas (decisión y urgencia). Lleva
+  su advertencia: el conjunto y el clasificador los escribió la misma mano.
+- `pnpm clasificador:demo [--json] [--idioma es|en] [--conjunto <archivo>]`: sale 0, o 3 ante un error de uso,
+  de lectura o un conjunto inválido.
+
+**Decisiones:**
+
+- **`answers` va indexado por el id de la pregunta.** El fabricante no documenta la anidación; es nuestra y el ADR
+  de la familia lo dirá. `usage` va en cero porque el demo no consume tokens.
+- **Probabilidades exactas.** Salen de pesos enteros por regla y se reparten en diezmilésimos por resto mayor, con
+  empates rotos por id: suman exactamente 10 000 diezmilésimos (en coma flotante, la suma puede diferir de 1 en el
+  último bit; *precisado en la auditoría, AU-27*) y dan los mismos bytes en cualquier motor.
+- **Ruido sembrado.** Cada peso se perturba con mulberry32, sembrado con la semilla XOR FNV-1a del estado canónico.
+  Los sorteos van en un orden fijo, así que ni el orden ni el subconjunto de opciones que pide la pregunta
+  cambian la respuesta.
+- **Tres imperfecciones sembradas a propósito y fijadas por pruebas:**
+  1. el léxico cubre el inglés y solo parte del español;
+  2. no entiende la negación;
+  3. premia la antigüedad del socio, que la política no menciona.
+- **Convenciones de las métricas:**
+  - Una salida inválida cuenta como error y aporta 2 a Brier (E-17).
+  - El ECE es de la etiqueta elegida, con 4 bins de igual masa.
+  - La banda es la de «aprobar sin pasar por una persona si p ≥ 0,70», medida entre 0,60 y 0,80.
+  - La re-ejecución cuenta los ítems que cambian de elección en al menos una de las k corridas.
+- **NLL queda fuera.** E-17 la nombra junto a Brier, pero `Math.log` no tiene garantía de dar el mismo último bit
+  en todos los motores. Brier basta para el S1.
+- **`ruido_por_mil: 150` se fijó midiendo.** El objetivo era la cifra más cercana al ~1,5 % que cambia Jev entre
+  llamadas idénticas. En 52 respuestas cada cambio vale 1,9 %. Barrido con 5 corridas:
+
+  | Ruido por mil | Cambios de decisión | Exactitud ES / EN |
+  | ------------- | ------------------- | ----------------- |
+  | 60 a 120      | 0 de 52             | 21 / 25           |
+  | 150           | 1 de 52             | 20 / 25           |
+  | 200           | 4 de 52             | 20 / 24           |
+
+**La demo, `pnpm clasificador:demo`** (huella de las respuestas
+`7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d`, la misma en tres evaluaciones):
+
+| Medida                          | Español  | Inglés   |
+| ------------------------------- | -------- | -------- |
+| Exactitud de la decisión        | 20 de 26 | 25 de 26 |
+| Brier                           | 0,3742   | 0,2267   |
+| ECE (4 bins de igual masa)      | 0,0855   | 0,2914   |
+| Error en la banda 0,60–0,80     | 1 de 7   | 1 de 9   |
+| Exactitud de la urgencia (Noul) | 23 de 26 | 25 de 26 |
+
+- **Paridad:** el inglés acierta 19,2 puntos más, y los dos idiomas eligen lo mismo en 19 de 26 casos.
+- **Re-ejecución:** en 5 corridas cambia la decisión en 1 de 52 respuestas (1,92 %), y ninguna distribución sale
+  idéntica.
+
+**Dónde falla, que es lo que tiene que pasar:**
+
+- El español falla en BIB-007, 008, 013, 019 y 023, cuyas notas usan palabras fuera de su léxico, y en BIB-018,
+  un casi empate que el ruido de la primera corrida voltea.
+- El inglés falla solo en BIB-025, la negación («I wasn't ill»).
+
+**Lectura de la calibración:** el inglés acierta casi todo con probabilidades de 0,54 a 0,79 de media por bin. Es
+un modelo subconfiado, y por eso su ECE es mayor que el del español, que acierta menos pero en proporción a lo
+que dice. Exactitud y calibración miden cosas distintas: por eso E-17 pide medir las probabilidades.
+
+**Pruebas:** 1.148 en 40 archivos, en verde con cobertura. `src/engine/demo/` queda en 99,47 % de sentencias y
+96,42 % de ramas; `src/engine/modelo-decision/` en 100 % y 93,54 %. Lint limpio.
+
+**Demos en rojo de este bloque (`scripts/demo-rojo.sh`):**
+
+| Gate                                                                               | Mutación                                                   | Rojo que dio                                                                                                                     | Verde tras restaurar |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Distribuciones que suman 1                                                         | El resto mayor se detiene con un diezmilésimo por repartir | «× en cada caso del conjunto, en los dos idiomas…» y «× el resto mayor reparte los diezmilésimos que faltan»                     | 27 de 27             |
+| Misma entrada, misma salida                                                        | La semilla arrastra un contador global entre llamadas      | «× la misma petición con la misma semilla da la misma respuesta y la misma huella» y «× el orden de las opciones no cambia nada» | 27 de 27             |
+| Brier calculado a mano                                                             | `(p − y)²` pasa a `\|p − y\|`                              | «× es la media de Σ (p − y)² sobre todas las opciones» (y otras dos)                                                             | 19 de 19             |
+| Lint de determinismo en `src/engine/demo/` (heredado, primera vez en esta carpeta) | `Math.random()` en un peso                                 | «'Math.random' is restricted… Sin azar en el núcleo»                                                                             | eslint limpio        |
+
+Nota: la primera corrida de las tres primeras demos dio el rojo correcto y restauró, pero falló en el último
+paso porque pedí `--minimo-tests` 30 y 20 sin contar; los archivos corren 27 y 19. Se repitieron con la cuenta
+medida y salieron limpias. Es la tercera fase con el mismo tropiezo: desde ahora cuento las pruebas del archivo
+antes de fijar el mínimo.
+
+### CI de la fase 3 (PR #8, commit `195f6bf`, corrida 37252435488)
+
+- **Checks requeridos:** `quality` (2 min 37 s), `e2e` (10 min 16 s) y `lighthouse` (1 min 28 s), cada uno con
+  conclusión propia `success`, y Vercel también.
+- **Dentro de `quality`:** 40 archivos de pruebas en verde, C18 «bloquea 11 de 11 semillas inválidas sembradas» y
+  el paso «Catálogo válido» con «Catálogo: con advertencias». En local, la misma validación sale con 1 (0 errores,
+  10 advertencias, 4 notas) sobre 61 reglas.
+
+**STOP de la fase 3:** semáforo en sus tres estados sobre datos reales, primera instantánea oficial y demo del
+clasificador presentados al usuario el 2026-10-04. El usuario preguntó «Que quieres de mi? se claro»; se le
+respondió que solo hacía falta su «continúa» o un cambio a alguna de las cuatro decisiones. **Veredicto del
+usuario, 2026-10-04: «continúa»**, sin cambios a las decisiones.
+
+## Fase 4 — Validación del instrumento, determinismo multi-navegador y cierre
+
+Arranca el 2026-10-04 tras el «continúa» de la fase 3.
+
+### C18: ya cubierto desde la fase 1
+
+- Las semillas RF-10.1 + E-15 de `docs/kit-de-prueba/semillas/` y su prueba en `tests/unit/instrumento/` existen
+  desde la fase 1.
+- Siguen dando «C18 catálogo: bloquea 11 de 11 semillas inválidas sembradas», en la corrida local y en la CI de la
+  fase 3.
+- Las demos en rojo del validador sobre las semillas, del filtro y del gate de publicación están en la tabla de la
+  fase 1. No se repiten aquí.
+
+### Determinismo en Node, Chromium, Firefox y WebKit
+
+**Qué se construyó:**
+
+- `tests/e2e/determinismo.spec.ts`:
+  - **Node es la referencia.** El CLI corre tres veces como proceso aparte y las tres huellas tienen que
+    coincidir. Además da la huella del umbral y la del clasificador.
+  - **El navegador recibe el motor empaquetado.** esbuild empaqueta `construirInstantanea` y `evaluarConjunto`
+    como IIFE, y la página se sirve con `page.route` sobre `https://hackguard.invalid`: un contexto seguro, sin red
+    y sin la aplicación.
+  - **Tres pruebas por navegador:** la instantánea del 2026-10-15, la del 2026-11-03 (que tiene que cambiar) y el
+    clasificador.
+- **Playwright:** proyectos `firefox` y `webkit` que corren solo ese spec. Chromium lo corre en `desktop-chromium`;
+  `mobile-chromium` lo ignora.
+- **CI:** el job `e2e` instala `chromium firefox webkit`.
+- **Dependencia:** `esbuild` 0.28.2 exacto, como devDependency.
+  - La instalación dio «+5 −3». Los −3 son `vite` y `vitest` re-resueltos con `esbuild` como peer opcional, en las
+    mismas versiones.
+  - `verificar-dependencias`: «680 paquetes, ninguno por debajo de origin/main».
+
+**Corrida local** (`E2E_PUERTO=3217`): 9 de 9 en verde.
+
+| Motor                  | Instantánea 2026-10-15 | Instantánea 2026-11-03 | Clasificador    |
+| ---------------------- | ---------------------- | ---------------------- | --------------- |
+| Node (CLI ×3)          | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| Chromium 153.0.8010.12 | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| Firefox 155.0          | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+| WebKit 26.6            | `e2858e62cd9e…`        | `0b24f1abde9c…`        | `7d94f4a1c73e…` |
+
+Huellas completas:
+
+- 2026-10-15: `e2858e62cd9e72af0baf1bf7b54c01f3c1cfc580b6f6afa21a19d700dabcd862`.
+- 2026-11-03: `0b24f1abde9c3dcc912a28c69ed5907243037826a046c138f86e31be3182fcc2`.
+- Clasificador: `7d94f4a1c73e8004c80108caed40a67cc4a92f2406c74e18a0e6d3168e05c83d`.
+
+**Demo en rojo (estándar v2.19.0: una divergencia en un solo motor):**
+
+- **Mutación:** `instantanea.ts` cambia el `formato` solo cuando el agente de usuario dice Firefox.
+- **Rojo:** «✘ [firefox] › tests/e2e/determinismo.spec.ts:124:7 › … la instantánea del 2026-10-15», «1 failed · 6
+  passed». Chromium y WebKit siguieron en verde. Las otras dos pruebas de Firefox no corrieron porque el spec es
+  serial.
+- **Verde tras restaurar:** 9 de 9.
+
+### Bugs y resoluciones
+
+- La línea de conteos en español no concordaba en número («1 publicables», «1 pendientes de revisión»). `0a8228a`
+  lo corrige, con su prueba en `tests/unit/catalogo/informe.test.ts` (registrado en la auditoría, AU-35).
+
+### Desviación del plan
+
+- **§ 11.2 (escala de IA) no se deja en datos en el S1.** La orden la nombraba entre los insumos, pero ni el plan
+  aprobado ni `SPRINT_001.md` la incluyen. El brief asigna C13 al S3, y la regla dura 7 sustituye la suma de
+  dimensiones por una tabla de prioridad de acción (registrado en la auditoría, AU-20).
+
+### Tiempos
+
+Medidos el 2026-10-05, después de la fase 2 de la auditoría:
+
+- **Cómo:** 7 corridas por comando, con `node` directo (sin el arranque de `pnpm`), Node v24.18.0. La carga media
+  de un minuto era 3,98 antes y después: la máquina no estaba del todo quieta (VS Code y su sesión abiertos).
+- **Resultados (mediana, con mínimo y máximo):**
+  - `validar`: 0,093 s (0,092–0,122);
+  - `instantanea --fecha 2026-10-15`: 0,096 s (0,095–0,100);
+  - `clasificador:demo`: 0,078 s (0,077–0,082).
+- **Con `pnpm`:** a través de `pnpm`, cada comando suma su arranque. El auditor 1 midió `pnpm catalogo:validar`
+  entre 0,30 y 0,36 s.
+
+### CI de la fase 4 (PR #8)
+
+Leída con `gh run view` el 2026-10-04, después de cada corrida. Los tres jobs requeridos terminaron con conclusión propia `success` en las dos corridas.
+
+| Commit                                                        | Corrida     | quality        | e2e            | lighthouse    |
+| ------------------------------------------------------------- | ----------- | -------------- | -------------- | ------------- |
+| `38ac110` (e2e de determinismo)                               | 37253753617 | success, 172 s | success, 633 s | success, 95 s |
+| `10c277c` (manual, guía, changelog y ADRs; incluye `0a8228a`) | 37254742220 | success, 143 s | success, 544 s | success, 97 s |
+
+- **Determinismo:** en la corrida 37253753617 el job `e2e` corrió el spec en Chromium 153, Firefox 155 y WebKit 26.6, con las mismas tres huellas que Node.
+- **Primera vez en CI:** es la primera vez que corren Firefox y WebKit en la CI de este repo, así que no hay histórico para afirmar regresión ni no-regresión.
+
+## Punto de reanudación (pausa del 2026-10-04, noche)
+
+El usuario pausó el sprint hasta el día siguiente. Este es el estado exacto para retomar.
+
+**Dónde está el sprint:**
+
+- Las fases 0 a 3 están aprobadas.
+- De la fase 4 están hechos:
+  - C18;
+  - el e2e de determinismo en los cuatro motores;
+  - el manual, la guía, el changelog y los ADRs 002 a 004.
+- `/audita-sprint` está en la **Fase 1**, que es de solo lectura.
+  - Los informes llegados están guardados tal cual en `sprints/SPRINT_001-auditoria.md`.
+  - **Todavía no hay consolidado.**
+  - **No se ha pagado ningún hallazgo.**
+
+**Datos medidos que esperan su sitio en la fase 4 (hallazgo B1 de la auditoría):**
+
+- **Qué se midió:** `validar`, `instantanea` y `clasificador:demo`, con 7 corridas cada uno.
+- **Medianas:** 0,100 s, 0,135 s y 0,121 s.
+- **Condiciones:** Node v24.18.0, con la máquina cargada (load average de ~9,7, por VS Code).
+- **Cifra válida:** la máquina no estaba quieta, así que la cifra que va al summary se toma de una corrida nueva en
+  máquina quieta.
+
+**Pasos para retomar, en orden:**
+
+1. **Repo:** `git status` limpio en `sprint-001/catalogo-vivo-nucleo`, y `gh pr checks 8` en verde sobre el último
+   commit.
+2. **Auditoría:** leer `sprints/SPRINT_001-auditoria.md`.
+   - Si el anexo del auditor de motor, contrato, gates y dependencias dice «Lo que no alcancé a revisar», lanzar un
+     auditor independiente nuevo, en solo lectura, **solo sobre esa lista**.
+   - Si el anexo falta, relanzar esa superficie entera.
+3. **Consolidado:** convertir `sprints/SPRINT_001-auditoria.md` en el consolidado.
+   - Sin duplicados.
+   - Cada hallazgo con `archivo:línea`, severidad, ajuste ejecutable, verificación y auditor de origen.
+   - Pasar por la casilla 4 todo copy que proponga.
+4. **Presentar la Fase 1 al usuario.**
+   - Las decisiones van en lenguaje llano, por ejemplo:
+     - los nombres de licencia de los marcos, bilingües ahora o como deuda;
+     - qué hacer con lo que el filtro no ve;
+     - instalar gitleaks en la CI o declarar manual la prueba de la carnada.
+   - Recordarle `/model`.
+   - Esperar su aprobación.
+5. **Fase 2:** pagar todos los hallazgos, primero los que crean gates (cada uno con `demo-rojo.sh`, contando antes
+   los tests para `--minimo-tests`). Después, la segunda pasada de frases caducadas y frases de evidencia, con otro
+   auditor independiente.
+6. **Cierre:**
+   - `/deploy-check`;
+   - `sprints/SPRINT_001-summary.md`, con la auditoría y la sección «Para mergear»;
+   - cuerpo del PR #8 al día;
+   - ⭐ corto del usuario (3 paradas, la 3 declarada no corrida);
+   - el usuario marca el PR listo y mergea con squash;
+   - aviso «Sprint 001 de HackGuard cerrado — corre `/cierre-sprint hackguard` en la planeadora».
+
+## Reanudación (2026-10-05)
+
+- **Repo al retomar:** `git status` limpio en `c590c9e`. La corrida 37255787550 de ese commit terminó con `quality`
+  (2m40s), `e2e` (7m6s) y `lighthouse` (1m31s) en `success`.
+- **Auditor 4:** un auditor independiente nuevo, en solo lectura, revisó la lista «Lo que no alcancé a revisar» del
+  anexo C. Se le sumó la casilla 4 (frases caducadas), que ninguno de los tres había corrido.
+  - Entregó 0 altos, 3 medios y 6 bajos.
+  - Barrió 126 coincidencias de promesa aplazada y no encontró ninguna frase falsa nueva. Hay dos en datos que la
+    instantánea congela: AU-56.
+- **Consolidado:** `sprints/SPRINT_001-auditoria.md` junta los cuatro informes.
+  - 56 hallazgos sin duplicados: 0 críticos, 7 altos, 21 medios y 28 bajos. Cada uno con su auditor de origen.
+  - Cinco decisiones del usuario.
+  - Dos deudas imposibles de pagar en el S1: AU-14 y AU-20.
+  - El orden de pago de la Fase 2.
+- **Estado:** la Fase 1 queda completa y espera la aprobación del usuario. No hay ningún hallazgo pagado.
+
+### Aprobación de la Fase 1 de la auditoría
+
+**El usuario aprobó el plan el 2026-10-05, con un «apruebo»**, y se quedó con las cinco recomendaciones:
+
+1. Licencias y nombres de los marcos en español e inglés ya (AU-05).
+2. Documentar lo que el filtro no ve y sumar tres patrones de forma (AU-06).
+3. Instalar gitleaks en la CI (AU-11).
+4. Guía en español, anotado para que decida la planeadora (AU-47).
+5. Revalidar las instantáneas guardadas y reemplazar la del 2026-10-04 en este PR (AU-48).
+
+La Fase 2 arranca con los hallazgos que crean gates.
+
+## Fase 2 de la auditoría — correcciones (2026-10-05)
+
+Aprobada por el usuario con «apruebo» (ver arriba). Plan: `sprints/SPRINT_001-auditoria.md`, 56 hallazgos.
+
+### Lo que se pagó, por commit
+
+| Commit | Bloque | Hallazgos |
+|---|---|---|
+| `9dfa994` | Gates | AU-01, 02, 08, 09, 10, 11, 12, 15, 26, 49, 50, 54 |
+| `5b0d6c1` | Dependencias (fuera del plan, ver «Desviaciones») | ADR-005: `compression` 1.8.2 bajo `serve` |
+| `efb547a` | Código | AU-07, 13, 16, 22, 27, 28, 29, 30, 32, 33 |
+| `d53b05a` | Datos, más la guía y el ADR-002 que el gate de huellas ata a ellos | AU-05, 06, 31, 43, 44, 48, 51, 52, 53, 56 |
+| `7ce50d7` | Documentos | AU-03, 04, 14, 17, 18, 19, 20, 21, 23, 24, 25, 34 a 42, 45, 46, 47, 55 |
+
+### Demos en rojo de esta fase (`scripts/demo-rojo.sh`, salvo donde se dice)
+
+| Gate | Mutación | Gate corrido | Resultado con la mutación | Tras restaurar |
+|---|---|---|---|---|
+| AU-02 lint de determinismo | `huella.ts`: `void crypto.randomUUID();` tras el digest | `npx eslint src/engine` | rojo: «74:81 … solo usa globalThis.crypto.subtle (no-restricted-syntax)», 1 error | verde tras restaurar |
+| AU-01 matriz de envejecimiento | `semaforo.ts`: `dias >= umbrales.vencido` → `>` | `vitest run envejecimiento.test.ts` | rojo: «2 failed \| 25 passed (27)»: «2026-12-03: cada entidad está en el estado que le toca» y «el semáforo cambia el día de cada umbral» | 27 de 27 |
+| AU-01 fechas mezcladas (no es demo: prueba de robustez) | `zap.json` 2026-10-20, `nuclei.json` 2026-08-20 (restaurados con git checkout) | `vitest run tests/unit` | verde: 40 archivos, 1.166 de 1.166 | — |
+| AU-50 meses de 30 días (×3) | `fecha.ts`: `[4, 6, 9, 11]` → `[4, 9, 11]` / `[4, 6, 11]` / `[4, 6, 9]` | `vitest run fecha.test.ts` | rojo, cada una «1 failed \| 44 passed (45)» nombrando 2026-06-31 / 2026-09-31 / 2026-11-31 | 45 de 45 |
+| AU-49 Brier sin orden por id | `metricas.ts`: `for (const p of porId(ps))` → `for (const p of ps)` | `vitest run metricas.test.ts` | rojo «1 failed \| 18 passed (19)»: «no depende del orden de las predicciones ni del de las opciones» | 19 de 19 |
+| AU-49 Brier sin ordenar opciones | `[...opciones].sort(comparar)` → `[...opciones]` | ídem | rojo, misma prueba | 19 de 19 |
+| AU-49 borde superior de la banda | `<= banda.hasta` → `<` | ídem | rojo «cuenta, dentro de la banda…» | 19 de 19 |
+| AU-49 borde del umbral | `>= banda.umbral` → `>` | ídem | rojo «cuenta, dentro de la banda…» | 19 de 19 |
+| AU-08 orden de entrada de las pruebas | `validar.ts`: tras `leerColeccion(entrada.pruebas…)`, `pruebasLeidas.sort(…)` por posición de entrada | `vitest run instantanea.test.ts` | rojo «1 failed \| 12 passed (13)»: «el catálogo real, con cada lista invertida, da la misma huella» (`5a70…` ≠ `6f32…`); la prueba vieja de orden siguió verde | 13 de 13 |
+| (descartada) AU-08, primer intento | mutación sobre todas las colecciones | ídem | rojo en 2 pruebas, pero `--minimo-tests 20` mal contado (eran 13): demo-rojo la rechazó; se repitió arriba con una mutación solo de pruebas | — |
+| AU-09 semilla fuera del manifiesto | `semillas.json`: se quita la entrada de `SEMILLA-VERSION-ANTERIOR.json` (el archivo sigue en la carpeta) | `vitest run semillas-del-catalogo.test.ts` | rojo «1 failed \| 20 passed (21)»: «el manifiesto nombra cada semilla del directorio…» | 22 de 22 (`--minimo-tests 21`, piso por debajo del conteo real de 22) |
+| AU-10 hook con una sola herramienta | `.claude/settings.json`: `… gitleaks … \|\| ! command -v jq` → `&&` | `vitest run hook-secretos.test.ts` | rojo «2 failed \| 3 passed (5)»: «con jq pero sin gitleaks bloquea» y «con gitleaks pero sin jq bloquea» | 5 de 5 |
+| AU-11 la carnada no se salta en CI (simulación local, sin mutación de archivo: no es demo-rojo) | `CI=true` y un PATH sin `/opt/homebrew/bin` (sin gitleaks) | `vitest run hook-secretos.test.ts` | rojo «1 failed \| 4 passed (5)»: «con las herramientas: deja pasar lo limpio y bloquea la carnada»; sin `CI`, la misma corrida da «3 passed \| 2 skipped» | `CI=true` con gitleaks: 5 de 5 |
+| AU-12 guard de `--agregar` | `catalogo.ts`: `if (o.agregar.length > 0) {` → `> 99` | `vitest run cli.test.ts` | rojo «1 failed \| 16 passed (17)»: «con --agregar, sin --salida o con --salida dentro de datos/, sale 3…». La corrida mutada dejó `datos/instantaneas/2026-10-15-6ee314cc72ff.json` (con la semilla adentro: el defecto mismo); se borró a mano | 17 de 17 |
+| AU-12 ruta de un archivo de fuera | `cargar.ts`: condición de `agregado/` → `if (false)` | ídem | rojo «1 failed \| 16 passed (17)»: «una prueba agregada desde fuera del repo entra como agregado/<nombre>…» | 17 de 17 |
+| AU-54 lo que no se lee | `cargar.ts`: `else if (!leidas.has(hija))` → `else if (false)` | `vitest run cargar.test.ts` | rojo «1 failed \| 2 passed (3)»: «lista lo que hay en datos/ y no se lee…» | 3 de 3 |
+| AU-54 UTF-8 | `cargar.ts`: `fatal: true` → `fatal: false` | ídem | rojo: «un archivo que no es UTF-8 detiene la carga nombrando el archivo» | 3 de 3 |
+| AU-54 BOM | `validar.ts`: `archivo.texto.startsWith(` → `endsWith(` (un primer intento con `\uFEFF` en `--buscar` no aplicó: demo-rojo lo dijo y no contó como rojo) | ídem | rojo: «un JSON con BOM es inválido y el hallazgo dice por qué…» | 3 de 3 |
+| AU-15 sin reintentos en el e2e | `determinismo.spec.ts`: la primera aserción falla solo en el primer intento (`test.info().retry > 0 ? huella : "primer intento"`) | `CI=true … playwright test determinismo.spec.ts --project desktop-chromium` | rojo «1 failed», «2 did not run» (serial) | 3 de 3. Contraste a mano, sin `retries: 0`: «1 flaky · 2 passed» (verde) |
+| AU-13 huella a registrar en el detalle | `validar.ts`: `revision-sin-registro` con detalle `null` en vez de `conHuella` | `vitest run validar.test.ts` | rojo «1 failed \| 90 passed (91)»: «el hallazgo da la huella a registrar, y con ella registrada la prueba se publica» | 91 de 91 |
+| AU-29 sintaxis borrable | `fecha.ts`: `export enum Sonda { A }` | `pnpm -s typecheck` | rojo: «error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled» | verde |
+| AU-44 huella del demo fijada | `clasificador.ts`: el sorteo de Noul en orden inverso | `vitest run conjunto.test.ts` | rojo «1 failed \| 18 passed (19)»: «da la misma huella de respuestas…» (`0eed9399…` ≠ `7d94f4a1…`); un primer intento con `--minimo-tests 29` mal escrito (eran 19) fue rechazado por demo-rojo y se repitió con el conteo medido | 19 de 19 |
+| AU-05 nombres de marco sin glosa | `cwe.json`: `"nombre"` vuelve a «… (CWE) y CWE Top 25» | `vitest run catalogo-real.test.ts` | rojo «1 failed \| 39 passed (40)»: «el nombre de cada marco es su título propio, sin glosas en español» | 40 de 40 |
+| AU-51 referencia adicional que no aplica | `validar.ts`: la llamada `aplica(r.marco_id, …)` → `void aplica;` | `vitest run validar.test.ts` | rojo «1 failed \| 91 passed (92)»: «una referencia adicional a un marco que no aplica…». Además, antes del arreglo de datos, el validador ampliado dio «inválido, 4 errores» nombrando las 4 pruebas que citan CWE | 92 de 92 |
+| (descartada) AU-51, primer intento | ídem | ídem | la base ya estaba en rojo (2 casos de reglas dependían del `por_verificar` de CWE que AU-52 quitó); demo-rojo lo detectó («el gate sigue en rojo tras restaurar»); se ajustaron esos casos y se repitió arriba | — |
+| AU-06 bloque sin lenguaje | `patrones.json`: `]*```` → `]*``Z`` | `vitest run filtro.test.ts` | rojo «2 failed \| 33 passed (35)»: «bloque-sin-lenguaje marca su carnada» y el autochequeo | 35 de 35 |
+| AU-06 bloque sin lenguaje, expresión corregida | `patrones.json`: `]*?` → `]*?ZZ` (la primera expresión marcaba también la valla de cierre de un bloque con lenguaje; lo vieron dos pruebas de `validar.test.ts`) | `vitest run filtro.test.ts` | rojo «2 failed \| 34 passed (36)»: «bloque-sin-lenguaje marca su carnada» | 36 de 36 |
+| AU-06 recorrido de ruta | `]){2,}` → `]){9,}` | ídem | rojo, «recorrido-de-ruta marca su carnada» | 35 de 35 |
+| AU-06 etiqueta HTML activa | `"expresion": "<` → `"expresion": "ZZZ<` | ídem | rojo, «etiqueta-html-activa marca su carnada» | 35 de 35 |
+| AU-48 instantánea guardada inválida | `2026-10-05-703a0479d567.json`: `"id": "PR-IA-PINJ-001",` → `"PR-IA-PINJ-1"` | `vitest run instantaneas-versionadas.test.ts` | rojo «2 failed \| 1 passed (3)»: «…pasa hoy el validador…» (y la autoconsistencia) | 3 de 3 |
+| AU-48 edición a mano con la huella recalculada (archivo temporal, sin demo-rojo: es un archivo nuevo, no una mutación) | copia de la oficial con `PR-IA-PINJ-001.version_marco = "2019"`, huella recalculada y nombre `2026-10-05-46ba5b3e4ad7.json` | ídem | rojo «1 failed \| 4 passed (5)»: solo «…pasa hoy el validador…»; su autoconsistencia pasó. Archivo borrado | — |
+| AU-48 rojo natural | la instantánea del 2026-10-04 contra el validador de hoy (licencias bilingües) | ídem | rojo: errores en cascada `referencia/marco-inexistente`; se reemplazó por `2026-10-05-703a0479d567.json` | — |
+| AU-44 huellas de los documentos | `GUIA-DE-PRUEBA.html`: último carácter de la huella de D1 | `vitest run guia-huellas.test.ts` | rojo «1 failed \| 3 passed (4)»: «docs/GUIA-DE-PRUEBA.html: cada huella completa es la de una instantánea…» | 4 de 4. Rojo natural antes: el ADR-002 citaba `e2858e62cd9e…` |
+
+### Evidencia de las correcciones
+
+- 2026-10-05 curl https://arxiv.org/abs/2609.32160 → 200; citation_author: Tang, Lijuan · Zheng, Yuemeng; title «Typed Decision Models: An Early Evidence Audit and Evaluation Checklist».
+- 2026-10-05 doi.org 10.6028/NIST.AI.100-1, NIST.AI.600-1, NIST.AI.100-2e2025 → 302 a nvlpubs (PDF).
+- 2026-10-05 gitleaks 8.30.1: los dos assets del release responden 200; la línea de checksums.txt del tar linux_x64 verifica OK con shasum -a 256 -c; el tar trae `gitleaks` en la raíz.
+- K-S1-5 (fricción del kit): demo-rojo.sh interpreta las barras invertidas de --buscar; un texto con \uFEFF no coincide nunca. El script lo detecta («la mutación no aplica a nada») y no lo cuenta como rojo.
+- 2026-10-05 títulos NIST verificados: AI 100-2 E2025 en el <title> de csrc (200); AI 600-1 en el /Title del PDF (doi 200); AI 100-1 en la portada del PDF (pdftotext).
+- e2e determinismo local (E2E_PUERTO=3217), tras AU-01/AU-08/AU-15/AU-26: 9 passed (15.8s); Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6; huellas e2858e62… (10-15), 0b24f1ab… (11-03), 7d94f4a1… (clasificador), con las listas invertidas en el navegador.
+- Suite unitaria tras el bloque de gates: 41 archivos, 1.161 de 1.161; cobertura total 99,36 % sentencias, 95,27 % ramas, 99,56 % funciones, 99,4 % líneas.
+- CI 37401498633 (`9dfa994`): quality en rojo SOLO por `pnpm audit`: GHSA-vc2v-76pw-4v95 (compression <1.8.2 vía serve), publicada 2026-10-05T23:28Z; e2e y lighthouse quedaron «skipping». Arreglo: override `serve>compression: 1.8.2` (ADR-005). Local: audit 1 high (1 ignored); verificar-dependencias 681 paquetes, ninguno por debajo; peers sin problemas; serve enlaza compression 1.8.2; determinismo desktop-chromium 3 passed.
+- 2026-10-05 sondas del auditor 2 sobre el filtro real (7 patrones): marca una etiqueta de script en línea, un recorrido de ruta hacia un archivo del sistema, un bloque de código sin lenguaje y una dirección con una etiqueta de script en el parámetro; no ve una tautología de SQL tras una comilla, una instrucción maliciosa escrita como frase, un comando encadenado dentro de una línea, una expresión de plantilla, viñetas ni un comando de red sangrado. El catálogo real sigue con 0 marcas.
+- 2026-10-05 CWE: cwec_latest.xml.zip descargado entero (HTTP 200): cwec_v4.20.xml, raíz Version="4.20" Date="2026-04-30".
+- 2026-10-05 TypeSafe: https://docs.typesafe.ai/model-jaggedness/jev-1.13.md → 200; título «Jev 1.13 jaggedness».
+- 2026-10-05 instantánea oficial nueva: `pnpm catalogo:instantanea --fecha 2026-10-05` → 2026-10-05-703a0479d567.json (703a0479…5501); re-emitida en /tmp idéntica byte a byte (cmp). La del 2026-10-04 (12d3b632…) se retiró con git rm.
+- 2026-10-05 huellas para la guía: 10-15 5bcb8a75…b55e (×3 iguales); 11-03 5df38fdb…; 12-03 0a6772a4…; 10-16 2c1c927d…; 11-04 d8c379af…; 09-30 → error «anterior a la última verificación (2026-10-05)».
+- 2026-10-05 e2e determinismo (3 navegadores) con los datos del bloque de datos: 9 passed (7.5s); 10-16 2c1c927d…, 11-04 d8c379af…, clasificador 7d94f4a1… en Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6.
+- CI 37401801459 (5b0d6c1): quality, e2e, lighthouse success; gitleaks_8.30.1_linux_x64.tar.gz: OK y «8.30.1»; Test Files 41 passed (41), Tests 1161 passed (1161), sin saltadas; hook-secretos.test.ts (5 tests).
+
+### `/deploy-check` (2026-10-05)
+
+- **Sección 12, lo que la app escribe en disco:** una instantánea con `--agregar` puede derivar de un archivo de
+  `datos/privado/`, y nacía con permisos 644. Ahora nace con 600 (regla 17-bis a), y lo prueba
+  `tests/unit/catalogo/cli.test.ts`.
+  - **Demo:** `catalogo.ts` con `mode: 0o644` fijo da rojo en `cli.test.ts`, «1 failed», «expected 420 to be 384»,
+    en la prueba de `agregado/<nombre>`. Tras restaurar, 17 de 17.
+  - **Advertencia:** una primera corrida de esa demo, con la máquina en carga 22,8 porque el e2e completo corría en
+    paralelo, también hizo caer «emite un archivo nombrado por su huella». No se reprodujo al repetir: la prueba
+    lanza el CLI tres veces y es sensible a la carga.
+- **e2e completo en local** (`E2E_PUERTO=3217 pnpm test:e2e`): «1053 passed (3.4m)», sin fallas, sin flaky y sin
+  saltadas.
+
+### Desviaciones del plan de la auditoría
+
+- **`compression` (ADR-005), fuera del plan.** GHSA-vc2v-76pw-4v95 se publicó a mitad de la fase 2 y dejó `pnpm audit`
+  en rojo en la corrida 37401498633. Tiene parche, así que la regla 18 obliga a subir la dependencia; `serve` 14.2.6
+  la fija exacta, y el override va en `pnpm-workspace.yaml`.
+- **AU-23:** la aclaración va en `proposito` y no en `como_correr`, que es un comando para copiar.
+- **AU-06:** la primera expresión de `bloque-sin-lenguaje` marcaba también la valla de cierre de un bloque con
+  lenguaje. Se corrigió para exigir un bloque entero, y su demo se repitió.
+- **AU-48:** la instantánea oficial pasa a ser la del 2026-10-05. Ningún plan citaba la del 2026-10-04, que se
+  retiró en el mismo PR.
+- **Conteos de `--minimo-tests`:** dos demos se rechazaron por un conteo mal escrito y se repitieron con el conteo
+  medido por comando. Es la cuarta fase del sprint en que pasa; desde ahí el conteo sale de un comando y no de la
+  memoria.
+
+### Deuda que queda
+
+- **AU-14 (al S2):** etiquetas para `pendientes_de_revision[].motivo` y para la familia sin pruebas publicadas.
+  Exigen tocar la maqueta, prohibida en este sprint (ADR-003).
+- **AU-20 (al S3):** § 11.2, la escala de IA (ver «Desviación del plan» de la fase 4).
+- **AU-47 (decide la planeadora):** la guía de prueba está solo en español. La orden no lo pide, y las apps hermanas
+  lo resolvieron distinto: planlang la tiene bilingüe y big-d no.
+- **AU-38:** cerrado; el cuerpo del PR #8 está al día.
+
+## Segunda pasada de la auditoría — pagos (2026-10-05)
+
+El informe está en el anexo E de `sprints/SPRINT_001-auditoria.md`: 5 medios y 7 bajos, ninguno crítico ni alto. Se
+pagaron con el ajuste exacto del anexo, primero lo que crea evidencia de gate (M2) y después el resto. Para M1 se
+eligió la opción (a), corregir ya.
+
+### Demos en rojo (`scripts/demo-rojo.sh`)
+
+`--minimo-tests` salió de un comando antes de cada demo: 13 en la unitaria y 3 en la e2e de `desktop-chromium`.
+
+| Gate | Mutación | Gate corrido | Resultado con la mutación | Tras restaurar |
+|---|---|---|---|---|
+| AU-26, aserción unitaria | `semaforo.ts:72`: `return "por_revisar";` → `return "vigente";` en la rama del umbral | `npx vitest run tests/unit/catalogo/instantanea.test.ts` | rojo: «otra fecha de evaluación cambia el semáforo, no solo la huella», `expected Set{ 'vigente' } to deeply equal Set{ 'por_revisar' }`; 1 de 13 cae | verde, 13 de 13 |
+| AU-26, aserción e2e | la misma | `E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts --project desktop-chromium` (`--puerto 3217`) | rojo: «en el umbral (2026-11-04) algo pasa a «por revisar»…», `Expected value: "por_revisar"`, `Received array: ["vigente"]`; 1 falla, 1 pasa y 1 no corre (modo serial) | verde, 3 de 3 |
+
+### Evidencia de los pagos
+
+- 2026-10-05 promptfoo: `npm view promptfoo time` da 0.124.0 publicada el 2026-10-06T01:35:42Z (UTC). Su tarball
+  trae cuatro `dist/src/typesafe-*.js`, con «TypeSafe provider for Jev» y `jev-1.13.0`; el de 0.123.1 no trae
+  ninguno. `inspect-typesafe` sigue en 404 en PyPI.
+- 2026-10-05 huellas con la nota corregida, `pnpm catalogo:instantanea --json`:
+  - 10-15 `486e3e50…30e0ed` en tres corridas iguales;
+  - 11-03 `645b0d24…`, 12-03 `18c7463c…`, 11-04 `9b1f7542…`;
+  - 10-16 `2c062f72…c302` en tres corridas iguales.
+- 2026-10-05 instantánea oficial: `pnpm catalogo:instantanea --fecha 2026-10-05` escribe
+  `2026-10-05-739ed8c104f0.json` (`739ed8c1…47a2`). Es idéntica byte a byte (`cmp`) a la emitida con `--salida` en el
+  scratchpad. La del 2026-10-05 anterior (`703a0479…`) se retiró con `git rm`; ningún plan la citaba (ADR-002).
+- 2026-10-05 e2e de determinismo en local, `E2E_PUERTO=3217`, los tres navegadores: «9 passed (9.7s)». Chromium
+  153.0.8010.12, Firefox 155.0 y WebKit 26.6 dan `2c062f72…` (10-16), `9b1f7542…` (11-04) y `7d94f4a1…`
+  (clasificador).
+- `npx vitest run tests/unit/guia-huellas.test.ts tests/unit/catalogo`: 14 archivos, 377 de 377, con la guía y el
+  ADR-002 citando las huellas nuevas.
+- B6: `git grep` de las sondas literales sobre los archivos versionados no encuentra ninguna. Siguen en la historia
+  de la rama; el merge con squash deja en `main` solo el árbol final.
+- CI 37405859067 (`a072b0f`): `quality`, `e2e` y `lighthouse` en `success`.
+- CI 37406823175 (`bf878e4`, estos pagos): `quality` 2 min 50 s, `e2e` 11 min 34 s y `lighthouse` 2 min 4 s, los tres
+  en `success`. En `quality`: 42 archivos, 1.186 de 1.186, gitleaks 8.30.1 con la suma OK, «C18 catálogo: bloquea 11
+  de 11» y `pnpm audit` «1 high (1 ignored)». En `e2e`: «1053 passed (9.8m)», sin flaky; `2c062f72…`, `9b1f7542…` y
+  `7d94f4a1…` en Chromium, Firefox y WebKit.
+
+### Lo que se pagó
+
+| Hallazgo | Archivo | Ajuste |
+|---|---|---|
+| M1 | `datos/herramientas/promptfoo.json`, `decisions/004-…md` | La nota y el ADR dicen lo que era cierto al verificar y que la 0.124.0 ya trae el proveedor. Cascada: instantánea oficial, guía (D1, D5 y F1), ADR-002, CHANGELOG y summary. |
+| M2 | bitácora, summary, auditoría y PR | Las dos demos de arriba, y el texto que nombra la simulación de AU-11. |
+| M3 y B7 | summary, bitácora | 53 pagados (52 en cuatro commits, más AU-38); `09842c8` es el fix del `/deploy-check`. |
+| M4 | summary, más su hermana en la bitácora (Desviaciones) | «en cuatro fases». |
+| M5 | `docs/LICENCIAS-DE-MARCOS.md` | La cabecera, en los dos idiomas, dice lo que se verificó el 2026-10-05. |
+| B1 | summary | La fila CI/CD cita la corrida 37406823175 de `bf878e4`, leída antes de escribirla. |
+| B2 | guía, A1 y A2 | Las cuatro cosas que cambió la auditoría; lo que el filtro marca hoy. |
+| B3 | ADR-002 | `no-restricted-syntax` en la lista de reglas. |
+| B4 | bitácora | «(este commit)» → `7ce50d7`. |
+| B5 | ADR-004 | El nivel de ruido: la tasa de 1 de 52 es la del demo. |
+| B6 | bitácora y anexo B de la auditoría | Las sondas, en prosa. |
+
+## Gate ⭐ corto (2026-10-05)
+
+Parada a parada, desde el bloque A de `docs/GUIA-DE-PRUEBA.html`.
+
+| Parada | Qué | Respuesta del usuario | Ajustes en caliente |
+|---|---|---|---|
+| 1 de 3 | La tabla de marcos y licencias (`docs/LICENCIAS-DE-MARCOS.md`), con los cuatro cambios de la auditoría | «Arpobadas las tablas» (sic) | ninguno |
+| 2 de 3 | `pnpm catalogo:validar` sin `filtro/marcada` («38 publicables, 0 pendientes de revisión», corrido por el constructor antes de la parada) y la lectura de `agente/PR-AG-PERM-001`, `modelo_generativo/PR-IA-PINJ-001` y `software/PR-SW-SQLI-001` | «confirmo» | ninguno |
+| 3 de 3 | Los resúmenes del Anexo A contra la norma | no corrida: sin texto de ISO/IEC 42001 (G-Plan P1) | deuda antes de G-Release |
+
+Nada va a backlog desde el gate.
+
+## Punto de reanudación (antes de compactar, 2026-10-05)
+
+> **Al retomar, tras compactar:** la corrida de `c924422` (37404800509) terminó con `quality`, `e2e` y `lighthouse`
+> en `success`. Los pasos 1 a 3 están hechos (los pagos en `bf878e4`, con su CI en verde), y el 4 también (sección
+> «Gate ⭐ corto»). El paso 5 cierra el summary; el merge y `/cierre-sprint` los hace el usuario.
+
+**Hecho:**
+
+- La Fase 2 de la auditoría está pagada (commits `9dfa994` … `09842c8`), y el `/deploy-check` corrió.
+- `sprints/SPRINT_001-summary.md` está escrito, con tres pendientes marcados:
+  - la fila CI/CD;
+  - el ⭐ corto;
+  - la segunda pasada.
+- El cuerpo del PR #8 está al día (AU-38): ya no dice «this push».
+
+**Pendiente, en orden:**
+
+1. **CI:** leer la de los últimos pushes (`d53b05a`, `7ce50d7`, `09842c8` y el de este commit) con
+   `gh run view <id> --json jobs`. Cada job requerido tiene que tener su conclusión propia `success`.
+2. **Segunda pasada: ENTREGADA** (anexo E de `sprints/SPRINT_001-auditoria.md`).
+   - Encontró 5 medios y 7 bajos, ninguno crítico ni alto, y el barrido de enlaces sale limpio.
+   - Hay que pagarlos todos con el ajuste exacto del anexo E:
+     - **M1, promptfoo 0.124.0 ya trae el proveedor de TypeSafe:**
+       - el ADR-004;
+       - la nota de `datos/herramientas/promptfoo.json`. Corregir la nota cambia todas las huellas: re-emitir la
+         instantánea oficial y actualizar la guía (D1, D5 y F1), el ADR-002, el summary y el CHANGELOG.
+         `guia-huellas.test.ts` nombra lo que quede viejo.
+     - **M2, las demos que faltan:** dos demos de AU-26 (`demo-rojo.sh`; los comandos están en el anexo E).
+       Después, corregir «cada gate nuevo con su demo» en el summary, en la auditoría y en el PR, nombrando la
+       simulación de AU-11.
+     - **M3 y B7:** son 53 pagados (52 en cuatro commits, más AU-38); `09842c8` es el fix del `/deploy-check`.
+     - **M4:** el conteo a mano falló «en cuatro fases».
+     - **M5:** la fecha de verificación de `docs/LICENCIAS-DE-MARCOS.md`.
+     - **B1:** la fila CI/CD del summary, con la corrida 37404065721 y la del commit final.
+     - **B2:** las paradas A1 y A2 de la guía.
+     - **B3:** `no-restricted-syntax` en el ADR-002.
+     - **B4:** «(este commit)» → `7ce50d7`.
+     - **B5:** el nivel de ruido en el ADR-004.
+     - **B6 (regla dura 3):** quitar las cargas literales de la bitácora (la línea de las sondas del filtro) y del
+       anexo B de la auditoría, describiéndolas en prosa.
+3. **Summary:** completar la fila CI/CD con los números de corrida, y la línea de la segunda pasada.
+4. **⭐ corto con el usuario,** parada a parada, desde `docs/GUIA-DE-PRUEBA.html`, bloque A:
+   - parada 1: confirmar la tabla de marcos y licencias;
+   - parada 2: el filtro sin marcas, y leer tres pruebas;
+   - parada 3: declarada no corrida.
+
+   El resultado se escribe en el summary, sección «Gate ⭐», y aquí.
+5. **Cierre:** `status: closed` en el summary, push, `gh pr checks 8`, y avisar al usuario: «marca el PR listo,
+   squash, borra la rama; luego `/cierre-sprint hackguard` en la planeadora».

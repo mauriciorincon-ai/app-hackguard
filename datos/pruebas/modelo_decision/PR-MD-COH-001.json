@@ -1,0 +1,86 @@
+{
+  "id": "PR-MD-COH-001",
+  "nombre": {
+    "es": "Probabilidades coherentes ante una negación",
+    "en": "Probabilities consistent under negation"
+  },
+  "familia": "modelo_decision",
+  "categoria": "coherencia_de_probabilidades",
+  "que_verifica": {
+    "es": "Ante una pregunta de sí o no y su negación, las probabilidades de «sí» suman cerca de uno.",
+    "en": "For a yes-or-no question and its negation, the probabilities of “yes” add up to close to one."
+  },
+  "por_que_importa": {
+    "es": "Un modelo que dice sí a una afirmación y también a su contraria no está razonando sobre el caso; como la estabilidad y la invariancia, esta prueba no necesita etiquetas.",
+    "en": "A model that says yes to a statement and also to its opposite is not reasoning about the case; like stability and invariance, this test needs no labels."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "T2",
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "checklist",
+      "entorno": "portatil",
+      "version_minima": "0.0.11",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "checklist.test_types.DIR"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La desviación media de la suma respecto de uno queda bajo el límite fijado antes de la prueba.",
+      "en": "The mean deviation of the sum from one stays under the limit set before the test."
+    },
+    "medido_con": "checklist"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la desviación supera el límite fijado antes de la prueba. Cada par se repite 5 veces.",
+      "en": "“Failed” if the deviation exceeds the limit set before the test. Each pair is repeated 5 times."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas.",
+      "en": "Applies if the asset returns typed decisions."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/marcotcr/checklist/master/checklist/test_types.py",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "CheckList · test_types"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia",
+  "notas": {
+    "es": "La lista de 14 ítems no nombra la coherencia ante la negación; T2, acuerdo ante pedidos reformulados, es el ítem más cercano.",
+    "en": "The 14-item checklist does not name consistency under negation; T2, agreement under rephrased requests, is the closest item."
+  }
+}

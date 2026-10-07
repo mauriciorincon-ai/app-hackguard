@@ -1,0 +1,51 @@
+{
+  "id": "inspect",
+  "nombre": "Inspect",
+  "editor": "UK AI Security Institute",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Marco de evaluación de modelos de lenguaje y de agentes, con un catálogo de evaluaciones publicadas aparte (inspect_evals).",
+    "en": "Evaluation framework for language models and agents, with a catalogue of evaluations published separately (inspect_evals)."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/UKGovernmentBEIS/inspect_ai/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_generativo",
+    "agente"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "formato_salida": ".eval",
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.3.276",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/inspect-ai/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/UKGovernmentBEIS/inspect_ai",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [
+    {
+      "nombre": "inspect_ai",
+      "nota": {
+        "es": "Nombre del paquete al importarlo.",
+        "en": "The package's import name."
+      }
+    }
+  ],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "0.3.276 se publicó en PyPI el 2026-10-02. inspect-typesafe, la integración comunitaria con modelos de decisión, existe en GitHub (MIT) pero no en PyPI.",
+    "en": "0.3.276 was published on PyPI on 2026-10-02. inspect-typesafe, the community integration with decision models, exists on GitHub (MIT) but not on PyPI."
+  }
+}

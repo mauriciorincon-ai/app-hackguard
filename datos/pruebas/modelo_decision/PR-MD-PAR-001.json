@@ -1,0 +1,90 @@
+{
+  "id": "PR-MD-PAR-001",
+  "nombre": {
+    "es": "Paridad entre español e inglés",
+    "en": "Spanish and English parity"
+  },
+  "familia": "modelo_decision",
+  "categoria": "paridad_de_idioma",
+  "que_verifica": {
+    "es": "El modelo acierta y está calibrado igual ante el mismo caso redactado en español y en inglés.",
+    "en": "The model is as accurate and as well calibrated on the same case written in Spanish and in English."
+  },
+  "por_que_importa": {
+    "es": "Si el modelo rinde peor en un idioma, quienes escriben en ese idioma reciben peores decisiones sin que nadie lo note.",
+    "en": "If the model performs worse in one language, people who write in that language get worse decisions without anyone noticing."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "T2",
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "scikit-learn",
+      "entorno": "portatil",
+      "version_minima": "1.9.1",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "sklearn.metrics.brier_score_loss"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La diferencia de exactitud y de puntaje de Brier entre los dos idiomas queda bajo el margen fijado antes de la prueba.",
+      "en": "The difference in accuracy and Brier score between the two languages stays under the margin set before the test."
+    },
+    "medido_con": "scikit-learn"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la diferencia entre idiomas supera el margen fijado antes de la prueba. Cada caso se repite 5 veces en cada idioma.",
+      "en": "“Failed” if the difference between languages exceeds the margin set before the test. Each case is repeated 5 times in each language."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "opera_en_varios_idiomas",
+        "valor": true
+      },
+      {
+        "rasgo": "dispone_de_casos_etiquetados",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo recibe casos en español y en inglés y hay casos etiquetados en los dos.",
+      "en": "Applies if the asset receives cases in Spanish and English and there are labelled cases in both."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "scikit-learn · brier_score_loss"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia",
+  "notas": {
+    "es": "La lista de 14 ítems no nombra la paridad de idioma; T2, acuerdo ante pedidos reformulados, es el ítem más cercano.",
+    "en": "The 14-item checklist does not name language parity; T2, agreement under rephrased requests, is the closest item."
+  }
+}

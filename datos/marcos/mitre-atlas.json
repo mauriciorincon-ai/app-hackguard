@@ -1,0 +1,74 @@
+{
+  "id": "mitre-atlas",
+  "nombre": "MITRE ATLAS",
+  "editor": "MITRE",
+  "version_vigente": "2026.09",
+  "fecha_version": "2026-09-15",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://atlas.mitre.org/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "agente",
+    "modelo_generativo",
+    "modelo_decision"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "Apache-2.0 (datos de atlas-data)",
+      "en": "Apache-2.0 (atlas-data data)"
+    },
+    "url": "https://github.com/mitre-atlas/atlas-data/blob/main/LICENSE",
+    "exige": {
+      "es": "Conservar el aviso de copyright y la licencia en las copias de los datos.",
+      "en": "Keep the copyright notice and the licence in copies of the data."
+    },
+    "como_cumple": {
+      "es": "La app cita identificadores de técnicas (AML.T…) con atribución; no redistribuye el archivo de datos.",
+      "en": "The app cites technique identifiers (AML.T…) with attribution; it does not redistribute the data file."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://atlas.mitre.org/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases/download/v2026.09/ATLAS-2026.09.yaml",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases.atom",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "atlas.mitre.org",
+    "github.com/mitre-atlas"
+  ],
+  "estado": "verificado",
+  "por_verificar": []
+}

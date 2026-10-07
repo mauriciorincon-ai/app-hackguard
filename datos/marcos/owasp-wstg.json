@@ -1,0 +1,66 @@
+{
+  "id": "owasp-wstg",
+  "nombre": "OWASP Web Security Testing Guide",
+  "editor": "OWASP",
+  "version_vigente": "4.2",
+  "fecha_version": "2020-12-03",
+  "versiones_anteriores": [],
+  "fuente_oficial": {
+    "url": "https://owasp.org/www-project-web-security-testing-guide/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "software"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "exige": {
+      "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
+      "en": "Attribution to OWASP with a link to the licence; adapted material is shared under the same licence."
+    },
+    "como_cumple": {
+      "es": "La app cita identificador y nombre de cada entrada, con atribución y enlace en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios y no se copia el texto del marco.",
+      "en": "The app cites each entry's identifier and name, with attribution and a link in docs/LICENCIAS-DE-MARCOS.md; summaries are its own and the framework's text is not copied."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/OWASP/wstg/releases",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://github.com/OWASP/wstg/releases.atom",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "owasp.org",
+    "github.com/OWASP"
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "La 4.2 es la última versión publicada; el proyecto declara la 5 en desarrollo.",
+    "en": "4.2 is the latest published version; the project declares version 5 in development."
+  }
+}

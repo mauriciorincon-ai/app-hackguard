@@ -1,0 +1,86 @@
+{
+  "id": "PR-MD-CAL-001",
+  "nombre": {
+    "es": "Probabilidades calibradas",
+    "en": "Calibrated probabilities"
+  },
+  "familia": "modelo_decision",
+  "categoria": "calibracion",
+  "que_verifica": {
+    "es": "Las probabilidades que devuelve el modelo coinciden con la frecuencia con que acierta, medidas sobre casos etiquetados que no se usaron para ajustarlo.",
+    "en": "The probabilities the model returns match how often it is right, measured on labelled cases that were not used to tune it."
+  },
+  "por_que_importa": {
+    "es": "El campo de confianza de un modelo tipado mide qué tan concentrada está la distribución, no la probabilidad de acertar. Si la aplicación actúa sobre probabilidades mal calibradas, decide con más seguridad de la que tiene.",
+    "en": "A typed model's confidence field measures how concentrated the distribution is, not the probability of being right. If the application acts on badly calibrated probabilities, it decides with more certainty than it has."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "C1",
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "scikit-learn",
+      "entorno": "portatil",
+      "version_minima": "1.9.1",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "sklearn.calibration.calibration_curve"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "El error de calibración (bins de igual masa, estimador declarado) y el puntaje de Brier quedan bajo el límite que el activo declaró antes de la prueba; una salida inválida cuenta como error.",
+      "en": "The calibration error (equal-mass bins, declared estimator) and the Brier score stay under the limit the asset declared before the test; an invalid output counts as an error."
+    },
+    "medido_con": "scikit-learn"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "Se miden las probabilidades, no la confianza declarada. «Fallida» si el error supera el límite fijado antes de la prueba; cada caso se repite 5 veces y la variación entre repeticiones se informa junto al resultado.",
+      "en": "Probabilities are measured, not the declared confidence. “Failed” if the error exceeds the limit set before the test; each case is repeated 5 times and the variation between repetitions is reported with the result."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      },
+      {
+        "rasgo": "dispone_de_casos_etiquetados",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas y hay casos con la decisión correcta conocida.",
+      "en": "Applies if the asset returns typed decisions and there are cases with the correct decision known."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.calibration.calibration_curve.html",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "scikit-learn · calibration_curve"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

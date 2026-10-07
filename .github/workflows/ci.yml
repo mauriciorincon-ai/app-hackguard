@@ -30,8 +30,31 @@ jobs:
           node scripts/verificar-dependencias.mjs origin/main
       - run: pnpm typecheck
       - run: pnpm lint
+      # HackGuard S1 (AU-11): gitleaks en el runner, la misma versión que en local. Sin él, la prueba que bloquea la
+      # carnada del hook se saltaba («skipped» no es verde); ahora, si falta, falla. La descarga se verifica contra el
+      # checksums.txt del release.
+      - name: gitleaks 8.30.1 (prueba del hook de secretos)
+        run: |
+          v=8.30.1
+          cd "$RUNNER_TEMP"
+          curl -sSfLO "https://github.com/gitleaks/gitleaks/releases/download/v${v}/gitleaks_${v}_linux_x64.tar.gz"
+          curl -sSfLO "https://github.com/gitleaks/gitleaks/releases/download/v${v}/gitleaks_${v}_checksums.txt"
+          grep " gitleaks_${v}_linux_x64.tar.gz$" "gitleaks_${v}_checksums.txt" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf "gitleaks_${v}_linux_x64.tar.gz" -C "$HOME/.local/bin" gitleaks
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          "$HOME/.local/bin/gitleaks" version
       - run: pnpm test            # vitest run --coverage (umbral 70% en vitest.config)
+      # HackGuard S1 — el catálogo de datos/ es válido: sale 0 (ok) o 1 (con advertencias); 2 (inválido) o 3
+      # (error de uso o de lectura) dejan la CI en rojo.
+      - name: Catálogo válido (pnpm catalogo:validar sale 0 o 1)
+        run: pnpm catalogo:validar || [ $? -eq 1 ]
       - run: pnpm build
+      # kit v1.39.0 — lo que el proveedor publica no es lo que el build escribe (Big-D S2, S2-AUD-32): en el perfil
+      # --estatico hace `vercel build` sin conexion con el adapter de Next y exige que cada pagina publicada sea
+      # identica a la de out/. En el perfil web dice «n/a» y pasa.
+      - name: Build como el proveedor y salida publicada = out/ (kit v1.39.0)
+        run: node scripts/build-como-proveedor.mjs
       - run: pnpm audit --audit-level high
 
   e2e:
@@ -43,7 +66,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      # Firefox y WebKit solo corren tests/e2e/determinismo.spec.ts: la misma huella en los tres motores (RNF-01).
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e        # incluye scans axe (@axe-core/playwright)
       # El primer reintento graba trace (playwright.config `trace: on-first-retry`) con
       # consola, errores y DOM — se sube SOLO cuando algo falla (kit v1.26.0).
@@ -81,3 +105,5 @@ jobs:
           lhci collect --startServerCommand="pnpm start" --numberOfRuns=3 $URLS
           lhci assert --budgetsFile=./perf-budget.json --aggregationMethod=median-run
           lhci assert --config=./lighthouse-categorias.json --aggregationMethod=median-run
+          # kit v1.37.0: margen (<10 % del presupuesto = aviso) + toda URL medida tiene presupuesto (rojo si no)
+          node scripts/lighthouse-margen.mjs

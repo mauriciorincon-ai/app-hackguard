@@ -1,0 +1,84 @@
+{
+  "id": "PR-MD-LIM-001",
+  "nombre": {
+    "es": "Operaciones que el modelo no hace",
+    "en": "Operations the model does not do"
+  },
+  "familia": "modelo_decision",
+  "categoria": "limites_conocidos",
+  "que_verifica": {
+    "es": "La aplicación no le pide al modelo las operaciones que el fabricante declara como límite conocido en la versión usada, como contar, hacer aritmética o comparar fechas; las hace en código.",
+    "en": "The application does not ask the model for the operations the vendor declares as a known limit in the version used, such as counting, arithmetic or comparing dates; it does them in code."
+  },
+  "por_que_importa": {
+    "es": "El fabricante ya dijo dónde falla el modelo; delegarle justo eso es elegir el error.",
+    "en": "The vendor has already said where the model fails; delegating exactly that to it is choosing the error."
+  },
+  "marco_id": "typesafe-jev",
+  "version_marco": "jev-1.13",
+  "referencia_en_marco": "math-and-numbers",
+  "referencias_adicionales": [
+    {
+      "marco_id": "typesafe-jev",
+      "version_marco": "jev-1.13",
+      "referencia_en_marco": "date-and-time-comparison"
+    }
+  ],
+  "controles": [
+    "iso42001-A.6.2.2"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "hackguard-revision",
+      "entorno": "portatil",
+      "selector": {
+        "tipo": "revision",
+        "que_se_revisa": {
+          "es": "Cada llamada al modelo frente a la lista de límites conocidos de la versión que usa la aplicación.",
+          "en": "Every call to the model against the list of known limits for the version the application uses."
+        }
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La revisión no encuentra ninguna llamada que delegue al modelo una operación de la lista vigente de límites.",
+      "en": "The review finds no call that delegates to the model an operation on the current list of limits."
+    },
+    "medido_con": "hackguard-revision"
+  },
+  "criterio_de_veredicto": {
+    "regla": "revision_de_diseno",
+    "descripcion": {
+      "es": "«Superada» si ninguna llamada delega una operación de la lista y la persona que revisa lo deja escrito, con la versión de la lista que usó.",
+      "en": "“Passed” if no call delegates an operation on the list and the reviewer writes it down, with the version of the list they used."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas.",
+      "en": "Applies if the asset returns typed decisions."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "TypeSafe · Jev known limits (jev-1.13)"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

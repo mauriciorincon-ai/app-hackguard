@@ -1,0 +1,81 @@
+{
+  "id": "mitre-attack",
+  "nombre": "MITRE ATT&CK",
+  "editor": "MITRE",
+  "version_vigente": "19.2",
+  "fecha_version": "2026-04-28",
+  "versiones_anteriores": [
+    {
+      "version": "17.1",
+      "fecha": "2025-04-22"
+    }
+  ],
+  "fuente_oficial": {
+    "url": "https://attack.mitre.org/resources/versions/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "software"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "Términos de uso de ATT&CK (licencia no exclusiva y sin regalías)",
+      "en": "ATT&CK terms of use (non-exclusive, royalty-free licence)"
+    },
+    "url": "https://attack.mitre.org/resources/legal-and-branding/terms-of-use/",
+    "exige": {
+      "es": "Reproducir la designación de copyright de MITRE y la licencia en toda copia.",
+      "en": "Reproduce MITRE's copyright designation and the licence in any copy."
+    },
+    "como_cumple": {
+      "es": "La app cita identificadores de técnicas (T…) y reproduce el aviso de MITRE en docs/LICENCIAS-DE-MARCOS.md.",
+      "en": "The app cites technique identifiers (T…) and reproduces MITRE's notice in docs/LICENCIAS-DE-MARCOS.md."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://attack.mitre.org/resources/versions/",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "archivo",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases/download/v19.2/enterprise-attack.json",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases.atom",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "attack.mitre.org",
+    "github.com/mitre-attack"
+  ],
+  "estado": "verificado",
+  "por_verificar": [],
+  "notas": {
+    "es": "La página de versiones fecha la v19.2 el 2026-04-28; el paquete STIX 19.2 se publicó en GitHub el 2026-08-05.",
+    "en": "The versions page dates v19.2 on 2026-04-28; the STIX 19.2 bundle was published on GitHub on 2026-08-05."
+  }
+}

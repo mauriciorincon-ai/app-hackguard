@@ -1,0 +1,386 @@
+{
+  "proposito": {
+    "es": "El vocabulario de estados de HackGuard: cada estado del modelo de datos con su papel de color, su símbolo y su nombre. Una pantalla nunca decide cómo se ve un estado: lo lee aquí. Es el vocabulario de la maqueta aprobada en G-Diseño, y una prueba vigila que los dos no se separen.",
+    "en": "HackGuard's state vocabulary: every state in the data model with its colour role, its symbol and its name. A screen never decides how a state looks: it reads it here. It is the vocabulary of the mock-up approved at G-Diseño, and a test makes sure the two do not drift apart."
+  },
+  "vocabularios": [
+    {
+      "id": "veredicto",
+      "nombre": {
+        "es": "Veredicto",
+        "en": "Verdict"
+      },
+      "estados": [
+        {
+          "id": "superada",
+          "rol": "positivo",
+          "simbolo": "ok",
+          "nombre": {
+            "es": "Superada",
+            "en": "Passed"
+          }
+        },
+        {
+          "id": "fallida",
+          "rol": "falla",
+          "simbolo": "falla",
+          "nombre": {
+            "es": "Fallida",
+            "en": "Failed"
+          }
+        },
+        {
+          "id": "parcial",
+          "rol": "atencion",
+          "simbolo": "parcial",
+          "nombre": {
+            "es": "Parcial",
+            "en": "Partial"
+          }
+        },
+        {
+          "id": "no_aplicable",
+          "rol": "neutro",
+          "simbolo": "no_aplica",
+          "nombre": {
+            "es": "No aplicable",
+            "en": "Not applicable"
+          }
+        },
+        {
+          "id": "no_ejecutada",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "No ejecutada",
+            "en": "Not run"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vigencia",
+      "nombre": {
+        "es": "Vigencia",
+        "en": "Freshness"
+      },
+      "estados": [
+        {
+          "id": "vigente",
+          "rol": "positivo",
+          "simbolo": "ok",
+          "nombre": {
+            "es": "Vigente",
+            "en": "Current"
+          }
+        },
+        {
+          "id": "por_revisar",
+          "rol": "atencion",
+          "simbolo": "aviso",
+          "nombre": {
+            "es": "Por revisar",
+            "en": "Review due"
+          }
+        },
+        {
+          "id": "vencido",
+          "rol": "falla",
+          "simbolo": "falla",
+          "nombre": {
+            "es": "Vencido",
+            "en": "Overdue"
+          }
+        }
+      ]
+    },
+    {
+      "id": "revision_de_riesgo",
+      "nombre": {
+        "es": "Revisión de un riesgo aceptado",
+        "en": "Review of an accepted risk"
+      },
+      "estados": [
+        {
+          "id": "toca_revisar",
+          "rol": "falla",
+          "simbolo": "falla",
+          "nombre": {
+            "es": "Toca revisar",
+            "en": "Review due"
+          }
+        },
+        {
+          "id": "programada",
+          "rol": "neutro",
+          "simbolo": "reloj",
+          "nombre": {
+            "es": "Revisión programada",
+            "en": "Review scheduled"
+          }
+        }
+      ]
+    },
+    {
+      "id": "equivalencia",
+      "nombre": {
+        "es": "Equivalencia entre marcos",
+        "en": "Cross-framework equivalence"
+      },
+      "estados": [
+        {
+          "id": "parcial",
+          "rol": "atencion",
+          "simbolo": "aviso",
+          "nombre": {
+            "es": "Mapa incompleto",
+            "en": "Incomplete map"
+          }
+        }
+      ]
+    },
+    {
+      "id": "estado_de_control",
+      "nombre": {
+        "es": "Estado de un control",
+        "en": "Control status"
+      },
+      "estados": [
+        {
+          "id": "con_evidencia_vigente",
+          "rol": "positivo",
+          "simbolo": "ok",
+          "nombre": {
+            "es": "Con evidencia vigente",
+            "en": "Current evidence"
+          }
+        },
+        {
+          "id": "evidencia_antigua",
+          "rol": "atencion",
+          "simbolo": "reloj",
+          "nombre": {
+            "es": "Evidencia antigua",
+            "en": "Stale evidence"
+          }
+        },
+        {
+          "id": "con_fallas",
+          "rol": "falla",
+          "simbolo": "falla",
+          "nombre": {
+            "es": "Con fallas",
+            "en": "Has failures"
+          }
+        },
+        {
+          "id": "sin_evidencia",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "Sin evidencia",
+            "en": "No evidence"
+          }
+        }
+      ]
+    },
+    {
+      "id": "severidad",
+      "nombre": {
+        "es": "Severidad",
+        "en": "Severity"
+      },
+      "estados": [
+        {
+          "id": "critico",
+          "rol": "falla",
+          "simbolo": "barras4",
+          "nombre": {
+            "es": "Crítico",
+            "en": "Critical"
+          }
+        },
+        {
+          "id": "alto",
+          "rol": "falla",
+          "simbolo": "barras3",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "id": "medio",
+          "rol": "atencion",
+          "simbolo": "barras2",
+          "nombre": {
+            "es": "Medio",
+            "en": "Medium"
+          }
+        },
+        {
+          "id": "bajo",
+          "rol": "neutro",
+          "simbolo": "barras1",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "id": "informativo",
+          "rol": "neutro",
+          "simbolo": "barras0",
+          "nombre": {
+            "es": "Informativo",
+            "en": "Informational"
+          }
+        }
+      ]
+    },
+    {
+      "id": "confirmacion",
+      "nombre": {
+        "es": "Confirmación",
+        "en": "Confirmation"
+      },
+      "estados": [
+        {
+          "id": "confirmada",
+          "rol": "acento",
+          "simbolo": "firma",
+          "nombre": {
+            "es": "Confirmada por una persona",
+            "en": "Confirmed by a person"
+          }
+        },
+        {
+          "id": "propuesta",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "Propuesta, sin confirmar",
+            "en": "Proposed, not confirmed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "estado_de_activo",
+      "nombre": {
+        "es": "Ciclo de un activo",
+        "en": "Asset cycle"
+      },
+      "estados": [
+        {
+          "id": "registrado",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "Registrado, sin plan",
+            "en": "Registered, no plan"
+          }
+        },
+        {
+          "id": "con_plan",
+          "rol": "neutro",
+          "simbolo": "parcial",
+          "nombre": {
+            "es": "Con plan",
+            "en": "Has a plan"
+          }
+        },
+        {
+          "id": "en_prueba",
+          "rol": "neutro",
+          "simbolo": "reloj",
+          "nombre": {
+            "es": "En prueba",
+            "en": "Under test"
+          }
+        },
+        {
+          "id": "cerrado_ciclo",
+          "rol": "positivo",
+          "simbolo": "ok",
+          "nombre": {
+            "es": "Ciclo cerrado",
+            "en": "Cycle closed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "estado_de_hallazgo",
+      "nombre": {
+        "es": "Ciclo de un hallazgo",
+        "en": "Finding lifecycle"
+      },
+      "estados": [
+        {
+          "id": "abierto",
+          "rol": "falla",
+          "simbolo": "falla",
+          "nombre": {
+            "es": "Abierto",
+            "en": "Open"
+          }
+        },
+        {
+          "id": "corregido",
+          "rol": "atencion",
+          "simbolo": "reloj",
+          "nombre": {
+            "es": "Corregido, falta la re-prueba",
+            "en": "Fixed, retest pending"
+          }
+        },
+        {
+          "id": "re_probado",
+          "rol": "atencion",
+          "simbolo": "parcial",
+          "nombre": {
+            "es": "Re-probado, falta confirmar",
+            "en": "Retested, confirmation pending"
+          }
+        },
+        {
+          "id": "cerrado",
+          "rol": "positivo",
+          "simbolo": "ok",
+          "nombre": {
+            "es": "Cerrado por re-prueba",
+            "en": "Closed by retest"
+          }
+        },
+        {
+          "id": "cerrado_por_eliminacion",
+          "rol": "neutro",
+          "simbolo": "no_aplica",
+          "nombre": {
+            "es": "Cerrado por eliminación",
+            "en": "Closed by removal"
+          }
+        },
+        {
+          "id": "no_reproducible",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "No reproducible",
+            "en": "Not reproducible"
+          }
+        },
+        {
+          "id": "aceptado_con_riesgo",
+          "rol": "atencion",
+          "simbolo": "aviso",
+          "nombre": {
+            "es": "Aceptado con riesgo",
+            "en": "Accepted with risk"
+          }
+        }
+      ]
+    }
+  ]
+}

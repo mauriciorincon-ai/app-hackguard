@@ -1,0 +1,120 @@
+{
+  "id": "owasp-top10",
+  "nombre": "OWASP Top 10",
+  "editor": "OWASP",
+  "version_vigente": "2025",
+  "fecha_version": "2025",
+  "versiones_anteriores": [
+    {
+      "version": "2021",
+      "fecha": "2021-09-24"
+    }
+  ],
+  "fuente_oficial": {
+    "url": "https://owasp.org/Top10/",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "familias_aplicables": [
+    "software"
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "licencia": {
+    "nombre": {
+      "es": "CC BY-SA 4.0",
+      "en": "CC BY-SA 4.0"
+    },
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "exige": {
+      "es": "Atribución a OWASP con enlace a la licencia; lo que se adapte se comparte con la misma licencia.",
+      "en": "Attribution to OWASP with a link to the licence; adapted material is shared under the same licence."
+    },
+    "como_cumple": {
+      "es": "La app cita identificador y nombre de cada entrada, con atribución y enlace en docs/LICENCIAS-DE-MARCOS.md; los resúmenes son propios y no se copia el texto del marco.",
+      "en": "The app cites each entry's identifier and name, with attribution and a link in docs/LICENCIAS-DE-MARCOS.md; summaries are its own and the framework's text is not copied."
+    }
+  },
+  "vias_de_acceso": [
+    {
+      "tipo": "pagina",
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Redirige a la edición 2025.",
+        "en": "Redirects to the 2025 edition."
+      }
+    },
+    {
+      "tipo": "repositorio",
+      "url": "https://github.com/OWASP/Top10",
+      "http": 200,
+      "consultada": "2026-10-04"
+    },
+    {
+      "tipo": "canal_de_novedades",
+      "url": "https://github.com/OWASP/Top10/commits/master.atom",
+      "http": 206,
+      "consultada": "2026-10-04",
+      "nota": {
+        "es": "Pedido de un byte (206): el archivo existe y es accesible; no se descarga entero.",
+        "en": "One-byte request (206): the file exists and is reachable; it is not downloaded whole."
+      }
+    }
+  ],
+  "lista_blanca_de_fuentes": [
+    "owasp.org",
+    "top10.owasp.org",
+    "github.com/OWASP"
+  ],
+  "entradas": [
+    {
+      "id": "A01",
+      "nombre": "Broken Access Control"
+    },
+    {
+      "id": "A02",
+      "nombre": "Security Misconfiguration"
+    },
+    {
+      "id": "A03",
+      "nombre": "Software Supply Chain Failures"
+    },
+    {
+      "id": "A04",
+      "nombre": "Cryptographic Failures"
+    },
+    {
+      "id": "A05",
+      "nombre": "Injection"
+    },
+    {
+      "id": "A06",
+      "nombre": "Insecure Design"
+    },
+    {
+      "id": "A07",
+      "nombre": "Authentication Failures"
+    },
+    {
+      "id": "A08",
+      "nombre": "Software or Data Integrity Failures"
+    },
+    {
+      "id": "A09",
+      "nombre": "Security Logging and Alerting Failures"
+    },
+    {
+      "id": "A10",
+      "nombre": "Mishandling of Exceptional Conditions"
+    }
+  ],
+  "estado": "verificado",
+  "por_verificar": [
+    "fecha_version"
+  ],
+  "notas": {
+    "es": "Ni la página del proyecto ni el índice de la edición dicen el día de publicación; solo el año. Las pruebas de software de la maqueta citaban la edición 2021.",
+    "en": "Neither the project page nor the edition's index states the publication day; only the year. The mockup's software tests cited the 2021 edition."
+  }
+}

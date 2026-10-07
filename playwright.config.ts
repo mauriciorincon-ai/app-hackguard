@@ -22,14 +22,27 @@ export default defineConfig({
     baseURL: `http://localhost:${PUERTO}`,
     trace: "on-first-retry",
   },
+  // El determinismo del motor (RNF-01) se prueba en los tres motores de navegador: Chromium (en el proyecto de
+  // escritorio), Firefox y WebKit. Firefox y WebKit corren SOLO ese spec; el de teléfono no lo repite.
   projects: [
     {
       name: "mobile-chromium",
       use: { ...devices["Pixel 7"] },
+      testIgnore: /determinismo\.spec\.ts/,
     },
     {
       name: "desktop-chromium",
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+      testMatch: /determinismo\.spec\.ts/,
+    },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+      testMatch: /determinismo\.spec\.ts/,
     },
   ],
   webServer: {

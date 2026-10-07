@@ -1,0 +1,41 @@
+{
+  "id": "textattack",
+  "nombre": "TextAttack",
+  "editor": "QData",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Librería que genera variantes de un texto (sinónimos, reformulaciones) para medir cuánto cambia la decisión de un modelo.",
+    "en": "Library that generates variants of a text (synonyms, rephrasings) to measure how much a model's decision changes."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/QData/TextAttack/blob/master/LICENSE"
+  },
+  "familias": [
+    "modelo_decision"
+  ],
+  "entornos_soportados": [
+    "portatil"
+  ],
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.3.11",
+  "registro": {
+    "tipo": "pypi",
+    "url": "https://pypi.org/pypi/textattack/json",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/QData/TextAttack",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [],
+  "notas": {
+    "es": "0.3.11 se publicó en PyPI el 2026-08-14.",
+    "en": "0.3.11 was published on PyPI on 2026-08-14."
+  }
+}

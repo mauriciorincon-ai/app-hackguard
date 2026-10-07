@@ -18,3 +18,7 @@ auditConfig:
   # Remove this entry in the first PR that bumps braces past 3.0.3.
   ignoreGhsas:
     - GHSA-vfj7-8cjw-p6xm
+overrides:
+  # ADR-005 (2026-10-05): serve 14.2.6, the latest, pins compression 1.8.1 exactly; GHSA-vc2v-76pw-4v95 (high) is
+  # fixed in 1.8.2. Remove this entry when a serve release depends on compression >=1.8.2.
+  serve>compression: 1.8.2

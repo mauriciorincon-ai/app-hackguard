@@ -1,0 +1,93 @@
+{
+  "id": "PR-SW-CLK-001",
+  "nombre": {
+    "es": "Páginas que no se dejan enmarcar",
+    "en": "Pages that refuse to be framed"
+  },
+  "familia": "software",
+  "categoria": "configuracion_y_cabeceras",
+  "que_verifica": {
+    "es": "Las páginas declaran que no pueden mostrarse dentro de un marco de otro sitio.",
+    "en": "Pages declare that they cannot be shown inside another site's frame."
+  },
+  "por_que_importa": {
+    "es": "Una página que se deja enmarcar puede mostrarse escondida dentro de otro sitio, y la persona pulsa en ella sin saberlo.",
+    "en": "A page that allows framing can be shown hidden inside another site, and the person clicks on it without knowing."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A02",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-1021"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10020
+        ],
+        "agregacion": "cualquier_regla"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Todas las páginas del alcance declaran que no pueden enmarcarse desde otro sitio.",
+      "en": "Every page in scope declares that it cannot be framed from another site."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10020 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10020 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_interfaz_web",
+        "valor": true
+      },
+      {
+        "rasgo": "tiene_sesiones",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo tiene páginas con acciones para usuarios con sesión.",
+      "en": "Applies if the asset has pages with actions for signed-in users."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10020/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10020"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

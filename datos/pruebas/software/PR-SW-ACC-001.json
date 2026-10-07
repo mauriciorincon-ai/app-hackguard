@@ -1,0 +1,93 @@
+{
+  "id": "PR-SW-ACC-001",
+  "nombre": {
+    "es": "Cada usuario ve solo lo que su rol permite",
+    "en": "Each user sees only what their role allows"
+  },
+  "familia": "software",
+  "categoria": "control_de_acceso",
+  "que_verifica": {
+    "es": "Un usuario no puede ver ni cambiar recursos que su rol no le permite, aunque conozca la dirección donde están.",
+    "en": "A user cannot see or change resources their role does not allow, even if they know the address where they are."
+  },
+  "por_que_importa": {
+    "es": "Si el control de acceso depende de que el usuario no conozca la dirección, cualquiera que la descubra entra a datos o funciones ajenas.",
+    "en": "If access control depends on the user not knowing the address, anyone who finds it reaches other people's data or functions."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A01",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-862"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "zap",
+      "entorno": "contenedor",
+      "version_minima": "2.17.0",
+      "selector": {
+        "tipo": "zap",
+        "pluginids": [
+          10102
+        ],
+        "agregacion": "cualquier_regla"
+      },
+      "nota": {
+        "es": "Usa el complemento de control de acceso de ZAP con un contexto que declara dos usuarios de roles distintos.",
+        "en": "Uses ZAP's access control add-on with a context that declares two users with different roles."
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "Ningún recurso del alcance responde a un usuario cuyo rol no lo permite.",
+      "en": "No resource in scope answers a user whose role does not allow it."
+    },
+    "medido_con": "zap"
+  },
+  "criterio_de_veredicto": {
+    "regla": "comprobacion_determinista",
+    "descripcion": {
+      "es": "«Fallida» si ZAP levanta la alerta 10102 en alguna respuesta del alcance. Sin constancia de que la regla corrió y cubrió el alcance, el veredicto es «no ejecutada», nunca «superada».",
+      "en": "“Failed” if ZAP raises alert 10102 on any response in scope. Without proof that the rule ran and covered the scope, the verdict is “not run”, never “passed”."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "distingue_permisos",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo tiene usuarios o roles que no deben ver o cambiar lo mismo.",
+      "en": "Applies if the asset has users or roles that must not see or change the same things."
+    }
+  },
+  "prioridad_base": 5,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    },
+    {
+      "url": "https://www.zaproxy.org/docs/alerts/10102/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "ZAP alert 10102"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

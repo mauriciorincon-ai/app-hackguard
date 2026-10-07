@@ -1,0 +1,82 @@
+{
+  "id": "PR-SW-LOG-001",
+  "nombre": {
+    "es": "Eventos de seguridad registrados",
+    "en": "Security events logged"
+  },
+  "familia": "software",
+  "categoria": "registro_y_monitoreo",
+  "que_verifica": {
+    "es": "Los inicios de sesión fallidos, los cambios de permisos y los accesos denegados quedan registrados con fecha, usuario y origen.",
+    "en": "Failed sign-ins, permission changes and denied accesses are logged with date, user and origin."
+  },
+  "por_que_importa": {
+    "es": "Sin ese registro un incidente no se detecta a tiempo ni se puede reconstruir después.",
+    "en": "Without that log an incident is not detected in time and cannot be reconstructed afterwards."
+  },
+  "marco_id": "owasp-top10",
+  "version_marco": "2025",
+  "referencia_en_marco": "A09",
+  "referencias_adicionales": [
+    {
+      "marco_id": "cwe",
+      "version_marco": "4.20",
+      "referencia_en_marco": "CWE-778"
+    }
+  ],
+  "controles": [],
+  "control_pendiente": true,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "hackguard-revision",
+      "entorno": "portatil",
+      "selector": {
+        "tipo": "revision",
+        "que_se_revisa": {
+          "es": "El registro de eventos del activo, tras provocar en un ambiente de prueba cada tipo de evento.",
+          "en": "The asset's event log, after triggering each type of event in a test environment."
+        }
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La revisión encuentra cada uno de los tres tipos de evento en el registro, con fecha, usuario y origen.",
+      "en": "The review finds each of the three event types in the log, with date, user and origin."
+    },
+    "medido_con": "hackguard-revision"
+  },
+  "criterio_de_veredicto": {
+    "regla": "revision_de_diseno",
+    "descripcion": {
+      "es": "«Superada» si la persona que revisa encuentra los tres tipos de evento con sus tres datos y lo deja escrito; «fallida» si falta alguno.",
+      "en": "“Passed” if the reviewer finds the three event types with their three fields and writes it down; “failed” if any is missing."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "tiene_sesiones",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si los usuarios del activo inician sesión.",
+      "en": "Applies if the asset's users sign in."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "estandar",
+  "fuentes": [
+    {
+      "url": "https://owasp.org/Top10/",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "OWASP Top 10:2025"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

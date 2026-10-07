@@ -29,11 +29,12 @@ export default defineConfig({
         // ⚠ AJUSTA estos globs al layout de motores de TU app en el S1 (ds: src/engine/**;
         // habla: src/lib/**) — el kit no puede adivinarlo; es parte de la verificación de
         // supuestos del kit.
+        // HackGuard S1: el núcleo del catálogo exige 90 % (orden del S1; RNF-09 de la especificación).
         "src/engine/**/*.ts": {
-          lines: 80,
-          functions: 80,
-          branches: 80,
-          statements: 80,
+          lines: 90,
+          functions: 90,
+          branches: 90,
+          statements: 90,
         },
         "src/lib/**/*.ts": {
           lines: 80,

@@ -1,0 +1,89 @@
+{
+  "id": "PR-MD-INV-001",
+  "nombre": {
+    "es": "El orden y el nombre de las opciones no deciden",
+    "en": "Option order and names do not decide"
+  },
+  "familia": "modelo_decision",
+  "categoria": "invariancia_de_opciones",
+  "que_verifica": {
+    "es": "Cambiar el orden de las opciones o darles nombres neutros equivalentes no cambia la decisión más de lo que la cambia repetir la llamada.",
+    "en": "Changing the order of the options or giving them equivalent neutral names does not change the decision more than repeating the call does."
+  },
+  "por_que_importa": {
+    "es": "Si el orden o la etiqueta pesan en la decisión, quien arma la lista de opciones la sesga sin querer.",
+    "en": "If the order or the label weighs on the decision, whoever builds the option list biases it without meaning to."
+  },
+  "marco_id": "lista-decision-14",
+  "version_marco": "v1",
+  "referencia_en_marco": "T3",
+  "referencias_adicionales": [
+    {
+      "marco_id": "typesafe-jev",
+      "version_marco": "jev-1.13",
+      "referencia_en_marco": "choice-option-order"
+    }
+  ],
+  "controles": [
+    "iso42001-A.6.2.4"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "checklist",
+      "entorno": "portatil",
+      "version_minima": "0.0.11",
+      "selector": {
+        "tipo": "modulo",
+        "referencia": "checklist.test_types.INV"
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La tasa de cambio por permutar o renombrar las opciones no se distingue de la tasa por re-ejecución.",
+      "en": "The change rate from permuting or renaming the options is indistinguishable from the re-execution rate."
+    },
+    "medido_con": "checklist"
+  },
+  "criterio_de_veredicto": {
+    "regla": "metrica_con_umbral",
+    "repeticiones_k": 5,
+    "descripcion": {
+      "es": "«Fallida» si la tasa supera la de re-ejecución por más del margen fijado antes de la prueba. Cada variante se repite 5 veces.",
+      "en": "“Failed” if the rate exceeds the re-execution rate by more than the margin set before the test. Each variant is repeated 5 times."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "devuelve_decision_tipada",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si el activo devuelve decisiones tipadas.",
+      "en": "Applies if the asset returns typed decisions."
+    }
+  },
+  "prioridad_base": 3,
+  "madurez": "emergente",
+  "fuentes": [
+    {
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "arXiv:2609.32160 · Early Evidence Audit and Evaluation Checklist"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/marcotcr/checklist/master/checklist/test_types.py",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "CheckList · test_types"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

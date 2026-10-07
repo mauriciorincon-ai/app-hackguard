@@ -1,0 +1,77 @@
+{
+  "id": "PR-MD-VAL-003",
+  "nombre": {
+    "es": "Las decisiones dudosas pasan a revisión",
+    "en": "Doubtful decisions go to review"
+  },
+  "familia": "modelo_decision",
+  "categoria": "valido_pero_equivocado",
+  "que_verifica": {
+    "es": "Las decisiones con probabilidad dentro de la banda de duda pasan a una persona o a una segunda fuente, siempre y no a veces.",
+    "en": "Decisions with a probability inside the doubt band go to a person or a second source, always and not sometimes."
+  },
+  "por_que_importa": {
+    "es": "La banda de duda es donde el modelo más se equivoca; si alguna ruta del código la deja pasar, esos errores llegan solos a producción.",
+    "en": "The doubt band is where the model is wrong most often; if any path in the code lets it through, those errors reach production on their own."
+  },
+  "marco_id": "nist-ai-rmf",
+  "version_marco": "1.0",
+  "referencia_en_marco": "MAP 3.5",
+  "controles": [
+    "iso42001-A.9.2"
+  ],
+  "control_pendiente": false,
+  "herramientas_recomendadas": [
+    {
+      "herramienta": "hackguard-revision",
+      "entorno": "portatil",
+      "selector": {
+        "tipo": "revision",
+        "que_se_revisa": {
+          "es": "El código que compara la probabilidad con la banda de duda y lo que hace con cada resultado.",
+          "en": "The code that compares the probability with the doubt band and what it does with each result."
+        }
+      }
+    }
+  ],
+  "resultado_esperado": {
+    "descripcion": {
+      "es": "La revisión encuentra que toda decisión dentro de la banda va a revisión y que la banda está escrita como dato, no repartida por el código.",
+      "en": "The review finds that every decision inside the band goes to review and that the band is written as data, not scattered through the code."
+    },
+    "medido_con": "hackguard-revision"
+  },
+  "criterio_de_veredicto": {
+    "regla": "revision_de_diseno",
+    "descripcion": {
+      "es": "«Superada» si la persona que revisa no encuentra ninguna ruta que deje pasar una decisión dudosa y lo deja escrito; «fallida» si encuentra una.",
+      "en": "“Passed” if the reviewer finds no path that lets a doubtful decision through and writes it down; “failed” if they find one."
+    }
+  },
+  "aplicabilidad": {
+    "modo": "todas",
+    "condiciones": [
+      {
+        "rasgo": "usa_umbral_de_decision",
+        "valor": true
+      }
+    ],
+    "descripcion": {
+      "es": "Aplica si la aplicación compara una probabilidad con un umbral para actuar.",
+      "en": "Applies if the application compares a probability with a threshold to act."
+    }
+  },
+  "prioridad_base": 4,
+  "madurez": "propia",
+  "fuentes": [
+    {
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "http": 200,
+      "consultada": "2026-10-04",
+      "titulo": "NIST AI RMF 1.0"
+    }
+  ],
+  "fecha_verificacion": "2026-10-04",
+  "estado_aprobacion": "aprobada",
+  "revision_contenido": "limpia"
+}

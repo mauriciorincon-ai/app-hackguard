@@ -1,0 +1,59 @@
+{
+  "id": "promptfoo",
+  "nombre": "promptfoo",
+  "editor": "OpenAI",
+  "tipo": "publica",
+  "descripcion": {
+    "es": "Herramienta de evaluación y pruebas de aplicaciones con modelos de lenguaje, con complementos por tipo de riesgo y aserciones sobre la salida.",
+    "en": "Evaluation and testing tool for language-model applications, with plugins per risk type and assertions on the output."
+  },
+  "licencia": {
+    "spdx": "MIT",
+    "url": "https://github.com/promptfoo/promptfoo/blob/main/LICENSE"
+  },
+  "familias": [
+    "modelo_generativo",
+    "agente"
+  ],
+  "entornos_soportados": [
+    "portatil",
+    "plan_gratuito"
+  ],
+  "formato_salida": "results.json",
+  "tiene_adaptador": false,
+  "selector": "modulo",
+  "version_verificada": "0.123.1",
+  "registro": {
+    "tipo": "npm",
+    "url": "https://registry.npmjs.org/promptfoo/latest",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fuente": {
+    "url": "https://github.com/promptfoo/promptfoo",
+    "http": 200,
+    "consultada": "2026-10-04"
+  },
+  "fecha_verificacion": "2026-10-04",
+  "alias": [],
+  "cambio_de_editor": [
+    {
+      "fecha": "2026-03-09",
+      "de": "Promptfoo",
+      "a": "OpenAI",
+      "fuente": {
+        "url": "https://www.promptfoo.dev/blog/promptfoo-joining-openai/",
+        "http": 200,
+        "consultada": "2026-10-04"
+      },
+      "nota": {
+        "es": "Sigue siendo de código abierto con licencia MIT.",
+        "en": "It remains open source under the MIT licence."
+      }
+    }
+  ],
+  "notas": {
+    "es": "Al verificarla, el 2026-10-04, 0.123.1 era la última versión publicada (2026-09-18) y ninguna versión publicada traía el proveedor para modelos de decisión de TypeSafe, que se fusionó el 2026-10-02. Por eso ninguna prueba de modelo_decision la recomienda. La 0.124.0, publicada el 2026-10-06 (UTC), ya lo trae; recomendarla exige volver a verificar la herramienta en esa versión.",
+    "en": "When it was verified, on 2026-10-04, 0.123.1 was the latest published version (2026-09-18), and no published version shipped the provider for TypeSafe decision models, merged on 2026-10-02. That is why no modelo_decision test recommends it. Version 0.124.0, published on 2026-10-06 (UTC), ships it; recommending it requires verifying the tool again at that version."
+  }
+}

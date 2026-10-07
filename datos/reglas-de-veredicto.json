@@ -1,0 +1,56 @@
+{
+  "reglas": [
+    {
+      "id": "asimetrica_k",
+      "nombre": {
+        "es": "Asimétrica sobre k repeticiones",
+        "en": "Asymmetric over k repetitions"
+      },
+      "descripcion": {
+        "es": "La prueba corre k veces con la misma configuración. Una sola falla reproducible da «fallida». «Superada» exige cero fallas en las k, y el informe muestra la cota: con cero fallas en k repeticiones, la tasa real de falla todavía puede llegar a 3/k (regla del tres, 95 %).",
+        "en": "The test runs k times with the same configuration. A single reproducible failure gives “failed”. “Passed” requires zero failures in the k runs, and the report shows the bound: with zero failures in k runs, the true failure rate can still reach 3/k (rule of three, 95%)."
+      },
+      "ambito": "estocastica",
+      "requiere_k": true
+    },
+    {
+      "id": "metrica_con_umbral",
+      "nombre": {
+        "es": "Métrica contra un umbral declarado",
+        "en": "Metric against a declared threshold"
+      },
+      "descripcion": {
+        "es": "La métrica se calcula sobre el conjunto declarado y cada caso se repite k veces. «Superada» si queda del lado correcto del umbral que se fijó antes de la prueba; la diferencia se compara con la variación que da la re-ejecución idéntica.",
+        "en": "The metric is computed over the declared set and each case is repeated k times. “Passed” if it lands on the right side of the threshold fixed before the test; the difference is compared with the variation that identical re-execution gives."
+      },
+      "ambito": "estocastica",
+      "requiere_k": true
+    },
+    {
+      "id": "comprobacion_determinista",
+      "nombre": {
+        "es": "Comprobación determinista",
+        "en": "Deterministic check"
+      },
+      "descripcion": {
+        "es": "Una comprobación que da lo mismo cada vez: «superada» si se cumple y «fallida» si no. Sin evidencia de que la comprobación corrió, el veredicto es «no ejecutada», nunca «superada».",
+        "en": "A check that gives the same result every time: “passed” if it holds and “failed” if not. With no evidence that the check ran, the verdict is “not run”, never “passed”."
+      },
+      "ambito": "determinista",
+      "requiere_k": false
+    },
+    {
+      "id": "revision_de_diseno",
+      "nombre": {
+        "es": "Revisión del diseño por una persona",
+        "en": "Design review by a person"
+      },
+      "descripcion": {
+        "es": "Una persona revisa el diseño o el código contra lo esperado, sin enviar entradas al activo. El veredicto dice quién revisó y qué miró.",
+        "en": "A person reviews the design or the code against what is expected, without sending inputs to the asset. The verdict says who reviewed and what they looked at."
+      },
+      "ambito": "cualquiera",
+      "requiere_k": false
+    }
+  ]
+}
