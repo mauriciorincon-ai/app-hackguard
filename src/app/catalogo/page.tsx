@@ -1,8 +1,19 @@
 import { Consola } from "@/components/consola/consola";
-import { T } from "@/components/texto";
+import { CatalogoPantalla } from "@/components/catalogo/catalogo-pantalla";
+import { cargarInstantaneaOficial } from "@/lib/catalogo/cargar-instantanea";
+import { fechaDeConsulta } from "@/lib/catalogo/consulta";
+import { construirVista } from "@/lib/catalogo/vista";
 
-// Esqueleto de la F1: el armazón de la consola con su ruta. La F2 lo sustituye por la lista, sus filtros y el panel de vigencia.
-export default function Catalogo() {
+// La lista del catálogo se arma en el build desde la instantánea OFICIAL (la que tiene huella). Si la instantánea no es lo
+// que dice ser, el build falla: una pantalla que muestra un catálogo que nadie firmó es peor que ninguna. La fecha de
+// consulta es una entrada del build (HACKGUARD_CONSULTA), jamás el reloj.
+export default async function Catalogo() {
+  const { instantanea, nombre } = await cargarInstantaneaOficial();
+  const consulta = fechaDeConsulta(
+    instantanea.fecha_evaluacion,
+    process.env.HACKGUARD_CONSULTA,
+  );
+  const vista = construirVista(instantanea, nombre, consulta);
   return (
     <Consola
       seccion="catalogo"
@@ -10,10 +21,10 @@ export default function Catalogo() {
         { es: "Catálogo", en: "Catalog" },
         { es: "Pruebas", en: "Tests" },
       ]}
+      cuenta={vista.total}
+      pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
     >
-      <h1>
-        <T t={{ es: "Catálogo de pruebas", en: "Test catalog" }} />
-      </h1>
+      <CatalogoPantalla vista={vista} />
     </Consola>
   );
 }

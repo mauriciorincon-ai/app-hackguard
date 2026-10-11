@@ -147,10 +147,10 @@ export function BarraLateral({
             if (!s.ruta) {
               return (
                 <li key={s.id}>
-                  <span className="hg-nav-proximamente">
+                  <span className="hg-nav-proximamente" aria-disabled="true">
                     {dentro}
-                    <span className="hg-menor">
-                      <T t={{ es: "próximamente", en: "coming soon" }} />
+                    <span className="hg-cuenta">
+                      <T t={{ es: "pronto", en: "soon" }} />
                     </span>
                   </span>
                 </li>

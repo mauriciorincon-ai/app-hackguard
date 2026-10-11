@@ -60,6 +60,15 @@ html[data-theme="claro"] [data-si-tema="oscuro"] {
   font-weight: 500;
 }
 
-.hg-nav-proximamente .hg-menor {
-  margin-left: auto;
+/* En teléfono la barra de abajo trae las cinco secciones con el mismo gesto que los enlaces de app.css. */
+@media (max-width: 1099px) {
+  .hg-nav-proximamente {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-height: 60px;
+    padding: 0 2px;
+    border-radius: 0;
+    font-size: var(--t-micro);
+  }
 }
