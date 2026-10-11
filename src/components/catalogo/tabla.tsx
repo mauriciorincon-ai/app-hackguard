@@ -4,6 +4,7 @@ import {
   MARCADA,
   SIN_CONTROL_CORTO,
 } from "@/lib/catalogo/etiquetas";
+import { POR_PAGINA } from "@/lib/catalogo/paginacion";
 import type { FilaDePrueba } from "@/lib/catalogo/tipos";
 import { Chip, Estado } from "../estado";
 import { Dato, T } from "../texto";
@@ -17,10 +18,10 @@ const COLUMNAS = [
   { es: "Madurez", en: "Maturity" },
 ];
 
-function Fila({ f }: { f: FilaDePrueba }) {
+function Fila({ f, oculta }: { f: FilaDePrueba; oculta: boolean }) {
   const v = f.vigencia;
   return (
-    <tr data-prueba={f.id}>
+    <tr data-prueba={f.id} hidden={oculta}>
       <td data-celda="id">
         <Dato>{f.id}</Dato>
       </td>
@@ -116,8 +117,8 @@ export function Tabla({
         </tr>
       </thead>
       <tbody>
-        {filas.map((f) => (
-          <Fila key={f.id} f={f} />
+        {filas.map((f, i) => (
+          <Fila key={f.id} f={f} oculta={i >= POR_PAGINA} />
         ))}
       </tbody>
     </table>

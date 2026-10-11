@@ -113,6 +113,7 @@ function fila(
     familia: p.familia,
     familiaNombre: porId(c.familias, p.familia).nombre,
     herramienta: herramientaDe(c, p).nombre,
+    herramientaId: p.resultado_esperado.medido_con,
     repeticiones: repeticiones(p.criterio_de_veredicto.repeticiones_k),
     marcoId: p.marco_id,
     marco: `${marco.nombre} ${p.version_marco} · ${p.referencia_en_marco}`,
@@ -150,6 +151,20 @@ function listas(c: Catalogo): ListaDeFiltro[] {
         { valor: "", texto: { es: "Todos", en: "All" } },
         ...controles.map((id) => ({ valor: id, texto: id })),
         { valor: FILTRO_SIN_CONTROL, texto: SIN_CONTROL.nombre },
+      ],
+    },
+    {
+      campo: "herramienta",
+      rotulo: { es: "Herramienta", en: "Tool" },
+      opciones: [
+        { valor: "", texto: { es: "Todas", en: "All" } },
+        // Solo las que miden alguna prueba: una lista con herramientas sin pruebas llevaría a una pantalla vacía.
+        ...c.herramientas
+          .filter((h) =>
+            c.pruebas.some((p) => p.resultado_esperado.medido_con === h.id),
+          )
+          .map((h) => ({ valor: h.id, texto: h.nombre }))
+          .sort((a, b) => a.texto.localeCompare(b.texto, "en")),
       ],
     },
     {

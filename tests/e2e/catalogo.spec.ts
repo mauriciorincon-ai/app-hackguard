@@ -16,8 +16,14 @@ const IDS: string[] = JSON.parse(
   readFileSync(join(CARPETA, OFICIAL), "utf8"),
 ).catalogo.pruebas.map((p: { id: string }) => p.id);
 
-// Las filas filtradas siguen en el DOM, ocultas: se cuentan las que se ven.
+// Las filas filtradas o de otra página siguen en el DOM, ocultas: se cuentan las que se ven. La lista muestra 20 por página.
+const POR_PAGINA = 20;
+const TOTAL = IDS.length;
 const filas = (page: Page) => page.locator("tr[data-prueba]:visible");
+const idsVisibles = (page: Page) =>
+  filas(page).evaluateAll((trs) =>
+    trs.map((tr) => tr.getAttribute("data-prueba")!),
+  );
 const serias = async (page: Page) =>
   (await new AxeBuilder({ page }).analyze()).violations.filter(
     (v) => v.impact === "critical" || v.impact === "serious",
@@ -31,18 +37,41 @@ test.describe("/catalogo", () => {
     ).toBeVisible();
   });
 
-  test("lista las 38 pruebas de la instantánea oficial, una por una", async ({
+  test("lista las pruebas de la instantánea oficial, 20 por página, una por una", async ({
     page,
   }) => {
-    expect(IDS).toHaveLength(38);
-    await expect(filas(page)).toHaveCount(38);
-    const enPantalla = await filas(page).evaluateAll((trs) =>
-      trs.map((tr) => tr.getAttribute("data-prueba")),
-    );
-    expect([...enPantalla].sort()).toEqual([...IDS].sort());
+    expect(TOTAL).toBeGreaterThan(POR_PAGINA);
+    await expect(filas(page)).toHaveCount(POR_PAGINA);
+    const primera = await idsVisibles(page);
     await expect(page.locator("[data-cuenta-filtrada]:visible")).toHaveText(
-      "38",
+      String(TOTAL),
     );
+    await page.getByRole("button", { name: /Siguiente/ }).click();
+    await expect(filas(page)).toHaveCount(TOTAL - POR_PAGINA);
+    const segunda = await idsVisibles(page);
+    expect([...primera, ...segunda].sort()).toEqual([...IDS].sort());
+    await expect(
+      page.getByRole("button", { name: /Siguiente/ }),
+    ).toBeDisabled();
+    await page.getByRole("button", { name: /Anterior/ }).click();
+    expect(await idsVisibles(page)).toEqual(primera);
+    await expect(page.getByRole("button", { name: /Anterior/ })).toBeDisabled();
+  });
+
+  test("un filtro devuelve a la página 1 y el filtro «herramienta» reduce la lista", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: /Siguiente/ }).click();
+    await page.locator("#filtro-herramienta").selectOption({ index: 1 });
+    await expect(
+      page.getByRole("navigation", { name: /Paginación/ }),
+    ).toBeHidden();
+    const quedan = await filas(page).count();
+    expect(quedan).toBeGreaterThan(0);
+    expect(quedan).toBeLessThan(TOTAL);
+    await page.getByRole("button", { name: "Quitar filtros" }).click();
+    await expect(filas(page)).toHaveCount(POR_PAGINA);
+    await expect(page.getByRole("button", { name: /Anterior/ })).toBeDisabled();
   });
 
   test("un filtro reduce la lista y «Quitar filtros» la restaura", async ({
@@ -51,14 +80,14 @@ test.describe("/catalogo", () => {
     await page.getByRole("button", { name: "Modelo de decisión" }).click();
     const quedan = await filas(page).count();
     expect(quedan).toBeGreaterThan(0);
-    expect(quedan).toBeLessThan(38);
+    expect(quedan).toBeLessThan(TOTAL);
     await expect(page.locator("[data-cuenta-filtrada]:visible")).toHaveText(
       String(quedan),
     );
     await page.locator("#filtro-madurez").selectOption("propia");
     expect(await filas(page).count()).toBeLessThanOrEqual(quedan);
     await page.getByRole("button", { name: "Quitar filtros" }).click();
-    await expect(filas(page)).toHaveCount(38);
+    await expect(filas(page)).toHaveCount(POR_PAGINA);
     await expect(page.getByRole("button", { name: "Todas" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -76,7 +105,7 @@ test.describe("/catalogo", () => {
     ).toBeVisible();
     await expect(filas(page)).toHaveCount(0);
     await page.getByRole("button", { name: "Quitar filtros" }).click();
-    await expect(filas(page)).toHaveCount(38);
+    await expect(filas(page)).toHaveCount(POR_PAGINA);
   });
 
   test("cada fila abre la ficha de SU prueba, con la misma vigencia que mostraba la fila", async ({

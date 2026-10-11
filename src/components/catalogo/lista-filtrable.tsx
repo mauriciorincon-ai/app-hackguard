@@ -8,15 +8,23 @@ import {
   type Filtros as EstadoDeFiltros,
   type FilaFiltrable,
 } from "@/lib/catalogo/filtros";
+import {
+  acotar,
+  porcion,
+  rango,
+  totalDePaginas,
+} from "@/lib/catalogo/paginacion";
 import type { ListaDeFiltro, OpcionDeFiltro } from "@/lib/catalogo/tipos";
 import { T } from "../texto";
 import { Filtros } from "./filtros";
+import { Paginacion } from "./paginacion";
 
 /**
- * Los filtros de la lista del catálogo. Las FILAS se pintan en el servidor (children) y llegan al navegador ya hechas: aquí
+ * Los filtros y la paginación de la lista del catálogo. Las FILAS se pintan en el servidor (children) y llegan al navegador ya hechas: aquí
  * no se vuelven a pintar ni a hidratar una por una, solo se muestran u ocultan según los filtros (con 38 filas con los dos
  * idiomas, hidratarlas costaba más del presupuesto de bloqueo del hilo principal). El navegador recibe solo lo que el
- * filtro lee de cada fila.
+ * filtro lee de cada fila. Se ven `POR_PAGINA` por página; las demás siguen en el documento, ocultas (la primera pintura ya
+ * trae ocultas las que no son de la página 1: el servidor las dibuja con `hidden`).
  */
 export function ListaFiltrable({
   familias,
@@ -30,13 +38,19 @@ export function ListaFiltrable({
   children: React.ReactNode;
 }) {
   const [filtros, setFiltros] = useState<EstadoDeFiltros>(SIN_FILTROS);
-  const cambiar = (campo: Campo, valor: string) =>
+  const [pedida, setPedida] = useState(1);
+  // Todo cambio de filtro devuelve a la página 1.
+  const cambiar = (campo: Campo, valor: string) => {
     setFiltros((f) => ({ ...f, [campo]: valor }));
+    setPedida(1);
+  };
   const visibles = filtrar(indice, filtros).map((f) => f.id);
+  const actual = acotar(pedida, visibles.length);
+  const { desde, hasta } = rango(actual, visibles.length);
   const contenedor = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const quedan = new Set(visibles);
+    const quedan = new Set(porcion(visibles, actual));
     contenedor.current
       ?.querySelectorAll<HTMLElement>("tr[data-prueba]")
       .forEach((fila) => {
@@ -44,7 +58,7 @@ export function ListaFiltrable({
       });
     // `visibles` se recalcula en cada render a partir de `filtros`: basta con depender de ellos.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtros]);
+  }, [filtros, actual]);
 
   return (
     <>
@@ -59,6 +73,14 @@ export function ListaFiltrable({
       <div ref={contenedor} hidden={visibles.length === 0}>
         {children}
       </div>
+      <Paginacion
+        actual={actual}
+        total={totalDePaginas(visibles.length)}
+        desde={desde}
+        hasta={hasta}
+        cuenta={visibles.length}
+        irA={setPedida}
+      />
       <div className="hg-aviso es-neutro" hidden={visibles.length > 0}>
         <h2>
           <T

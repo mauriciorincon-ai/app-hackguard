@@ -41,6 +41,11 @@ const SOLO_DEL_PRODUCTO = new Set([
   "Pruebas que esperan revisión|Tests awaiting review",
 ]);
 
+// Y los controles que el producto suma y la maqueta no dibuja (S3): el filtro «herramienta» (una lista más, sobre la
+// herramienta con la que se mide cada prueba) y la paginación (fuera de los selectores que este gate compara). La maqueta
+// los alcanza en el design-sync del hito (docs/diseno/README.md).
+const CAMPOS_SOLO_DEL_PRODUCTO = new Set(["Herramienta|Tool"]);
+
 const maqueta = documentoDe(leerPagina(RAIZ_MAQUETA, "catalogo.html"));
 const producto = documentoDe(
   "<body><main class='hg-principal'>" +
@@ -104,10 +109,18 @@ describe("fidelidad de /catalogo contra docs/diseno/catalogo.html", () => {
     const pildoras = (doc: Document) =>
       conjunto(doc, dentroDe(".hg-grupo .hg-filtro"));
     const listas = (doc: Document) =>
-      conjunto(doc, dentroDe("label.hg-campo > span"));
+      conjunto(
+        doc,
+        dentroDe("label.hg-campo > span"),
+        doc === producto ? CAMPOS_SOLO_DEL_PRODUCTO : new Set(),
+      );
     expect(pildoras(producto)).toEqual(pildoras(maqueta));
     expect(listas(producto)).toEqual(listas(maqueta));
     expect(listas(producto)).toHaveLength(5);
+    // La lista sumada existe de verdad: sin ella la excepción de arriba no tendría de qué excusarse.
+    expect(conjunto(producto, dentroDe("label.hg-campo > span"))).toHaveLength(
+      6,
+    );
   });
 
   it("las etiquetas de estado de las cifras de arriba son las mismas", () => {

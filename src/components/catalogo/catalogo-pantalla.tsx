@@ -108,6 +108,7 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
             id: f.id,
             familia: f.familia,
             marcoId: f.marcoId,
+            herramientaId: f.herramientaId,
             controles: f.controles,
             madurez: f.madurez,
             revision: f.revision,

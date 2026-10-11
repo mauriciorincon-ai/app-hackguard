@@ -36,7 +36,14 @@ describe("filtros del catálogo", () => {
     expect(hayFiltros(SIN_FILTROS)).toBe(false);
   });
 
-  it.each(["familia", "marco", "madurez", "vigencia", "revision"] as const)(
+  it.each([
+    "familia",
+    "marco",
+    "herramienta",
+    "madurez",
+    "vigencia",
+    "revision",
+  ] as const)(
     "el filtro de %s deja solo las filas que tienen cada uno de sus valores, y entre todos suman las 38",
     (campo) => {
       const valores = [
@@ -46,6 +53,7 @@ describe("filtros del catálogo", () => {
               ({
                 familia: f.familia,
                 marco: f.marcoId,
+                herramienta: f.herramientaId,
                 madurez: f.madurez,
                 vigencia: f.vigencia.estado,
                 revision: f.revision,
@@ -74,6 +82,24 @@ describe("filtros del catálogo", () => {
     expect(conEseControl.every((f) => f.controles.includes(unControl))).toBe(
       true,
     );
+  });
+
+  it("el filtro de herramienta ofrece solo herramientas que miden alguna prueba, y deja las filas que muestran ese nombre", () => {
+    const lista = vista.listas.find((l) => l.campo === "herramienta")!;
+    const opciones = lista.opciones.filter((o) => o.valor !== "");
+    expect(opciones.length).toBeGreaterThan(1);
+    for (const o of opciones) {
+      const quedan = filtrar(todas, con({ herramienta: o.valor }));
+      expect(quedan.length, String(o.texto)).toBeGreaterThan(0);
+      expect(quedan.every((f) => f.herramienta === o.texto)).toBe(true);
+    }
+    // Cada prueba está bajo exactamente una herramienta: las opciones suman las 38.
+    expect(
+      opciones.reduce(
+        (n, o) => n + filtrar(todas, con({ herramienta: o.valor })).length,
+        0,
+      ),
+    ).toBe(38);
   });
 
   it("los filtros se suman: cada uno añadido deja igual o menos filas, y al quitarlos vuelven las 38", () => {
@@ -111,11 +137,12 @@ describe("filtros del catálogo", () => {
     ).toEqual([]);
   });
 
-  it("los seis campos son los de la maqueta aprobada", () => {
+  it("los siete campos son los seis de la maqueta aprobada más «herramienta»", () => {
     expect([...CAMPOS]).toEqual([
       "familia",
       "marco",
       "control",
+      "herramienta",
       "madurez",
       "vigencia",
       "revision",

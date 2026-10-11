@@ -1,17 +1,25 @@
 // Los filtros de la lista del catálogo: puros y sin estado, para que la pantalla y los tests digan lo mismo. Cada filtro
-// es «todos» (cadena vacía) o un valor; los filtros se SUMAN. Los seis son los de la maqueta aprobada.
+// es «todos» (cadena vacía) o un valor; los filtros se SUMAN. Cinco son los de la maqueta aprobada más «herramienta» (S3),
+// que filtra por la herramienta con la que se mide cada prueba: la misma que la fila muestra.
 import type { FilaDePrueba } from "./tipos.ts";
 
 /** Lo que el filtro lee de una fila: es lo que viaja al navegador (las filas mismas se pintan en el servidor). */
 export type FilaFiltrable = Pick<
   FilaDePrueba,
-  "id" | "familia" | "marcoId" | "controles" | "madurez" | "revision"
+  | "id"
+  | "familia"
+  | "marcoId"
+  | "herramientaId"
+  | "controles"
+  | "madurez"
+  | "revision"
 > & { vigencia: { estado: string } };
 
 export const CAMPOS = [
   "familia",
   "marco",
   "control",
+  "herramienta",
   "madurez",
   "vigencia",
   "revision",
@@ -23,6 +31,7 @@ export const SIN_FILTROS: Filtros = {
   familia: "",
   marco: "",
   control: "",
+  herramienta: "",
   madurez: "",
   vigencia: "",
   revision: "",
@@ -41,6 +50,7 @@ export function cumple(fila: FilaFiltrable, f: Filtros): boolean {
         : fila.controles.includes(f.control);
     if (!ok) return false;
   }
+  if (f.herramienta && f.herramienta !== fila.herramientaId) return false;
   if (f.madurez && f.madurez !== fila.madurez) return false;
   if (f.vigencia && f.vigencia !== fila.vigencia.estado) return false;
   if (f.revision && f.revision !== fila.revision) return false;

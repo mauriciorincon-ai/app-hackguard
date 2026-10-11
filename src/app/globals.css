@@ -60,6 +60,27 @@ html[data-theme="claro"] [data-si-tema="oscuro"] {
   font-weight: 500;
 }
 
+/* La paginación de la lista del catálogo (solo del producto: la maqueta no la dibuja). Botones del sistema, tokens de la hoja. */
+.hg-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hg-paginacion .hg-boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .hg-paginacion {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 /* Las páginas de una sección que todavía no existen, dentro de su subnavegación. */
 .hg-nav-sub .hg-nav-proximamente {
   min-height: 32px;

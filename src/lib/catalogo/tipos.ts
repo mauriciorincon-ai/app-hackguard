@@ -32,6 +32,8 @@ export interface FilaDePrueba {
   familiaNombre: Bilingue;
   /** Nombre de la herramienta con la que se mide (un nombre propio: no cambia con el idioma). */
   herramienta: string;
+  /** Identificador de esa herramienta: lo que lee el filtro «herramienta» (la fila muestra el nombre). */
+  herramientaId: string;
   repeticiones: Bilingue;
   marcoId: string;
   /** «OWASP … 2025 · A05»: marco, versión que cita la prueba y su referencia. */
@@ -50,7 +52,7 @@ export interface OpcionDeFiltro {
 }
 
 export type CampoDeLista =
-  "marco" | "control" | "madurez" | "vigencia" | "revision";
+  "marco" | "control" | "herramienta" | "madurez" | "vigencia" | "revision";
 
 export interface ListaDeFiltro {
   campo: CampoDeLista;
