@@ -16,7 +16,8 @@ const IDS: string[] = JSON.parse(
   readFileSync(join(CARPETA, OFICIAL), "utf8"),
 ).catalogo.pruebas.map((p: { id: string }) => p.id);
 
-const filas = (page: Page) => page.locator("tr[data-prueba]");
+// Las filas filtradas siguen en el DOM, ocultas: se cuentan las que se ven.
+const filas = (page: Page) => page.locator("tr[data-prueba]:visible");
 const serias = async (page: Page) =>
   (await new AxeBuilder({ page }).analyze()).violations.filter(
     (v) => v.impact === "critical" || v.impact === "serious",

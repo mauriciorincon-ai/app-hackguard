@@ -2,6 +2,12 @@
 // es «todos» (cadena vacía) o un valor; los filtros se SUMAN. Los seis son los de la maqueta aprobada.
 import type { FilaDePrueba } from "./tipos.ts";
 
+/** Lo que el filtro lee de una fila: es lo que viaja al navegador (las filas mismas se pintan en el servidor). */
+export type FilaFiltrable = Pick<
+  FilaDePrueba,
+  "id" | "familia" | "marcoId" | "controles" | "madurez" | "revision"
+> & { vigencia: { estado: string } };
+
 export const CAMPOS = [
   "familia",
   "marco",
@@ -25,7 +31,7 @@ export const SIN_FILTROS: Filtros = {
 /** El valor de `control` que quiere decir «ninguno»: las pruebas que todavía no dan evidencia a ningún control. */
 export const SIN_CONTROL = "ninguno";
 
-export function cumple(fila: FilaDePrueba, f: Filtros): boolean {
+export function cumple(fila: FilaFiltrable, f: Filtros): boolean {
   if (f.familia && f.familia !== fila.familia) return false;
   if (f.marco && f.marco !== fila.marcoId) return false;
   if (f.control) {
@@ -41,10 +47,10 @@ export function cumple(fila: FilaDePrueba, f: Filtros): boolean {
   return true;
 }
 
-export const filtrar = (
-  filas: readonly FilaDePrueba[],
+export const filtrar = <T extends FilaFiltrable>(
+  filas: readonly T[],
   f: Filtros,
-): FilaDePrueba[] => filas.filter((fila) => cumple(fila, f));
+): T[] => filas.filter((fila) => cumple(fila, f));
 
 export const hayFiltros = (f: Filtros): boolean =>
   CAMPOS.some((c) => f[c] !== "");

@@ -1,33 +1,18 @@
-"use client";
-
-import { useState } from "react";
 import { familias, pruebas } from "@/lib/catalogo/etiquetas";
-import { en, useIdioma } from "../consola/idioma";
-import {
-  SIN_FILTROS,
-  filtrar,
-  type Campo,
-  type Filtros as EstadoDeFiltros,
-} from "@/lib/catalogo/filtros";
 import type { VistaDeCatalogo } from "@/lib/catalogo/tipos";
 import { Chip, Estado, Huella } from "../estado";
 import { Dato, T } from "../texto";
 import { CatalogoVacio } from "./estado-vacio";
-import { Filtros } from "./filtros";
+import { ListaFiltrable } from "./lista-filtrable";
 import { Tabla } from "./tabla";
 import { VigenciaPorFamilia } from "./vigencia-por-familia";
 
 /**
- * La pantalla `/catalogo` (design-system, dirección «consola»; maqueta `docs/diseno/catalogo.html`). Recibe la vista ya
- * calculada: no recalcula nada, solo filtra las filas en el navegador. Los dos idiomas están siempre en el DOM.
+ * La pantalla `/catalogo` (design-system, dirección «consola»; maqueta `docs/diseno/catalogo.html`). Es un componente de
+ * SERVIDOR: recibe la vista ya calculada y pinta todo, con los dos idiomas en el DOM. Solo los filtros (`ListaFiltrable`)
+ * corren en el navegador.
  */
 export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
-  const idioma = useIdioma();
-  const [filtros, setFiltros] = useState<EstadoDeFiltros>(SIN_FILTROS);
-  const cambiar = (campo: Campo, valor: string) =>
-    setFiltros((f) => ({ ...f, [campo]: valor }));
-  const filas = filtrar(vista.filas, filtros);
-
   if (vista.total === 0) return <CatalogoVacio />;
 
   return (
@@ -37,6 +22,9 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
           <h1>
             <T t={{ es: "Catálogo de pruebas", en: "Test catalog" }} />
           </h1>
+          <span id="rotulo-cifras" className="hg-oculto">
+            <T t={{ es: "Pruebas por vigencia", en: "Tests by freshness" }} />
+          </span>
           <p className="hg-bajada">
             <T
               t={{
@@ -67,13 +55,7 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
             </span>
           </p>
         </div>
-        <ul
-          className="hg-resumen"
-          aria-label={en(idioma, {
-            es: "Pruebas por vigencia",
-            en: "Tests by freshness",
-          })}
-        >
+        <ul className="hg-resumen" aria-labelledby="rotulo-cifras">
           {vista.cifras.map((c) => (
             <li key={c.etiqueta.nombre.es}>
               <span className="hg-cifra" data-neutro>
@@ -115,40 +97,25 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
         </section>
       ) : null}
 
-      <section
-        className="hg-panel"
-        aria-label={en(idioma, {
-          es: "Pruebas del catálogo",
-          en: "Catalog tests",
-        })}
-      >
-        <Filtros
+      <section className="hg-panel" aria-labelledby="rotulo-pruebas">
+        <span id="rotulo-pruebas" className="hg-oculto">
+          <T t={{ es: "Pruebas del catálogo", en: "Catalog tests" }} />
+        </span>
+        <ListaFiltrable
           familias={vista.familias}
           listas={vista.listas}
-          total={vista.total}
-          visibles={filas.length}
-          filtros={filtros}
-          cambiar={cambiar}
-        />
-        <Tabla filas={filas} oculta={filas.length === 0} />
-        <div className="hg-aviso es-neutro" hidden={filas.length > 0}>
-          <h2>
-            <T
-              t={{
-                es: "Ninguna prueba cumple esos filtros",
-                en: "No test matches those filters",
-              }}
-            />
-          </h2>
-          <p>
-            <T
-              t={{
-                es: "Quita un filtro o vuelve a «Todas» para ver el catálogo completo.",
-                en: "Remove a filter or go back to “All” to see the whole catalog.",
-              }}
-            />
-          </p>
-        </div>
+          indice={vista.filas.map((f) => ({
+            id: f.id,
+            familia: f.familia,
+            marcoId: f.marcoId,
+            controles: f.controles,
+            madurez: f.madurez,
+            revision: f.revision,
+            vigencia: { estado: f.vigencia.estado },
+          }))}
+        >
+          <Tabla filas={vista.filas} oculta={false} />
+        </ListaFiltrable>
       </section>
 
       <VigenciaPorFamilia panel={vista.panel} />
