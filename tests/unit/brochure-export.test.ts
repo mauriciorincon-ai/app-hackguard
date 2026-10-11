@@ -98,12 +98,16 @@ describe("docs/brochure-export.json", () => {
     // Topes del contrato publicado por app-hoja-de-vida (docs/contrato-ficha-tecnica/ficha-tecnica.schema.json): la
     // ficha no se arma, y el build de CV Viva falla, si un texto lo pasa. CV Viva no edita este archivo: se acorta aquí.
     // `diferencial` no viaja a la ficha y no tiene tope.
-    const largos = [
+    const largos: [string, string, number][] = [
       ["tagline", datos.promesa.tagline, 80],
       ["intro", datos.promesa.intro, 400],
       ["para_quien", datos.promesa.para_quien, 400],
-      ...datos.metricas.map((m) => [`detalle de ${m.clave}`, m.detalle, 400]),
-    ] as const;
+      ...datos.metricas.map((m): [string, string, number] => [
+        `detalle de ${m.clave}`,
+        m.detalle,
+        400,
+      ]),
+    ];
     const pasados = largos
       .filter(([, texto, tope]) => texto.length > tope)
       .map(([campo, texto, tope]) => `${campo} (${texto.length} > ${tope})`);
