@@ -194,6 +194,21 @@ Una fila por mirada, **antes** de construir encima. «Continúa» no es una mira
 | 2026-10-04 | Recorrido completo: las 47 páginas, en teléfono y escritorio, en los dos temas y los dos idiomas, con lo que cambió al pagar la auditoría de cierre marcado como nuevo (mirada 6, G-Diseño, ronda 1) | preview del PR #4 (commit `d25b21d`) | «Todas estab muy bien y en orden muy buen trabajo, las abri y las apruebo» — **G-Diseño aprobado**, sin ajustes. El texto en ambos idiomas sigue «maquetado, no visto»: su veredicto viaja al gate del MVP | Cierre de la etapa: `design-system.md` 1.0.0, bundle `design-sync/` (sin publicar), resumen de la etapa y merge del PR #4 |
 | 2026-10-11 | `/catalogo` del producto junto a `catalogo.html` (S2, mirada de FIDELIDAD, ronda 1) | preview del PR #9, escritorio | «Las dos no son la misma en la visual "Todas", pero la idea en general está perfecta» y pidió garantizar que en producción muestre la información correcta y que los mensajes de advertencia sean claros. **Fidelidad aprobada en la idea;** la diferencia que señaló en «Todas» no la precisó: se midió la píldora «Todas» (estilos idénticos en los dos temas) y lo que difería en esa vista era la subnavegación de Catálogo (Pruebas · Marcos · Controles · Propuestas), que se igualó | Las fichas `/catalogo/<id>` y AU-14. Decisiones del G-Plan registradas aquí: P1 idioma en cliente con los dos idiomas en el DOM · P2 el producto importa `app.css` y `tokens.css` de la maqueta como única fuente |
 
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 3)
+
+La maqueta no se edita a mano ni se regenera en este sprint; estas diferencias las vigilan los gates de fidelidad
+(`tests/unit/fidelidad-catalogo.test.tsx`, `fidelidad-marcos.test.tsx`, `fidelidad-controles.test.tsx`), cada una con su
+razón, y la maqueta las alcanza en el `design-sync` del hito.
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| `catalogo` | Paginación de la lista (20 por página, «anterior · siguiente · página n de N») | La lista de 38 pruebas es larga de leer; los filtros vuelven a la página 1 |
+| `catalogo` | Séptimo filtro, «Herramienta», sobre la herramienta con que se mide cada prueba (la que la fila muestra) | La maqueta llevaba la herramienta solo en una columna |
+| `marcos` | «Frente a la fuente» dice «Sin aviso registrado», y «Avisos de versión» dice «Sin avisos registrados» | La instantánea no trae si la fuente oficial publica una versión más nueva; no se simula |
+| `marcos` | La tabla del mapa de equivalencias no tiene la columna «Nombre anterior» | La instantánea guarda los identificadores de cada entrada, no sus nombres |
+| `marcos` | Cada marco muestra su licencia y lo que exige; la segunda cifra cuenta los marcos con la fuente fuera del alcance del agente | La licencia es dato del marco (regla dura 11); el aviso de versión no se puede contar |
+| `marcos` | «Qué cambió» de las instantáneas dice «Sin comparación registrada» | Sin historial de instantáneas en `datos/` |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |
