@@ -67,6 +67,7 @@ describe("docs/brochure-export.json", () => {
   it("las cifras que el repo permite re-derivar coinciden con el repo", () => {
     const pruebas = archivos("datos/pruebas");
     expect(metrica("pruebas_en_el_catalogo").valor).toBe(pruebas.length);
+    expect(metrica("fichas_de_prueba").valor).toBe(pruebas.length);
     expect(metrica("marcos_de_referencia").valor).toBe(
       readdirSync(join(RAIZ, "datos", "marcos")).filter((n) =>
         n.endsWith(".json"),

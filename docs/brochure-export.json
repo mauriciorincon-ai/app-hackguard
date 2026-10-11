@@ -19,17 +19,17 @@
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 1,
+    "sprints_cerrados": 2,
     "version_repo": "0.1.0"
   },
   "promesa": {
     "tagline": "Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.",
     "intro": "Para cada una de tus apps y en cualquier momento, HackGuard te ayuda a responder cuatro preguntas que casi nadie puede contestar: qué probaste, qué esperabas, qué obtuviste y qué te falta. Tiene un catálogo vivo de pruebas de seguridad para software y para sistemas de IA, cada una atada a su marco con versión y, cuando se puede, al control de ISO/IEC 42001 al que le da evidencia. No ejecuta las pruebas: las corres afuera y traes los resultados como evidencia que una persona confirma.",
     "para_quien": "Para quien construye apps con IA y hoy prueba su seguridad tarde, sin plan y sin memoria, y quiere mostrar evidencia fechada cuando alguien pregunte «¿cómo sabes que esto es seguro?». Y para quien mire esa evidencia: el auditor de gobierno de IA, el par de seguridad que recorre el catálogo y el líder sin formación técnica.",
-    "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming encuentran fallas y las herramientas de gobierno llenan matrices de controles; HackGuard une las tres en un solo hilo trazable: prueba con resultado esperado, marco con versión, control del Anexo A, evidencia con huella y cierre solo por re-prueba. Lo hace con un núcleo determinista que cualquiera puede volver a correr y obtener los mismos bytes, con la IA solo proponiendo y siempre bajo aprobación humana, y sin guardar jamás una carga: describe qué se verifica, nunca cómo se rompe. Hoy existe el primer eslabón de esa cadena, el catálogo."
+    "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming encuentran fallas y las herramientas de gobierno llenan matrices de controles; HackGuard une las tres en un solo hilo trazable: prueba con resultado esperado, marco con versión, control del Anexo A, evidencia con huella y cierre solo por re-prueba. Lo hace con un núcleo determinista que cualquiera puede volver a correr y obtener los mismos bytes, con la IA solo proponiendo y siempre bajo aprobación humana, y sin guardar jamás una carga: describe qué se verifica, nunca cómo se rompe. Hoy existe el primer eslabón de esa cadena, el catálogo, y ya se recorre en pantalla."
   },
   "funcionalidades": {
-    "total": 13,
+    "total": 19,
     "fuente_del_conteo": "docs/MANUAL-DE-USO.md",
     "descartadas": [],
     "grupos": [
@@ -126,6 +126,50 @@
             "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
           }
         ]
+      },
+      {
+        "orden": 3,
+        "estrella": false,
+        "nombre": "El catálogo en pantalla",
+        "linea": "La primera pantalla: el catálogo se recorre, se filtra y se lee prueba por prueba, solo de lectura.",
+        "features": [
+          {
+            "id": "P1",
+            "nombre": "La lista de las 38 pruebas",
+            "que_hace": "Una tabla con todas las pruebas de la instantánea oficial, con su familia, herramienta, marco, madurez y vigencia, y las cifras de arriba: vigentes, por revisar, vencidas y sin control.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          },
+          {
+            "id": "P2",
+            "nombre": "Filtros que se suman",
+            "que_hace": "Por familia, marco, control, madurez, vigencia y revisión de contenido. El contador dice cuántas quedan, «Quitar filtros» las devuelve todas y, si ninguna cumple, la pantalla lo dice.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          },
+          {
+            "id": "P3",
+            "nombre": "Una ficha por cada prueba",
+            "que_hace": "Qué se verifica, por qué importa, el resultado esperado, cómo se decide el veredicto y con cuántas repeticiones, con qué herramienta, cuándo aplica y a qué marco y controles responde. Avisa arriba cuando la prueba está vencida o por revisar.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          },
+          {
+            "id": "P4",
+            "nombre": "Vigencia por familia",
+            "que_hace": "Un panel donde cada familia está como su prueba más atrasada, con marca, texto y color; el color nunca va solo.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          },
+          {
+            "id": "P5",
+            "nombre": "Una fecha de consulta a la vista",
+            "que_hace": "La vigencia se calcula con la fecha de consulta que se muestra arriba, tomada de la fecha del commit publicado y nunca del reloj del navegador: la pantalla envejece al publicarse, no sola.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          },
+          {
+            "id": "P6",
+            "nombre": "Tema e idioma que se recuerdan",
+            "que_hace": "Oscuro o claro, español o inglés, con la misma pantalla en ambos y sin saltos al recargar; en el teléfono la navegación pasa a una barra al pie.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+          }
+        ]
       }
     ]
   },
@@ -133,10 +177,10 @@
     {
       "clave": "funcionalidades",
       "etiqueta": "Funcionalidades",
-      "valor": 13,
+      "valor": 19,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Contadas contra docs/MANUAL-DE-USO.md, que hoy tiene dos secciones de funcionalidad: «El catálogo como dato» (10) y «El clasificador demo de la familia modelo de decisión» (3). De las 32 que la visión aprueba, el resto (planificador, libro de evidencia, hallazgos, brecha, vitrina) no se ha construido."
+      "detalle": "Contadas contra docs/MANUAL-DE-USO.md, que hoy tiene tres secciones de funcionalidad: «El catálogo como dato» (10), «El clasificador demo de la familia modelo de decisión» (3) y «El catálogo en pantalla» (6). De las 32 que la visión aprueba, el resto (planificador, libro de evidencia, hallazgos, brecha, vitrina) no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -155,36 +199,44 @@
       "detalle": "Salida de `pnpm catalogo:validar` del 2026-10-11. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
     },
     {
+      "clave": "fichas_de_prueba",
+      "etiqueta": "Fichas de prueba publicadas",
+      "valor": 38,
+      "unidad": "fichas",
+      "fuente": "medido",
+      "detalle": "Páginas HTML en out/catalogo/ tras `pnpm build` del 2026-10-11: una por prueba. El build entero genera 89 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+    },
+    {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 2247,
+      "valor": 2431,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-10-11 sobre el árbol de este export: `pnpm test` 1194 pruebas en 43 archivos, y `pnpm test:e2e` 1053 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta tres veces)."
+      "detalle": "Suma de dos corridas del 2026-10-11 sobre el árbol de este export: `pnpm test` 1362 pruebas en 53 archivos, y `pnpm test:e2e` 1069 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta tres veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 1194,
+      "valor": 1362,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-11 sobre el árbol de este export: 43 archivos, 1194 pasan (ocho son las del propio export)."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-11 sobre el árbol de este export: 53 archivos, 1362 pasan (ocho son las del propio export)."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1053,
+      "valor": 1069,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test:e2e` del 2026-10-11 sobre el build de producción: 1053 pasan en tres navegadores. Incluyen la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `pnpm test:e2e` del 2026-10-11 sobre el build de producción: 1069 pasan en tres navegadores. Incluyen el recorrido del catálogo en pantalla con axe, y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
-      "etiqueta": "Cobertura de líneas del núcleo",
-      "valor": 99.42,
+      "etiqueta": "Cobertura de líneas",
+      "valor": 94.55,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/engine/ en la corrida de `pnpm test` del 2026-10-11: 859 de 864 líneas; sentencias 99.37 %, ramas 94.87 %."
+      "detalle": "v8 sobre src/engine, src/lib y src/components en la corrida de `pnpm test` del 2026-10-11: 1060 de 1121 líneas; sentencias 94.63 %. Los componentes entraron a la medición en el Sprint 002, por eso baja respecto a los 99.42 % del núcleo solo."
     },
     {
       "clave": "reglas_del_validador",
@@ -238,7 +290,7 @@
   "stack": [
     {
       "nombre": "Next.js + TypeScript",
-      "papel": "exportación estática, TypeScript en modo estricto y bilingüe desde el primer día"
+      "papel": "exportación estática, TypeScript en modo estricto y las dos lenguas en el árbol desde el primer día"
     },
     {
       "nombre": "JSON versionado con huella",
