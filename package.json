@@ -20,7 +20,7 @@
     "design-sync:bundle": "node scripts/design-sync/generar.mjs"
   },
   "dependencies": {
-    "@sentry/nextjs": "^11.5.0",
+    "@sentry/nextjs": "^11.6.0",
     "next": "16.4.0",
     "pino": "^10.4.0",
     "react": "19.3.0",
