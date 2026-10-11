@@ -66,8 +66,8 @@ function Avisos({ f }: { f: FichaDePrueba }) {
           <p>
             <T
               t={{
-                es: `Pasaron más de ${vencido} días sin que nadie la verifique de nuevo. Su marco o su herramienta pueden haber cambiado: pide al investigador que la revise contra sus fuentes y aprueba lo que proponga.`,
-                en: `More than ${vencido} days have passed without anyone verifying it again. Its framework or its tool may have changed: ask the researcher to check it against its sources and approve what it proposes.`,
+                es: `Pasaron ${vencido} días o más sin que nadie la verifique de nuevo. Su marco o su herramienta pueden haber cambiado: pide al investigador que la revise contra sus fuentes y aprueba lo que proponga.`,
+                en: `${vencido} days or more have passed without anyone verifying it again. Its framework or its tool may have changed: ask the researcher to check it against its sources and approve what it proposes.`,
               }}
             />
           </p>
@@ -85,8 +85,8 @@ function Avisos({ f }: { f: FichaDePrueba }) {
           <p>
             <T
               t={{
-                es: `Pasaron más de ${por_revisar} días desde su última verificación. Sigue siendo válida; a los ${vencido} días queda vencida.`,
-                en: `More than ${por_revisar} days have passed since it was last verified. It is still valid; at ${vencido} days it becomes overdue.`,
+                es: `Pasaron ${por_revisar} días o más desde su última verificación. Sigue siendo válida; a los ${vencido} días queda vencida.`,
+                en: `${por_revisar} days or more have passed since it was last verified. It is still valid; at ${vencido} days it becomes overdue.`,
               }}
             />
           </p>
@@ -336,10 +336,10 @@ export function Ficha({ f }: { f: FichaDePrueba }) {
           </section>
         </div>
 
-        <aside
-          className="hg-carril"
-          aria-label={`Resumen de ${f.id} / Summary of ${f.id}`}
-        >
+        <aside className="hg-carril" aria-labelledby="rotulo-carril">
+          <span id="rotulo-carril" className="hg-oculto">
+            <T t={{ es: `Resumen de ${f.id}`, en: `Summary of ${f.id}` }} />
+          </span>
           <section className="hg-tarjeta" aria-labelledby="resumen">
             <h2 className="hg-tarjeta-titulo" id="resumen">
               <T t={{ es: "Resumen", en: "Summary" }} />

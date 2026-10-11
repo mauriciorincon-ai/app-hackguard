@@ -3,7 +3,12 @@
 // sin regenerar, este test lo nombra. Corre el generador hacia un temporal y compara byte a byte.
 import { rmSync } from "node:fs";
 import { afterAll, describe, expect, it } from "vitest";
-import { generarEnTemporal, leerPagina, paginasDe, RAIZ_MAQUETA } from "./lib/maqueta";
+import {
+  generarEnTemporal,
+  leerPagina,
+  paginasDe,
+  RAIZ_MAQUETA,
+} from "./lib/maqueta";
 
 const salida = generarEnTemporal();
 afterAll(() => rmSync(salida, { recursive: true, force: true }));
@@ -15,7 +20,11 @@ describe("maqueta: docs/diseno/ = salida del generador", () => {
   });
 
   it.each(paginasDe(RAIZ_MAQUETA))("%s no se editó a mano", (pagina) => {
-    const igual = leerPagina(RAIZ_MAQUETA, pagina) === leerPagina(salida, pagina);
-    expect(igual, `${pagina}: difiere de lo que genera scripts/maqueta (corre «pnpm maqueta»)`).toBe(true);
+    const igual =
+      leerPagina(RAIZ_MAQUETA, pagina) === leerPagina(salida, pagina);
+    expect(
+      igual,
+      `${pagina}: difiere de lo que genera scripts/maqueta (corre «pnpm maqueta»)`,
+    ).toBe(true);
   });
 });

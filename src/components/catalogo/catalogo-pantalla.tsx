@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { familias, pruebas } from "@/lib/catalogo/etiquetas";
+import { en, useIdioma } from "../consola/idioma";
 import {
   SIN_FILTROS,
   filtrar,
@@ -20,6 +22,7 @@ import { VigenciaPorFamilia } from "./vigencia-por-familia";
  * calculada: no recalcula nada, solo filtra las filas en el navegador. Los dos idiomas están siempre en el DOM.
  */
 export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
+  const idioma = useIdioma();
   const [filtros, setFiltros] = useState<EstadoDeFiltros>(SIN_FILTROS);
   const cambiar = (campo: Campo, valor: string) =>
     setFiltros((f) => ({ ...f, [campo]: valor }));
@@ -52,19 +55,24 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
             </span>
             <span>
               <span lang="es">
-                {vista.total} pruebas en {vista.totalDeFamilias} familias ·
-                consulta del <Dato>{vista.consulta}</Dato>
+                {pruebas(vista.total).es} en{" "}
+                {familias(vista.totalDeFamilias).es} · consulta del{" "}
+                <Dato>{vista.consulta}</Dato>
               </span>
               <span lang="en">
-                {vista.total} tests in {vista.totalDeFamilias} families ·
-                queried on <Dato>{vista.consulta}</Dato>
+                {pruebas(vista.total).en} in{" "}
+                {familias(vista.totalDeFamilias).en} · queried on{" "}
+                <Dato>{vista.consulta}</Dato>
               </span>
             </span>
           </p>
         </div>
         <ul
           className="hg-resumen"
-          aria-label="Pruebas por vigencia / Tests by freshness"
+          aria-label={en(idioma, {
+            es: "Pruebas por vigencia",
+            en: "Tests by freshness",
+          })}
         >
           {vista.cifras.map((c) => (
             <li key={c.etiqueta.nombre.es}>
@@ -109,7 +117,10 @@ export function CatalogoPantalla({ vista }: { vista: VistaDeCatalogo }) {
 
       <section
         className="hg-panel"
-        aria-label="Pruebas del catálogo / Catalog tests"
+        aria-label={en(idioma, {
+          es: "Pruebas del catálogo",
+          en: "Catalog tests",
+        })}
       >
         <Filtros
           familias={vista.familias}

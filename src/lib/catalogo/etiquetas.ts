@@ -59,6 +59,11 @@ export const conCuenta = (estado: EstadoDeVigencia, n: number): Bilingue =>
     },
   })[estado];
 
+export const familias = (n: number): Bilingue => ({
+  es: `${n} ${n === 1 ? "familia" : "familias"}`,
+  en: `${n} ${n === 1 ? "family" : "families"}`,
+});
+
 export const pruebas = (n: number): Bilingue => ({
   es: `${n} ${n === 1 ? "prueba" : "pruebas"}`,
   en: `${n} ${n === 1 ? "test" : "tests"}`,

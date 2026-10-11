@@ -9,7 +9,11 @@ const tokens: Record<"oscuro" | "claro", Record<string, string>> = JSON.parse(
 );
 
 const filas = new Map(
-  [...documento.matchAll(/^\| `--([a-z0-9-]+)` \| `(#[0-9a-f]{6})` \| `(#[0-9a-f]{6})` \|/gm)].map((m) => [m[1], [m[2], m[3]]]),
+  [
+    ...documento.matchAll(
+      /^\| `--([a-z0-9-]+)` \| `(#[0-9a-f]{6})` \| `(#[0-9a-f]{6})` \|/gm,
+    ),
+  ].map((m) => [m[1], [m[2], m[3]]]),
 );
 
 describe("design-system.md dice los mismos colores que los tokens generados", () => {
@@ -18,6 +22,9 @@ describe("design-system.md dice los mismos colores que los tokens generados", ()
   });
 
   it.each(Object.keys(tokens.oscuro))("--%s", (nombre) => {
-    expect(filas.get(nombre)).toEqual([tokens.oscuro[nombre], tokens.claro[nombre]]);
+    expect(filas.get(nombre)).toEqual([
+      tokens.oscuro[nombre],
+      tokens.claro[nombre],
+    ]);
   });
 });

@@ -269,6 +269,12 @@ export function construirFicha(
   )!;
   const regla = porId(c.reglas_de_veredicto, p.criterio_de_veredicto.regla);
   const k = p.criterio_de_veredicto.repeticiones_k ?? null;
+  // Regla del tres (E-2): con cero fallas en k repeticiones, con 95 % de confianza la tasa real de fallo no supera 3/k.
+  // Una sola cuenta, con tope de 100 %: con k < 3 la regla no dice nada útil y no se pasa del total.
+  const cota =
+    k && regla.id === REGLA_CON_COTA
+      ? Math.min(100, Math.round(300 / k))
+      : null;
   const sel = recomendada.selector;
   const controles = c.controles.flatMap((capa) =>
     capa.areas.flatMap((a) => a.controles),
@@ -305,17 +311,16 @@ export function construirFicha(
     },
     repeticiones: {
       k,
-      cotaPorCiento:
-        k && regla.id === REGLA_CON_COTA ? Math.round((3 / k) * 100) : null,
+      cotaPorCiento: cota,
       descripcion: !k
         ? {
             es: "La misma entrada da el mismo resultado: una corrida basta.",
             en: "The same input gives the same result: one run is enough.",
           }
-        : regla.id === REGLA_CON_COTA
+        : cota !== null
           ? {
-              es: `Con 0 fallas en ${k}, la tasa real de fallo queda por debajo del ${Math.round((3 / k) * 100)} %.`,
-              en: `With 0 failures in ${k}, the real failure rate stays below ${Math.round((3 / k) * 100)}%.`,
+              es: `Con 0 fallas en ${k}, con 95 % de confianza la tasa real de fallo no supera el ${cota} %.`,
+              en: `With 0 failures in ${k}, with 95% confidence the real failure rate does not exceed ${cota}%.`,
             }
           : {
               es: "Repeticiones idénticas, con la misma configuración, para medir cuánto cambia el modelo por sí solo.",

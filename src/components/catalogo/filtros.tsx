@@ -2,6 +2,7 @@
 
 import { en as texto, useIdioma } from "../consola/idioma";
 import { T } from "../texto";
+import { pruebas } from "@/lib/catalogo/etiquetas";
 import {
   SIN_FILTROS,
   hayFiltros,
@@ -56,14 +57,14 @@ export function Filtros({
               <span data-cuenta-filtrada data-neutro>
                 {visibles}
               </span>{" "}
-              de {total} pruebas
+              de {pruebas(total).es}
             </span>
             <span lang="en">
               Showing{" "}
               <span data-cuenta-filtrada data-neutro>
                 {visibles}
               </span>{" "}
-              of {total} tests
+              of {pruebas(total).en}
             </span>
           </p>
           <button

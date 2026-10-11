@@ -69,10 +69,9 @@ describe("las huellas que citan los documentos son las del motor", () => {
         /\b(\d{4}-\d{2}-\d{2})-([0-9a-f]{12})\.json\b/g,
       ))
         if (fecha >= ULTIMA_VERIFICACION)
-          expect(
-            porFecha.get(fecha)?.slice(0, 12),
-            `${fecha}-${prefijo}`,
-          ).toBe(prefijo);
+          expect(porFecha.get(fecha)?.slice(0, 12), `${fecha}-${prefijo}`).toBe(
+            prefijo,
+          );
     },
   );
 });

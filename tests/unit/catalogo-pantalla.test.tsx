@@ -124,6 +124,42 @@ describe("cuando algo envejece, la pantalla lo dice y no lo calla", () => {
   );
 });
 
+describe("lo que la maqueta no dibuja pero el producto puede mostrar (AU-14)", () => {
+  it("pruebas que esperan revisión salen en su panel, con el motivo y su marca", () => {
+    const copia = structuredClone(snap);
+    copia.pendientes_de_revision = [
+      { id: "PR-X-001", motivo: "marcada_para_revision" },
+    ];
+    const html = renderToStaticMarkup(
+      <CatalogoPantalla vista={construirVista(copia, NOMBRE, snap.fecha_evaluacion)} />,
+    );
+    expect(html).toContain("Pruebas que esperan revisión");
+    expect(html).toContain("Tests awaiting review");
+    expect(html).toContain("PR-X-001");
+    expect(html).toContain("Marcada para revisión");
+  });
+
+  it("sin pendientes no hay panel", () => {
+    expect(pantalla(snap.fecha_evaluacion)).not.toContain("Pruebas que esperan revisión");
+  });
+
+  it("una familia sin pruebas publicadas sale «Sin pruebas publicadas», con su marca, y sin días", () => {
+    const copia = structuredClone(snap);
+    const familia = copia.catalogo.familias[0]!.id;
+    copia.catalogo.pruebas = copia.catalogo.pruebas.filter(
+      (p) => p.familia !== familia,
+    );
+    const html = renderToStaticMarkup(
+      <CatalogoPantalla vista={construirVista(copia, NOMBRE, snap.fecha_evaluacion)} />,
+    );
+    expect(html).toMatch(
+      new RegExp(
+        `data-familia-vigencia="${familia}" data-pruebas="0".*?Sin pruebas publicadas.*?No published tests`,
+      ),
+    );
+  });
+});
+
 describe("los estados de pantalla", () => {
   it("un catálogo sin pruebas dice que está vacío, con qué hacer", () => {
     const vista = construirVista(snap, NOMBRE, snap.fecha_evaluacion);

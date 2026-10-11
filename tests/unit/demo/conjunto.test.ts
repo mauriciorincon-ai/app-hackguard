@@ -208,7 +208,10 @@ describe("pnpm clasificador:demo", () => {
   it.each([
     [["--idioma", "fr"], "--idioma es|en"],
     [["sobra"], "sobra"],
-    [["--conjunto", "no-existe.json"], "error de lectura / read error: no-existe.json"],
+    [
+      ["--conjunto", "no-existe.json"],
+      "error de lectura / read error: no-existe.json",
+    ],
     [["--conjunto", "package.json"], "conjunto inválido"],
     [["--opcion-que-no-existe"], "opcion-que-no-existe"],
   ])("sale 3 y dice por qué: %j", (argumentos, menciona) => {

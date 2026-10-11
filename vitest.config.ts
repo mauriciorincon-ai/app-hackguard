@@ -19,7 +19,7 @@ export default defineConfig({
       provider: "v8",
       // Solo *.ts: un include de directorio hace que v8 intente parsear .gitkeep y truene
       // con PARSE_ERROR (K8, ds S1).
-      include: ["src/lib/**/*.ts", "src/engine/**/*.ts"],
+      include: ["src/lib/**/*.ts", "src/engine/**/*.ts", "src/components/**/*.tsx"],
       thresholds: {
         lines: 70,
         functions: 70,
@@ -35,6 +35,13 @@ export default defineConfig({
           functions: 90,
           branches: 90,
           statements: 90,
+        },
+        // Regla 2: la interfaz exige más del 50 %. Los componentes se prueban renderizados a HTML y sin hidratar.
+        "src/components/**/*.tsx": {
+          lines: 50,
+          functions: 50,
+          branches: 50,
+          statements: 50,
         },
         "src/lib/**/*.ts": {
           lines: 80,

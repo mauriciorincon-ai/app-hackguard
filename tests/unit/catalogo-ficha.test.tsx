@@ -79,11 +79,41 @@ describe("las 38 fichas", () => {
       expect(ficha(id, HOY)).not.toContain("data-aviso-de-vigencia");
   });
 
+  it("en cada fecha en que algo cambia de estado, las 38 fichas dicen la vigencia de su fila y el aviso que toca", () => {
+    for (const dias of [
+      por_revisar - 1,
+      por_revisar,
+      vencido - 1,
+      vencido,
+      100,
+    ]) {
+      const fecha = fechaMasDias(MAS_ANTIGUA, dias);
+      const filas = new Map(
+        construirVista(snap, NOMBRE, fecha).filas.map((f) => [
+          f.id,
+          f.vigencia.estado,
+        ]),
+      );
+      for (const id of ids) {
+        const html = ficha(id, fecha);
+        const estado = filas.get(id)!;
+        expect(html, `${id} ${fecha}`).toContain(
+          `data-ficha-vigencia="${estado}"`,
+        );
+        expect(
+          html.includes(`data-aviso-de-vigencia="${estado}"`),
+          `${id} ${fecha}`,
+        ).toBe(estado !== "vigente");
+        expect(html).not.toMatch(/NaN|undefined|\[object/);
+      }
+    }
+  });
+
   it("el día del primer umbral toda ficha dice «Toca revisarla» y el umbral, no los días", () => {
     const html = ficha(ids[0]!, fechaMasDias(MAS_ANTIGUA, por_revisar));
     expect(html).toContain('data-aviso-de-vigencia="por_revisar"');
     expect(html).toContain("Toca revisarla");
-    expect(html).toContain(`Pasaron más de ${por_revisar} días`);
+    expect(html).toContain(`Pasaron ${por_revisar} días o más`);
     expect(html).toContain("Review is due");
     expect(html).not.toContain('data-aviso-de-vigencia="vencido"');
   });
@@ -124,14 +154,14 @@ describe("las 38 fichas", () => {
     expect(html).toContain("Marcada para revisión");
   });
 
-  it("la repetición y la cota se leen sin fórmulas: «k = 20» y «por debajo del 15 %»", () => {
+  it("la repetición y la cota se leen sin fórmulas: «k = 20» y «con 95 % de confianza … no supera el 15 %»", () => {
     const conCota = ids
       .map((id) => construirFicha(snap, id, HOY))
       .find((f) => f.repeticiones.cotaPorCiento !== null)!;
     const html = renderToStaticMarkup(<Ficha f={conCota} />);
     expect(html).toContain(`k = ${conCota.repeticiones.k}`);
     expect(html).toContain(
-      `por debajo del ${conCota.repeticiones.cotaPorCiento} %`,
+      `con 95 % de confianza la tasa real de fallo no supera el ${conCota.repeticiones.cotaPorCiento} %`,
     );
   });
 });

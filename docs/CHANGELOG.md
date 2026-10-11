@@ -10,7 +10,8 @@ The first screen: the catalog the Sprint 001 left as data can be browsed, and th
 ### Added
 
 - **`/catalogo`:** the 38 tests of the official snapshot with six filters (family, framework, control, maturity,
-  freshness, content review), a freshness-by-family panel and the empty, no-results and error states.
+  freshness, content review), a freshness-by-family panel and the empty and no-results states (an invalid snapshot fails the build instead of
+  showing an error screen; the error component exists and is covered by the fidelity gate).
 - **`/catalogo/<id>` × 38:** one record per test with the expected result, why it matters, how the verdict is decided,
   the run configuration, when it applies, framework and controls, sources, and the review-due, overdue and flagged
   notices. English and Spanish, both always in the page.

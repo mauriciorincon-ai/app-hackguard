@@ -153,7 +153,9 @@ describe("catalogo instantanea", () => {
     );
     expect(r.codigo).toBe(0);
     expect(r.salida).toMatch(
-      new RegExp(`^Instantánea emitida: .*${OTRA_FECHA}-[0-9a-f]{12}\\.json\\n`),
+      new RegExp(
+        `^Instantánea emitida: .*${OTRA_FECHA}-[0-9a-f]{12}\\.json\\n`,
+      ),
     );
   });
 
@@ -175,7 +177,11 @@ describe("catalogo instantanea", () => {
 
   it("con --agregar, sin --salida o con --salida dentro de datos/, sale 3 y no escribe en datos/instantaneas", () => {
     const antes = readdirSync(path.join(RAIZ, "datos/instantaneas")).sort();
-    for (const salida of [[], ["--salida", "datos/instantaneas"], ["--salida", "datos/otra"]]) {
+    for (const salida of [
+      [],
+      ["--salida", "datos/instantaneas"],
+      ["--salida", "datos/otra"],
+    ]) {
       const r = catalogo(
         "instantanea",
         "--fecha",
@@ -187,7 +193,9 @@ describe("catalogo instantanea", () => {
       expect(r.codigo, salida.join(" ")).toBe(3);
       expect(r.errores).toContain("exige --salida fuera de datos/");
     }
-    expect(readdirSync(path.join(RAIZ, "datos/instantaneas")).sort()).toEqual(antes);
+    expect(readdirSync(path.join(RAIZ, "datos/instantaneas")).sort()).toEqual(
+      antes,
+    );
     expect(existsSync(path.join(RAIZ, "datos/otra"))).toBe(false);
   });
 

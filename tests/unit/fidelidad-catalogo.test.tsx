@@ -35,6 +35,11 @@ const vista = construirVista(
 const SOLO_DE_LA_MAQUETA = new Set([
   "Validando el catálogo|Validating the catalog",
 ]);
+// Y lo que el producto dibuja cuando los datos lo piden y la maqueta no (AU-14: pruebas que esperan revisión): hoy no sale, y
+// el día que salga no debe romper el gate. tests/unit/catalogo-pantalla.test.tsx lo renderiza.
+const SOLO_DEL_PRODUCTO = new Set([
+  "Pruebas que esperan revisión|Tests awaiting review",
+]);
 
 const maqueta = documentoDe(leerPagina(RAIZ_MAQUETA, "catalogo.html"));
 const producto = documentoDe(
@@ -84,7 +89,7 @@ describe("fidelidad de /catalogo contra docs/diseno/catalogo.html", () => {
       conjunto(
         doc,
         [dentroDe("h1"), dentroDe("h2")].join(", "),
-        SOLO_DE_LA_MAQUETA,
+        new Set([...SOLO_DE_LA_MAQUETA, ...SOLO_DEL_PRODUCTO]),
       );
     expect(rotulos(producto)).toEqual(rotulos(maqueta));
   });
