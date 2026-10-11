@@ -159,19 +159,21 @@
 <body>
 <div class="pagina">
   <header>
-    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 002 · 2026-10-11</p>
+    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 003 · 2026-10-11</p>
     <h1>Guía de prueba</h1>
     <p class="suave">Todas las pruebas vigentes de la app. Las 21 del Sprint 001 (el catálogo como dato, por
-      terminal) siguen aquí enteras, y el Sprint 002 añade el bloque G: el catálogo en pantalla. Filtra por origen para
+      terminal) siguen aquí enteras, el Sprint 002 añade el bloque G (el catálogo en pantalla) y el Sprint 003 el bloque H
+      (marcos y controles). Filtra por origen para
       correr todo o solo lo que cambió. Las casillas se guardan
       solas en este navegador.</p>
-    <p class="chica"><strong>Gate corto ⭐⭐: 6 paradas declaradas, 5 efectivas · ~20 min. Es el que el gate del hito
+    <p class="chica"><strong>Gate corto ⭐⭐: 9 paradas declaradas, 8 efectivas · ~30 min. Es el que el gate del hito
       exige.</strong> Solo entra lo que únicamente una persona puede juzgar: las 3 paradas del Sprint 001 (la 3 no corre:
-      falta el texto de la norma) y las 3 del Sprint 002 (fidelidad, avisos y texto de la pantalla). Deja fuera 0
-      pruebas ⭐: el gate mínimo son las mismas 6.</p>
-    <p class="chica"><strong>Gate mínimo ⭐: 6 pruebas · ~20 min.</strong> Son los juicios sobre el contenido del
+      falta el texto de la norma), las 3 del Sprint 002 (fidelidad, avisos y texto de la pantalla) y las 3 del Sprint 003
+      (fidelidad de marcos y controles, lo que la app no sabe y el texto de sus avisos). Deja fuera 0
+      pruebas ⭐: el gate mínimo son las mismas 9.</p>
+    <p class="chica"><strong>Gate mínimo ⭐: 9 pruebas · ~30 min.</strong> Son los juicios sobre el contenido del
       catálogo y sobre la pantalla que ninguna automatización puede tomar. Lo demás (bloques B a F y las pruebas
-      automáticas de G) lo respalda la CI y se corre en pases completos: 22 pruebas más, ~30 min. La excepción es E3, una lectura de redacción que ninguna prueba
+      automáticas de G y H) lo respalda la CI y se corre en pases completos: 27 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba
       automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
     <div class="url-caja">
       <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
@@ -390,43 +392,78 @@
     <div class="bloque-cabeza"><span class="letra">G</span><h2>El catálogo navegable</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo</code> (o el preview del PR) · ~25 min · tres paradas ⭐ de juicio y cuatro comprobaciones que ya corre la CI</p>
     <ul class="pasos">
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="g1"><label for="g1"><strong>¿Esta pantalla es la de la maqueta?</strong> Abre <code>/catalogo</code> y, en otra pestaña, <code>/diseno/catalogo.html</code>.
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g1"><label for="g1"><strong>¿Esta pantalla es la de la maqueta?</strong> Abre <code>/catalogo</code> y, en otra pestaña, <code>/diseno/catalogo.html</code>.
         Míralas unos segundos sin leer. Pulsa «Modelo de decisión» en las dos. <strong>Respuesta esperada: la misma
         aplicación: barra lateral con las cinco secciones y la subnavegación de Catálogo, cifras arriba, píldoras de
         familia, listas de filtro y una tabla densa; al filtrar queda solo esa familia y el contador lo dice. Solo cambian
         los datos (38 pruebas reales, no las 21 de la maqueta). «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span>
+        <span class="origen origen-heredada">S2</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 4 de 6</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="g2"><label for="g2"><strong>¿Los avisos de vigencia se entienden y dicen lo que hay que hacer?</strong> La pantalla envejece solo al publicarla,
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g2"><label for="g2"><strong>¿Los avisos de vigencia se entienden y dicen lo que hay que hacer?</strong> La pantalla envejece solo al publicarla,
         así que para verla con fechas distintas construye con una fecha de consulta: <code>HACKGUARD_CONSULTA=2026-11-04 pnpm build &amp;&amp; pnpm start</code>
         y abre <code>/catalogo</code> y una ficha; repite con <code>HACKGUARD_CONSULTA=2026-12-10</code>. <strong>Respuesta esperada: el 2026-11-04 las
         pruebas salen «Por revisar» (marca de triángulo, texto y color de atención) con «hace 31 días», y la ficha lleva el aviso «Toca revisarla» sin
         alarmar; el 2026-12-10 salen «Vencido» (marca de aspa, texto y color de falla) y la ficha lleva «Verificación vencida» con qué hacer. «Se entiende»,
         o la frase que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span>
+        <span class="origen origen-heredada">S2</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 5 de 6</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="g3"><label for="g3"><strong>¿El texto de la pantalla se entiende en español y en inglés?</strong> Recorre la lista y una ficha con
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g3"><label for="g3"><strong>¿El texto de la pantalla se entiende en español y en inglés?</strong> Recorre la lista y una ficha con
         el botón ES/EN de la barra de arriba: los rótulos, los estados, «Resultado esperado», «Por qué importa» y «Cómo se decide el veredicto».
         El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span>
+        <span class="origen origen-heredada">S2</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 6 de 6</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="g4"><label for="g4">Filtros: pulsa una familia, elige una opción en «Madurez» y pulsa «Quitar filtros».
-        <strong>Cada filtro reduce las filas, se suman, el contador dice cuántas quedan y «Quitar filtros» devuelve las 38. Un filtro sin resultados dice «Ninguna prueba cumple esos filtros».</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="g5"><label for="g5">Cada fila abre su ficha: abre la prueba que quieras desde la lista.
+      <li data-origen="mejorado"><input type="checkbox" id="g4"><label for="g4">Filtros: pulsa una familia, elige una opción en «Madurez» y pulsa «Quitar filtros».
+        <strong>Cada filtro reduce las filas, se suman, el contador dice cuántas quedan y «Quitar filtros» devuelve la lista completa. La lista muestra 20 pruebas por página: «Siguiente» muestra las demás. Un filtro sin resultados dice «Ninguna prueba cumple esos filtros».</strong>
+        <span class="origen origen-mejorado">Mejorado en S3</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="g5"><label for="g5">Cada fila abre su ficha: abre la prueba que quieras desde la lista.
         <strong>La ficha es la de esa prueba (su identificador arriba), dice la misma vigencia que la fila y tiene siete secciones: resultado esperado, cómo se decide el veredicto, configuración de la corrida, cuándo aplica, resumen, marco y controles, fuentes. «Volver al catálogo» regresa a la lista.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="g6"><label for="g6">Tema e idioma: cambia los dos y recarga la página.
+        <span class="origen origen-heredada">S2</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="g6"><label for="g6">Tema e idioma: cambia los dos y recarga la página.
         <strong>Se conservan los dos. En el tema claro y en el oscuro se lee todo, y ningún estado depende solo del color: todos llevan su marca y su texto.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="g7"><label for="g7">En el teléfono (o con el navegador a 380 px de ancho): abre la lista y una ficha.
+        <span class="origen origen-heredada">S2</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="g7"><label for="g7">En el teléfono (o con el navegador a 380 px de ancho): abre la lista y una ficha.
         <strong>La navegación queda abajo como una barra fija, cada prueba es una tarjeta y nada se sale de la pantalla.</strong>
-        <span class="origen origen-nuevo">Nuevo · S2</span></label></li>
+        <span class="origen origen-heredada">S2</span></label></li>
     </ul>
     <div class="reportame"><p><strong>Repórtame sí o sí:</strong> una prueba que abre la ficha de otra, un estado que dice una cosa en la lista y otra en la ficha, o un mensaje de advertencia que no se entienda.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">H</span><h2>Marcos y controles</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/marcos</code> y <code>/catalogo/controles</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito y cinco comprobaciones que ya corre la CI</p>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="h1"><label for="h1"><strong>¿Marcos y Controles son las de la maqueta?</strong> Abre <code>/catalogo/marcos</code> y, en otra pestaña, <code>/diseno/marcos.html</code>; luego lo mismo con <code>/catalogo/controles</code> y <code>/diseno/controles.html</code>.
+        Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (cifras arriba, paneles con su tabla, la barra lateral con Marcos y Controles activos). Solo cambian los datos: 14 marcos y 38 controles reales, y lo que la instantánea no sabe dice «sin registro» en vez de inventarse. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="h2"><label for="h2"><strong>¿Lo que la app no sabe se dice claro?</strong> En Marcos, mira la columna «Frente a la fuente», el panel «Avisos de versión» y la columna «Qué cambió» de las instantáneas.
+        <strong>Respuesta esperada: «Sin aviso registrado», «Sin avisos registrados» y «Sin comparación registrada». Se lee como un hecho del catálogo, no como un fallo ni como una promesa de algo que llegará. «Se entiende», o la frase que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="h3"><label for="h3"><strong>¿El texto de las dos páginas se entiende?</strong> Lee el aviso «No contrastado con la norma» de Controles y la nota de «Pruebas sin control asignado». Cambia a inglés con el botón de la barra de arriba.
+        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="h4"><label for="h4">Desde Catálogo, la barra lateral lleva a Marcos y a Controles.
+        <strong>Cada enlace abre su página; Propuestas sigue con la marca «pronto» y no es un enlace.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="h5"><label for="h5">Mapa de equivalencias: en Marcos, sigue una entrada de OWASP LLM 2025 hacia 2026 y pulsa un identificador de la columna «La citan».
+        <strong>Abre la ficha de esa prueba, con el mismo identificador arriba.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="h6"><label for="h6">Controles: busca «Pruebas sin control asignado» y pulsa una.
+        <strong>Su ficha se abre y dice que no tiene control asignado; en la lista aparece con el chip «Sin control» y no como un error.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="h7"><label for="h7">En el catálogo, la lista muestra 20 pruebas: pulsa «Siguiente», luego cambia el filtro «Herramienta».
+        <strong>«Siguiente» muestra las 18 restantes; al cambiar un filtro vuelves a la página 1 y el contador dice cuántas pruebas cumplen.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="h8"><label for="h8">En el teléfono (o con el navegador a 380 px de ancho): abre Marcos y Controles.
+        <strong>Ninguna de las dos páginas se sale de la pantalla y las tablas se leen con desplazamiento lateral dentro de su panel.</strong>
+        <span class="origen origen-nuevo">Nuevo · S3</span></label></li>
+    </ul>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un marco o un control que la pantalla dice de una forma y su ficha de otra, un texto de la norma que aparezca en la página, o un aviso que suene a error cuando la instantánea solo no tiene el dato.</p></div>
   </section>
 
   <footer>
@@ -450,6 +487,9 @@
           citan huellas nuevas y quedan «Mejoradas en S2» (el vocabulario de estados ganó dos vocabularios y la
           instantánea oficial se volvió a emitir). Nace el bloque G, el catálogo navegable: 7 pruebas, 3 de ellas ⭐ de
           juicio (fidelidad, avisos de vigencia, texto en los dos idiomas). Ninguna eliminada.</li>
+        <li><strong>S3 · 2026-10-11:</strong> las 6 pruebas del bloque G que no cambian pasan a «S2» (regresión), y G4 cita la
+          lista paginada de 20 y pasa a «Mejorado en S3». Nace el bloque H, marcos y controles: 8 pruebas, 3 de ellas ⭐ de
+          juicio para el gate del hito (fidelidad, lo que la app no sabe, texto en los dos idiomas). Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>
@@ -459,7 +499,7 @@
   (function () {
     // NS VERSIONADO POR SPRINT (regla dura): al publicar la guía de un sprint nuevo se cambia
     // el prefijo (hackguard-s2) — así una regresión sin correr no aparece marcada por el sprint anterior.
-    var NS = "hackguard-s2:";
+    var NS = "hackguard-s3:";
     var casillas = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
     var barra = document.getElementById("barra-avance");
     var contador = document.getElementById("contador");

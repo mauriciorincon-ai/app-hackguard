@@ -10,6 +10,7 @@ import {
   nombreDeInstantanea,
   type Instantanea,
 } from "../../engine/catalogo/instantanea.ts";
+import type { InstantaneaListada } from "./marcos.ts";
 
 const NOMBRE = /^\d{4}-\d{2}-\d{2}-[0-9a-f]{12}\.json$/;
 
@@ -31,6 +32,28 @@ export function archivoOficial(carpeta: string): string {
     );
   }
   return ultimo;
+}
+
+/** Las instantáneas de `datos/instantaneas/`, la más reciente primero: nombre, fecha, cuántas pruebas traen y su huella. */
+export function listarInstantaneas(
+  raiz: string = process.cwd(),
+): InstantaneaListada[] {
+  const carpeta = join(raiz, "datos", "instantaneas");
+  return readdirSync(carpeta)
+    .filter((n) => NOMBRE.test(n))
+    .sort()
+    .reverse()
+    .map((archivo) => {
+      const i = JSON.parse(
+        readFileSync(join(carpeta, archivo), "utf8"),
+      ) as Instantanea;
+      return {
+        nombre: archivo.replace(/\.json$/, ""),
+        fecha: i.fecha_evaluacion,
+        pruebas: i.catalogo.pruebas.length,
+        huella: i.huella,
+      };
+    });
 }
 
 export async function cargarInstantaneaOficial(

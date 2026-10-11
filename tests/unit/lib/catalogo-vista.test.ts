@@ -78,6 +78,7 @@ describe("una cuenta, un cálculo", () => {
     expect(vista.listas.map((l) => l.campo)).toEqual([
       "marco",
       "control",
+      "herramienta",
       "madurez",
       "vigencia",
       "revision",

@@ -1,6 +1,6 @@
 # ADR-006 — The catalog list has its own performance budget
 
-- **Date:** 2026-10-11 · **Status:** accepted · **Sprint:** 002
+- **Date:** 2026-10-11 · **Status:** superseded (Sprint 003, 2026-10-11) · **Sprint:** 002
 - **Planner reference:** standard 2.17.0 (LCP budget declared by ADR when a page is a dense, text-heavy screen);
   hard rule 20 (both languages always in the page); design decision 19 (dense table).
 
@@ -39,3 +39,42 @@ layout of the whole document. The record pages (`/catalogo/<id>`) pass the defau
   come back: a path `/` matches every URL.
 - **Condition to retire it:** the list is paginated or virtualized, or the measured LCP falls under 3.0 s and TBT under
   300 ms with the default budget.
+
+## Update — Sprint 003: superseded, and the cause was not the table
+
+Paginating the list (20 rows per page) left `/catalogo` at **LCP 3,151 ms and TBT 354 ms** in CI against the defaults
+(3,000 and 300), so the list was measured locally with the same CPU slowdown (30x) to find what actually costs time:
+
+| Local measurement, `/catalogo`                                 | LCP               | TBT           |
+| -------------------------------------------------------------- | ----------------- | ------------- |
+| 38 rows in the document, 18 hidden (the paginated list)        | 3,308 ms          | 403 ms        |
+| 20 rows in the document                                        | 3,312 ms          | 408 ms        |
+| **0 rows** in the document (DOM 554 elements instead of 2,211) | 3,155 to 3,215 ms | 399 to 610 ms |
+
+Removing the whole table changed nothing, so the dense table was the wrong suspect. The record page (`/catalogo/<id>`,
+475 elements) measured the same 3.1 s in three of four local runs: the budget it passes in CI is a matter of timing, not
+of size. What both pages share is the JavaScript the browser must download and run before the page counts as painted in
+Lighthouse's simulated model: a 465 KB main chunk. About half of it was the Sentry SDK, bundled by a static import in
+`instrumentation-client.ts` even though the SDK does nothing without a DSN.
+
+**Change:** the SDK is imported with a dynamic `import()` inside the branch that has a DSN. Without a DSN (CI, today's
+production) the branch is dead and no page references the SDK chunk; with a DSN it loads apart, off the critical path.
+The privacy options (`beforeSend`, no breadcrumbs, exception message reduced to its type) are unchanged.
+
+| Local measurement after the change (4 runs) | LCP               | TBT           |
+| ------------------------------------------- | ----------------- | ------------- |
+| `/catalogo` (38 rows in the document)       | 2,811 to 2,873 ms | 217 to 269 ms |
+| `/catalogo/PR-IA-PINJ-001`                  | 2,653 to 2,811 ms | 197 to 318 ms |
+
+**Third finding: the first measurement.** With the SDK out, `/catalogo` still failed Total Blocking Time in CI (354, 400 and
+533 ms in three runs) while the record page passed. Swapping the order of the two URLs in `lighthouse-urls.json` swapped the
+result: the record page, measured first, failed with 500 ms and `/catalogo`, measured second, passed. The first measurement
+after the server starts comes out slow whichever page it is. The CI step now starts the server on its own, measures
+`/catalogo` once for warm-up, deletes that measurement and then measures the routes in `lighthouse-urls.json`; the budgets
+are untouched. CI run of the commit with the warm-up: both routes pass the default budgets and the 0.9 category floors, and
+`lighthouse-margen` reports no value within 10 % of its budget.
+
+**Decision:** `perf-budget.json` and `lighthouse-categorias.json` are the kit defaults again, with no entry of their own
+for `/catalogo`. The condition to retire this ADR (default budget met) holds: the CI `lighthouse` job of the Sprint 003 branch
+passes both routes. The paginated list stays: it is shorter to read, and it is not what bought the budget; the Sentry SDK
+and the cold first measurement were.

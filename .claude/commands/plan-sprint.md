@@ -33,6 +33,10 @@ con `status: open`.
    verificado, desviaciones) — más la mirada de DECISIÓN del paso 3 si la hay, en matriz de una fila
    (archivo · botón/estado · qué mirar · respuesta esperada), con la pregunta llana en la primera línea y
    dónde abrirla. Después: `/audita-sprint` → `/deploy-check` o `/release-check` → cierre ejecutivo → PR.
+   **UN SOLO PR VIVO POR APP (regla 18, kit v2.1.0):** al arrancar el sprint y antes de abrir el PR corre
+   `gh pr list --state open`; un abierto (dependabot incluido) se procesa o se cierra, o se sigue en su rama; un
+   segundo PR solo complementario y con «complementa #N: <razón>» como primera línea del cuerpo. Al pedir el
+   merge entregas la lista de PRs abiertos, que debe ser ese uno.
 
 ## Output esperado
 
