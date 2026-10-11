@@ -66,6 +66,15 @@ The privacy options (`beforeSend`, no breadcrumbs, exception message reduced to 
 | `/catalogo` (38 rows in the document)       | 2,811 to 2,873 ms | 217 to 269 ms |
 | `/catalogo/PR-IA-PINJ-001`                  | 2,653 to 2,811 ms | 197 to 318 ms |
 
+**Third finding: the first measurement.** With the SDK out, `/catalogo` still failed Total Blocking Time in CI (354, 400 and
+533 ms in three runs) while the record page passed. Swapping the order of the two URLs in `lighthouse-urls.json` swapped the
+result: the record page, measured first, failed with 500 ms and `/catalogo`, measured second, passed. The first measurement
+after the server starts comes out slow whichever page it is. The CI step now starts the server on its own, measures
+`/catalogo` once for warm-up, deletes that measurement and then measures the routes in `lighthouse-urls.json`; the budgets
+are untouched. CI run of the commit with the warm-up: both routes pass the default budgets and the 0.9 category floors, and
+`lighthouse-margen` reports no value within 10 % of its budget.
+
 **Decision:** `perf-budget.json` and `lighthouse-categorias.json` are the kit defaults again, with no entry of their own
-for `/catalogo`. The condition to retire this ADR (default budget met) holds once the CI run of the Sprint 003 branch
-confirms it. The paginated list stays: it is shorter to read, and it is not what bought the budget.
+for `/catalogo`. The condition to retire this ADR (default budget met) holds: the CI `lighthouse` job of the Sprint 003 branch
+passes both routes. The paginated list stays: it is shorter to read, and it is not what bought the budget; the Sentry SDK
+and the cold first measurement were.
