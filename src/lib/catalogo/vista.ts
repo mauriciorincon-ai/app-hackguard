@@ -47,7 +47,11 @@ const SIN_EJECUCION: Bilingue = {
   en: "Without evidence that it ran, the verdict is “not run”, never “passed”.",
 };
 
-function etiqueta(c: Catalogo, vocabulario: string, estado: string): Etiqueta {
+export function etiqueta(
+  c: Catalogo,
+  vocabulario: string,
+  estado: string,
+): Etiqueta {
   const e = etiquetaDe(c.estados, vocabulario, estado);
   if (!e) {
     throw new Error(
@@ -72,7 +76,7 @@ export function semaforoDe(i: Instantanea, consulta: string): Semaforo {
   );
 }
 
-function vigenciaVista(c: Catalogo, v: Vigencia): VigenciaVista {
+export function vigenciaVista(c: Catalogo, v: Vigencia): VigenciaVista {
   return {
     estado: v.estado,
     dias: v.dias,
@@ -81,7 +85,10 @@ function vigenciaVista(c: Catalogo, v: Vigencia): VigenciaVista {
   };
 }
 
-const porId = <T extends { id: string }>(xs: readonly T[], id: string): T => {
+export const porId = <T extends { id: string }>(
+  xs: readonly T[],
+  id: string,
+): T => {
   const x = xs.find((e) => e.id === id);
   if (!x)
     throw new Error(

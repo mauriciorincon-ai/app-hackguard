@@ -110,8 +110,14 @@ const SUBPAGINAS: Record<
 > = {
   catalogo: [
     { nombre: { es: "Pruebas", en: "Tests" }, ruta: "/catalogo" },
-    { nombre: { es: "Marcos", en: "Frameworks" }, ruta: null },
-    { nombre: { es: "Controles", en: "Controls" }, ruta: null },
+    {
+      nombre: { es: "Marcos", en: "Frameworks" },
+      ruta: "/catalogo/marcos",
+    },
+    {
+      nombre: { es: "Controles", en: "Controls" },
+      ruta: "/catalogo/controles",
+    },
     { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
   ],
 };
