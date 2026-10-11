@@ -1,0 +1,298 @@
+{
+  "formato": "hackguard/paquete@1",
+  "activo": {
+    "id": "act-demo-clasificador",
+    "huella": "40d7e29e8eb721d7581ff8e7634b4e1ca0c114c5f1f5d4c2b3d410ffc9b99728"
+  },
+  "instantanea": {
+    "fecha": "2026-10-05",
+    "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+  },
+  "alcance": {
+    "incluye": [
+      {
+        "es": "El clasificador y sus casos de prueba sintéticos.",
+        "en": "The classifier and its synthetic test cases."
+      }
+    ],
+    "excluye": [
+      {
+        "es": "Cualquier servicio en red: el clasificador no usa ninguno.",
+        "en": "Any network service: the classifier uses none."
+      }
+    ],
+    "ventana": {
+      "es": "Sin restricción: corre en el portátil.",
+      "en": "No restriction: it runs on the laptop."
+    },
+    "limites": {
+      "es": "Sin límite de carga.",
+      "en": "No load limit."
+    }
+  },
+  "reglas": [
+    {
+      "texto": {
+        "es": "Solo se usan casos sintéticos; ningún dato de personas reales.",
+        "en": "Only synthetic cases are used; no data from real people."
+      },
+      "cita_proveedor": false
+    },
+    {
+      "texto": {
+        "es": "Plantilla por defecto para activos propios, sin ajustes.",
+        "en": "Default template for own assets, unchanged."
+      },
+      "cita_proveedor": false
+    }
+  ],
+  "herramientas": [
+    {
+      "herramienta": "checklist",
+      "entorno": "portatil",
+      "version_minima": "0.0.11",
+      "pruebas": [
+        {
+          "prueba": "PR-MD-COH-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "checklist.test_types.DIR"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la desviación supera el límite fijado antes de la prueba. Cada par se repite 5 veces.",
+              "en": "“Failed” if the deviation exceeds the limit set before the test. Each pair is repeated 5 times."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La desviación media de la suma respecto de uno queda bajo el límite fijado antes de la prueba.",
+            "en": "The mean deviation of the sum from one stays under the limit set before the test."
+          }
+        },
+        {
+          "prueba": "PR-MD-EST-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "checklist.test_types.INV"
+          },
+          "k": 10,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la tasa alterada supera la de re-ejecución por más del margen fijado antes de la prueba. «Cero alteradas» no es el criterio: un modelo no determinista cambia algo aunque nadie lo toque.",
+              "en": "“Failed” if the altered rate exceeds the re-execution rate by more than the margin set before the test. “Zero altered” is not the criterion: a non-deterministic model changes something even if nobody touches it."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La tasa de decisiones alteradas no se distingue de la tasa por re-ejecución, con su intervalo, y la aplicación trata el estado como entrada no confiable.",
+            "en": "The rate of altered decisions is indistinguishable from the re-execution rate, with its interval, and the application treats the state as untrusted input."
+          }
+        },
+        {
+          "prueba": "PR-MD-INV-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "checklist.test_types.INV"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la tasa supera la de re-ejecución por más del margen fijado antes de la prueba. Cada variante se repite 5 veces.",
+              "en": "“Failed” if the rate exceeds the re-execution rate by more than the margin set before the test. Each variant is repeated 5 times."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La tasa de cambio por permutar o renombrar las opciones no se distingue de la tasa por re-ejecución.",
+            "en": "The change rate from permuting or renaming the options is indistinguishable from the re-execution rate."
+          }
+        }
+      ]
+    },
+    {
+      "herramienta": "hackguard-revision",
+      "entorno": "portatil",
+      "version_minima": null,
+      "pruebas": [
+        {
+          "prueba": "PR-MD-LIM-001",
+          "selector": {
+            "tipo": "revision",
+            "que_se_revisa": {
+              "es": "Cada llamada al modelo frente a la lista de límites conocidos de la versión que usa la aplicación.",
+              "en": "Every call to the model against the list of known limits for the version the application uses."
+            }
+          },
+          "k": null,
+          "criterio": {
+            "regla": "revision_de_diseno",
+            "descripcion": {
+              "es": "«Superada» si ninguna llamada delega una operación de la lista y la persona que revisa lo deja escrito, con la versión de la lista que usó.",
+              "en": "“Passed” if no call delegates an operation on the list and the reviewer writes it down, with the version of the list they used."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La revisión no encuentra ninguna llamada que delegue al modelo una operación de la lista vigente de límites.",
+            "en": "The review finds no call that delegates to the model an operation on the current list of limits."
+          }
+        },
+        {
+          "prueba": "PR-MD-VAL-001",
+          "selector": {
+            "tipo": "revision",
+            "que_se_revisa": {
+              "es": "El diseño y el código que llevan cada decisión de alto impacto a su contraste.",
+              "en": "The design and the code that route each high-impact decision to its check."
+            }
+          },
+          "k": null,
+          "criterio": {
+            "regla": "revision_de_diseno",
+            "descripcion": {
+              "es": "«Superada» si la persona que revisa encuentra el contraste en cada ruta y lo deja escrito; «fallida» si alguna ruta lo saltea.",
+              "en": "“Passed” if the reviewer finds the check on every path and writes it down; “failed” if any path skips it."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La revisión encuentra un contraste para cada tipo de decisión de alto impacto, y ninguna ruta que lo saltee.",
+            "en": "The review finds a check for every type of high-impact decision, and no path that skips it."
+          }
+        },
+        {
+          "prueba": "PR-MD-VAL-003",
+          "selector": {
+            "tipo": "revision",
+            "que_se_revisa": {
+              "es": "El código que compara la probabilidad con la banda de duda y lo que hace con cada resultado.",
+              "en": "The code that compares the probability with the doubt band and what it does with each result."
+            }
+          },
+          "k": null,
+          "criterio": {
+            "regla": "revision_de_diseno",
+            "descripcion": {
+              "es": "«Superada» si la persona que revisa no encuentra ninguna ruta que deje pasar una decisión dudosa y lo deja escrito; «fallida» si encuentra una.",
+              "en": "“Passed” if the reviewer finds no path that lets a doubtful decision through and writes it down; “failed” if they find one."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La revisión encuentra que toda decisión dentro de la banda va a revisión y que la banda está escrita como dato, no repartida por el código.",
+            "en": "The review finds that every decision inside the band goes to review and that the band is written as data, not scattered through the code."
+          }
+        }
+      ]
+    },
+    {
+      "herramienta": "scikit-learn",
+      "entorno": "portatil",
+      "version_minima": "1.9.1",
+      "pruebas": [
+        {
+          "prueba": "PR-MD-CAL-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "sklearn.calibration.calibration_curve"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "Se miden las probabilidades, no la confianza declarada. «Fallida» si el error supera el límite fijado antes de la prueba; cada caso se repite 5 veces y la variación entre repeticiones se informa junto al resultado.",
+              "en": "Probabilities are measured, not the declared confidence. “Failed” if the error exceeds the limit set before the test; each case is repeated 5 times and the variation between repetitions is reported with the result."
+            }
+          },
+          "resultado_esperado": {
+            "es": "El error de calibración (bins de igual masa, estimador declarado) y el puntaje de Brier quedan bajo el límite que el activo declaró antes de la prueba; una salida inválida cuenta como error.",
+            "en": "The calibration error (equal-mass bins, declared estimator) and the Brier score stay under the limit the asset declared before the test; an invalid output counts as an error."
+          }
+        },
+        {
+          "prueba": "PR-MD-ESTAB-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "sklearn.metrics.accuracy_score"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la tasa supera el máximo fijado antes de la prueba. El conjunto corre 5 veces.",
+              "en": "“Failed” if the rate exceeds the maximum set before the test. The set runs 5 times."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La tasa de cambio entre corridas idénticas queda bajo el máximo declarado antes de la prueba, y se informa con su intervalo.",
+            "en": "The change rate between identical runs stays under the maximum declared before the test, and is reported with its interval."
+          }
+        },
+        {
+          "prueba": "PR-MD-PAR-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "sklearn.metrics.brier_score_loss"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la diferencia entre idiomas supera el margen fijado antes de la prueba. Cada caso se repite 5 veces en cada idioma.",
+              "en": "“Failed” if the difference between languages exceeds the margin set before the test. Each case is repeated 5 times in each language."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La diferencia de exactitud y de puntaje de Brier entre los dos idiomas queda bajo el margen fijado antes de la prueba.",
+            "en": "The difference in accuracy and Brier score between the two languages stays under the margin set before the test."
+          }
+        },
+        {
+          "prueba": "PR-MD-VAL-002",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "sklearn.metrics.accuracy_score"
+          },
+          "k": 5,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la exactitud en esa banda queda bajo el mínimo fijado antes de la prueba. Cada caso se repite 5 veces.",
+              "en": "“Failed” if accuracy in that band falls under the minimum set before the test. Each case is repeated 5 times."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La exactitud en la banda de mayor probabilidad alcanza el mínimo que la aplicación declaró antes de la prueba.",
+            "en": "Accuracy in the highest-probability band reaches the minimum the application declared before the test."
+          }
+        }
+      ]
+    },
+    {
+      "herramienta": "textattack",
+      "entorno": "portatil",
+      "version_minima": "0.3.11",
+      "pruebas": [
+        {
+          "prueba": "PR-MD-UMB-001",
+          "selector": {
+            "tipo": "modulo",
+            "referencia": "textattack.augmentation.EmbeddingAugmenter"
+          },
+          "k": 10,
+          "criterio": {
+            "regla": "metrica_con_umbral",
+            "descripcion": {
+              "es": "«Fallida» si la diferencia supera el margen fijado antes de la prueba. Cada caso, original y variante, se repite 10 veces para medir la re-ejecución.",
+              "en": "“Failed” if the difference exceeds the margin set before the test. Each case, original and variant, is repeated 10 times to measure re-execution."
+            }
+          },
+          "resultado_esperado": {
+            "es": "La tasa de cruces inducidos menos la tasa de cruces por re-ejecución idéntica queda bajo el margen fijado antes de la prueba, y se exporta el margen de cada caso.",
+            "en": "The induced crossing rate minus the crossing rate under identical re-execution stays under the margin set before the test, and each case's margin is exported."
+          }
+        }
+      ]
+    }
+  ],
+  "huella": "723f5396633c2ea2b1aab6c74b6a35e47f13294919c3fa37df3cd88f36be2038"
+}

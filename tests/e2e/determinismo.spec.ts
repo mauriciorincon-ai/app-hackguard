@@ -4,7 +4,7 @@
 // leído y lo valida, lo fecha y lo huella con `crypto.subtle`. La página se sirve con `page.route` sobre un
 // origen https ficticio, sin red y sin la aplicación: un contexto seguro y nada más.
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
@@ -14,6 +14,7 @@ import type { construirInstantanea } from "../../src/engine/catalogo/instantanea
 import type { CatalogoEnBruto } from "../../src/engine/catalogo/tipos.ts";
 import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
 import { fechaMasDias } from "../../src/engine/fecha.ts";
+import type { planificar } from "../../src/engine/planificador/planificar.ts";
 
 const RAIZ = path.resolve(__dirname, "../..");
 const ORIGEN = "https://hackguard.invalid";
@@ -38,9 +39,37 @@ const FECHA_EN_UMBRAL = fechaMasDias(ULTIMA, POR_REVISAR);
 const CONJUNTO =
   "docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json";
 
+// El planificador (S4): el plan y el paquete de dos activos demo, con la instantánea oficial. La fecha de
+// emisión sale de la instantánea, no del calendario.
+const leerJson = <T>(...partes: string[]) =>
+  JSON.parse(readFileSync(path.join(RAIZ, ...partes), "utf8")) as T;
+interface ActivoLeido {
+  familias: unknown[];
+  entornos: unknown[];
+  ajustes: unknown[];
+  alcance: { familias: unknown[]; fuera: unknown[] } | null;
+}
+interface InstantaneaLeida {
+  fecha_evaluacion: string;
+  catalogo: { pruebas: unknown[] };
+}
+type EntradaDelPlan = Parameters<typeof planificar>[0];
+const CARPETA_INSTANTANEAS = path.join(RAIZ, "datos", "instantaneas");
+const OFICIAL = leerJson<InstantaneaLeida>(
+  "datos",
+  "instantaneas",
+  readdirSync(CARPETA_INSTANTANEAS)
+    .filter((f) => /^\d{4}-\d{2}-\d{2}-[0-9a-f]{12}\.json$/.test(f))
+    .sort()
+    .at(-1)!,
+);
+const FECHA_DEL_PLAN = fechaMasDias(OFICIAL.fecha_evaluacion as string, 6);
+const ACTIVOS_CON_PLAN = ["act-demo-asistente", "act-demo-clasificador"];
+
 interface Motor {
   construirInstantanea: typeof construirInstantanea;
   evaluarConjunto: typeof evaluarConjunto;
+  planificar: typeof planificar;
 }
 
 function node(script: string, ...argumentos: string[]): string {
@@ -57,7 +86,19 @@ function node(script: string, ...argumentos: string[]): string {
 let paquete = "";
 let catalogo: CatalogoEnBruto;
 let conjunto: unknown;
-const enNode = { instantanea: "", umbral: "", clasificador: "" };
+const enNode = {
+  instantanea: "",
+  umbral: "",
+  clasificador: "",
+  planes: {} as Record<string, { plan: string; paquete: string }>,
+};
+let entradaDelPlan: {
+  activos: Record<string, unknown>;
+  instantanea: unknown;
+  formula: unknown;
+  entornos: unknown;
+  fecha: string;
+};
 
 // Sin reintentos: una divergencia intermitente entre motores tiene que salir en rojo, no como «flaky».
 test.describe.configure({ mode: "serial", retries: 0 });
@@ -92,6 +133,68 @@ test.beforeAll(async () => {
     }
   ).huella_de_respuestas;
 
+  // Node es la referencia del plan: el CLI emite cada plan; el del asistente, tres veces.
+  for (const id of ACTIVOS_CON_PLAN) {
+    const carpeta = mkdtempSync(path.join(tmpdir(), "hackguard-plan-"));
+    try {
+      const emitir = () =>
+        JSON.parse(
+          node(
+            "src/cli/plan.ts",
+            "emitir",
+            id,
+            "--fecha",
+            FECHA_DEL_PLAN,
+            "--salida",
+            carpeta,
+            "--json",
+          ),
+        ) as { huella_del_plan: string; huella_del_paquete: string };
+      const corridas =
+        id === ACTIVOS_CON_PLAN[0]
+          ? [emitir(), emitir(), emitir()]
+          : [emitir()];
+      expect(
+        new Set(corridas.map((c) => c.huella_del_plan)).size,
+        `tres corridas del CLI del plan de ${id}, una sola huella`,
+      ).toBe(1);
+      enNode.planes[id] = {
+        plan: corridas[0].huella_del_plan,
+        paquete: corridas[0].huella_del_paquete,
+      };
+    } finally {
+      rmSync(carpeta, { recursive: true, force: true });
+    }
+  }
+  // El navegador recibe los conjuntos del activo y las pruebas de la instantánea en el orden inverso.
+  const instantanea = structuredClone(OFICIAL);
+  instantanea.catalogo.pruebas.reverse();
+  entradaDelPlan = {
+    activos: Object.fromEntries(
+      ACTIVOS_CON_PLAN.map((id) => {
+        const a = leerJson<ActivoLeido>(
+          "datos",
+          "activos",
+          "demo",
+          `${id}.json`,
+        );
+        for (const lista of [
+          a.familias,
+          a.entornos,
+          a.ajustes,
+          a.alcance?.familias,
+          a.alcance?.fuera,
+        ])
+          (lista as unknown[] | undefined)?.reverse();
+        return [id, a];
+      }),
+    ),
+    instantanea,
+    formula: leerJson<unknown>("datos", "planificador", "formula.json"),
+    entornos: leerJson<unknown>("datos", "planificador", "entornos.json"),
+    fecha: FECHA_DEL_PLAN,
+  };
+
   // El navegador recibe las listas en el orden inverso al que lee el CLI: si el orden cambiara la huella,
   // divergirían.
   catalogo = structuredClone(LEIDO);
@@ -109,6 +212,7 @@ test.beforeAll(async () => {
       contents: [
         'export { construirInstantanea } from "./src/engine/catalogo/instantanea.ts";',
         'export { evaluarConjunto } from "./src/engine/demo/conjunto.ts";',
+        'export { planificar } from "./src/engine/planificador/planificar.ts";',
       ].join("\n"),
       resolveDir: RAIZ,
       loader: "ts",
@@ -148,9 +252,7 @@ const enNavegador = (page: Page, fecha: string) =>
         huella: r.instantanea.huella,
         estados: [
           ...new Set(
-            [...s.pruebas, ...s.marcos, ...s.herramientas].map(
-              (v) => v.estado,
-            ),
+            [...s.pruebas, ...s.marcos, ...s.herramientas].map((v) => v.estado),
           ),
         ],
       };
@@ -198,4 +300,42 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     console.log(`determinismo · ${browserName} · clasificador · ${huella}`);
     expect(huella).toBe(enNode.clasificador);
   });
+
+  for (const id of ACTIVOS_CON_PLAN) {
+    test(`el plan y el paquete de ${id} (${FECHA_DEL_PLAN})`, async ({
+      page,
+      browserName,
+    }) => {
+      await abrirMotor(page);
+      const { plan, paquete } = await page.evaluate(
+        async ({ entrada, id }) => {
+          const motor = (globalThis as unknown as { MotorHackGuard: Motor })
+            .MotorHackGuard;
+          const e = entrada as unknown as {
+            activos: Record<string, EntradaDelPlan["activo"]>;
+            instantanea: EntradaDelPlan["instantanea"];
+            formula: EntradaDelPlan["formula"];
+            entornos: EntradaDelPlan["entornos"];
+            fecha: string;
+          };
+          const r = await motor.planificar({
+            activo: e.activos[id],
+            instantanea: e.instantanea,
+            formula: e.formula,
+            entornos: e.entornos,
+            fecha: e.fecha,
+          });
+          return r.emitido
+            ? { plan: r.plan.huella, paquete: r.paquete.huella }
+            : { plan: null, paquete: null };
+        },
+        { entrada: entradaDelPlan, id },
+      );
+      console.log(
+        `determinismo · ${browserName} · plan ${id} · ${plan} · paquete ${paquete}`,
+      );
+      expect(plan).toBe(enNode.planes[id].plan);
+      expect(paquete).toBe(enNode.planes[id].paquete);
+    });
+  }
 });
