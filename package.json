@@ -20,8 +20,8 @@
     "design-sync:bundle": "node scripts/design-sync/generar.mjs"
   },
   "dependencies": {
-    "@sentry/nextjs": "^11.4.0",
-    "next": "16.3.8",
+    "@sentry/nextjs": "^11.5.0",
+    "next": "16.4.0",
     "pino": "^10.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -39,9 +39,9 @@
     "@vitest/coverage-v8": "^5.0.3",
     "esbuild": "0.28.2",
     "eslint": "^9",
-    "eslint-config-next": "16.3.8",
+    "eslint-config-next": "16.4.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "jsdom": "^30.1.1",
+    "jsdom": "^30.1.2",
     "prettier": "^3.9.9",
     "serve": "14.2.6",
     "tailwindcss": "^4",
