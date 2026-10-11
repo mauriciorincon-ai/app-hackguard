@@ -3,6 +3,36 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 003 — «Marcos y controles» (2026-10-11)
+
+The catalog's other two views go on screen, the list is paginated, and the repo adopts the kit v2.1.0 rule of one live pull request.
+
+### Added
+
+- **`/catalogo/marcos`:** the 14 frameworks with their version in the catalog, their date, licence and what the licence requires,
+  freshness and how many tests cite each one; the OWASP LLM Top 10 2025 → 2026 equivalence map with what changed and the
+  tests that cite the new entries; and the catalog snapshots, the official one marked. What the snapshot does not know is said
+  as not recorded (no comparison with the official source, no version notices), never simulated.
+- **`/catalogo/controles`:** the default ISO/IEC 42001 layer with its note that no summary is checked against the standard, the nine
+  Annex A areas, the controls that tests give evidence to (each test links to its record, and a partial equivalent from another
+  framework is marked «Incomplete map»), and the tests with no control assigned as a visible debt.
+- **Catalog list:** 20 tests per page with «Previous» and «Next», and a seventh filter, «Tool», on the tool each test is measured with.
+- **Error state:** an invalid catalog's rejected tests are listed with their identifier and reason in both languages, driven by a real
+  validator finding.
+- **`un-pr-vivo`:** the kit's job that fails a second open pull request unless its body starts with «complementa #N», and the
+  monthly Dependabot schedule for GitHub Actions. Added to the `main-protegida` ruleset as a required check.
+
+### Changed
+
+- **Performance:** the Sentry SDK is imported only when a DSN is configured. Without one, the main chunk every page runs falls from
+  465 KB to 228 KB. The CI Lighthouse step warms the server up with an unmeasured run before it measures. `/catalogo` is back on the
+  kit's default budgets, and ADR-006 is superseded.
+- **Sidebar:** Frameworks and Controls are live links; Proposals is still marked «soon».
+
+### Fixed
+
+- Long framework names no longer overflow the 380 px width of the controls page: they wrap as text, not as an identifier.
+
 ## Sprint 002 — «El catálogo navegable» (2026-10-11)
 
 The first screen: the catalog the Sprint 001 left as data can be browsed, and the repo adopts the kit v2 method.

@@ -74,7 +74,7 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
           <p className="hg-cabecera-meta">
             <span>
               <T t={{ es: "Capa por defecto", en: "Default layer" }} /> ·{" "}
-              <Dato>{vista.capa.marco}</Dato> ·{" "}
+              <span data-neutro>{vista.capa.marco}</span> ·{" "}
               <T t={{ es: "Anexo A", en: "Annex A" }} />
             </span>
             <span>
@@ -354,7 +354,7 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
                   ) : (
                     c.equivalentes.map((e) => (
                       <p key={`${e.marco}-${e.referencia}`}>
-                        <Dato>{`${e.marco} · ${e.referencia}`}</Dato>{" "}
+                        <span data-neutro>{`${e.marco} · ${e.referencia}`}</span>{" "}
                         {e.incompleto ? <Chip etiqueta={e.incompleto} /> : null}
                       </p>
                     ))

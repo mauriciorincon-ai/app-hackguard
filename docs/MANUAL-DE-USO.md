@@ -19,10 +19,11 @@ inteligencia artificial. No ejecuta ninguna prueba: dice qué conviene verificar
 y qué resultado se espera, y recibe los resultados como evidencia que una persona confirma. Su idea central es
 que un hallazgo no es una vulnerabilidad: es evidencia de que un control falla.
 
-Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus filtros y una ficha por prueba), y
-debajo de esa pantalla está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un
-**clasificador demo** para la familia de modelos de decisión. Las demás secciones (tablero, activos, evidencia y
-brecha) aparecen en la barra lateral con la marca «pronto».
+Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus filtros, una ficha por prueba), ver los
+**marcos y sus versiones** y los **controles** de ISO/IEC 42001 con las pruebas que les dan evidencia. Debajo de esas
+pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
+para la familia de modelos de decisión. Las demás secciones (tablero, activos, evidencia y brecha) aparecen en la
+barra lateral con la marca «pronto».
 
 ### Primeros pasos
 
@@ -145,13 +146,14 @@ brecha) aparecen en la barra lateral con la marca «pronto».
 - **Qué hace:** muestra el catálogo que ya existía como dato. Es **solo de lectura**: aquí no se edita ni se aprueba
   nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
 - **Cómo se usa:**
-  1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; solo
-     Catálogo funciona, las otras llevan la marca «pronto».
+  1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; dentro de
+     Catálogo, **Pruebas**, **Marcos** y **Controles** funcionan. Las demás llevan la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
-     de Marco, Control, Madurez, Vigencia y Revisión de contenido. Los filtros se suman; el contador dice cuántas
-     pruebas quedan y «Quitar filtros» las devuelve todas. Si ninguna cumple, la pantalla lo dice.
+     de Marco, Control, Herramienta, Madurez, Vigencia y Revisión de contenido. Los filtros se suman; el contador dice
+     cuántas pruebas quedan y «Quitar filtros» las devuelve todas. Si ninguna cumple, la pantalla lo dice. La lista
+     muestra **20 pruebas por página**, con «Anterior» y «Siguiente»; cada filtro vuelve a la página 1.
   4. **Abre una prueba** con su nombre: la ficha dice qué se verifica, por qué importa, el resultado esperado, cómo
      se decide el veredicto (y cuántas repeticiones hacen falta), con qué herramienta y configuración se mide, cuándo
      aplica, a qué marco y controles responde y de dónde sale.
@@ -176,13 +178,49 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Es la primera pantalla: marcos, controles, propuestas, tablero, activos, evidencia y brecha no existen aún como
-    pantalla.
+  - Propuestas, tablero, activos, plan, evidencia y brecha todavía no existen como pantalla.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
     cuando las hay.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+
+#### Marcos y controles · desde Sprint 003
+
+- **Qué hace:** muestra los marcos de referencia con su versión, el mapa que traduce una versión a la siguiente y la
+  capa de controles de ISO/IEC 42001 con las pruebas que les dan evidencia. Es **solo de lectura**, como el catálogo.
+- **Cómo se usa:**
+  1. Desde **Catálogo**, la barra lateral lleva a **Marcos** y a **Controles**.
+  2. **Marcos y versiones** lista los 14 marcos del catálogo, cada uno con su versión en el catálogo, la fecha de esa
+     versión, su licencia y lo que exige, su vigencia y cuántas pruebas lo citan.
+  3. El **mapa de equivalencias** (hoy, OWASP LLM Top 10 de 2025 a 2026) dice, para cada entrada de la versión
+     anterior, a qué entrada nueva corresponde y qué cambió. Si una prueba cita la entrada nueva, aparece su
+     identificador, y pulsarlo abre su ficha.
+  4. Las **instantáneas** del catálogo listan cada foto con su fecha, cuántas pruebas trae y su huella. La oficial sale
+     marcada.
+  5. **Controles** muestra las nueve áreas del Anexo A con su cobertura, los controles a los que alguna prueba da
+     evidencia (cada prueba enlaza a su ficha, y un equivalente de otro marco se marca cuando el mapa no lo cubre entero) y, al
+     final, las **pruebas sin control asignado**.
+- **Qué significa cada estado** (siempre con marca, texto y color):
+
+  | Estado                        | Cuándo sale                                                               | Qué hacer                                                    |
+  | ----------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------ |
+  | Vigente, por revisar, vencido | Los de la vigencia de cada marco, con los mismos umbrales que el catálogo | Lo mismo que en «El catálogo en pantalla»                    |
+  | Fuente no accesible al agente | La fuente oficial del marco no se pudo leer desde la app                  | Verifica el marco a mano antes de confiar en su versión      |
+  | Mapa incompleto               | Un equivalente de otro marco no cubre el control entero                   | Lee la nota del control antes de usar la equivalencia        |
+  | Sin control asignado          | La prueba no da evidencia a ningún control todavía                        | Queda como deuda visible hasta que una persona le asigne uno |
+
+- **Lo que la app no sabe, dicho tal cual:** las columnas «Frente a la fuente», «Avisos de versión» y «Qué cambió»
+  dicen «Sin aviso registrado», «Sin avisos registrados» y «Sin comparación registrada» mientras el catálogo no guarde
+  ese registro. No se simula una comparación con la fuente.
+- **«No contrastado con la norma»:** los resúmenes de las áreas y controles del Anexo A están en palabras propias y
+  ninguno se ha comparado con el texto de la norma. Por eso la página lo dice arriba, con su marca.
+- **Limitaciones conocidas:**
+  - Las versiones y las fechas vienen del catálogo: si el marco publica una versión nueva, la página lo mostrará cuando el
+    catálogo lo registre, no antes.
+  - Se leen desde la instantánea oficial, como el resto de la app: un cambio en `datos/` aparece cuando se emite una
+    instantánea nueva.
+  - Solo en español; el inglés llega al cierre del hito.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -219,10 +257,11 @@ brecha) aparecen en la barra lateral con la marca «pronto».
 
 ### Historial
 
-| Sprint           | Features añadidas a este manual                                                           |
-| ---------------- | ----------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo |
-| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)  |
+| Sprint           | Features añadidas a este manual                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                        |
+| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                         |
+| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada |
 
 ---
 
@@ -360,13 +399,14 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
 - **What it does:** it shows the catalog that already existed as data. It is **read-only**: nothing is edited or
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
-  1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; only Catalog works, the
-     others carry the “soon” mark.
+  1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
+     **Frameworks** and **Controls** work. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
-     Maturity, Freshness and Content review lists. Filters add up; the counter says how many tests are left and
-     “Clear filters” brings them all back. If none matches, the screen says so.
+     Tool, Maturity, Freshness and Content review lists. Filters add up; the counter says how many tests are left and
+     “Clear filters” brings them all back. If none matches, the screen says so. The list shows **20 tests per page**,
+     with “Previous” and “Next”; each filter goes back to page 1.
   4. **Open a test** by its name: the record says what is verified, why it matters, the expected result, how the
      verdict is decided (and how many repetitions are needed), with which tool and configuration it is measured,
      when it applies, which framework and controls it answers to and where it comes from.
@@ -391,13 +431,49 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - It is the first screen: frameworks, controls, proposals, dashboard, assets, evidence and gap do not exist as
-    screens yet.
+  - Proposals, dashboard, assets, plan, evidence and gap do not exist as screens yet.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
     there are any.
   - The screens are tested in Spanish; English testing arrives at the close of the milestone.
+
+#### Frameworks and controls · since Sprint 003
+
+- **What it does:** it shows the reference frameworks with their version, the map that translates one version into the
+  next, and the ISO/IEC 42001 control layer with the tests that give them evidence. It is **read-only**, like the catalog.
+- **How to use it:**
+  1. From **Catalog**, the sidebar leads to **Frameworks** and **Controls**.
+  2. **Frameworks and versions** lists the 14 frameworks in the catalog, each with its version in the catalog, that
+     version's date, its licence and what it requires, its freshness, and how many tests cite it.
+  3. The **equivalence map** (today, OWASP LLM Top 10 from 2025 to 2026) says, for each entry of the previous version,
+     which new entry it corresponds to and what changed. If a test cites the new entry, its identifier appears, and
+     pressing it opens that test's record.
+  4. The catalog **snapshots** list each snapshot with its date, how many tests it holds and its fingerprint. The
+     official one is marked.
+  5. **Controls** shows the nine areas of Annex A with their coverage, the controls that some test gives evidence to
+     (each test links to its record, and an equivalent from another framework is marked when the map does not cover
+     the control entirely), and at the end, the **tests with no control assigned**.
+- **What each state means** (always mark, text and colour):
+
+  | State                             | When it shows                                                            | What to do                                              |
+  | --------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------- |
+  | Current, review due, overdue      | Each framework's freshness, with the same thresholds as the catalog      | The same as in “The catalog on screen”                  |
+  | Source not reachable by the agent | The framework's official source could not be read by the app             | Check the framework by hand before trusting its version |
+  | Incomplete map                    | An equivalent from another framework does not cover the control entirely | Read the control's note before using the equivalence    |
+  | No control assigned               | The test does not give evidence to any control yet                       | It stays visible as a debt until a person assigns one   |
+
+- **What the app does not know, said plainly:** the columns “Against the source”, “Version notices” and “What changed”
+  say “No notice recorded”, “No notices recorded” and “No comparison recorded” while the catalog does not keep that
+  record. No comparison with the source is simulated.
+- **“Not checked against the standard”:** the summaries of the Annex A areas and controls are in our own words and none
+  of them has been compared with the standard's text. That is why the page says so at the top, with its mark.
+- **Known limitations:**
+  - Versions and dates come from the catalog: if a framework publishes a new version, the page shows it once the catalog
+    records it, not before.
+  - They are read from the official snapshot, as the rest of the app is: a change in `datos/` appears when a new snapshot
+    is emitted.
+  - Spanish only for now; English testing arrives at the close of the milestone.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 
@@ -435,7 +511,8 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### History
 
-| Sprint           | Features added to this manual                                                        |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier  |
-| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test) |
+| Sprint           | Features added to this manual                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                          |
+| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                         |
+| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list |
