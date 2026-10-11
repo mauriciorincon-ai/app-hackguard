@@ -110,7 +110,15 @@ jobs:
         run: |
           npm i -g @lhci/cli
           URLS=$(node -e "console.log(require('./lighthouse-urls.json').map(u=>'--url=http://localhost:3000'+u).join(' '))")
-          lhci collect --startServerCommand="pnpm start" --numberOfRuns=1 $URLS
+          # Sprint 3: la PRIMERA medición tras arrancar el servidor sale lenta sea cual sea la página (con el orden de las URLs
+          # invertido falló la que iba primero, TBT 400 a 533 ms, y pasó la otra). Se arranca el servidor aparte y se mide una
+          # vez una página que NO se evalúa para calentarlo; después se borra esa medición y se mide de verdad. Los
+          # presupuestos no cambian.
+          pnpm start > servidor.log 2>&1 &
+          until curl -sf http://localhost:3000/catalogo > /dev/null; do sleep 1; done
+          lhci collect --numberOfRuns=1 --url=http://localhost:3000/catalogo > /dev/null
+          rm -rf .lighthouseci
+          lhci collect --numberOfRuns=1 $URLS
           lhci assert --budgetsFile=./perf-budget.json
           lhci assert --config=./lighthouse-categorias.json
           # kit v1.37.0: margen (<10 % del presupuesto = aviso) + toda URL medida tiene presupuesto (rojo si no)
