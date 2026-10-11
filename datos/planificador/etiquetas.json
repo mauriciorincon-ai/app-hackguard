@@ -1,0 +1,75 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Las etiquetas de estado de las pantallas de activo y plan que el vocabulario del catálogo (datos/estados.json) no tiene. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
+    "en": "The status labels of the asset and plan screens that the catalog's vocabulary (datos/estados.json) lacks. Role and symbol come from here, never from a component (hard rule 12)."
+  },
+  "etiquetas": [
+    {
+      "id": "autorizado",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": { "es": "Alcance y reglas declarados", "en": "Scope and rules declared" }
+    },
+    {
+      "id": "sin_autorizacion",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": { "es": "Sin autorización no hay plan", "en": "No authorization, no plan" }
+    },
+    {
+      "id": "falta_autorizacion",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": { "es": "Falta alcance y reglas", "en": "Scope and rules missing" }
+    },
+    {
+      "id": "sin_declarar",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": { "es": "Sin declarar", "en": "Not declared" }
+    },
+    {
+      "id": "sin_plan",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": { "es": "Sin plan", "en": "No plan" }
+    },
+    {
+      "id": "politica_sin_leer",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": { "es": "Política sin leer", "en": "Policy not read" }
+    },
+    {
+      "id": "agregada",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": { "es": "Agregada por ti", "en": "Added by you" }
+    },
+    {
+      "id": "sin_prueba",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": { "es": "Sin prueba", "en": "No test" }
+    },
+    {
+      "id": "resumen_con_prueba",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": { "es": "controles con prueba", "en": "controls with a test" }
+    },
+    {
+      "id": "resumen_sin_prueba",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": { "es": "sin prueba", "en": "with no test" }
+    },
+    {
+      "id": "con_prueba",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": { "es": "con prueba", "en": "with a test" }
+    }
+  ]
+}

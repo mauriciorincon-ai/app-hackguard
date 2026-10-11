@@ -209,6 +209,25 @@ razón, y la maqueta las alcanza en el `design-sync` del hito.
 | `marcos` | Cada marco muestra su licencia y lo que exige; la segunda cifra cuenta los marcos con la fuente fuera del alcance del agente | La licencia es dato del marco (regla dura 11); el aviso de versión no se puede contar |
 | `marcos` | «Qué cambió» de las instantáneas dice «Sin comparación registrada» | Sin historial de instantáneas en `datos/` |
 
+
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 4)
+
+La maqueta no se regenera en este sprint; estas diferencias las vigilan `tests/unit/fidelidad-activo.test.tsx` y
+`tests/unit/fidelidad-plan.test.tsx`, cada una con su razón, y la maqueta las alcanza en el `design-sync` del hito. El plan que
+dibuja la maqueta es aritmética ilustrativa (21 pruebas, otro vocabulario de rasgos, una herramienta fija por ficha): el plan del
+producto lo calcula el motor sobre las 38 pruebas de la instantánea, y manda el motor.
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | «En prueba» exige evidencia, que llega en el S5 |
+| `activo`, `plan` | Los estados de pantalla «vacío», «cargando» y «error» solo existen en la maqueta | Es un export estático: un activo o un plan que no cuadra con su huella rompe el build en vez de mostrarse |
+| `plan` | La cabecera y el pie no enseñan la huella solo abreviada: el panel del paquete trae la huella completa del paquete y de la instantánea | El plan se puede reproducir y comparar byte a byte |
+| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S5; un enlace a una pantalla que no existe sería un enlace roto |
+| `plan` | Cada prueba del paquete muestra su selector, `k` y el nombre de su regla de veredicto; no la frase «umbral de fallida: 100 por mil» | Esa frase era ilustrativa; el catálogo da la regla y `k`, y la cota la calcula el informe |
+| `plan` | La herramienta de cada prueba es la que mide su resultado esperado, y puede variar entre pruebas de una misma familia | El catálogo recomienda hasta dos herramientas por prueba; la maqueta fijaba una |
+| `plan` | «Cobertura por control» cuenta los controles que citan las pruebas candidatas del activo, y las pruebas del plan sin control aparte | El catálogo tiene pruebas con control pendiente (las de software); la maqueta suponía todas con control |
+| `activo` | El activo no se edita en pantalla: vive en un archivo validado (`datos/activos/` si es demo, `datos/privado/activos/` si es real) | Registrar un activo es un archivo con esquema (P2 del G-Plan); la pantalla es para leerlo |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |

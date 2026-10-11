@@ -13,6 +13,7 @@ export function Consola({
   migas,
   cuenta,
   pie,
+  subnav,
   children,
 }: {
   seccion: string;
@@ -21,6 +22,8 @@ export function Consola({
   migas: Bilingue[];
   cuenta?: number;
   pie?: PieDelLateral;
+  /** Las páginas del objeto abierto (Activo · Plan), antes del contenido y fuera de `main`, como en la maqueta. */
+  subnav?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -58,6 +61,7 @@ export function Consola({
             </p>
             <Conmutadores />
           </header>
+          {subnav}
           <main id="contenido" className="hg-principal hg-pila">
             {children}
           </main>

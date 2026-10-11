@@ -81,6 +81,20 @@ export const Motivos = z.strictObject({
 });
 export type Motivos = z.infer<typeof Motivos>;
 
+export const Etiquetas = z.strictObject({
+  version: Nombre,
+  nota: Texto,
+  etiquetas: z.array(
+    z.strictObject({
+      id: IdMinusculas,
+      rol: z.enum(ROLES),
+      simbolo: z.enum(SIMBOLOS),
+      nombre: Texto,
+    }),
+  ),
+});
+export type Etiquetas = z.infer<typeof Etiquetas>;
+
 export const Plantilla = z.strictObject({
   version: Nombre,
   nota: Texto,

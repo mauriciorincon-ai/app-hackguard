@@ -38,6 +38,11 @@ export function cargarActivos(raiz: string): ArchivoDeActivo[] {
   return CARPETAS_DE_ACTIVOS.flatMap((c) => jsonsDe(raiz, c));
 }
 
+/** Solo los versionados (demo): lo único que las pantallas del build leen. Un activo propio no sale de la CLI. */
+export function cargarActivosPublicos(raiz: string): ArchivoDeActivo[] {
+  return jsonsDe(raiz, CARPETAS_DE_ACTIVOS[0]);
+}
+
 function leerJson(raiz: string, relativa: string): unknown {
   return JSON.parse(readFileSync(path.join(raiz, relativa), "utf8")) as unknown;
 }
