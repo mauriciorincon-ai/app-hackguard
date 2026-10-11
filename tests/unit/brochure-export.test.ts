@@ -94,6 +94,22 @@ describe("docs/brochure-export.json", () => {
     );
   });
 
+  it("cabe en la ficha técnica de CV Viva: tagline ≤ 80, intro y para_quien ≤ 400, cada detalle ≤ 400", () => {
+    // Topes del contrato publicado por app-hoja-de-vida (docs/contrato-ficha-tecnica/ficha-tecnica.schema.json): la
+    // ficha no se arma, y el build de CV Viva falla, si un texto lo pasa. CV Viva no edita este archivo: se acorta aquí.
+    // `diferencial` no viaja a la ficha y no tiene tope.
+    const largos = [
+      ["tagline", datos.promesa.tagline, 80],
+      ["intro", datos.promesa.intro, 400],
+      ["para_quien", datos.promesa.para_quien, 400],
+      ...datos.metricas.map((m) => [`detalle de ${m.clave}`, m.detalle, 400]),
+    ] as const;
+    const pasados = largos
+      .filter(([, texto, tope]) => texto.length > tope)
+      .map(([campo, texto, tope]) => `${campo} (${texto.length} > ${tope})`);
+    expect(pasados).toEqual([]);
+  });
+
   it("las pruebas automáticas son la suma de sus dos partes", () => {
     expect(metrica("pruebas_automaticas").valor).toBe(
       metrica("pruebas_unitarias").valor + metrica("pruebas_e2e").valor,
