@@ -15,6 +15,7 @@ import {
   cargarInstantaneaOficial,
 } from "../../../src/lib/catalogo/cargar-instantanea.ts";
 import { fechaDeConsulta } from "../../../src/lib/catalogo/consulta.ts";
+import { fechaDelCommit } from "../../../src/lib/catalogo/fecha-del-commit.ts";
 
 const RAIZ = join(__dirname, "..", "..", "..");
 const OFICIAL = readdirSync(join(RAIZ, "datos", "instantaneas"))
@@ -92,17 +93,49 @@ describe("la instantánea oficial", () => {
 });
 
 describe("la fecha de consulta", () => {
-  it("por defecto es la fecha de la instantánea, y la perilla del build la cambia", () => {
+  it("sin perilla ni commit es la fecha de la instantánea", () => {
     expect(fechaDeConsulta("2026-10-05")).toBe("2026-10-05");
     expect(fechaDeConsulta("2026-10-05", "")).toBe("2026-10-05");
-    expect(fechaDeConsulta("2026-10-05", " 2026-11-04 ")).toBe("2026-11-04");
   });
-  it("rechaza lo que no es una fecha civil, en los dos idiomas", () => {
+  it("la perilla del build manda sobre todo lo demás", () => {
+    expect(fechaDeConsulta("2026-10-05", " 2026-11-04 ")).toBe("2026-11-04");
+    expect(fechaDeConsulta("2026-10-05", "2026-11-04", "2026-12-20")).toBe(
+      "2026-11-04",
+    );
+  });
+  it("sin perilla, la fecha del commit que se construye, si es posterior a la de la instantánea", () => {
+    expect(fechaDeConsulta("2026-10-05", undefined, "2026-12-20")).toBe(
+      "2026-12-20",
+    );
+    expect(fechaDeConsulta("2026-10-05", undefined, "2026-10-05")).toBe(
+      "2026-10-05",
+    );
+  });
+  it("un commit anterior a la instantánea, o una fecha de commit rota, no adelantan ni atrasan la consulta", () => {
+    expect(fechaDeConsulta("2026-10-05", undefined, "2026-09-01")).toBe(
+      "2026-10-05",
+    );
+    expect(fechaDeConsulta("2026-10-05", undefined, "ayer")).toBe("2026-10-05");
+  });
+  it("rechaza una perilla que no es una fecha civil, en los dos idiomas", () => {
     expect(() => fechaDeConsulta("2026-10-05", "mañana")).toThrow(
       /no es una fecha.*is not a/,
     );
     expect(() => fechaDeConsulta("2026-10-05", "2026-02-30")).toThrow(
       RangeError,
     );
+  });
+});
+
+describe("la fecha del commit", () => {
+  it("es la del commit actual, en UTC, y la misma cada vez que se pregunta", () => {
+    const f = fechaDelCommit(RAIZ);
+    expect(f).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(fechaDelCommit(RAIZ)).toBe(f);
+  });
+  it("sin repositorio no hay fecha, y no es un error", () => {
+    expect(
+      fechaDelCommit(mkdtempSync(join(tmpdir(), "hg-sin-git-"))),
+    ).toBeUndefined();
   });
 });

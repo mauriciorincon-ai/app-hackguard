@@ -9,12 +9,15 @@ import { Conmutadores } from "./conmutadores";
  */
 export function Consola({
   seccion,
+  pagina,
   migas,
   cuenta,
   pie,
   children,
 }: {
   seccion: string;
+  /** La ruta de la página abierta dentro de la sección. */
+  pagina?: string;
   migas: Bilingue[];
   cuenta?: number;
   pie?: PieDelLateral;
@@ -26,7 +29,12 @@ export function Consola({
         <T t={{ es: "Saltar al contenido", en: "Skip to content" }} />
       </a>
       <div className="hg-app">
-        <BarraLateral abierta={seccion} cuenta={cuenta} pie={pie} />
+        <BarraLateral
+          abierta={seccion}
+          paginaAbierta={pagina}
+          cuenta={cuenta}
+          pie={pie}
+        />
         <div className="hg-cuerpo">
           <header className="hg-barra">
             <Marca />

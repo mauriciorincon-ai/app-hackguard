@@ -102,6 +102,19 @@ const SECCIONES: Seccion[] = [
   { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: null },
 ];
 
+// Las páginas de cada sección, como en la maqueta. Las que todavía no tienen pantalla van sin enlace (nunca un enlace roto).
+const SUBPAGINAS: Record<
+  string,
+  { nombre: Bilingue; ruta: string | null }[] | undefined
+> = {
+  catalogo: [
+    { nombre: { es: "Pruebas", en: "Tests" }, ruta: "/catalogo" },
+    { nombre: { es: "Marcos", en: "Frameworks" }, ruta: null },
+    { nombre: { es: "Controles", en: "Controls" }, ruta: null },
+    { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
+  ],
+};
+
 export interface PieDelLateral {
   /** Nombre de la instantánea oficial que la pantalla lee. */
   instantanea: string;
@@ -111,10 +124,13 @@ export interface PieDelLateral {
 
 export function BarraLateral({
   abierta,
+  paginaAbierta,
   cuenta,
   pie,
 }: {
   abierta: string;
+  /** La ruta de la página abierta dentro de la sección (la ficha de una prueba cuenta como «Pruebas»). */
+  paginaAbierta?: string;
   /** Cuántas pruebas hay en el catálogo (junto al nombre de la sección). */
   cuenta?: number;
   pie?: PieDelLateral;
@@ -159,9 +175,42 @@ export function BarraLateral({
             const esAbierta = s.id === abierta;
             return (
               <li key={s.id}>
-                <a href={s.ruta} aria-current={esAbierta ? "page" : undefined}>
+                <a
+                  href={s.ruta}
+                  aria-current={
+                    esAbierta ? (SUBPAGINAS[s.id] ? "true" : "page") : undefined
+                  }
+                >
                   {dentro}
                 </a>
+                {esAbierta && SUBPAGINAS[s.id] ? (
+                  <ul className="hg-nav-sub">
+                    {SUBPAGINAS[s.id]!.map((pg) => (
+                      <li key={pg.nombre.es}>
+                        {pg.ruta ? (
+                          <a
+                            href={pg.ruta}
+                            aria-current={
+                              pg.ruta === paginaAbierta ? "page" : undefined
+                            }
+                          >
+                            <T t={pg.nombre} />
+                          </a>
+                        ) : (
+                          <span
+                            className="hg-nav-proximamente"
+                            aria-disabled="true"
+                          >
+                            <T t={pg.nombre} />
+                            <span className="hg-cuenta">
+                              <T t={{ es: "pronto", en: "soon" }} />
+                            </span>
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             );
           })}
