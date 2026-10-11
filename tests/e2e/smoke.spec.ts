@@ -6,10 +6,15 @@ import { expect, test } from "@playwright/test";
 // cero pruebas descubiertas no es un gate (Angel Ghost S1: cuatro fases con e2e «verde» y
 // ninguna prueba). Si este smoke se pone rojo en el estampado, el gate está funcionando.
 // El S1 lo conserva (es la regresión de «la app arranca y es accesible») y añade los suyos.
-test("la app arranca y su raíz no tiene violaciones serias de accesibilidad", async ({ page }) => {
+test("la app arranca, la raíz lleva al catálogo y no tiene violaciones serias de accesibilidad", async ({
+  page,
+}) => {
   await page.goto("/");
+  await page.waitForURL(/\/catalogo/);
   await expect(page.locator("body")).toBeVisible();
   const scan = await new AxeBuilder({ page }).analyze();
-  const serias = scan.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  const serias = scan.violations.filter(
+    (v) => v.impact === "critical" || v.impact === "serious",
+  );
   expect(serias, JSON.stringify(serias.map((v) => v.id))).toEqual([]);
 });
