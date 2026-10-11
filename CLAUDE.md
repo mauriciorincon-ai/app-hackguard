@@ -1,4 +1,4 @@
-# HackGuard — constitución de la app (núcleo, kit v2.0.0)
+# HackGuard — constitución de la app (núcleo, kit v2.1.0)
 
 > Auto-cargado en cada sesión de este repo. Esta app pertenece al pipeline **AI-APPs**; su plan vive en la casa planeadora.
 > Núcleo regenerado por la planeadora el 2026-10-10 (`/nueva-app hackguard` modo regenerar, método v2.0.0) para el S2; sustituye
@@ -81,7 +81,7 @@ Frecuencia: `[sprint]` cuesta algo en cada sprint · `[hito]` se ejecuta al cerr
 16. `[hito]` **El bundle `design-sync/` es un artefacto del repo** (`pnpm design-sync:bundle`, `tests/unit/design-sync.test.ts`), se actualiza al cierre del hito; `/design-sync` lo invoca el usuario. — § 16
 17. `[siempre]` 🔒 **Cero enlaces: la producción se muestra, jamás se entrega.** Ningún archivo versionado ni campo de GitHub publica la URL de producción o de previews; barrido de árbol + homepage en el job `quality` (`scripts/cero-enlaces.mjs`, dominios en `cero-enlaces.json`). — § 17
 17-bis. `[siempre]` **Lo que la app escribe también es superficie:** un derivado jamás nace menos privado que su fuente (700/600; `instantanea --agregar` exige `--salida` fuera de `datos/`); todo arnés que pueda tocar fuentes aborta ante datos reales. — § 17-bis
-18. `[siempre]` **PRs de dependencias:** máximo dos abiertos, mergeados de a uno; ningún paquete por debajo de `main` (`scripts/verificar-dependencias.mjs`); overrides y excepciones en `pnpm-workspace.yaml`, excepción solo por advisory sin parche y con ADR (ADR-001 `braces`, ADR-005 `compression`). — § 18
+18. `[siempre]` **UN SOLO PR VIVO POR APP (regla dura del usuario, 2026-10-11; kit v2.1.0).** Dependabot cuenta. Antes de abrir cualquier PR: `gh pr list --state open`; si hay uno, se procesa (mergea o cierra) o se sigue en su rama. Un segundo PR solo si es complementario del primero y su cuerpo EMPIEZA con «complementa #N: <por qué no cabe en #N>»; el job `un-pr-vivo` de la CI falla al segundo PR sin esa línea. Dependencias agrupadas, de a uno, al arrancar el sprint y antes de abrir el PR del sprint; ningún paquete por debajo de `main` (`scripts/verificar-dependencias.mjs`); overrides y excepciones en `pnpm-workspace.yaml`, excepción solo por advisory sin parche y con ADR (ADR-001 `braces`, ADR-005 `compression`). — § 18
 19. `[cambio]` **Todo puente entre dos lenguajes exige su gate de contrato** (fixture del serializador real, tipo validado del lado que lee, un e2e): aplica a los adaptadores Garak y ZAP del S3. — § 19
 20. `[siempre]` **Bilingüe ES/EN en todo desde el primer sprint:** el dato nace como mapa `{ es, en }`, redactado (no traducido), con test de paridad de claves; e2e y capturas en UN idioma por sprint, el otro al cierre del hito. Conversación y cierres en español; código, commits y ADRs en inglés. — § 20
 21. `[cambio]` **IA de construcción por suscripción (7-S):** solo el binario oficial de Claude Code, token jamás en env ni repo; ADR de cumplimiento por release. — § 21
@@ -123,4 +123,4 @@ Detalle canónico: `estandares/estandares.md` de la planeadora (solo lectura). �
 - **Vista por control:** «evidencia organizada», separada del nivel de aseguramiento; cadena hallazgo → corrección → re-prueba visible (E-16). **Brecha única de todos los activos**; tablero, brecha, vista por control e informe salen del mismo cálculo (decisión 21 de diseño).
 - **Maqueta como referencia de fidelidad:** `scripts/maqueta/` genera `docs/diseno/` (gate de deriva byte a byte); el producto obedece `design-system.md` y la hoja `docs/diseno/assets/app.css` + `tokens.css` (fuente: `scripts/paleta/`); una decisión de diseño nueva se registra en `docs/diseno/README.md` y se regenera la maqueta, nunca se edita el HTML a mano.
 
-Constitución núcleo kit v2.0.0 — HackGuard, regenerada 2026-10-10. Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.
+Constitución núcleo kit v2.1.0 — HackGuard, regenerada 2026-10-10 (regla 18 actualizada 2026-10-11). Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.

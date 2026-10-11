@@ -331,7 +331,7 @@ Estado v2.0.0 (§ 17): [siempre] 🔒 — sin cambio de fondo; la casilla manual
    de G-Diseño identifica dónde se aprobó por el número del PR cuyo preview recorrió el usuario; la
    URL exacta vive en la planeadora.
 
-Estado v2.0.0 (§ 18): [siempre] — sin cambio (automatizado: Dependabot + `verificar-dependencias.mjs`).
+Estado v2.1.0 (§ 18): [siempre] — **SUSTITUIDA por «UN SOLO PR VIVO POR APP»** (regla dura del usuario 2026-10-11): dependabot cuenta; segundo PR solo complementario y declarado («complementa #N: <razón>» al inicio del cuerpo); `gh pr list --state open` antes de abrir; job `un-pr-vivo` en CI; `github-actions` de Dependabot pasa a mensual. El texto de abajo queda como historia de la regla anterior (máximo dos de dependencias).
 18. **PRs de dependencias: máximo DOS abiertos y el lockfile NO se pelea (kit v1.24.0 — regla
    del usuario 2026-08-22).** dependabot con techo real de 2 (limit 1 por ecosistema, todo
    agrupado — el yml del kit lo trae). Se mergean **DE A UNO, dejando a dependabot REGENERAR**
