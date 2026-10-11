@@ -19,8 +19,10 @@ inteligencia artificial. No ejecuta ninguna prueba: dice qué conviene verificar
 y qué resultado se espera, y recibe los resultados como evidencia que una persona confirma. Su idea central es
 que un hallazgo no es una vulnerabilidad: es evidencia de que un control falla.
 
-En el Sprint 001 todavía no hay pantallas. Lo que existe es el **catálogo de pruebas como dato**, con sus
-comandos para validarlo y fotografiarlo, y un **clasificador demo** para la familia de modelos de decisión.
+Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus filtros y una ficha por prueba), y
+debajo de esa pantalla está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un
+**clasificador demo** para la familia de modelos de decisión. Las demás secciones (tablero, activos, evidencia y
+brecha) aparecen en la barra lateral con la marca «pronto».
 
 ### Primeros pasos
 
@@ -112,7 +114,7 @@ comandos para validarlo y fotografiarlo, y un **clasificador demo** para la fami
        `prueba/revision-sin-registro` dice «huella del contenido a revisar: …». Si el contenido cambia después,
        `prueba/revision-desactualizada` da la huella nueva.
 - **Limitaciones conocidas:**
-  - **Sin pantallas:** todavía no hay interfaz; llega en los sprints siguientes.
+  - **Se ve en pantalla solo el catálogo:** lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
   - **Instantánea bloqueada:** si el catálogo es inválido, no se escribe nada (código 2).
   - **Fecha obligatoria:** la fecha de la instantánea es obligatoria y nunca se toma del reloj. Una fecha anterior
     a la última verificación del catálogo se rechaza (código 3).
@@ -137,6 +139,50 @@ comandos para validarlo y fotografiarlo, y un **clasificador demo** para la fami
     - **El control es la persona:** que alguien lea cada prueba nueva.
   - **garak y ZAP con adaptador:** figuran con adaptador porque la especificación prevé que HackGuard lea sus
     informes. Esta versión no los lee: la marca dice para qué herramientas está previsto un lector.
+
+#### El catálogo en pantalla · desde Sprint 002
+
+- **Qué hace:** muestra el catálogo que ya existía como dato. Es **solo de lectura**: aquí no se edita ni se aprueba
+  nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
+- **Cómo se usa:**
+  1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; solo
+     Catálogo funciona, las otras llevan la marca «pronto».
+  2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
+     **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
+  3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
+     de Marco, Control, Madurez, Vigencia y Revisión de contenido. Los filtros se suman; el contador dice cuántas
+     pruebas quedan y «Quitar filtros» las devuelve todas. Si ninguna cumple, la pantalla lo dice.
+  4. **Abre una prueba** con su nombre: la ficha dice qué se verifica, por qué importa, el resultado esperado, cómo
+     se decide el veredicto (y cuántas repeticiones hacen falta), con qué herramienta y configuración se mide, cuándo
+     aplica, a qué marco y controles responde y de dónde sale.
+  5. Abajo, **«Vigencia por familia»**: cada familia está como su prueba más atrasada.
+  6. Arriba a la derecha cambias el **tema** (oscuro o claro) y el **idioma** (español o inglés); se recuerdan al
+     recargar. En el teléfono la navegación pasa a una barra fija al pie.
+- **Qué significa cada estado** (siempre con marca, texto y color; el color nunca va solo):
+
+  | Estado      | Cuándo sale                                            | Qué hacer                                                                           |
+  | ----------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+  | Vigente     | Se verificó hace menos de 30 días                      | Nada                                                                                |
+  | Por revisar | Pasaron 30 días o más desde su última verificación     | Sigue siendo válida; conviene revisarla pronto                                      |
+  | Vencido     | Pasaron 60 días o más                                  | Su marco o su herramienta pueden haber cambiado: pide al investigador que la revise |
+  | Sin control | Todavía no da evidencia a ningún control               | Queda a la vista como deuda hasta que alguien le asigne uno                         |
+  | Marcada     | El filtro de contenido encontró un patrón en esa ficha | Una persona decide si se queda, se corrige o se retira                              |
+
+  La ficha de una prueba vencida o por revisar lo dice con un aviso arriba, y marco y herramienta llevan cada uno su
+  propia vigencia.
+
+- **La fecha de consulta:** es la fecha con que se calcula la vigencia. Sale de la instantánea y, al publicar, de la
+  fecha del commit que se construye; nunca del reloj del navegador. Por eso la pantalla **envejece solo cuando se
+  vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
+  fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
+- **Limitaciones conocidas:**
+  - Es la primera pantalla: marcos, controles, propuestas, tablero, activos, evidencia y brecha no existen aún como
+    pantalla.
+  - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
+    emite una instantánea nueva (ver «El catálogo como dato»).
+  - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
+    cuando las hay.
+  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -176,6 +222,7 @@ comandos para validarlo y fotografiarlo, y un **clasificador demo** para la fami
 | Sprint           | Features añadidas a este manual                                                           |
 | ---------------- | ----------------------------------------------------------------------------------------- |
 | 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo |
+| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)  |
 
 ---
 
@@ -188,7 +235,7 @@ It runs no tests itself: it says what is worth checking on an asset, with which 
 and it takes in results as evidence that a person confirms. Its central idea is that a finding is not a
 vulnerability: it is evidence that a control is failing.
 
-Sprint 001 has no screens yet. What exists is the **test catalog as data**, with the commands to validate it and
+You can now **browse the test catalog on screen** (the list with its filters and a record per test); under that screen sits the **test catalog as data**, with the commands to validate it and
 take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### Getting started
@@ -281,7 +328,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
        finding `prueba/revision-sin-registro` says “fingerprint of the content to review: …”. If the content
        changes later, `prueba/revision-desactualizada` gives the new one.
 - **Known limitations:**
-  - **No screens:** there is no interface yet; it arrives in the next sprints.
+  - **Only the catalog is on screen:** everything else is handled with the commands above (see “The catalog on screen”).
   - **Blocked snapshot:** if the catalog is invalid, nothing is written (code 2).
   - **Date required:** the snapshot date is required and is never taken from the clock. A date earlier than the
     catalog's latest verification is rejected (code 3).
@@ -307,6 +354,50 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   - **garak and ZAP with an adapter:** they are listed with an adapter because the specification plans for
     HackGuard to read their reports. This version does not read them: the flag says which tools a reader is
     planned for.
+
+#### The catalog on screen · since Sprint 002
+
+- **What it does:** it shows the catalog that already existed as data. It is **read-only**: nothing is edited or
+  approved here; to change a test you edit its `datos/` file (see above).
+- **How to use it:**
+  1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; only Catalog works, the
+     others carry the “soon” mark.
+  2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
+     the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
+  3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
+     Maturity, Freshness and Content review lists. Filters add up; the counter says how many tests are left and
+     “Clear filters” brings them all back. If none matches, the screen says so.
+  4. **Open a test** by its name: the record says what is verified, why it matters, the expected result, how the
+     verdict is decided (and how many repetitions are needed), with which tool and configuration it is measured,
+     when it applies, which framework and controls it answers to and where it comes from.
+  5. Below, **“Freshness by family”**: each family stands where its most out-of-date test stands.
+  6. At the top right you switch the **theme** (dark or light) and the **language** (Spanish or English); both are
+     remembered on reload. On a phone the navigation becomes a fixed bar at the bottom.
+- **What each state means** (always mark, text and colour; colour never stands alone):
+
+  | State      | When it shows                                     | What to do                                                             |
+  | ---------- | ------------------------------------------------- | ---------------------------------------------------------------------- |
+  | Current    | Verified less than 30 days ago                    | Nothing                                                                |
+  | Review due | 30 days or more since its last verification       | It is still valid; review it soon                                      |
+  | Overdue    | 60 days or more                                   | Its framework or tool may have changed: ask the researcher to check it |
+  | No control | It does not yet give evidence to any control      | It stays visible as a debt until someone assigns one                   |
+  | Flagged    | The content filter found a pattern in that record | A person decides whether it stays, is corrected or is retired          |
+
+  The record of an overdue or review-due test says so in a notice at the top, and its framework and tool each keep
+  their own freshness.
+
+- **The query date:** it is the date the freshness is computed with. It comes from the snapshot and, when
+  publishing, from the date of the commit being built; never from the browser's clock. That is why the screen **ages
+  only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
+  site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
+- **Known limitations:**
+  - It is the first screen: frameworks, controls, proposals, dashboard, assets, evidence and gap do not exist as
+    screens yet.
+  - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
+    is emitted (see “The catalog as data”).
+  - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
+    there are any.
+  - The screens are tested in Spanish; English testing arrives at the close of the milestone.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 
@@ -344,6 +435,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### History
 
-| Sprint           | Features added to this manual                                                       |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier |
+| Sprint           | Features added to this manual                                                        |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier  |
+| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test) |
