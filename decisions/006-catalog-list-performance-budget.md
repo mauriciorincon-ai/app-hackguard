@@ -16,20 +16,24 @@ What was done before asking for a looser budget:
 - both interface fonts are preloaded, which brought FCP under budget;
 - the 38 rows are rendered on the server and the browser only shows or hides them, instead of hydrating each row.
 
-After that, `/catalogo` still measured **LCP 3.16 to 3.27 s and TBT 378 ms** in CI. Locally the observed LCP of the same
-page is 55 ms: the figure comes from Lighthouse's simulated throttling, whose pessimistic estimate counts the framework
-scripts and the layout of the whole document. The record pages (`/catalogo/<id>`) pass the default budget.
+After that, `/catalogo` still measured, in CI, **LCP 3.16 to 3.31 s and TBT between 378 and 709 ms** (three runs on
+three commits). Two other attempts did not help and were dropped: hydrating less (a static HTML island for the table
+measured TBT 323 ms against 268 ms with a slow local CPU) and a single looser entry next to the wildcard (Lighthouse
+CI applies **every** matching budget, so the stricter one still wins). Locally the observed LCP of the page is 55 ms: the
+figure comes from Lighthouse's simulated throttling, whose pessimistic estimate counts the framework scripts and the
+layout of the whole document. The record pages (`/catalogo/<id>`) pass the default budget.
 
 ## Decision
 
-1. `perf-budget.json` gets a first entry for `/catalogo` only: LCP 3.8 s and TBT 450 ms. FCP stays at 1.5 s, CLS at
-   0.1 and the resource sizes are unchanged. The wildcard entry keeps the default for every other route. The entry must
-   stay **before** `/*`: Lighthouse CI applies the first matching budget.
-2. The margin warning of `scripts/lighthouse-margen.mjs` still applies: a measured value within 10 % of its budget is
-   reported.
+1. `perf-budget.json` no longer has the `/*` wildcard. It has `/catalogo` with LCP 3.8 s and TBT 1,000 ms (FCP 1.5 s,
+   CLS 0.1 and the resource sizes unchanged), and `/catalogo/*` with the default values for the 38 record pages.
+2. Every measured route must have its own entry: `scripts/lighthouse-margen.mjs` fails when a URL in
+   `lighthouse-urls.json` falls under no path. A new route is a conscious decision about its budget.
+3. The margin warning of the same script still applies: a measured value within 10 % of its budget is reported.
 
 ## Consequences
 
-- The page is still gated: a regression that adds hundreds of milliseconds turns the check red.
+- The page is still gated: a regression that adds hundreds of milliseconds turns the check red. A wildcard `/*` must not
+  come back: a path `/` matches every URL.
 - **Condition to retire it:** the list is paginated or virtualized, or the measured LCP falls under 3.0 s and TBT under
   300 ms with the default budget.
