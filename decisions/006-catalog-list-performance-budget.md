@@ -29,7 +29,9 @@ layout of the whole document. The record pages (`/catalogo/<id>`) pass the defau
    CLS 0.1 and the resource sizes unchanged), and `/catalogo/*` with the default values for the 38 record pages.
 2. Every measured route must have its own entry: `scripts/lighthouse-margen.mjs` fails when a URL in
    `lighthouse-urls.json` falls under no path. A new route is a conscious decision about its budget.
-3. The margin warning of the same script still applies: a measured value within 10 % of its budget is reported.
+3. `lighthouse-categorias.json` gets the same split: the performance category of `/catalogo` must score at least 0.75 (CI
+   measured 0.84 on the first run with the new budgets); every other route and the other three categories stay at 0.9.
+4. The margin warning of the same script still applies: a measured value within 10 % of its budget is reported.
 
 ## Consequences
 
