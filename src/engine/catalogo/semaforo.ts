@@ -20,6 +20,14 @@ export const ESTADOS_QUE_CALCULA_EL_MOTOR: Readonly<
   Record<string, readonly string[]>
 > = {
   vigencia: ESTADOS_DE_VIGENCIA,
+  // AU-14: lo que la instantánea publica además de la vigencia. El motivo por el que una prueba espera revisión
+  // (`pendientes_de_revision[].motivo`) y la familia sin pruebas publicadas (`estado: null` en el semáforo).
+  pendiente_de_revision: [
+    "propuesta",
+    "marcada_para_revision",
+    "revision_desactualizada",
+  ],
+  familia: ["sin_pruebas"],
 };
 
 export type UmbralesDeVigencia = Pick<

@@ -381,6 +381,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "pendiente_de_revision",
+      "nombre": {
+        "es": "Motivo de revisión pendiente",
+        "en": "Pending-review reason"
+      },
+      "estados": [
+        {
+          "id": "propuesta",
+          "rol": "atencion",
+          "simbolo": "aviso",
+          "nombre": {
+            "es": "Propuesta, sin aprobar",
+            "en": "Proposed, not approved"
+          }
+        },
+        {
+          "id": "marcada_para_revision",
+          "rol": "atencion",
+          "simbolo": "aviso",
+          "nombre": {
+            "es": "Marcada para revisión",
+            "en": "Flagged for review"
+          }
+        },
+        {
+          "id": "revision_desactualizada",
+          "rol": "atencion",
+          "simbolo": "reloj",
+          "nombre": {
+            "es": "Revisión desactualizada",
+            "en": "Review out of date"
+          }
+        }
+      ]
+    },
+    {
+      "id": "familia",
+      "nombre": {
+        "es": "Familia",
+        "en": "Family"
+      },
+      "estados": [
+        {
+          "id": "sin_pruebas",
+          "rol": "neutro",
+          "simbolo": "vacio",
+          "nombre": {
+            "es": "Sin pruebas publicadas",
+            "en": "No published tests"
+          }
+        }
+      ]
     }
   ]
 }
