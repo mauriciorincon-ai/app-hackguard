@@ -12,9 +12,7 @@ import { contraste, diferencia } from "../../scripts/paleta/color.mjs";
 import { PAPELES } from "../../scripts/paleta/tokens.mjs";
 
 const ASSETS = "docs/diseno/assets";
-const tokens: Record<"oscuro" | "claro", Record<string, string>> = JSON.parse(
-  readFileSync(`${ASSETS}/tokens.json`, "utf8"),
-);
+const tokens: Record<"oscuro" | "claro", Record<string, string>> = JSON.parse(readFileSync(`${ASSETS}/tokens.json`, "utf8"));
 
 const SUPERFICIES = ["fondo", "superficie", "superficie-2"];
 const TINTES = PAPELES.map((p: string) => `${p}-tinte`);
@@ -34,13 +32,8 @@ describe("paleta: tokens generados y medidos", () => {
       env: { ...process.env, PALETA_SALIDA: salida, MAQUETA_SILENCIO: "1" },
     });
     for (const archivo of ["tokens.css", "tokens.json"]) {
-      const igual =
-        readFileSync(`${ASSETS}/${archivo}`, "utf8") ===
-        readFileSync(join(salida, archivo), "utf8");
-      expect(
-        igual,
-        `${archivo}: difiere de lo que genera scripts/paleta (corre «pnpm tokens»)`,
-      ).toBe(true);
+      const igual = readFileSync(`${ASSETS}/${archivo}`, "utf8") === readFileSync(join(salida, archivo), "utf8");
+      expect(igual, `${archivo}: difiere de lo que genera scripts/paleta (corre «pnpm tokens»)`).toBe(true);
     }
   });
 
@@ -50,37 +43,22 @@ describe("paleta: tokens generados y medidos", () => {
 
     it(`${tema}: la tinta se lee sobre toda superficie y todo tinte`, () => {
       for (const base of [...SUPERFICIES, ...TINTES]) {
-        expect(
-          razon("tinta", base),
-          `tinta sobre ${base}`,
-        ).toBeGreaterThanOrEqual(TEXTO_PRINCIPAL);
-        expect(
-          razon("tinta-2", base),
-          `tinta-2 sobre ${base}`,
-        ).toBeGreaterThanOrEqual(TEXTO_SECUNDARIO);
+        expect(razon("tinta", base), `tinta sobre ${base}`).toBeGreaterThanOrEqual(TEXTO_PRINCIPAL);
+        expect(razon("tinta-2", base), `tinta-2 sobre ${base}`).toBeGreaterThanOrEqual(TEXTO_SECUNDARIO);
       }
       for (const base of SUPERFICIES) {
-        expect(
-          razon("acento", base),
-          `acento sobre ${base}`,
-        ).toBeGreaterThanOrEqual(TEXTO_SECUNDARIO);
+        expect(razon("acento", base), `acento sobre ${base}`).toBeGreaterThanOrEqual(TEXTO_SECUNDARIO);
       }
     });
 
     it(`${tema}: cada marca de estado y cada borde de control se distingue de su fondo`, () => {
       for (const papel of PAPELES) {
         for (const base of ["fondo", "superficie", `${papel}-tinte`]) {
-          expect(
-            razon(papel, base),
-            `${papel} sobre ${base}`,
-          ).toBeGreaterThanOrEqual(MARCA);
+          expect(razon(papel, base), `${papel} sobre ${base}`).toBeGreaterThanOrEqual(MARCA);
         }
       }
       for (const base of SUPERFICIES) {
-        expect(
-          razon("linea-fuerte", base),
-          `linea-fuerte sobre ${base}`,
-        ).toBeGreaterThanOrEqual(MARCA);
+        expect(razon("linea-fuerte", base), `linea-fuerte sobre ${base}`).toBeGreaterThanOrEqual(MARCA);
       }
     });
 
@@ -89,19 +67,13 @@ describe("paleta: tokens generados y medidos", () => {
       ["protanopia", SEPARACION_DICROMACIA],
       ["deuteranopia", SEPARACION_DICROMACIA],
       ["tritanopia", SEPARACION_DICROMACIA],
-    ] as const)(
-      `${tema}: los papeles de estado no se confunden entre sí (%s)`,
-      (vision, minimo) => {
-        for (let i = 0; i < PAPELES.length; i++) {
-          for (let j = i + 1; j < PAPELES.length; j++) {
-            const d = diferencia(t[PAPELES[i]], t[PAPELES[j]], vision);
-            expect(
-              d,
-              `${PAPELES[i]} ~ ${PAPELES[j]} con visión ${vision}`,
-            ).toBeGreaterThanOrEqual(minimo);
-          }
+    ] as const)(`${tema}: los papeles de estado no se confunden entre sí (%s)`, (vision, minimo) => {
+      for (let i = 0; i < PAPELES.length; i++) {
+        for (let j = i + 1; j < PAPELES.length; j++) {
+          const d = diferencia(t[PAPELES[i]], t[PAPELES[j]], vision);
+          expect(d, `${PAPELES[i]} ~ ${PAPELES[j]} con visión ${vision}`).toBeGreaterThanOrEqual(minimo);
         }
-      },
-    );
+      }
+    });
   }
 });

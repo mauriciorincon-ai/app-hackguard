@@ -15,22 +15,12 @@ export const paginasDe = (dir: string) =>
 /** Corre el generador hacia un directorio temporal (opcionalmente en otra fecha de consulta). */
 export function generarEnTemporal(fecha?: string) {
   const salida = mkdtempSync(join(tmpdir(), "maqueta-"));
-  const env: NodeJS.ProcessEnv = {
-    ...process.env,
-    MAQUETA_SALIDA: salida,
-    MAQUETA_SILENCIO: "1",
-  };
+  const env: NodeJS.ProcessEnv = { ...process.env, MAQUETA_SALIDA: salida, MAQUETA_SILENCIO: "1" };
   if (fecha) env.MAQUETA_FECHA = fecha;
-  execFileSync(process.execPath, ["scripts/maqueta/generar.mjs"], {
-    env,
-    cwd: RAIZ,
-    stdio: "pipe",
-  });
+  execFileSync(process.execPath, ["scripts/maqueta/generar.mjs"], { env, cwd: RAIZ, stdio: "pipe" });
   return salida;
 }
 
-export const leerPagina = (dir: string, pagina: string) =>
-  readFileSync(join(dir, pagina), "utf8");
+export const leerPagina = (dir: string, pagina: string) => readFileSync(join(dir, pagina), "utf8");
 
-export const documentoDe = (html: string) =>
-  new DOMParser().parseFromString(html, "text/html");
+export const documentoDe = (html: string) => new DOMParser().parseFromString(html, "text/html");

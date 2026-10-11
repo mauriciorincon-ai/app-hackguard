@@ -249,9 +249,7 @@ describe("peticiones inválidas", () => {
     ],
     ["sin preguntas", { state: ESTADO, questions: [] }],
   ] as [string, PeticionDemo][])("%s", (_, p) => {
-    expect(() => clasificar(p)).toThrow(
-      /^petición inválida en .* \/ invalid request at /,
-    );
+    expect(() => clasificar(p)).toThrow(/^petición inválida en .* \/ invalid request at /);
   });
 
   it.each([

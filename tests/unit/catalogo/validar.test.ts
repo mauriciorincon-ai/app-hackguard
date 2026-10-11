@@ -705,8 +705,8 @@ describe("el catálogo base (el real sin sus pruebas)", () => {
     const porVerificar = catalogoBase()
       .marcos.flatMap((a) =>
         (
-          (JSON.parse(a.texto) as { por_verificar?: string[] }).por_verificar ??
-          []
+          (JSON.parse(a.texto) as { por_verificar?: string[] })
+            .por_verificar ?? []
         ).map((campo) => `${a.ruta} · ${campo}`),
       )
       .sort();

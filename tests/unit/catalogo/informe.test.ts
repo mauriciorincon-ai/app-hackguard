@@ -14,8 +14,7 @@ import { construirInstantanea } from "../../../src/engine/catalogo/instantanea.t
 import { validarCatalogo } from "../../../src/engine/catalogo/validar.ts";
 import { catalogoBase, conPrueba, CUENTAS_BASE, referencia } from "./ayuda.ts";
 
-const { marcos, mapas, controles, herramientas, familias, notas } =
-  CUENTAS_BASE;
+const { marcos, mapas, controles, herramientas, familias, notas } = CUENTAS_BASE;
 const inventario = `${marcos} marcos · ${mapas} mapa${mapas === 1 ? "" : "s"} de equivalencias · ${controles} controles · ${herramientas} herramientas`;
 
 async function conSemilla(cambio: (p: Record<string, unknown>) => void) {
@@ -41,7 +40,9 @@ describe("informeDeValidacion", () => {
     const r = await validarCatalogo(await conSemilla((p) => delete p.marco_id));
     const texto = informeDeValidacion(r, "es");
     expect(texto.split("\n")[0]).toBe("Catálogo: inválido");
-    expect(texto).toContain(`${inventario} · 0 pruebas`);
+    expect(texto).toContain(
+      `${inventario} · 0 pruebas`,
+    );
     expect(texto).toContain(`1 error · 0 advertencias · ${notas} notas`);
     expect(texto).toContain("Errores (1)");
     expect(texto).toContain(
@@ -71,9 +72,7 @@ describe("informeDeValidacion", () => {
     expect(texto).toContain(
       "“owasp-llm-top10 2025 LLM07” is LLM08 in version 2026",
     );
-    expect(texto).toContain(
-      "  · datos/marcos/owasp-top10.json · fecha_version",
-    );
+    expect(texto).toContain("  · datos/marcos/owasp-top10.json · fecha_version");
   });
 
   it("un catálogo sin hallazgos no imprime secciones vacías", async () => {
