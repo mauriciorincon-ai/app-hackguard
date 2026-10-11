@@ -14,3 +14,5 @@ CHANGELOG.md
 docs/*.plantilla.*
 # Instantáneas del catálogo: las escribe `pnpm catalogo:instantanea` y su nombre lleva su huella.
 datos/instantaneas/
+# Anexo de reglas del kit: se mantiene con el formato del kit.
+docs/REGLAS-ANEXO.md

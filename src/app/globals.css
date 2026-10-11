@@ -1,26 +1,80 @@
+/* HackGuard — hoja del producto. La ÚNICA fuente de colores, tipografía y componentes es la hoja del sistema de
+   diseño que la maqueta ya aprobó (G-Plan P2): tokens.css (paleta generada por scripts/paleta/) y app.css
+   (dirección «consola»). Aquí solo viven las pocas reglas que el producto necesita y la maqueta no tiene, y NINGUNA
+   lleva un color suelto: todo sale de los tokens (tests/unit/tintas-vetadas.test.ts lo vigila). */
 @import "tailwindcss";
+@import "../../docs/diseno/assets/tokens.css";
+@import "../../docs/diseno/assets/app.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Los tokens de la hoja del sistema, disponibles como utilidades de Tailwind (design-system § 9). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-tinta: var(--tinta);
+  --color-acento: var(--acento);
+  --font-sans: var(--fuente-texto);
+  --font-mono: var(--fuente-dato);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: var(--t-base);
+}
+
+/* El botón de tema lleva sus dos nombres en el DOM; la hoja muestra el del tema activo. */
+html[data-theme="oscuro"] [data-si-tema="claro"],
+html[data-theme="claro"] [data-si-tema="oscuro"] {
+  display: none;
+}
+
+/* Enlace para saltar al contenido: invisible hasta que recibe el foco del teclado. */
+.hg-salto {
+  position: absolute;
+  top: var(--e-2);
+  left: var(--e-2);
+  z-index: 10;
+  padding: var(--e-2) var(--e-4);
+  border: 1px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+  transform: translateY(-200%);
+}
+
+.hg-salto:focus {
+  transform: none;
+}
+
+/* Una sección que todavía no tiene pantalla: mismo gesto que un enlace de la barra, sin ser un enlace. */
+.hg-nav-proximamente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radio);
+  color: var(--tinta-2);
+  font-weight: 500;
+}
+
+/* Las páginas de una sección que todavía no existen, dentro de su subnavegación. */
+.hg-nav-sub .hg-nav-proximamente {
+  min-height: 32px;
+  font-size: var(--t-menor);
+}
+
+/* En teléfono la barra de abajo trae las cinco secciones con el mismo gesto que los enlaces de app.css. */
+@media (max-width: 1099px) {
+  .hg-nav-proximamente {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-height: 60px;
+    padding: 0 2px;
+    border-radius: 0;
+    font-size: var(--t-micro);
+  }
 }

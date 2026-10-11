@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Kit v1.37.0 (planlang S2, ADR-011): dos cosas que `lhci assert` no dice.
-// (1) MARGEN: una URL cuya mediana queda a menos del 10 % de su presupuesto da rojos sin cambios (Lighthouse sobre
+// (1) MARGEN: una URL cuyo valor medido queda a menos del 10 % de su presupuesto da rojos sin cambios (Lighthouse sobre
 //     localhost es bimodal: ~1,96 s o ~2,65 s con los mismos bytes). Se AVISA (exit 0) con la cifra, para que el
-//     ajuste sea una decisión y no una sorpresa en el commit de cierre.
+//     ajuste sea una decisión y no una sorpresa en el commit de cierre. Desde kit v2.0.0 la CI hace UNA corrida por
+//     URL: el valor es el de esa corrida (con varias corridas en local sigue tomando la mediana).
 // (2) PRESUPUESTO POR URL MEDIDA: toda URL de lighthouse-urls.json debe caer bajo algún `path` de perf-budget.json;
 //     una URL medida sin presupuesto es un gate que no vigila nada (exit 1).
 // Uso: node scripts/lighthouse-margen.mjs [dir-lhr=.lighthouseci] [umbral=0.10]
@@ -46,8 +47,8 @@ for (const [ruta, corridas] of porUrl) {
     const margen = (t.budget - med) / t.budget;
     if (margen >= 0 && margen < umbral) {
       avisos++;
-      console.log(`⚠ lighthouse-margen: ${ruta} · ${t.metric} mediana ${Math.round(med)} vs presupuesto ${t.budget} (margen ${(margen * 100).toFixed(1)} % < ${umbral * 100} %): un rojo sin cambios es cuestión de tiempo — decide el margen por ADR o baja el modo alto`);
+      console.log(`⚠ lighthouse-margen: ${ruta} · ${t.metric} medido ${Math.round(med)}${vals.length > 1 ? " (mediana)" : ""} vs presupuesto ${t.budget} (margen ${(margen * 100).toFixed(1)} % < ${umbral * 100} %): un rojo sin cambios es cuestión de tiempo — decide el margen por ADR o baja el modo alto`);
     }
   }
 }
-console.log(avisos ? `lighthouse-margen: ${avisos} aviso(s)` : `✓ lighthouse-margen: ninguna mediana a menos del ${umbral * 100} % de su presupuesto; ${urls.length} URL con presupuesto`);
+console.log(avisos ? `lighthouse-margen: ${avisos} aviso(s)` : `✓ lighthouse-margen: ningún valor medido a menos del ${umbral * 100} % de su presupuesto; ${urls.length} URL con presupuesto`);

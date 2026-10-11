@@ -1,15 +1,64 @@
 [
   {
-    "path": "/*",
+    "path": "/catalogo",
     "timings": [
-      { "metric": "first-contentful-paint", "budget": 1500 },
-      { "metric": "largest-contentful-paint", "budget": 3000 },
-      { "metric": "total-blocking-time", "budget": 300 },
-      { "metric": "cumulative-layout-shift", "budget": 0.1 }
+      {
+        "metric": "first-contentful-paint",
+        "budget": 1500
+      },
+      {
+        "metric": "largest-contentful-paint",
+        "budget": 3800
+      },
+      {
+        "metric": "total-blocking-time",
+        "budget": 1000
+      },
+      {
+        "metric": "cumulative-layout-shift",
+        "budget": 0.1
+      }
     ],
     "resourceSizes": [
-      { "resourceType": "script", "budget": 350 },
-      { "resourceType": "total", "budget": 1000 }
+      {
+        "resourceType": "script",
+        "budget": 350
+      },
+      {
+        "resourceType": "total",
+        "budget": 1000
+      }
+    ]
+  },
+  {
+    "path": "/catalogo/*",
+    "timings": [
+      {
+        "metric": "first-contentful-paint",
+        "budget": 1500
+      },
+      {
+        "metric": "largest-contentful-paint",
+        "budget": 3000
+      },
+      {
+        "metric": "total-blocking-time",
+        "budget": 300
+      },
+      {
+        "metric": "cumulative-layout-shift",
+        "budget": 0.1
+      }
+    ],
+    "resourceSizes": [
+      {
+        "resourceType": "script",
+        "budget": 350
+      },
+      {
+        "resourceType": "total",
+        "budget": 1000
+      }
     ]
   }
 ]

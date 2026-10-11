@@ -47,11 +47,13 @@ the authoring format.
        version the snapshot cites, re-emitting it gives the same fingerprint.
 
      Neither check requires equality with today's catalog.
+
    - **A snapshot that today's validator rejects is replaced in the same PR by a re-emitted one,** as long as no
      plan cites it (audit finding AU-48).
      - **Sprint 001:** the audit made licence names bilingual, which rejects `2026-10-04-12d3b632a871.json`. It
        was replaced by a snapshot of 2026-10-05. The second audit pass corrected the promptfoo note, and that
-       snapshot was emitted again: today it is `2026-10-05-739ed8c104f0.json`.
+       snapshot was emitted again, and once more in Sprint 2 when the vocabulary gained the states of AU-14 (ADR-003): today it is
+       `2026-10-05-010a8c56f706.json`.
      - **From Sprint 2:** once plans cite snapshots, a schema change that rejects one needs a migration decided
        in its own ADR.
 6. **Tool selectors are part of the schema, one shape per adapter.**
@@ -72,7 +74,7 @@ the authoring format.
 - **The same code, the same fingerprint everywhere.**
   - `tests/e2e/determinismo.spec.ts` bundles the engine with esbuild. It evaluates 11 days after the catalog's
     latest verification.
-  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `2c062f72ce57…` in Node (three CLI runs) and in
+  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `1a1fa98de1b8…` in Node (three CLI runs) and in
     Chromium 153, Firefox 155 and WebKit 26.6.
   - `tests/unit/guia-huellas.test.ts` checks that the fingerprints this ADR and the test guide cite are the
     engine's.

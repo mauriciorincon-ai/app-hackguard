@@ -113,6 +113,8 @@ describe("el catálogo real", () => {
       confirmacion: maqueta.CONFIRMACION,
       estado_de_activo: maqueta.ESTADO_DE_ACTIVO,
       estado_de_hallazgo: maqueta.ESTADO_DE_HALLAZGO,
+      pendiente_de_revision: maqueta.PENDIENTE_DE_REVISION,
+      familia: maqueta.FAMILIA,
     };
     const deDatos = Object.fromEntries(
       catalogo.estados.map((v) => [

@@ -56,6 +56,15 @@ jobs:
       - name: Build como el proveedor y salida publicada = out/ (kit v1.39.0)
         run: node scripts/build-como-proveedor.mjs
       - run: pnpm audit --audit-level high
+      # kit v2.0.0 (regla 17): la producción se muestra, jamás se entrega. Barre el árbol versionado y el campo
+      # homepage del repo; los dominios viven en cero-enlaces.json. Nace verde (sweep limpio en el S2) y su rojo
+      # lo demuestra tests/unit/cero-enlaces.test.ts.
+      - name: Cero enlaces — árbol y homepage del repo (regla 17, kit v2.0.0)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          HOMEPAGE="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.homepage // ""')"
+          node scripts/cero-enlaces.mjs --homepage "$HOMEPAGE"
 
   e2e:
     runs-on: ubuntu-latest
@@ -96,14 +105,13 @@ jobs:
         # DOS asserts sobre UNA sola coleccion: LHCI declara `budgetsFile` mutuamente excluyente
         # con `assertions` — y la casilla ">=90 en las 4 categorias" del /deploy-check no la
         # medía nadie hasta v1.12.0 (el budget mide tiempos y pesos, que es otra cosa).
-        # UNA corrida NO es una medicion (kit v1.26.0): el servidor recien levantado dio un
-        # falso rojo reproducible en hoja-de-vida S7 y casi se paga con optimizacion a ciegas.
-        # Tres corridas por URL y se asevera sobre la MEDIANA (median-run), nunca la optimista.
+        # kit v2.0.0: UNA corrida por URL (regla del kit; antes eran tres con median-run);
+        # lighthouse-margen avisa cuando un valor queda a menos del 10 % de su presupuesto.
         run: |
           npm i -g @lhci/cli
           URLS=$(node -e "console.log(require('./lighthouse-urls.json').map(u=>'--url=http://localhost:3000'+u).join(' '))")
-          lhci collect --startServerCommand="pnpm start" --numberOfRuns=3 $URLS
-          lhci assert --budgetsFile=./perf-budget.json --aggregationMethod=median-run
-          lhci assert --config=./lighthouse-categorias.json --aggregationMethod=median-run
+          lhci collect --startServerCommand="pnpm start" --numberOfRuns=1 $URLS
+          lhci assert --budgetsFile=./perf-budget.json
+          lhci assert --config=./lighthouse-categorias.json
           # kit v1.37.0: margen (<10 % del presupuesto = aviso) + toda URL medida tiene presupuesto (rojo si no)
           node scripts/lighthouse-margen.mjs

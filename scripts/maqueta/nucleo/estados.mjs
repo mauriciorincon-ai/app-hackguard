@@ -63,3 +63,15 @@ export const ESTADO_DE_HALLAZGO = {
   no_reproducible: { rol: "neutro", simbolo: "vacio", nombre: { es: "No reproducible", en: "Not reproducible" } },
   aceptado_con_riesgo: { rol: "atencion", simbolo: "aviso", nombre: { es: "Aceptado con riesgo", en: "Accepted with risk" } },
 };
+
+// Lo que el motor de catálogo publica y las primeras pantallas del producto muestran (AU-14, ADR-003): el motivo por el
+// que una prueba espera revisión en la instantánea, y la familia que no tiene ninguna prueba publicada.
+export const PENDIENTE_DE_REVISION = {
+  propuesta: { rol: "atencion", simbolo: "aviso", nombre: { es: "Propuesta, sin aprobar", en: "Proposed, not approved" } },
+  marcada_para_revision: { rol: "atencion", simbolo: "aviso", nombre: { es: "Marcada para revisión", en: "Flagged for review" } },
+  revision_desactualizada: { rol: "atencion", simbolo: "reloj", nombre: { es: "Revisión desactualizada", en: "Review out of date" } },
+};
+
+export const FAMILIA = {
+  sin_pruebas: { rol: "neutro", simbolo: "vacio", nombre: { es: "Sin pruebas publicadas", en: "No published tests" } },
+};

@@ -16,7 +16,7 @@ engine and the future screens read it.
 ## Decision
 
 1. **The vocabulary is in `datos/estados.json`.**
-   - **Content:** the mock-up's full vocabulary, 9 vocabularies and 33 states. Each state has its colour role
+   - **Content:** the mock-up's vocabulary, 9 vocabularies and 33 states in Sprint 1 (11 and 37 since Sprint 2). Each state has its colour role
      (`positivo`, `atencion`, `falla`, `neutro`, `acento`), its symbol (one of the design system's 13 marks) and
      its name in `{ es, en }`.
    - **Origin:** it was generated from the mock-up module, read only.
@@ -38,15 +38,11 @@ engine and the future screens read it.
   fidelity test goes red.
 - **No unlabelled state can be published.** A state the engine computes but the vocabulary does not name makes
   the catalog invalid before any snapshot is written.
-- **Two states the engine emits have no label yet.** The snapshot publishes `pendientes_de_revision[].motivo`
-  (`propuesta`, `marcada_para_revision`, `revision_desactualizada`), and a family with no published tests gets
-  `estado: null`. Neither has a label in the vocabulary. Adding one means changing the mock-up, which Sprint 001 may
-  not touch, so it is debt for Sprint 2:
-  - the labels arrive with the first screen that shows these states, in a `pendiente_de_revision` vocabulary and a
-    «no published tests» state;
-  - `ESTADOS_QUE_CALCULA_EL_MOTOR` gains them in that same sprint.
-
-  Until then, the terminal prints «sin pruebas publicadas» without a mark. No family reaches that state today:
-  each of the four has tests. This debt comes from audit finding AU-14.
+- **Two states the engine emits had no label, and Sprint 2 paid that debt (AU-14).** The snapshot publishes
+  `pendientes_de_revision[].motivo` (`propuesta`, `marcada_para_revision`, `revision_desactualizada`), and a family
+  with no published tests gets `estado: null`. The vocabulary now has a `pendiente_de_revision` vocabulary and a
+  `familia` vocabulary with `sin_pruebas`, added to the mock-up module and to `datos/estados.json` together (11
+  vocabularies, 37 states), and `ESTADOS_QUE_CALCULA_EL_MOTOR` names them. The first screen that shows them is the
+  catalog (`/catalogo`). The official snapshot was emitted again because it carries the vocabulary (ADR-002).
 - **The aging matrix uses the vocabulary.** `tests/unit/catalogo/envejecimiento.test.ts` builds the real catalog's
   snapshot on every date a state changes, and checks that each computed state has its label in both languages.

@@ -3,6 +3,33 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 002 — «El catálogo navegable» (2026-10-11)
+
+The first screen: the catalog the Sprint 001 left as data can be browsed, and the repo adopts the kit v2 method.
+
+### Added
+
+- **`/catalogo`:** the 38 tests of the official snapshot with six filters (family, framework, control, maturity,
+  freshness, content review), a freshness-by-family panel and the empty and no-results states (an invalid snapshot fails the build instead of
+  showing an error screen; the error component exists and is covered by the fidelity gate).
+- **`/catalogo/<id>` × 38:** one record per test with the expected result, why it matters, how the verdict is decided,
+  the run configuration, when it applies, framework and controls, sources, and the review-due, overdue and flagged
+  notices. English and Spanish, both always in the page.
+- **Console shell:** sidebar with the five sections (only Catalog is live), context bar with theme and language that
+  persist, built on the design system's `tokens.css` and `app.css` as the single source.
+- **Query date:** the freshness is computed at the date of the commit being built (or `HACKGUARD_CONSULTA`), never the
+  clock, so a published page ages when it is published again.
+- **Kit v2:** the core constitution and its annex, the v2 commands, `scripts/horas-sprint.mjs` and
+  `scripts/cero-enlaces.mjs` (a zero-links step in `quality`), and one Lighthouse run per URL.
+- **Gates:** vetoed ink and loose colours in `src/`, fidelity of the screen against the maqueta, the 38 records on every
+  date a state changes, and an e2e for the catalog with axe in both themes.
+
+### Changed
+
+- **AU-14 paid:** the state vocabulary gains `pendiente_de_revision` and `familia` (11 vocabularies, 37 states), and the
+  official snapshot is `datos/instantaneas/2026-10-05-010a8c56f706.json`.
+- The root redirects to `/catalogo`; `noindex` is gone from the app pages (the deployment protection keeps them private).
+
 ## Sprint 001 — «El catálogo vivo» (2026-10-04)
 
 The catalog core as validated data with a fingerprint. No user interface yet.
@@ -27,7 +54,7 @@ The catalog core as validated data with a fingerprint. No user interface yet.
 - **Snapshots** (`pnpm catalogo:instantanea --fecha YYYY-MM-DD`):
   - the approved catalog, the state vocabulary, the thresholds and the freshness semaphore;
   - a publication gate: nothing is written when the catalog is invalid.
-  - Official snapshot: `datos/instantaneas/2026-10-05-739ed8c104f0.json`.
+  - Official snapshot: `datos/instantaneas/2026-10-05-010a8c56f706.json`.
 - **Freshness semaphore** per test, framework, tool and family: review due from 30 days, overdue from 60. Every
   state carries a symbol and a name.
 - **Demo classifier for `modelo_decision`** (`pnpm clasificador:demo`):
