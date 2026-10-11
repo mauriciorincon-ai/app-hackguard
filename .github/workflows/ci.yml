@@ -115,7 +115,8 @@ jobs:
           # vez una página que NO se evalúa para calentarlo; después se borra esa medición y se mide de verdad. Los
           # presupuestos no cambian.
           pnpm start > servidor.log 2>&1 &
-          until curl -sf http://localhost:3000/catalogo > /dev/null; do sleep 1; done
+          # Con límite: si el servidor no arranca, el job falla enseñando su log en vez de colgarse hasta el tope de horas.
+          timeout 90 bash -c 'until curl -sf http://localhost:3000/catalogo > /dev/null; do sleep 1; done' || { cat servidor.log; exit 1; }
           lhci collect --numberOfRuns=1 --url=http://localhost:3000/catalogo > /dev/null
           rm -rf .lighthouseci
           lhci collect --numberOfRuns=1 $URLS

@@ -220,7 +220,7 @@ barra lateral con la marca «pronto».
     catálogo lo registre, no antes.
   - Se leen desde la instantánea oficial, como el resto de la app: un cambio en `datos/` aparece cuando se emite una
     instantánea nueva.
-  - Solo en español; el inglés llega al cierre del hito.
+  - Las pantallas se prueban en español; la prueba en inglés llega al cierre del hito.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -473,7 +473,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
     records it, not before.
   - They are read from the official snapshot, as the rest of the app is: a change in `datos/` appears when a new snapshot
     is emitted.
-  - Spanish only for now; English testing arrives at the close of the milestone.
+  - The screens are tested in Spanish; English testing arrives at the close of the milestone.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 

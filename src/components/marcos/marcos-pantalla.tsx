@@ -379,8 +379,8 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "El investigador compara la versión del catálogo con la que publica la fuente oficial. Avisa; no cambia nada por su cuenta.",
-                en: "The researcher compares the catalog's version with the one the official source publishes. It notifies; it changes nothing on its own.",
+                es: "El investigador comparará la versión del catálogo con la que publique la fuente oficial. Todavía no existe: no hay avisos hasta que se construya, y nunca cambiará nada por su cuenta.",
+                en: "The researcher will compare the catalog's version with the one the official source publishes. It does not exist yet: there are no notices until it is built, and it will never change anything on its own.",
               }}
             />
           </p>

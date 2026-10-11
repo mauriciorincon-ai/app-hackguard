@@ -266,8 +266,8 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. El estado de cada control, con su evidencia, está en la vista por control.",
-                en: "A test giving evidence to a control does not say the control is met: it says where to look. Each control's status, with its evidence, is in the control view.",
+                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. La vista por control, con el estado de cada control y su evidencia, todavía no existe como pantalla.",
+                en: "A test giving evidence to a control does not say the control is met: it says where to look. The control view, with each control's status and evidence, does not exist as a screen yet.",
               }}
             />
           </p>
@@ -354,7 +354,9 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
                   ) : (
                     c.equivalentes.map((e) => (
                       <p key={`${e.marco}-${e.referencia}`}>
-                        <span data-neutro>{`${e.marco} · ${e.referencia}`}</span>{" "}
+                        <span
+                          data-neutro
+                        >{`${e.marco} · ${e.referencia}`}</span>{" "}
                         {e.incompleto ? <Chip etiqueta={e.incompleto} /> : null}
                       </p>
                     ))
