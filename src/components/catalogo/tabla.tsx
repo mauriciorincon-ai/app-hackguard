@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   frasePorDias,
   MARCADA,
@@ -25,9 +26,9 @@ function Fila({ f }: { f: FilaDePrueba }) {
       </td>
       <td>
         <p>
-          <a className="hg-enlace-fila" href={`/catalogo/${f.id}`}>
+          <Link className="hg-enlace-fila" href={`/catalogo/${f.id}`}>
             <T t={f.nombre} />
-          </a>
+          </Link>
         </p>
         <p className="hg-menor">
           <T t={f.queVerifica} />

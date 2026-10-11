@@ -1,4 +1,5 @@
 import { T, Dato, type Bilingue } from "../texto";
+import Link from "next/link";
 
 const TRAZO = {
   fill: "none",
@@ -54,7 +55,7 @@ function Icono({ nombre }: { nombre: string }) {
 
 export function Marca() {
   return (
-    <a className="hg-marca" href="/catalogo">
+    <Link className="hg-marca" href="/catalogo">
       <svg
         className="hg-marca-signo"
         viewBox="0 0 24 24"
@@ -78,7 +79,7 @@ export function Marca() {
         />
       </svg>
       <span data-neutro>HackGuard</span>
-    </a>
+    </Link>
   );
 }
 
@@ -175,27 +176,27 @@ export function BarraLateral({
             const esAbierta = s.id === abierta;
             return (
               <li key={s.id}>
-                <a
+                <Link
                   href={s.ruta}
                   aria-current={
                     esAbierta ? (SUBPAGINAS[s.id] ? "true" : "page") : undefined
                   }
                 >
                   {dentro}
-                </a>
+                </Link>
                 {esAbierta && SUBPAGINAS[s.id] ? (
                   <ul className="hg-nav-sub">
                     {SUBPAGINAS[s.id]!.map((pg) => (
                       <li key={pg.nombre.es}>
                         {pg.ruta ? (
-                          <a
+                          <Link
                             href={pg.ruta}
                             aria-current={
                               pg.ruta === paginaAbierta ? "page" : undefined
                             }
                           >
                             <T t={pg.nombre} />
-                          </a>
+                          </Link>
                         ) : (
                           <span
                             className="hg-nav-proximamente"
