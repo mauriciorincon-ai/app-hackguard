@@ -36,8 +36,11 @@ afterAll(() => temporales.forEach((d) => rmSync(d, { recursive: true, force: tru
 function raizConPropio() {
   const raiz = mkdtempSync(path.join(tmpdir(), "hackguard-evidencia-"));
   temporales.push(raiz);
-  for (const c of ["instantaneas", "filtro", "planificador"])
+  for (const c of ["instantaneas", "filtro", "planificador", "severidad"])
     cpSync(path.join(RAIZ, "datos", c), path.join(raiz, "datos", c), { recursive: true });
+  // Los plazos son datos del libro; los hallazgos demo NO viajan: la raíz de juguete solo tiene lo propio.
+  mkdirSync(path.join(raiz, "datos/hallazgos"), { recursive: true });
+  cpSync(path.join(RAIZ, "datos/hallazgos/plazos.json"), path.join(raiz, "datos/hallazgos/plazos.json"));
   const activo = JSON.parse(readFileSync(path.join(RAIZ, `datos/activos/demo/${ASISTENTE}.json`), "utf8"));
   activo.id = "mi-asistente";
   activo.origen = "propio";

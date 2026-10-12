@@ -7,7 +7,9 @@ import type { ContextoDeEvidencia } from "../../../src/engine/evidencia/validar.
 import { Hallazgo } from "../../../src/engine/hallazgos/esquemas.ts";
 import { cargarPatrones } from "../../../src/lib/activos/cargar-activos.ts";
 import { cargarInstantaneaOficial } from "../../../src/lib/catalogo/cargar-instantanea.ts";
+import type { EscalaIa } from "../../../src/engine/severidad/escala-ia.ts";
 import {
+  cargarEscalaIa,
   cargarEtiquetasDeHallazgo,
   cargarHallazgos,
   cargarPlanesEmitidos,
@@ -28,6 +30,7 @@ export interface MundoDeEvidencia {
   sobres: Record<string, Sobre>;
   hallazgos: Record<string, Hallazgo>;
   plazos: ReturnType<typeof cargarPlazos>;
+  escala: EscalaIa;
   etiquetas: ReturnType<typeof cargarEtiquetasDeHallazgo>;
 }
 
@@ -60,6 +63,7 @@ export function mundo(): Promise<MundoDeEvidencia> {
       sobres,
       hallazgos,
       plazos: cargarPlazos(RAIZ),
+      escala: cargarEscalaIa(RAIZ),
       etiquetas: cargarEtiquetasDeHallazgo(RAIZ),
     };
   })();

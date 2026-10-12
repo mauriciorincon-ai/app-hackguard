@@ -26,6 +26,10 @@ import {
   Plazos,
 } from "../../engine/hallazgos/esquemas.ts";
 import { Paquete, Plan } from "../../engine/planificador/esquemas.ts";
+import {
+  EscalaIa,
+  validarEscalaIa,
+} from "../../engine/severidad/escala-ia.ts";
 
 /** Dónde viven los sobres y los hallazgos: la primera carpeta es pública y solo admite demos (regla dura 8). */
 export const CARPETA_DE_SOBRES_DEMO = "datos/evidencia/demo";
@@ -71,6 +75,18 @@ function leerJson(raiz: string, relativa: string): unknown {
 
 export const cargarPlazos = (raiz: string): Plazos =>
   Plazos.parse(leerJson(raiz, "datos/hallazgos/plazos.json"));
+/** La tabla de severidad de IA, validada: una que viola su piso o su techo no se carga (regla dura 7). */
+export function cargarEscalaIa(raiz: string): EscalaIa {
+  const ruta = "datos/severidad/escala-ia.json";
+  const escala = EscalaIa.parse(leerJson(raiz, ruta));
+  const { hallazgos } = validarEscalaIa(escala, ruta);
+  const errores = hallazgos.filter((h) => h.severidad === "error");
+  if (errores.length > 0)
+    throw new Error(
+      `${ruta}: ${errores.map((h) => `${h.regla}${h.detalle === null ? "" : ` (${h.detalle.es})`}`).join("; ")}`,
+    );
+  return escala;
+}
 export const cargarEtiquetasDeHallazgo = (raiz: string): EtiquetasDeHallazgo =>
   EtiquetasDeHallazgo.parse(leerJson(raiz, "datos/hallazgos/etiquetas.json"));
 

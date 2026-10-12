@@ -19,6 +19,7 @@
     "evidencia:confirmar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts confirmar",
     "hallazgos:listar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-listar",
     "hallazgos:declarar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-declarar",
+    "severidad:vendor": "node scripts/severidad/vendor-first.mjs",
     "clasificador:demo": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/clasificador-demo.ts",
     "prepare": "git config core.hooksPath githooks",
     "maqueta": "node scripts/maqueta/generar.mjs",

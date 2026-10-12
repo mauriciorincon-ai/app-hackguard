@@ -2,8 +2,7 @@
 // máquina. Vive en el motor para que se pruebe como todo lo demás: el CLI solo lee archivos, llama al motor e
 // imprime. El estado se lee por símbolo Y palabra, nunca solo por color (regla dura 12).
 import type { Idioma } from "../catalogo/informe.ts";
-import type { EvaluacionDeHallazgo } from "../hallazgos/ciclo.ts";
-import type { PlazoDeHallazgo } from "../hallazgos/plazo.ts";
+import type { SituacionDeHallazgo } from "../hallazgos/situacion.ts";
 import type {
   EstadoDeValidacion,
   HallazgoDeValidacion,
@@ -62,12 +61,28 @@ export function informeDeValidacion(
   return `${lineas.join("\n")}\n`;
 }
 
-/** Lo que el listado muestra de cada hallazgo; la severidad y el plazo los pone quien ya los calculó. */
+/** Lo que el listado muestra de cada hallazgo: su situación calculada y los nombres que el vocabulario da a su estado y su nivel. */
 export interface FilaDeListadoDeHallazgo {
-  evaluacion: EvaluacionDeHallazgo;
+  situacion: SituacionDeHallazgo;
   estado: TextoBilingue;
-  severidad: { nivel: TextoBilingue; detalle: string } | null;
-  plazo: PlazoDeHallazgo | null;
+  nivel: TextoBilingue;
+}
+
+/** La severidad en una línea: el método y lo que lo explica. */
+export function detalleDeSeveridad(
+  s: SituacionDeHallazgo["severidad"],
+  idioma: Idioma,
+): string {
+  if (s.metodo === "cvss") return `CVSS 4.0 · ${s.puntaje.toFixed(1)} · ${s.vector}`;
+  const es = idioma === "es";
+  const cuenta = s.frecuencia.deConteo
+    ? `${s.frecuencia.fallidas} ${es ? "de" : "of"} ${s.frecuencia.evaluadas}`
+    : es
+      ? "sin conteo: falló su única medición"
+      : "no count: it failed its only measurement";
+  return es
+    ? `escala de IA · impacto ${s.impacto} · frecuencia ${s.frecuencia.porCiento} % (${cuenta})`
+    : `AI scale · impact ${s.impacto} · frequency ${s.frecuencia.porCiento}% (${cuenta})`;
 }
 
 export function informeDeHallazgos(
@@ -76,28 +91,41 @@ export function informeDeHallazgos(
   idioma: Idioma,
 ): string {
   const es = idioma === "es";
-  const cuentan = filas.filter((f) => f.evaluacion.cuentaComoFalla).length;
+  const cuentan = filas.filter((f) => f.situacion.evaluacion.cuentaComoFalla).length;
   const lineas = [
     es
       ? `Hallazgos a ${fecha}: ${filas.length} · ${cuentan} cuentan como falla de su control`
       : `Findings on ${fecha}: ${filas.length} · ${cuentan} count as a failure of their control`,
   ];
   for (const f of filas) {
-    const e = f.evaluacion;
+    const { evaluacion: e, severidad, plazo, revision } = f.situacion;
     lineas.push(
       "",
       `${e.id} · ${f.estado[idioma]}${e.cuentaComoFalla ? (es ? " · sigue contando como falla del control" : " · still counts as a failure of its control") : ""}`,
       `  ${es ? "prueba" : "test"} ${e.prueba} · ${es ? "activo" : "asset"} ${e.activo} · ${es ? "abierto el" : "opened on"} ${e.apertura}`,
+      `  ${es ? "severidad" : "severity"}: ${f.nivel[idioma]} (${detalleDeSeveridad(severidad, idioma)})`,
     );
-    if (f.severidad !== null)
-      lineas.push(
-        `  ${es ? "severidad" : "severity"}: ${f.severidad.nivel[idioma]} (${f.severidad.detalle})`,
-      );
-    if (f.plazo !== null && f.plazo.estado === "vencido")
+    if (plazo.estado === "vencido")
       lineas.push(
         es
-          ? `  plazo vencido: ${f.plazo.atraso} días de atraso (vencía el ${f.plazo.vence ?? "?"})`
-          : `  overdue: ${f.plazo.atraso} days late (it was due on ${f.plazo.vence ?? "?"})`,
+          ? `  plazo vencido: ${plazo.atraso} días de atraso (vencía el ${plazo.vence ?? "?"})`
+          : `  overdue: ${plazo.atraso} days late (it was due on ${plazo.vence ?? "?"})`,
+      );
+    else if (plazo.estado === "en_plazo")
+      lineas.push(
+        es
+          ? `  en plazo: vence el ${plazo.vence ?? "?"}`
+          : `  on time: due on ${plazo.vence ?? "?"}`,
+      );
+    if (revision !== null)
+      lineas.push(
+        revision.estado === "toca_revisar"
+          ? es
+            ? `  toca revisar el riesgo aceptado (desde el ${revision.fecha})`
+            : `  the accepted risk is due for review (since ${revision.fecha})`
+          : es
+            ? `  riesgo aceptado: se revisa el ${revision.fecha}`
+            : `  accepted risk: reviewed on ${revision.fecha}`,
       );
     if (e.cierre !== null)
       lineas.push(
@@ -115,27 +143,29 @@ export function informeDeHallazgos(
   return `${lineas.join("\n")}\n`;
 }
 
+/** El JSON del listado: solo lo calculado, sin nombres del vocabulario (los navegadores deben reproducirlo bit a bit). */
 export function salidaJsonDeHallazgos(
-  filas: readonly FilaDeListadoDeHallazgo[],
+  filas: readonly Pick<FilaDeListadoDeHallazgo, "situacion">[],
   fecha: string,
 ) {
   return {
     fecha,
-    hallazgos: filas.map((f) => ({
-      id: f.evaluacion.id,
-      estado: f.evaluacion.estado,
-      cuenta_como_falla: f.evaluacion.cuentaComoFalla,
-      activo: f.evaluacion.activo,
-      prueba: f.evaluacion.prueba,
-      apertura: f.evaluacion.apertura,
-      cierre: f.evaluacion.cierre,
-      severidad: f.severidad,
-      plazo: f.plazo,
-      re_pruebas: f.evaluacion.candidatas.map((c) => ({
+    hallazgos: filas.map(({ situacion: s }) => ({
+      id: s.evaluacion.id,
+      estado: s.evaluacion.estado,
+      cuenta_como_falla: s.evaluacion.cuentaComoFalla,
+      activo: s.evaluacion.activo,
+      prueba: s.evaluacion.prueba,
+      apertura: s.evaluacion.apertura,
+      cierre: s.evaluacion.cierre,
+      severidad: s.severidad,
+      plazo: s.plazo,
+      revision_del_riesgo: s.revision,
+      re_pruebas: s.evaluacion.candidatas.map((c) => ({
         sobre: c.sobre.id,
         motivos: c.motivos,
       })),
-      por_confirmar: f.evaluacion.porConfirmar.map((s) => s.id),
+      por_confirmar: s.evaluacion.porConfirmar.map((x) => x.id),
     })),
   };
 }

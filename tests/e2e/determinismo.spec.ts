@@ -16,7 +16,7 @@ import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
 import { fechaMasDias } from "../../src/engine/fecha.ts";
 import type { huellaDelLibro } from "../../src/engine/evidencia/libro.ts";
 import type { salidaJsonDeHallazgos } from "../../src/engine/evidencia/informe.ts";
-import type { evaluarHallazgo } from "../../src/engine/hallazgos/ciclo.ts";
+import type { situacionDeHallazgo } from "../../src/engine/hallazgos/situacion.ts";
 import type { huella } from "../../src/engine/huella.ts";
 import type { planificar } from "../../src/engine/planificador/planificar.ts";
 
@@ -76,7 +76,7 @@ interface Motor {
   planificar: typeof planificar;
   huella: typeof huella;
   huellaDelLibro: typeof huellaDelLibro;
-  evaluarHallazgo: typeof evaluarHallazgo;
+  situacionDeHallazgo: typeof situacionDeHallazgo;
   salidaJsonDeHallazgos: typeof salidaJsonDeHallazgos;
 }
 
@@ -108,7 +108,13 @@ const leerCarpeta = (...partes: string[]) =>
     .filter((f) => f.endsWith(".json"))
     .sort()
     .map((f) => leerJson<unknown>(...partes, f));
-let entradaDelLibro: { sobres: unknown[]; hallazgos: unknown[]; fecha: string };
+let entradaDelLibro: {
+  sobres: unknown[];
+  hallazgos: unknown[];
+  escala: unknown;
+  plazos: unknown;
+  fecha: string;
+};
 let entradaDelPlan: {
   activos: Record<string, unknown>;
   instantanea: unknown;
@@ -197,6 +203,8 @@ test.beforeAll(async () => {
   entradaDelLibro = {
     sobres: leerCarpeta("datos", "evidencia", "demo").reverse(),
     hallazgos: leerCarpeta("datos", "hallazgos", "demo").reverse(),
+    escala: leerJson<unknown>("datos", "severidad", "escala-ia.json"),
+    plazos: leerJson<unknown>("datos", "hallazgos", "plazos.json"),
     fecha: FECHA_DEL_LIBRO,
   };
 
@@ -250,7 +258,7 @@ test.beforeAll(async () => {
         'export { huella } from "./src/engine/huella.ts";',
         'export { huellaDelLibro } from "./src/engine/evidencia/libro.ts";',
         'export { salidaJsonDeHallazgos } from "./src/engine/evidencia/informe.ts";',
-        'export { evaluarHallazgo } from "./src/engine/hallazgos/ciclo.ts";',
+        'export { situacionDeHallazgo } from "./src/engine/hallazgos/situacion.ts";',
       ].join("\n"),
       resolveDir: RAIZ,
       loader: "ts",
@@ -385,16 +393,18 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     const r = await page.evaluate(async (entrada) => {
       const motor = (globalThis as unknown as { MotorHackGuard: Motor }).MotorHackGuard;
       const libro = entrada.sobres as Parameters<typeof motor.huellaDelLibro>[0];
-      const hallazgos = entrada.hallazgos as Parameters<typeof motor.evaluarHallazgo>[0][];
+      const hallazgos = entrada.hallazgos as Parameters<typeof motor.situacionDeHallazgo>[0][];
+      const datos = {
+        escala: entrada.escala as Parameters<typeof motor.situacionDeHallazgo>[2]["escala"],
+        plazos: entrada.plazos as Parameters<typeof motor.situacionDeHallazgo>[2]["plazos"],
+        fecha: entrada.fecha,
+      };
       // El CLI lista por identificador de hallazgo; el navegador recibió la lista al revés y la ordena igual.
+      // La situación (estado, severidad, plazo y revisión) sale de la MISMA función del motor.
       const filas = [...hallazgos]
         .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
-        .map((h) => motor.evaluarHallazgo(h, libro))
-        .flatMap((e) =>
-          e.ok
-            ? [{ evaluacion: e.evaluacion, estado: { es: "", en: "" }, severidad: null, plazo: null }]
-            : [],
-        );
+        .map((h) => motor.situacionDeHallazgo(h, libro, datos))
+        .flatMap((r) => (r.ok ? [{ situacion: r.situacion }] : []));
       return {
         libro: await motor.huellaDelLibro(libro),
         hallazgos: await motor.huella(motor.salidaJsonDeHallazgos(filas, entrada.fecha).hallazgos),

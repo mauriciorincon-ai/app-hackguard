@@ -47,6 +47,8 @@ import {
   siguienteIdDeHallazgo,
 } from "../engine/hallazgos/apertura.ts";
 import { evaluarHallazgo } from "../engine/hallazgos/ciclo.ts";
+import { situacionDeHallazgo } from "../engine/hallazgos/situacion.ts";
+import { motivoDeVectorInvalido } from "../engine/severidad/cvss.ts";
 import {
   Hallazgo,
   type Evento,
@@ -63,8 +65,10 @@ import {
   CARPETA_DE_HALLAZGOS_PRIVADA,
   CARPETA_DE_SOBRES_DEMO,
   CARPETA_DE_SOBRES_PRIVADA,
+  cargarEscalaIa,
   cargarHallazgos,
   cargarPlanesEmitidos,
+  cargarPlazos,
   cargarSobres,
   escribirDato,
   origenDelActivo,
@@ -155,6 +159,7 @@ async function cargarLibro(raiz: string) {
   const hallazgos = validarHallazgos(archivosDeHallazgos, {
     libro: sobres.sobres,
     pruebas: contexto.pruebas,
+    vectorInvalido: motivoDeVectorInvalido,
   });
   return {
     instantanea,
@@ -419,6 +424,7 @@ async function principal(argv: string[]): Promise<number> {
             sobre: s,
           })),
           pruebas: L.contexto.pruebas,
+          vectorInvalido: motivoDeVectorInvalido,
         },
       );
       const suyos = prueba2.hallazgos.filter((h) => h.ruta === ruta);
@@ -476,19 +482,32 @@ async function principal(argv: string[]): Promise<number> {
   if (o.comando === "hallazgos-listar") {
     const fecha = requerido(o.fecha, "--fecha AAAA-MM-DD");
     const libro = L.sobres.sobres.map((s) => s.sobre);
+    const datos = {
+      escala: cargarEscalaIa(raiz),
+      plazos: cargarPlazos(raiz),
+      fecha,
+    };
     const filas: FilaDeListadoDeHallazgo[] = [];
     for (const h of L.hallazgos.validos) {
-      const r = evaluarHallazgo(h, libro);
-      if (!r.ok) continue;
+      const r = situacionDeHallazgo(h, libro, datos);
+      if (!r.ok) {
+        // Un sobre de origen que no cuenta ya lo dijo la validación; la fecha o el vector sí son cosa de quien pregunta.
+        if (r.motivo.startsWith("fecha_anterior"))
+          throw new ErrorDeUso(`--fecha: ${r.motivo} (${r.detalle})`);
+        continue;
+      }
       filas.push({
-        evaluacion: r.evaluacion,
+        situacion: r.situacion,
         estado: nombreDeEstado(
           L.instantanea,
           "estado_de_hallazgo",
-          r.evaluacion.estado,
+          r.situacion.evaluacion.estado,
         ),
-        severidad: null,
-        plazo: null,
+        nivel: nombreDeEstado(
+          L.instantanea,
+          "severidad",
+          r.situacion.severidad.nivel,
+        ),
       });
     }
     if (o.json) {
@@ -573,7 +592,11 @@ async function principal(argv: string[]): Promise<number> {
       L.archivosDeHallazgos.map((a) =>
         a.ruta === archivo.ruta ? { ruta: a.ruta, texto } : a,
       ),
-      { libro: L.sobres.sobres, pruebas: L.contexto.pruebas },
+      {
+        libro: L.sobres.sobres,
+        pruebas: L.contexto.pruebas,
+        vectorInvalido: motivoDeVectorInvalido,
+      },
     );
     const suyos = prueba.hallazgos.filter((x) => x.ruta === archivo.ruta);
     if (suyos.some((x) => x.severidad === "error")) {

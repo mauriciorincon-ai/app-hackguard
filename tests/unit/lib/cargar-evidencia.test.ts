@@ -6,6 +6,7 @@ import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { MOTIVOS_DE_RECHAZO } from "../../../src/engine/hallazgos/esquemas.ts";
 import {
+  cargarEscalaIa,
   cargarEtiquetasDeHallazgo,
   cargarHallazgos,
   cargarHallazgosPublicos,
@@ -92,6 +93,27 @@ describe("los datos que gobiernan a los hallazgos", () => {
       expect(x.rol, x.id).toBeTruthy();
       expect(x.simbolo, x.id).toBeTruthy();
     }
+  });
+});
+
+describe("la escala de severidad de IA", () => {
+  it("la tabla de datos carga validada", () => {
+    expect(cargarEscalaIa(RAIZ).version).toBe("1");
+  });
+  it("una tabla que viola el piso no se carga: dice qué regla y dónde", () => {
+    const raiz = tmp();
+    mkdirSync(path.join(raiz, "datos/severidad"), { recursive: true });
+    const tabla = JSON.parse(readFileSync(path.join(RAIZ, "datos/severidad/escala-ia.json"), "utf8"));
+    tabla.tabla.find((f: { impacto: number }) => f.impacto === 4).niveles[0] = "medio";
+    writeFileSync(path.join(raiz, "datos/severidad/escala-ia.json"), JSON.stringify(tabla));
+    expect(() => cargarEscalaIa(raiz)).toThrow(/escala\/viola-piso \(impacto 4, banda 1: medio < alto\)/);
+  });
+  it("una tabla con un campo de más no cumple el esquema", () => {
+    const raiz = tmp();
+    mkdirSync(path.join(raiz, "datos/severidad"), { recursive: true });
+    const tabla = JSON.parse(readFileSync(path.join(RAIZ, "datos/severidad/escala-ia.json"), "utf8"));
+    writeFileSync(path.join(raiz, "datos/severidad/escala-ia.json"), JSON.stringify({ ...tabla, suma: 1 }));
+    expect(() => cargarEscalaIa(raiz)).toThrow();
   });
 });
 

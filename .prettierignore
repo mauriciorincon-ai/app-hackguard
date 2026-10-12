@@ -16,3 +16,5 @@ docs/*.plantilla.*
 datos/instantaneas/
 # Anexo de reglas del kit: se mantiene con el formato del kit.
 docs/REGLAS-ANEXO.md
+# Código de FIRST copiado sin tocar un byte y el módulo que lo envuelve (scripts/severidad/vendor-first.mjs): un formateador cambiaría sus huellas.
+src/engine/severidad/vendor/
