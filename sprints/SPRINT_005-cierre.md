@@ -1,5 +1,5 @@
 ---
-sprint: 005 · app: hackguard · hito: H-1 · opened: 2026-10-11 · closed: 2026-10-11 · branch: sprint-005/sobre-al-hallazgo · pr: pendiente
+sprint: 005 · app: hackguard · hito: H-1 · opened: 2026-10-11 · closed: 2026-10-11 · branch: sprint-005/sobre-al-hallazgo · pr: #17
 ---
 
 # Sprint 005 — «Del sobre al hallazgo»
