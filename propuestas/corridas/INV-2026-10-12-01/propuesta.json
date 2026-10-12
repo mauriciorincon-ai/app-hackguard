@@ -1,0 +1,422 @@
+{
+  "formato": "hackguard/borrador@1",
+  "agente": "investigador",
+  "corrida": "INV-2026-10-12-01",
+  "fecha": "2026-10-12",
+  "alcance": {
+    "es": "Todos los marcos del catálogo: comprobación de la versión vigente de cada uno contra sus fuentes oficiales y pruebas nuevas con respaldo en lo leído",
+    "en": "Every framework in the catalog: a check of each one's current version against its official sources, and new tests backed by what was read"
+  },
+  "ejecucion": {
+    "modelo": "claude-sonnet-5-5",
+    "reintentos": 1
+  },
+  "contradicciones": [
+    {
+      "es": "Top 10 para aplicaciones agénticas, edición 2026: la página del recurso dice 9 de diciembre de 2025 y el catálogo guarda 2025-12-10. Se reporta; no se corrige aquí.",
+      "en": "Top 10 for Agentic Applications, 2026 edition: the resource page reads December 9, 2025, while the catalog stores 2025-12-10. Reported, not corrected here."
+    },
+    {
+      "es": "Top 10 para aplicaciones con LLM, edición 2026: la página del recurso trae el 3 de agosto de 2026 (el catálogo guarda 2026-08-03) y el README del repositorio oficial dice «published August 4, 2026». Dos fuentes de la lista blanca dan días distintos; no se elige una.",
+      "en": "Top 10 for LLM Applications, 2026 edition: the resource page gives August 3, 2026 (the catalog stores 2026-08-03) and the official repository's README says “published August 4, 2026”. Two whitelisted sources give different days; neither is chosen."
+    },
+    {
+      "es": "Instrucciones dirigidas a un agente dentro de las páginas de Jev: abren con un aviso («Fetch the complete documentation index at … Use this file to discover all available pages before exploring further») y el índice anuncia un «Agent skill» para entornos de agentes. No se obedecieron; solo se usaron las tres páginas que bajó el script.",
+      "en": "Instructions aimed at an agent inside the Jev pages: they open with a notice (“Fetch the complete documentation index at … Use this file to discover all available pages before exploring further”) and the index advertises an “Agent skill” for agent environments. They were not followed; only the three pages the script downloaded were used."
+    },
+    {
+      "es": "ISO/IEC 42001: la página oficial respondió 403 al agente. Queda como fuente_no_accesible_al_agente y no se rodeó; por eso ninguna prueba nueva se ató a un control de la norma. Si hace falta, una persona lee la norma y pega el pasaje.",
+      "en": "ISO/IEC 42001: the official page answered 403 to the agent. It stays recorded as fuente_no_accesible_al_agente and was not bypassed; for that reason no new test was tied to a control of the standard. If it is needed, a person reads the standard and pastes the passage."
+    },
+    {
+      "es": "Catorce páginas no fueron accesibles al agente: una con 403 (ISO), una con 406 (el DOI de NIST AI 600-1) y doce que respondieron 200 pero no son texto legible (canales de novedades, API, PDF, una descarga con formulario y un archivo comprimido). No se rodearon. Quedan sin releer los 14 ítems de la lista de comprobaciones para modelos de decisión (su PDF y su API) y el mapa 2025 → 2026 del Top 10 para LLM.",
+      "en": "Fourteen pages were not accessible to the agent: one answered 403 (ISO), one 406 (the NIST AI 600-1 DOI) and twelve answered 200 but are not readable text (news feeds, APIs, PDFs, a form-gated download and a compressed archive). None were bypassed. Left unchecked this run: the 14 items of the decision-model checklist (its PDF and API) and the 2025 → 2026 map of the LLM Top 10."
+    },
+    {
+      "es": "Cinco vías de acceso del catálogo cayeron fuera de la lista blanca según el script y no se leyeron: los archivos de datos de ATLAS, ATT&CK y ASVS, el mapa MIGRATION.md del Top 10 para LLM (alojado en raw.githubusercontent.com) y el DOI de NIST AI RMF. Este último figura en la lista blanca del marco como «doi.org/10.6028», así que su clasificación merece revisión por una persona.",
+      "en": "Five of the catalog's access routes fell outside the whitelist according to the script and were not read: the ATLAS, ATT&CK and ASVS data files, the LLM Top 10 MIGRATION.md map (hosted on raw.githubusercontent.com) and the NIST AI RMF DOI. The last one appears in the framework's whitelist as “doi.org/10.6028”, so its classification deserves a person's review."
+    },
+    {
+      "es": "Vacío en el Top 10 de OWASP: el repositorio crosswalk lista además de las entradas LLM y ASI otras familias (AST01 a AST10 y DSGAI01 a DSGAI21). La página solo muestra nombres de archivo, sin títulos ni contenido, y no hay base para proponer nada sobre ellas.",
+      "en": "Gap in the OWASP material: besides the LLM and ASI entries, the crosswalk repository lists other families (AST01 to AST10 and DSGAI01 to DSGAI21). The page only shows file names, with no titles or content, so there is no basis to propose anything about them."
+    },
+    {
+      "es": "NIST: la página del AI RMF da el día de publicación del AI 600-1 (26 de julio de 2024) y el catálogo guarda solo 2024-07. Además anuncia una nota conceptual del 7 de abril de 2026 para un perfil del AI RMF en infraestructura crítica, que el catálogo no recoge. El AI RMF 1.0 sigue vigente y en revisión.",
+      "en": "NIST: the AI RMF page gives the publication day of AI 600-1 (July 26, 2024) while the catalog stores only 2024-07. It also announces an April 7, 2026 concept note for an AI RMF profile on critical infrastructure, which the catalog does not track. AI RMF 1.0 remains current and under revision."
+    },
+    {
+      "es": "Límite de esta corrida: no pude listar la carpeta de pruebas; abrí por nombre tres vigentes del modelo de decisión (calibración, estado como entrada no confiable y cruce de umbral) y ninguna repite las tres propuestas, pero otras pueden existir bajo códigos que no probé. El verificador solo compara identificadores. Tampoco abrí los controles: las tres pruebas llevan control_pendiente.",
+      "en": "Limit of this run: I could not list the tests folder; I opened three current decision-model tests by name (calibration, state as untrusted input and threshold crossing) and none repeats the three proposals, but others may exist under codes I did not try. The verifier only compares identifiers. I did not open the controls either: the three tests carry control_pendiente."
+    }
+  ],
+  "propuestas": [
+    {
+      "ref": "fechas-en-codigo",
+      "tipo": "prueba_nueva",
+      "titulo": {
+        "es": "Las fechas se ordenan y se miden en código, no en el modelo",
+        "en": "Dates are ordered and measured in code, not by the model"
+      },
+      "resumen": {
+        "es": "Prueba para modelos de decisión tipados: la comparación entre fechas la calcula el código, y el modelo solo lee qué fecha dice el texto.",
+        "en": "Test for typed decision models: date comparisons are computed by code, and the model only reads which date the text states."
+      },
+      "prueba": {
+        "id": "PR-MD-FEC-001",
+        "nombre": {
+          "es": "Las fechas se ordenan y se miden en código, no en el modelo",
+          "en": "Dates are ordered and measured in code, not by the model"
+        },
+        "familia": "modelo_decision",
+        "categoria": "valido_pero_equivocado",
+        "que_verifica": {
+          "es": "Que toda comparación entre fechas (cuál va primero, cuánto distan, si una cae dentro de una ventana) la haga el código a partir de partes ya extraídas, y que al modelo solo se le pida leer qué fecha dice el texto, con una opción explícita para «no se menciona».",
+          "en": "That every comparison between dates (which comes first, how far apart they are, whether one falls inside a window) is made by code from parts already extracted, and that the model is only asked to read which date the text states, with an explicit option for “not stated”."
+        },
+        "por_que_importa": {
+          "es": "El modelo lee las fechas como texto, no como cantidades ordenadas. Un orden equivocado sigue siendo una respuesta bien formada, así que la decisión sale mal sin que nada parezca fallar.",
+          "en": "The model reads dates as text, not as ordered quantities. A wrong ordering is still a well-formed answer, so the decision goes wrong with nothing appearing to fail."
+        },
+        "marco_id": "typesafe-jev",
+        "version_marco": "jev-1.13",
+        "referencia_en_marco": "date-and-time-comparison",
+        "controles": [],
+        "control_pendiente": true,
+        "herramientas_recomendadas": [
+          {
+            "herramienta": "hackguard-revision",
+            "entorno": "portatil",
+            "selector": {
+              "tipo": "revision",
+              "que_se_revisa": {
+                "es": "Los puntos del código y de las preguntas al modelo donde aparece una fecha: quién ordena, resta o compara, y si existe una opción «no se menciona» para la parte que falte.",
+                "en": "The places in the code and in the questions to the model where a date appears: who orders, subtracts or compares, and whether a “not stated” option exists for a missing part."
+              }
+            }
+          }
+        ],
+        "resultado_esperado": {
+          "descripcion": {
+            "es": "La revisión encuentra que ninguna pregunta le pide al modelo ordenar, restar ni comparar fechas, y que cada parte faltante se reporta como no declarada en lugar de adivinarse.",
+            "en": "The review finds that no question asks the model to order, subtract or compare dates, and that each missing part is reported as not stated instead of being guessed."
+          },
+          "medido_con": "hackguard-revision"
+        },
+        "criterio_de_veredicto": {
+          "regla": "revision_de_diseno",
+          "descripcion": {
+            "es": "«Superada» si todas las comparaciones de fechas ocurren en código y quien revisa lo deja escrito; «fallida» si encuentra una pregunta que le pide al modelo ordenar, medir o comparar fechas.",
+            "en": "“Passed” if every date comparison happens in code and the reviewer writes it down; “failed” if they find a question that asks the model to order, measure or compare dates."
+          }
+        },
+        "aplicabilidad": {
+          "modo": "todas",
+          "condiciones": [
+            {
+              "rasgo": "devuelve_decision_tipada",
+              "valor": true
+            }
+          ],
+          "descripcion": {
+            "es": "Aplica si la aplicación decide con un modelo de decisión tipado y alguna de sus preguntas depende de fechas.",
+            "en": "Applies if the application decides with a typed decision model and any of its questions depends on dates."
+          }
+        },
+        "prioridad_base": 3,
+        "madurez": "propia",
+        "fuentes": [
+          {
+            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "Jev 1.13 jaggedness"
+          },
+          {
+            "url": "https://docs.typesafe.ai/llms.txt",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "TypeSafe AI documentation index"
+          }
+        ],
+        "fecha_verificacion": "2026-10-12",
+        "estado_aprobacion": "propuesta",
+        "revision_contenido": "limpia"
+      },
+      "fuentes": [
+        {
+          "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+          "nombre": "Jev 1.13 jaggedness · Date and time comparison",
+          "fragmento": "Asking which of two dates comes first, how far apart they are, or whether one",
+          "huella_de_la_pagina": "b39b33697cc67062212615ce66c24c9e7b8c8fb298e887765ab13a7abb25dd59",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "sección «Date and time comparison»",
+            "en": "section “Date and time comparison”"
+          }
+        },
+        {
+          "url": "https://docs.typesafe.ai/llms.txt",
+          "nombre": "TypeSafe AI · índice de la documentación (cookbook de extracción de fechas)",
+          "fragmento": "relative dates by asking TypeSafe for the parts named in a document, then resolving and validating",
+          "huella_de_la_pagina": "d7215d81a5561e34d60bddff20683e62175cbcaa072af0cf9d2e02705203934c",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "índice de la documentación del fabricante",
+            "en": "vendor documentation index"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "estado-filtrado-y-acotado",
+      "tipo": "prueba_nueva",
+      "titulo": {
+        "es": "El estado que recibe el modelo se filtra antes y cabe en el límite documentado",
+        "en": "The state sent to the model is filtered first and fits the documented limit"
+      },
+      "resumen": {
+        "es": "Prueba para modelos de decisión tipados: el código reduce el estado a lo que la pregunta necesita y comprueba su tamaño antes de enviarlo.",
+        "en": "Test for typed decision models: the code reduces the state to what the question needs and checks its size before sending it."
+      },
+      "prueba": {
+        "id": "PR-MD-TAM-001",
+        "nombre": {
+          "es": "El estado que recibe el modelo se filtra antes y cabe en el límite documentado",
+          "en": "The state sent to the model is filtered first and fits the documented limit"
+        },
+        "familia": "modelo_decision",
+        "categoria": "valido_pero_equivocado",
+        "que_verifica": {
+          "es": "Que el código filtre el estado antes de cada petición y envíe solo los campos que la pregunta necesita, que estado y preguntas sumen menos que el presupuesto de contexto documentado para la versión en uso, y que esté escrito qué hace la aplicación cuando algo no cabe.",
+          "en": "That the code filters the state before each request and sends only the fields the question needs, that state and questions together stay under the context budget documented for the version in use, and that it is written down what the application does when something does not fit."
+        },
+        "por_que_importa": {
+          "es": "El detalle que no viene al caso distrae al modelo: la exactitud baja a medida que el estado crece, y con un estado grande cuesta saber qué parte produjo una respuesta equivocada.",
+          "en": "Irrelevant detail distracts the model: accuracy drops as the state grows, and with a large state it is hard to tell which part produced a wrong answer."
+        },
+        "marco_id": "typesafe-jev",
+        "version_marco": "jev-1.13",
+        "referencia_en_marco": "large-state",
+        "controles": [],
+        "control_pendiente": true,
+        "herramientas_recomendadas": [
+          {
+            "herramienta": "hackguard-revision",
+            "entorno": "portatil",
+            "selector": {
+              "tipo": "revision",
+              "que_se_revisa": {
+                "es": "Cómo se arma el estado de cada petición: qué campos se eligen, quién los filtra y cuánto ocupa frente al presupuesto de contexto de la versión en uso.",
+                "en": "How the state of each request is built: which fields are chosen, who filters them and how much room they take against the context budget of the version in use."
+              }
+            }
+          }
+        ],
+        "resultado_esperado": {
+          "descripcion": {
+            "es": "La revisión encuentra que el código reduce el estado a lo que la pregunta necesita, que el tamaño se comprueba antes de enviar y que el caso de «no cabe» está definido sin recortar en silencio.",
+            "en": "The review finds that the code reduces the state to what the question needs, that the size is checked before sending, and that the “does not fit” case is defined without trimming silently."
+          },
+          "medido_con": "hackguard-revision"
+        },
+        "criterio_de_veredicto": {
+          "regla": "revision_de_diseno",
+          "descripcion": {
+            "es": "«Superada» si el estado se filtra en código, el tamaño se comprueba antes de enviar y el caso de «no cabe» está definido; «fallida» si falta alguna de las tres cosas y quien revisa lo deja escrito.",
+            "en": "“Passed” if the state is filtered in code, the size is checked before sending and the “does not fit” case is defined; “failed” if any of the three is missing and the reviewer writes it down."
+          }
+        },
+        "aplicabilidad": {
+          "modo": "todas",
+          "condiciones": [
+            {
+              "rasgo": "devuelve_decision_tipada",
+              "valor": true
+            }
+          ],
+          "descripcion": {
+            "es": "Aplica si la aplicación manda al modelo de decisión un estado armado con datos de varias fuentes.",
+            "en": "Applies if the application sends the decision model a state built from data of several sources."
+          }
+        },
+        "prioridad_base": 3,
+        "madurez": "propia",
+        "fuentes": [
+          {
+            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "Jev 1.13 jaggedness"
+          },
+          {
+            "url": "https://docs.typesafe.ai/llms.txt",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "TypeSafe AI documentation index"
+          },
+          {
+            "url": "https://docs.typesafe.ai/models.md",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "Models"
+          }
+        ],
+        "fecha_verificacion": "2026-10-12",
+        "estado_aprobacion": "propuesta",
+        "revision_contenido": "limpia"
+      },
+      "fuentes": [
+        {
+          "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+          "nombre": "Jev 1.13 jaggedness · Large state full of irrelevant detail",
+          "fragmento": "Accuracy falls as the state grows with content unrelated to the decision.",
+          "huella_de_la_pagina": "b39b33697cc67062212615ce66c24c9e7b8c8fb298e887765ab13a7abb25dd59",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "sección «Large state full of irrelevant detail»",
+            "en": "section “Large state full of irrelevant detail”"
+          }
+        },
+        {
+          "url": "https://docs.typesafe.ai/llms.txt",
+          "nombre": "TypeSafe AI · índice de la documentación (cookbook de pasajes de RAG)",
+          "fragmento": "then decide in code which ones reach the answering model.",
+          "huella_de_la_pagina": "d7215d81a5561e34d60bddff20683e62175cbcaa072af0cf9d2e02705203934c",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "índice de la documentación del fabricante",
+            "en": "vendor documentation index"
+          }
+        },
+        {
+          "url": "https://docs.typesafe.ai/models.md",
+          "nombre": "Models · Context length",
+          "fragmento": "The 64k budget covers the `state` plus all questions",
+          "huella_de_la_pagina": "d8b55d864659e8e36e584ab41efd531c0cf14a79328356be6b5c7bb498b9befa",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "página de modelos, límites de contexto",
+            "en": "models page, context limits"
+          }
+        }
+      ]
+    },
+    {
+      "ref": "aritmetica-en-codigo",
+      "tipo": "prueba_nueva",
+      "titulo": {
+        "es": "El conteo y la aritmética quedan en código y la probabilidad solo se compara con un umbral",
+        "en": "Counting and arithmetic stay in code, and the probability is only compared with a threshold"
+      },
+      "resumen": {
+        "es": "Prueba para modelos de decisión tipados: ninguna cuenta exacta se le pide al modelo, y sus probabilidades se usan para pasar un umbral, no para reconstruir cantidades.",
+        "en": "Test for typed decision models: no exact calculation is asked of the model, and its probabilities are used to pass a threshold, not to reconstruct quantities."
+      },
+      "prueba": {
+        "id": "PR-MD-ARI-001",
+        "nombre": {
+          "es": "El conteo y la aritmética quedan en código y la probabilidad solo se compara con un umbral",
+          "en": "Counting and arithmetic stay in code, and the probability is only compared with a threshold"
+        },
+        "familia": "modelo_decision",
+        "categoria": "valido_pero_equivocado",
+        "que_verifica": {
+          "es": "Que ninguna pregunta le pida al modelo contar, sumar o calcular una cantidad exacta, que esas cuentas las haga el código sobre respuestas individuales, y que las probabilidades del modelo se usen solo para decidir si se pasa un umbral, nunca para reconstruir una magnitud por interpolación.",
+          "en": "That no question asks the model to count, add or work out an exact quantity, that those calculations are done by code over individual answers, and that the model's probabilities are used only to decide whether a threshold is passed, never to reconstruct a magnitude by interpolation."
+        },
+        "por_que_importa": {
+          "es": "El modelo reconoce la forma de una respuesta numérica en lugar de calcularla, y el error crece con el tamaño de lo que se cuenta. Un número plausible pero inexacto entra al flujo como si fuera un dato.",
+          "en": "The model recognizes the shape of a numeric answer instead of working it out, and the error grows with the size of what is counted. A plausible but inexact number enters the flow as if it were data."
+        },
+        "marco_id": "typesafe-jev",
+        "version_marco": "jev-1.13",
+        "referencia_en_marco": "math-and-numbers",
+        "controles": [],
+        "control_pendiente": true,
+        "herramientas_recomendadas": [
+          {
+            "herramienta": "hackguard-revision",
+            "entorno": "portatil",
+            "selector": {
+              "tipo": "revision",
+              "que_se_revisa": {
+                "es": "Las preguntas al modelo y el código que usa sus respuestas: dónde se cuenta, se suma o se interpola, y si esa operación la hace el código.",
+                "en": "The questions to the model and the code that uses its answers: where things are counted, added or interpolated, and whether the code performs that operation."
+              }
+            }
+          }
+        ],
+        "resultado_esperado": {
+          "descripcion": {
+            "es": "La revisión encuentra que toda operación numérica exacta está en el código y que las probabilidades del modelo solo se comparan contra un umbral declarado.",
+            "en": "The review finds that every exact numeric operation is in the code and that the model's probabilities are only compared against a declared threshold."
+          },
+          "medido_con": "hackguard-revision"
+        },
+        "criterio_de_veredicto": {
+          "regla": "revision_de_diseno",
+          "descripcion": {
+            "es": "«Superada» si ninguna cuenta exacta se delega al modelo y ninguna probabilidad se interpola para obtener una cantidad; «fallida» si encuentra una de las dos cosas.",
+            "en": "“Passed” if no exact calculation is delegated to the model and no probability is interpolated to obtain a quantity; “failed” if they find either."
+          }
+        },
+        "aplicabilidad": {
+          "modo": "todas",
+          "condiciones": [
+            {
+              "rasgo": "devuelve_decision_tipada",
+              "valor": true
+            }
+          ],
+          "descripcion": {
+            "es": "Aplica si la aplicación usa respuestas del modelo de decisión para contar, sumar o estimar cantidades.",
+            "en": "Applies if the application uses the decision model's answers to count, add or estimate quantities."
+          }
+        },
+        "prioridad_base": 3,
+        "madurez": "propia",
+        "fuentes": [
+          {
+            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "Jev 1.13 jaggedness"
+          },
+          {
+            "url": "https://docs.typesafe.ai/llms.txt",
+            "http": 200,
+            "consultada": "2026-10-12",
+            "titulo": "TypeSafe AI documentation index"
+          }
+        ],
+        "fecha_verificacion": "2026-10-12",
+        "estado_aprobacion": "propuesta",
+        "revision_contenido": "limpia"
+      },
+      "fuentes": [
+        {
+          "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+          "nombre": "Jev 1.13 jaggedness · Math and Numbers",
+          "fragmento": "Jev is not a calculator.",
+          "huella_de_la_pagina": "b39b33697cc67062212615ce66c24c9e7b8c8fb298e887765ab13a7abb25dd59",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "sección «Math and Numbers»",
+            "en": "section “Math and Numbers”"
+          }
+        },
+        {
+          "url": "https://docs.typesafe.ai/llms.txt",
+          "nombre": "TypeSafe AI · índice de la documentación (patrón de puntuación compuesta)",
+          "fragmento": "atomic scores, combine with weights you control in code.",
+          "huella_de_la_pagina": "d7215d81a5561e34d60bddff20683e62175cbcaa072af0cf9d2e02705203934c",
+          "leida": "2026-10-12",
+          "donde": {
+            "es": "índice de la documentación del fabricante",
+            "en": "vendor documentation index"
+          }
+        }
+      ]
+    }
+  ]
+}
