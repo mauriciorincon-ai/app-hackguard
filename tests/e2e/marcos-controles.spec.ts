@@ -67,11 +67,25 @@ test.describe("/catalogo/marcos", () => {
     await expect(oficial).toContainText("Oficial");
   });
 
-  test("la página dice que no hay avisos de versión, sin prometer una fecha", async ({
+  test("los avisos de versión salen de la bandeja: cada uno enlaza a su propuesta y ninguna frase promete algo para después", async ({
     page,
   }) => {
-    await expect(page.getByText("Sin avisos registrados")).toBeVisible();
+    // Con las corridas selladas del repositorio hay al menos una versión nueva por decidir (PROP-0032): sale en la sección y en la
+    // fila de su marco, con el enlace a su tarjeta en la bandeja. La sección vacía («Sin avisos registrados») solo existe sin avisos.
+    const avisos = page.locator("[data-avisos] [data-aviso-de-version]");
+    await expect(avisos.first()).toBeVisible();
+    for (const aviso of await avisos.all())
+      await expect(aviso.locator("a")).toHaveAttribute(
+        "href",
+        /^\/catalogo\/propuestas#prop-\d+$/,
+      );
+    const marco = await avisos.first().getAttribute("data-aviso-de-version");
+    await expect(
+      page.locator(`tr [data-aviso-de-version="${marco}"]`),
+    ).toBeVisible();
+    await expect(page.getByText("Sin avisos registrados")).toHaveCount(0);
     await expect(page.getByText("Sin aviso registrado").first()).toBeVisible();
+    await expect(page.getByText(/todavía no existe/i)).toHaveCount(0);
   });
 
   test("sin desborde horizontal a 380 px", async ({ page }) => {
