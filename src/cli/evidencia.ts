@@ -468,8 +468,11 @@ async function principal(argv: string[]): Promise<number> {
     for (const n of nuevosSobres)
       escribirDato(raiz, n.ruta, n.texto, origen === "propio");
     escribirDato(raiz, rutaDelLote, json(armado.lote), origen === "propio");
-    const veredictos = new Map(armado.sobres.map((x) => [x.id, x.veredicto]));
-    const revision = await revisionDelLote(armado.lote, veredictos, L.muestreo);
+    const revision = await revisionDelLote(
+      armado.lote,
+      new Map(armado.sobres.map((x) => [x.id, x])),
+      L.muestreo,
+    );
     const cuenta = (v: string) =>
       armado.sobres.filter((x) => x.veredicto === v).length;
     escribirTexto(

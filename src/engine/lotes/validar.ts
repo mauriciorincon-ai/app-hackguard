@@ -361,10 +361,9 @@ export async function validarLotes(
         if (c.revisados.length > 0 || c.separados.length > 0)
           agregar("lote/decision-incoherente", ruta, "confirmacion.decision");
       } else if (delLote.length === l.sobres.length) {
-        const veredictos = new Map(delLote.map((s) => [s.id, s.veredicto]));
         const revision = await revisionDelLote(
           l,
-          veredictos,
+          new Map(delLote.map((s) => [s.id, s])),
           contexto.muestreo,
         );
         if (

@@ -94,6 +94,18 @@ describe("la vista de la carga con los dos lotes demo", () => {
     expect(s.hallazgo?.estado.nombre.es).toBe("Corregido, falta la re-prueba");
   });
 
+  it("B2: la re-prueba SOB-0036 se revisa siempre aunque sea una superada, y el lote cuenta dos obligatorias", () => {
+    expect(sobre(v, "LOTE-0008", "SOB-0036").revision).toBe("siempre");
+    expect(sobre(v, "LOTE-0008", "SOB-0035").revision).toBe("muestra");
+    const l8 = v.lotes[1]!;
+    expect(l8.obligatorias).toBe(2);
+    expect(l8.rePruebas).toEqual(["SOB-0036"]);
+    expect(l8.resto).toBe(1);
+    expect(l8.muestra).toBe(1);
+    // LOTE-0007 no trae ninguna re-prueba: su cuenta no cambia.
+    expect(v.lotes[0]!.rePruebas).toEqual([]);
+  });
+
   it("el plan de muestreo se dice por tramos: 25 o menos, todos; después 22, 25, 26 y 29", () => {
     expect(v.muestreo.filas).toEqual([
       { desde: 1, hasta: 25, muestra: null },

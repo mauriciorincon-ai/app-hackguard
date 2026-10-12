@@ -1,0 +1,308 @@
+{
+  "proposito": {
+    "es": "Semillas de la validación del instrumento para el libro y la brecha (C18, RF-10.3 y E-6). Cada una toma el mundo demo, cambia uno o dos sobres y dice qué debe responder el motor: un cierre prohibido se niega nombrando su motivo, una propuesta no cuenta, aceptar un riesgo no cierra y «no detectado» no cuenta como verificado. Ninguna lleva carga ni procedimiento: solo cambia fechas, versiones y veredictos de sobres que ya existen.",
+    "en": "Seeds for the instrument validation of the ledger and the gap (C18, RF-10.3 and E-6). Each takes the demo world, changes one or two envelopes and states what the engine must answer: a forbidden closure is denied naming its reason, a proposal does not count, accepting a risk does not close it and “not detected” does not count as verified. None carries a payload or a procedure: they only change dates, versions and verdicts of envelopes that already exist."
+  },
+  "como_correr": {
+    "es": "pnpm vitest run tests/unit/instrumento/semillas-de-cierre.test.ts",
+    "en": "pnpm vitest run tests/unit/instrumento/semillas-de-cierre.test.ts"
+  },
+  "semillas": [
+    {
+      "id": "CIERRE-PROPUESTA-NO-CUENTA",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "La re-prueba de HZ-0009 (SOB-0036) existe, pero nadie la ha confirmado. El hallazgo sigue corregido y la prueba sigue con su último resultado confirmado.",
+        "en": "The retest of HZ-0009 (SOB-0036) exists, but nobody has confirmed it. The finding stays fixed-but-open and the test keeps its latest confirmed result."
+      },
+      "sobres": [],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0009",
+            "estado": "corregido"
+          }
+        ],
+        "por_confirmar": [
+          {
+            "hallazgo": "HZ-0009",
+            "sobres": ["SOB-0036"]
+          }
+        ],
+        "filas": [
+          {
+            "activo": "act-demo-asistente",
+            "prueba": "PR-SW-CSP-001",
+            "sobre": "SOB-0021",
+            "ejecutada": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-REPRUEBA-NO-EJECUTADA",
+      "requisito": "E-6",
+      "que_siembra": {
+        "es": "La re-prueba de HZ-0009 se confirma, pero la herramienta no tiene constancia de haber corrido la regla (no ejecutada). «No detectado» no es «verificado»: el hallazgo no se cierra, queda re-probado y sigue contando como falla.",
+        "en": "The retest of HZ-0009 is confirmed, but the tool has no proof that it ran the rule (not run). “Not detected” is not “verified”: the finding does not close, it stays retested and still counts as a failure."
+      },
+      "sobres": [
+        {
+          "id": "SOB-0036",
+          "cambios": {
+            "veredicto": "no_ejecutada",
+            "resultado.ejecutada": false,
+            "confirmacion": {
+              "por": "Revisora demo",
+              "fecha": "2026-10-03",
+              "modo": "individual"
+            }
+          }
+        }
+      ],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0009",
+            "estado": "re_probado"
+          }
+        ],
+        "candidatas": [
+          {
+            "hallazgo": "HZ-0009",
+            "sobre": "SOB-0036",
+            "motivos": ["no_ejecutada"]
+          }
+        ],
+        "filas": [
+          {
+            "activo": "act-demo-asistente",
+            "prueba": "PR-SW-CSP-001",
+            "sobre": "SOB-0036",
+            "ejecutada": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-REPRUEBA-ANTERIOR-A-LA-CORRECCION",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "La re-prueba de HZ-0009 se confirma con fecha anterior a la corrección (28 de septiembre). Una prueba que pasó antes de arreglar nada no prueba el arreglo: el hallazgo queda re-probado, no cerrado.",
+        "en": "The retest of HZ-0009 is confirmed dated before the fix (28 September). A test that passed before anything was fixed does not prove the fix: the finding stays retested, not closed."
+      },
+      "sobres": [
+        {
+          "id": "SOB-0036",
+          "cambios": {
+            "fecha": "2026-09-27",
+            "confirmacion": {
+              "por": "Revisora demo",
+              "fecha": "2026-10-03",
+              "modo": "individual"
+            }
+          }
+        }
+      ],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0009",
+            "estado": "re_probado"
+          }
+        ],
+        "candidatas": [
+          {
+            "hallazgo": "HZ-0009",
+            "sobre": "SOB-0036",
+            "motivos": ["anterior_a_la_correccion"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-REPRUEBA-OTRA-VERSION",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "La re-prueba de HZ-0009 se confirma, pero con otra versión exacta de la herramienta que la falla original. La re-prueba usa la misma configuración: el hallazgo queda re-probado, no cerrado.",
+        "en": "The retest of HZ-0009 is confirmed, but with another exact tool version than the original failure. A retest uses the same configuration: the finding stays retested, not closed."
+      },
+      "sobres": [
+        {
+          "id": "SOB-0036",
+          "cambios": {
+            "herramienta.version": "2.16.0",
+            "confirmacion": {
+              "por": "Revisora demo",
+              "fecha": "2026-10-03",
+              "modo": "individual"
+            }
+          }
+        }
+      ],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0009",
+            "estado": "re_probado"
+          }
+        ],
+        "candidatas": [
+          {
+            "hallazgo": "HZ-0009",
+            "sobre": "SOB-0036",
+            "motivos": ["otra_version"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-SIN-CORRECCION",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "Una re-prueba superada cita a HZ-0007, pero nadie declaró la corrección. Cerrar sin arreglo declarado no se acepta: el hallazgo queda re-probado, no cerrado, y su control sigue con fallas.",
+        "en": "A passed retest cites HZ-0007, but nobody declared a fix. Closing without a declared fix is not accepted: the finding stays retested, not closed, and its control keeps failing."
+      },
+      "sobres": [
+        {
+          "id": "SOB-9101",
+          "copia_de": "SOB-0019",
+          "cambios": {
+            "veredicto": "superada",
+            "fecha": "2026-09-30",
+            "reprueba_de": "HZ-0007",
+            "resultado.fallidas": 0,
+            "confirmacion": {
+              "por": "Revisora demo",
+              "fecha": "2026-10-01",
+              "modo": "individual"
+            }
+          }
+        }
+      ],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0007",
+            "estado": "re_probado"
+          }
+        ],
+        "candidatas": [
+          {
+            "hallazgo": "HZ-0007",
+            "sobre": "SOB-9101",
+            "motivos": ["sin_correccion"]
+          }
+        ],
+        "controles": [
+          {
+            "id": "iso42001-A.6.2.4",
+            "estado": "con_fallas"
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-ESCANEO-POSTERIOR-SIN-HALLAZGO",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "Un escaneo posterior de la misma prueba sale superado, pero no cita a HZ-0007. La ausencia de un hallazgo en un escaneo posterior nunca lo cierra: el hallazgo sigue abierto y el control con fallas.",
+        "en": "A later scan of the same test comes out passed, but does not cite HZ-0007. The absence of a finding in a later scan never closes it: the finding stays open and the control stays failing."
+      },
+      "sobres": [
+        {
+          "id": "SOB-9102",
+          "copia_de": "SOB-0019",
+          "cambios": {
+            "veredicto": "superada",
+            "fecha": "2026-09-30",
+            "resultado.fallidas": 0,
+            "confirmacion": {
+              "por": "Revisora demo",
+              "fecha": "2026-10-01",
+              "modo": "individual"
+            }
+          }
+        }
+      ],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0007",
+            "estado": "abierto"
+          }
+        ],
+        "controles": [
+          {
+            "id": "iso42001-A.6.2.4",
+            "estado": "con_fallas"
+          }
+        ],
+        "filas": [
+          {
+            "activo": "act-demo-asistente",
+            "prueba": "PR-IA-ENC-002",
+            "sobre": "SOB-9102",
+            "ejecutada": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "CIERRE-RIESGO-ACEPTADO-NO-CIERRA",
+      "requisito": "RF-10.3",
+      "que_siembra": {
+        "es": "HZ-0005 tiene el riesgo aceptado con su justificación y su fecha de revisión. Aceptar un riesgo no lo cierra: sigue siendo falla de su control.",
+        "en": "HZ-0005 has its risk accepted with its justification and review date. Accepting a risk does not close it: it is still a failure of its control."
+      },
+      "sobres": [],
+      "espera": {
+        "hallazgos": [
+          {
+            "id": "HZ-0005",
+            "estado": "aceptado_con_riesgo"
+          }
+        ],
+        "controles": [
+          {
+            "id": "iso42001-A.6.2.6",
+            "estado": "con_fallas"
+          }
+        ]
+      }
+    },
+    {
+      "id": "NO-DETECTADO-NO-ES-EVIDENCIA",
+      "requisito": "E-6",
+      "que_siembra": {
+        "es": "El único resultado que sostenía al control A.9.4 (SOB-0016) llega como «no ejecutada»: la herramienta no corrió la regla. Sin resultado ejecutado, el control queda sin evidencia, no verificado.",
+        "en": "The only result that backed control A.9.4 (SOB-0016) arrives as “not run”: the tool did not run the rule. With no executed result, the control is left without evidence, not verified."
+      },
+      "sobres": [
+        {
+          "id": "SOB-0016",
+          "cambios": {
+            "veredicto": "no_ejecutada",
+            "resultado.ejecutada": false
+          }
+        }
+      ],
+      "espera": {
+        "controles": [
+          {
+            "id": "iso42001-A.9.4",
+            "estado": "sin_evidencia"
+          }
+        ],
+        "filas": [
+          {
+            "activo": "act-demo-asistente",
+            "prueba": "PR-AG-PERM-001",
+            "sobre": "SOB-0016",
+            "ejecutada": false
+          }
+        ]
+      }
+    }
+  ]
+}

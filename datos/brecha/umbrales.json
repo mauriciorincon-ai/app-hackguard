@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "evidencia_antigua": 180,
+  "origen": {
+    "es": "RF-05.5 de los requerimientos v1.1: la evidencia más reciente de un control se considera antigua desde los 180 días. Vive aparte de los umbrales de vigencia del catálogo para no cambiar la instantánea.",
+    "en": "RF-05.5 of requirements v1.1: the most recent evidence of a control counts as stale from 180 days on. It lives apart from the catalog's freshness thresholds so the snapshot does not change."
+  }
+}

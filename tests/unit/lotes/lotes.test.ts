@@ -15,7 +15,6 @@ import {
   adaptadorDe,
 } from "../../../src/engine/adaptadores/index.ts";
 import { ADAPTADOR_DE_ZAP } from "../../../src/engine/adaptadores/zap.ts";
-import type { Veredicto } from "../../../src/engine/evidencia/esquemas.ts";
 import { sha256 } from "../../../src/engine/huella.ts";
 import {
   confirmar,
@@ -38,7 +37,10 @@ import {
   resellarLote,
   sinHuellasDeLote,
 } from "../../../src/engine/lotes/huellas.ts";
-import { revisionDelLote } from "../../../src/engine/lotes/revision.ts";
+import {
+  revisionDelLote,
+  type SobreParaRevisar,
+} from "../../../src/engine/lotes/revision.ts";
 import {
   REGLAS_DE_LOTE,
   fallasSinHallazgo,
@@ -358,16 +360,19 @@ describe("qué revisa una persona (E-5)", () => {
     parciales: number[] = [],
   ) {
     const ids = Array.from({ length: n }, (_, i) => `SOB-${1001 + i}`);
-    const veredictos = new Map<string, Veredicto>(
+    const veredictos = new Map<string, SobreParaRevisar>(
       ids.map((id, i) => [
         id,
-        fallidas.includes(i)
-          ? "fallida"
-          : parciales.includes(i)
-            ? "parcial"
-            : i % 7 === 3
-              ? "no_ejecutada"
-              : "superada",
+        {
+          veredicto: fallidas.includes(i)
+            ? "fallida"
+            : parciales.includes(i)
+              ? "parcial"
+              : i % 7 === 3
+                ? "no_ejecutada"
+                : "superada",
+          reprueba_de: null,
+        },
       ]),
     );
     return {
@@ -453,6 +458,53 @@ describe("qué revisa una persona (E-5)", () => {
     expect(await tamano(60)).toBe(25);
     expect(await tamano(120)).toBe(26);
     expect(await tamano(300)).toBe(29);
+  });
+
+  it("B2: una re-prueba que cierra un hallazgo se revisa siempre, con cualquier semilla de la muestra", async () => {
+    const m = await mundoDeLotes();
+    // Sin fallidas ni parciales: lo único que puede obligar a revisar SOB-1031 es que sea la re-prueba de HZ-0009.
+    const { lote, veredictos } = loteDe(60);
+    const sobres = new Map(
+      [...veredictos].map(([id, s]) => [
+        id,
+        { ...s, reprueba_de: id === "SOB-1031" ? "HZ-0009" : null },
+      ]),
+    );
+    for (const semilla of ["ab", "cd", "ef", "12", "34", "56", "78", "9a"]) {
+      const r = await revisionDelLote(
+        { ...lote, huellas: { lote: semilla.repeat(32) } },
+        sobres,
+        m.muestreo,
+      );
+      expect(r.siempre, `semilla ${semilla}`).toEqual(["SOB-1031"]);
+      expect(r.muestra, `semilla ${semilla}`).not.toContain("SOB-1031");
+      expect(r.resto).toBe(59);
+      expect(r.muestra).toHaveLength(25);
+      expect(r.revisados).toContain("SOB-1031");
+    }
+  });
+
+  it("B2: una re-prueba que además falla entra una sola vez, y la que no corrió también se revisa", async () => {
+    const m = await mundoDeLotes();
+    const { lote } = loteDe(4);
+    const sobres = new Map([
+      ["SOB-1001", { veredicto: "fallida" as const, reprueba_de: "HZ-0003" }],
+      [
+        "SOB-1002",
+        { veredicto: "no_ejecutada" as const, reprueba_de: "HZ-0005" },
+      ],
+      ["SOB-1003", { veredicto: "superada" as const, reprueba_de: null }],
+      ["SOB-1004", { veredicto: "superada" as const, reprueba_de: null }],
+    ]);
+    const r = await revisionDelLote(lote, sobres, m.muestreo);
+    expect(r.siempre).toEqual(["SOB-1001", "SOB-1002"]);
+    expect(r.resto).toBe(2);
+    expect(r.revisados).toEqual([
+      "SOB-1001",
+      "SOB-1002",
+      "SOB-1003",
+      "SOB-1004",
+    ]);
   });
 });
 
@@ -727,7 +779,8 @@ describe("confirmar un lote", () => {
     const r = await confirmarLote({ ...entrada, separar: ["SOB-0034"] });
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.revision.siempre).toEqual(["SOB-0034"]);
+    // B2: SOB-0036 es la re-prueba que cierra HZ-0009, así que se revisa siempre, como la falla SOB-0034.
+    expect(r.revision.siempre).toEqual(["SOB-0034", "SOB-0036"]);
     expect(r.lote.confirmacion?.revisados).toEqual([
       "SOB-0034",
       "SOB-0035",

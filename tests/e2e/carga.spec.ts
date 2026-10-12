@@ -32,13 +32,20 @@ test.describe("los lotes del demo y su decisión", () => {
   }) => {
     await page.goto(RUTA);
     await expect(page.locator(".hg-selector .hg-opcion")).toHaveCount(2);
-    for (const id of ["LOTE-0007", "LOTE-0008"]) {
+    // LOTE-0008 trae además la re-prueba SOB-0036 de HZ-0009, que se revisa siempre (B2): 2 obligatorias.
+    for (const [id, obligatorias] of [
+      ["LOTE-0007", "1"],
+      ["LOTE-0008", "2"],
+    ] as const) {
       await expect(zona(page, id)).toHaveAttribute(
         "data-decision",
         "por_confirmar",
       );
       await expect(zona(page, id)).toHaveAttribute("data-sobres", "3");
-      await expect(zona(page, id)).toHaveAttribute("data-obligatorias", "1");
+      await expect(zona(page, id)).toHaveAttribute(
+        "data-obligatorias",
+        obligatorias,
+      );
     }
   });
 
