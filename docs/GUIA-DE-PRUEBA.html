@@ -159,11 +159,11 @@
 <body>
 <div class="pagina">
   <header>
-    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 004 · 2026-10-11</p>
+    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 005 · 2026-10-11</p>
     <h1>Guía de prueba</h1>
     <p class="suave">Todas las pruebas vigentes de la app. Las 21 del Sprint 001 (el catálogo como dato, por
       terminal) siguen aquí enteras, el Sprint 002 añade el bloque G (el catálogo en pantalla) y el Sprint 003 el bloque H
-      (marcos y controles) y el Sprint 004 el bloque I (activos y plan). Filtra por origen para
+      (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos). Filtra por origen para
       correr todo o solo lo que cambió. Las casillas se guardan
       solas en este navegador.</p>
     <p class="chica"><strong>Gate corto ⭐⭐: 12 paradas declaradas, 11 efectivas · ~30 min. Es el que el gate del hito
@@ -471,38 +471,76 @@
     <div class="bloque-cabeza"><span class="letra">I</span><h2>Activos y plan</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/activos/act-demo-asistente</code> y <code>/activos/act-demo-asistente/plan</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="i1"><label for="i1"><strong>¿Activo y plan son los de la maqueta?</strong> Abre <code>/activos/act-demo-asistente</code> y, en otra pestaña, <code>/diseno/activo-act-demo-asistente.html</code>; luego lo mismo con <code>/activos/act-demo-asistente/plan</code> y <code>/diseno/plan-act-demo-asistente.html</code>.
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i1"><label for="i1"><strong>¿Activo y plan son los de la maqueta?</strong> Abre <code>/activos/act-demo-asistente</code> y, en otra pestaña, <code>/diseno/activo-act-demo-asistente.html</code>; luego lo mismo con <code>/activos/act-demo-asistente/plan</code> y <code>/diseno/plan-act-demo-asistente.html</code>.
         Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (el selector de activos arriba, el carril con el plan, las cifras y las tablas). Cambian las cifras del plan: el motor lo calcula con la instantánea oficial y la maqueta usa aritmética ilustrativa, así que manda el motor. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span>
+        <span class="origen origen-heredada">S4</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="i2"><label for="i2"><strong>¿El portal sin plan se entiende?</strong> Abre <code>/activos/act-demo-portal</code> y luego <code>/activos/act-demo-portal/plan</code>.
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i2"><label for="i2"><strong>¿El portal sin plan se entiende?</strong> Abre <code>/activos/act-demo-portal</code> y luego <code>/activos/act-demo-portal/plan</code>.
         <strong>Respuesta esperada: «Sin autorización no hay plan» arriba, en las dos páginas, y ninguna tabla de pruebas planeadas ni botón de descarga. Se lee como un hecho sobre el activo, no como un fallo. «Se entiende», o la frase que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span>
+        <span class="origen origen-heredada">S4</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="i3"><label for="i3"><strong>¿El texto del plan se entiende en los dos idiomas?</strong> En <code>/activos/act-demo-asistente/plan</code> lee «Aplica porque:», «Excluidas, con su razón» y «Cobertura por control». Cambia a inglés con el botón de la barra de arriba y vuelve a leerlas.
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i3"><label for="i3"><strong>¿El texto del plan se entiende en los dos idiomas?</strong> En <code>/activos/act-demo-asistente/plan</code> lee «Aplica porque:», «Excluidas, con su razón» y «Cobertura por control». Cambia a inglés con el botón de la barra de arriba y vuelve a leerlas.
         El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span>
+        <span class="origen origen-heredada">S4</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i4"><label for="i4">En la página de un activo, el selector arriba lista los tres activos demo. Pulsa el del clasificador.
+      <li data-origen="heredada"><input type="checkbox" id="i4"><label for="i4">En la página de un activo, el selector arriba lista los tres activos demo. Pulsa el del clasificador.
         <strong>Se abre su página; si estabas en la pestaña «Plan», sigues en «Plan» del nuevo activo.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i5"><label for="i5">En el plan del asistente, busca la prueba marcada «Agregada por ti».
+        <span class="origen origen-heredada">S4</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="i5"><label for="i5">En el plan del asistente, busca la prueba marcada «Agregada por ti».
         <strong>Muestra la justificación que la acompaña (la interfaz web embebida en el portal) y no aparece como una prueba que el perfil pida.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i6"><label for="i6">En «Excluidas, con su razón», mira los tres motivos: «No aplica», «Fuera de alcance» y «Quitada por ti».
+        <span class="origen origen-heredada">S4</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="i6"><label for="i6">En «Excluidas, con su razón», mira los tres motivos: «No aplica», «Fuera de alcance» y «Quitada por ti».
         <strong>Cada uno lleva su símbolo y su texto, no solo un color, y el motivo dice por qué no entra en este plan.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i7"><label for="i7">En «Cobertura por control», busca un control con la marca «Sin prueba».
+        <span class="origen origen-heredada">S4</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="i7"><label for="i7">En «Cobertura por control», busca un control con la marca «Sin prueba».
         <strong>Dice que ninguna prueba del plan lo cubre; no dice que esté bien ni mal.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i8"><label for="i8">Pulsa «Descargar el paquete» en el plan del asistente y abre el archivo que se baja.
+        <span class="origen origen-heredada">S4</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="i8"><label for="i8">Pulsa «Descargar el paquete» en el plan del asistente y abre el archivo que se baja.
         <strong>Es un JSON cuyo campo <code>formato</code> dice <code>hackguard/paquete@1</code>, con el activo, la instantánea, el alcance, las reglas y las herramientas del plan.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="i9"><label for="i9">En el teléfono (o con el navegador a 380 px de ancho): abre el activo y su plan.
+        <span class="origen origen-heredada">S4</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="i9"><label for="i9">En el teléfono (o con el navegador a 380 px de ancho): abre el activo y su plan.
         <strong>Ninguna página se sale de la pantalla; las tablas se leen con desplazamiento lateral dentro de su panel.</strong>
-        <span class="origen origen-nuevo">Nuevo · S4</span></label></li>
+        <span class="origen origen-heredada">S4</span></label></li>
     </ul>
-    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un activo o una prueba que la pantalla dice de una forma y su plan de otra, una exclusión sin motivo visible, o un texto que suene a promesa de algo que todavía no existe (la evidencia y el estado «en prueba» llegan en S5).</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un activo o una prueba que la pantalla dice de una forma y su plan de otra, una exclusión sin motivo visible, o un texto que suene a promesa de algo que todavía no existe.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">J</span><h2>Evidencia y hallazgos</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/hallazgos/HZ-0007</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j1"><label for="j1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y, en otra pestaña, <code>/diseno/hallazgo-hz-0007.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: la misma estructura: la cadena de cierre arriba, la severidad y el control que falla en el centro, y «Qué puedes hacer» con las propiedades a la derecha. Lo que cambia (salidas de solo lectura con su comando, la k que sale del paquete) está en la tabla de «Sprint 5» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j2"><label for="j2"><strong>¿La severidad se explica sola?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> (escala de IA) busca la tabla «Prioridad de acción» y su celda marcada «este hallazgo». Luego abre <code>/evidencia/hallazgos/HZ-0009</code> (CVSS 4.0) y busca «Cómo se calculó».
+        <strong>Respuesta esperada: en la IA la fila es el impacto y la columna la frecuencia observada, y se ve por qué sale «Alto»; en CVSS se ven el vector y la referencia fijada. «Se entiende», o qué no.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j3"><label for="j3"><strong>¿«Sin cerrar» se lee como lo que es?</strong> Abre <code>/evidencia/hallazgos/HZ-0005</code> (aceptado con riesgo) y busca «Sin cerrar: sigue contando como falla del control».
+        <strong>Respuesta esperada: el riesgo aceptado no aparece como resuelto: sigue contando como falla de su control, con su fecha de revisión. «Se entiende», o el texto que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j4"><label for="j4"><strong>¿El plazo vencido avisa sin asustar?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y lee el aviso de arriba y el plazo en «Propiedades».
+        <strong>Respuesta esperada: «Plazo vencido» con la severidad, los días y lo que se puede hacer (corregir y re-probar, o un cierre alternativo con su justificación).</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j5"><label for="j5"><strong>¿Un hallazgo cerrado se distingue de uno abierto?</strong> Abre <code>/evidencia/hallazgos/HZ-0003</code> (cerrado por re-prueba) y mira la cadena de cierre y «Qué puedes hacer».
+        <strong>Respuesta esperada: cuatro eslabones con símbolo y texto, sin ninguno pendiente, y «Nada: la evidencia confirmada es inmutable». No hay ningún comando que la cambie.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j6"><label for="j6"><strong>¿«Qué puedes hacer» es de solo lectura?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> busca «Qué puedes hacer». Intenta pulsar cada salida.
+        <strong>Respuesta esperada: no hay botones: cada salida dice qué exige y el comando de terminal que la registra. Se lee como una instrucción, no como un control.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j7"><label for="j7"><strong>¿Se llega desde la barra lateral?</strong> Abre <code>/catalogo/PR-IA-PINJ-001</code>, pulsa «Evidencia» en la barra lateral y luego cambia de hallazgo con el selector de arriba.
+        <strong>Respuesta esperada: «Evidencia» abre <code>HZ-0007</code>, y el selector lleva a cada uno de los cuatro, con el actual marcado.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j8"><label for="j8"><strong>¿Se lee en la terminal?</strong> En la raíz del repo corre <code>pnpm hallazgos:listar --fecha 2026-10-11</code>.
+        <strong>Respuesta esperada: «4 · 3 cuentan como falla de su control», y una línea por hallazgo con su severidad y su plazo: HZ-0007 sale «plazo vencido».</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="j9"><label for="j9"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/evidencia/hallazgos/HZ-0009</code> y desplázate.
+        <strong>Respuesta esperada: ninguna página se sale de la pantalla; la tabla de la matriz (en HZ-0007) se lee con desplazamiento dentro de su panel.</strong>
+        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+    </ul>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un hallazgo cuyo estado o severidad la pantalla dice de una forma y la terminal de otra, una salida que parezca un botón, o un texto que prometa algo que todavía no existe (la carga de resultados llega en S6).</p></div>
   </section>
 
   <footer>
@@ -532,6 +570,10 @@
         <li><strong>S4 · 2026-10-11:</strong> las 8 pruebas del bloque H pasan a «S3» (regresión), y el NS de las casillas cambia a
           <code>hackguard-s4:</code>: las casillas marcadas antes no se conservan. Nace el bloque I, activos y plan: 9 pruebas, 3 de ellas ⭐ de
           juicio para el gate del hito (fidelidad de activo y plan, portal sin plan, texto en los dos idiomas). Ninguna eliminada.</li>
+        <li><strong>S5 · 2026-10-11:</strong> las 9 pruebas del bloque I pasan a «S4» (regresión), y el NS de las casillas cambia a
+          <code>hackguard-s5:</code>: las casillas marcadas antes no se conservan. Nace el bloque J, evidencia y hallazgos: 9 pruebas,
+          3 de ellas ⭐ de juicio para el gate del hito (fidelidad con la maqueta, severidad que se explica, «sin cerrar» que se lee
+          como lo que es). Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>
@@ -541,7 +583,7 @@
   (function () {
     // NS VERSIONADO POR SPRINT (regla dura): al publicar la guía de un sprint nuevo se cambia
     // el prefijo (hackguard-s2) — así una regresión sin correr no aparece marcada por el sprint anterior.
-    var NS = "hackguard-s4:";
+    var NS = "hackguard-s5:";
     var casillas = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
     var barra = document.getElementById("barra-avance");
     var contador = document.getElementById("contador");

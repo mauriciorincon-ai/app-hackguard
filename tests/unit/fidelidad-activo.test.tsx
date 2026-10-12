@@ -15,7 +15,7 @@ const SOLO_DE_LA_MAQUETA = new Set([
   "No hay activos registrados|No assets registered",
   "Abriendo el activo|Opening the asset",
   "El activo no se pudo abrir|The asset could not be opened",
-  // «En prueba» no es representable hasta que haya evidencia (S5): el estado del activo se deriva de su plan.
+  // «En prueba» no se deriva todavía: el estado del activo sale de su plan, y el libro de evidencia no lo cambia en este sprint.
   "En prueba|Under test",
   // El marco de la sala de la maqueta: la matriz «qué revisar» y el pie con la consulta y la instantánea, que en el producto
   // viven en la barra lateral y no en la página.
