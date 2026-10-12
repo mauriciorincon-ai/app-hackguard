@@ -5,7 +5,7 @@
 // Un lote sin confirmar es válido (es una propuesta): solo que no confirma a nadie. Lo que es error es un lote que
 // contradice al plan, a sus sobres, al plan de muestreo o a sus propias huellas.
 import { ADAPTADORES } from "../adaptadores/index.ts";
-import type { Sobre } from "../evidencia/esquemas.ts";
+import type { Sobre, SobreEfectivo } from "../evidencia/esquemas.ts";
 import { huellaDelSobre, sinHuellas } from "../evidencia/huellas.ts";
 import {
   comillas,
@@ -413,8 +413,8 @@ export async function validarLotes(
  * el hallazgo estaba vivo; si después se cierra, la falla sigue cubierta y el lote no se vuelve inválido.
  */
 const cubiertaPorUnHallazgo = (
-  s: Sobre,
-  libro: readonly Sobre[],
+  s: SobreEfectivo,
+  libro: readonly SobreEfectivo[],
   hallazgos: readonly Hallazgo[],
 ): boolean =>
   hallazgos.some((h) => {
