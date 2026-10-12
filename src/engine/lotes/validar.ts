@@ -20,6 +20,7 @@ import {
 } from "../evidencia/molde.ts";
 import type { PlanDeActivo } from "../evidencia/validar.ts";
 import { decidirApertura } from "../hallazgos/apertura.ts";
+import { evaluarHallazgo } from "../hallazgos/ciclo.ts";
 import type { Hallazgo } from "../hallazgos/esquemas.ts";
 import { sha256 } from "../huella.ts";
 import { comparar } from "../planificador/orden.ts";
@@ -408,6 +409,24 @@ export async function validarLotes(
 }
 
 /**
+ * ¿Hay un hallazgo de la misma prueba y activo, en cualquier estado? La cobertura se decide al confirmar el lote, cuando
+ * el hallazgo estaba vivo; si después se cierra, la falla sigue cubierta y el lote no se vuelve inválido.
+ */
+const cubiertaPorUnHallazgo = (
+  s: Sobre,
+  libro: readonly Sobre[],
+  hallazgos: readonly Hallazgo[],
+): boolean =>
+  hallazgos.some((h) => {
+    const r = evaluarHallazgo(h, libro);
+    return (
+      r.ok &&
+      r.evaluacion.activo === s.activo &&
+      r.evaluacion.prueba === s.prueba
+    );
+  });
+
+/**
  * Una falla que el lote confirmó y que abriría un hallazgo nuevo: abrirlo pide la severidad de una persona, y esa se da
  * al confirmar el sobre solo. Va aparte de `validarLotes` porque necesita los hallazgos, que a su vez se validan contra
  * el libro efectivo (que ya conoce los lotes válidos).
@@ -426,7 +445,11 @@ export function fallasSinHallazgo(
   for (const { ruta, lote } of lotes)
     for (const id of confirmadosPorLote(lote)) {
       const s = efectivo.find((x) => x.id === id);
-      if (s !== undefined && decidirApertura(s, efectivo, hallazgos).abre)
+      if (
+        s !== undefined &&
+        decidirApertura(s, efectivo, []).abre &&
+        !cubiertaPorUnHallazgo(s, efectivo, hallazgos)
+      )
         resultado.push({
           regla: "lote/falla-sin-hallazgo",
           severidad,

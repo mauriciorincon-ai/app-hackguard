@@ -1122,6 +1122,27 @@ describe("las fallas que un lote confirmó sin separar", () => {
     ]);
   });
 
+  it("una falla que un hallazgo ya cerrado cubría cuando el lote se confirmó sigue cubierta", async () => {
+    const m = await mundoDeLotes();
+    // SOB-0012 es una fallida de PR-IA-PINJ-001 y HZ-0003 (cerrado por re-prueba) nació de ella: el lote se confirmó
+    // cuando esa falla tenía hallazgo, y cerrarlo después no puede volver inválido al lote.
+    const base = m.lotes["LOTE-0007"]!;
+    const confirmado = await loteConfirmado(
+      {
+        ...base,
+        sobres: [{ id: "SOB-0012", huella: base.sobres[0]!.huella }],
+      } as Lote,
+      { revisados: ["SOB-0012"] },
+    );
+    expect(
+      fallasSinHallazgo(
+        [{ ruta: rutaDeLote(confirmado.id), lote: confirmado }],
+        Object.values(m.sobres),
+        Object.values(m.hallazgos),
+      ),
+    ).toEqual([]);
+  });
+
   it("separada, o con hallazgo vivo, no es un problema", async () => {
     const m = await mundoDeLotes();
     const sobres = Object.values(m.sobres);
