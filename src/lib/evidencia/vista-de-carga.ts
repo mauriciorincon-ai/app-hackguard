@@ -360,6 +360,7 @@ function vistaDeLote(
     sobres,
     seleccionado,
     obligatorias: revision.siempre.length,
+    rePruebas: revision.rePruebas,
     resto: revision.resto,
     muestra: revision.muestra.length,
     abren,

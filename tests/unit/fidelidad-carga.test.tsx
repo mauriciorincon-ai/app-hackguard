@@ -168,10 +168,26 @@ describe("fidelidad de la carga contra su página de la maqueta", () => {
       expect(delLote(p, ".hg-eslabon-titulo").slice(0, 2), id ?? "").toEqual(
         delLote(m, ".hg-eslabon-titulo").slice(0, 2),
       );
-      // Qué falta para confirmar.
-      expect(delLote(p, ".hg-pendientes li"), id ?? "").toEqual(
-        delLote(m, ".hg-pendientes li"),
-      );
+      // Qué falta para confirmar. B2 (Sprint 7): una re-prueba de un hallazgo se revisa siempre; la maqueta la dibujaba en la
+      // muestra. Es la única diferencia declarada: cambia el rótulo y las cuentas de las dos líneas, y la revisión de esa fila.
+      const vl = v.lotes.find((x) => x.id === id)!;
+      const rePruebas = new Set(vl.rePruebas);
+      const n = rePruebas.size;
+      if (n === 0) {
+        expect(delLote(p, ".hg-pendientes li"), id ?? "").toEqual(
+          delLote(m, ".hg-pendientes li"),
+        );
+      } else {
+        expect(delLote(p, ".hg-pendientes li"), id ?? "").toEqual([
+          `Revisar las fallidas y las re-pruebas: ${vl.obligatorias}. Siempre, todas.Review the failed ones and the retests: ${vl.obligatorias}. Always, all of them.`,
+          `Revisar la muestra: ${vl.muestra} de los otros ${vl.resto}.Review the sample: ${vl.muestra} of the other ${vl.resto}.`,
+        ]);
+        // La maqueta cuenta esas re-pruebas en la muestra: devolverlas al resto da exactamente sus cifras.
+        expect(delLote(m, ".hg-pendientes li"), id ?? "").toEqual([
+          `Revisar las fallidas: ${vl.obligatorias - n}. Siempre, todas.Review the failed ones: ${vl.obligatorias - n}. Always, all of them.`,
+          `Revisar la muestra: ${vl.muestra + n} de los otros ${vl.resto + n}.Review the sample: ${vl.muestra + n} of the other ${vl.resto + n}.`,
+        ]);
+      }
       // Los sobres: el identificador, el veredicto sugerido y la revisión de cada fila.
       const filas = (el: Element) =>
         [...el.querySelectorAll("tbody tr")].map((tr) => [
@@ -182,7 +198,21 @@ describe("fidelidad de la carga contra su página de la maqueta", () => {
             : tr.getAttribute("data-revision"),
           tr.querySelector("td:last-child")?.textContent?.trim(),
         ]);
-      expect(filas(p), id ?? "").toEqual(filas(m));
+      expect(
+        filas(p).map((f) =>
+          rePruebas.has(f[0] ?? "")
+            ? [f[0], f[1], "muestra", "MuestraSample"]
+            : f,
+        ),
+        id ?? "",
+      ).toEqual(filas(m));
+      // Y esa fila, en el producto, sí dice «siempre».
+      for (const r of rePruebas)
+        expect(
+          p
+            .querySelector(`tr[data-sobre="${r}"]`)
+            ?.getAttribute("data-revision"),
+        ).toBe("siempre");
       // Cada sobre dice qué pasa con su hallazgo con las mismas palabras.
       const notas = (el: Element) =>
         [...el.querySelectorAll("[data-si-seleccion]")].map((d) => [

@@ -62,14 +62,12 @@ export function conLoteDecidido(
 export async function conMuestreo(
   muestreo: PlanDeMuestreo,
 ): Promise<MundoDeHallazgos> {
-  const veredictos = new Map(
-    mundoDeHallazgos.libro.map((s) => [s.id, s.veredicto] as const),
-  );
+  const sobres = new Map(mundoDeHallazgos.libro.map((s) => [s.id, s] as const));
   const revisiones = Object.fromEntries(
     await Promise.all(
       mundoDeHallazgos.lotes.map(
         async (l) =>
-          [l.id, await revisionDelLote(l, veredictos, muestreo)] as const,
+          [l.id, await revisionDelLote(l, sobres, muestreo)] as const,
       ),
     ),
   );

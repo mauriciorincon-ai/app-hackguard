@@ -331,12 +331,16 @@ function ParaConfirmar({
           <Simbolo nombre={etiquetas.siempre_larga.simbolo} />
           <span>
             <span lang="es">
-              Revisar las fallidas: <span data-neutro>{l.obligatorias}</span>.
-              Siempre, todas.
+              {l.rePruebas.length > 0
+                ? "Revisar las fallidas y las re-pruebas: "
+                : "Revisar las fallidas: "}
+              <span data-neutro>{l.obligatorias}</span>. Siempre, todas.
             </span>
             <span lang="en">
-              Review the failed ones: <span data-neutro>{l.obligatorias}</span>.
-              Always, all of them.
+              {l.rePruebas.length > 0
+                ? "Review the failed ones and the retests: "
+                : "Review the failed ones: "}
+              <span data-neutro>{l.obligatorias}</span>. Always, all of them.
             </span>
           </span>
         </li>

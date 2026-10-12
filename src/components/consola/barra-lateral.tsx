@@ -57,7 +57,7 @@ function Icono({ nombre }: { nombre: string }) {
 
 export function Marca() {
   return (
-    <Link className="hg-marca" href="/catalogo">
+    <Link className="hg-marca" href="/tablero">
       <svg
         className="hg-marca-signo"
         viewBox="0 0 24 24"
@@ -94,7 +94,11 @@ interface Seccion {
 
 // Las cinco secciones de la maqueta (decisión 9 de diseño). Las que todavía no tienen pantalla van sin enlace.
 const SECCIONES: Seccion[] = [
-  { id: "tablero", nombre: { es: "Tablero", en: "Dashboard" }, ruta: null },
+  {
+    id: "tablero",
+    nombre: { es: "Tablero", en: "Dashboard" },
+    ruta: "/tablero",
+  },
   {
     id: "catalogo",
     nombre: { es: "Catálogo", en: "Catalog" },
@@ -110,7 +114,7 @@ const SECCIONES: Seccion[] = [
     nombre: { es: "Evidencia", en: "Evidence" },
     ruta: "/evidencia/carga",
   },
-  { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: null },
+  { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: "/brecha" },
 ];
 
 // Las páginas de cada sección, como en la maqueta. Las que todavía no tienen pantalla van sin enlace (nunca un enlace roto).
@@ -129,6 +133,14 @@ const SUBPAGINAS: Record<
       ruta: "/catalogo/controles",
     },
     { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
+  ],
+  brecha: [
+    { nombre: { es: "Brecha", en: "Gap" }, ruta: "/brecha" },
+    {
+      nombre: { es: "Por control", en: "By control" },
+      ruta: "/brecha/control",
+    },
+    { nombre: { es: "Informe", en: "Report" }, ruta: "/brecha/informe" },
   ],
   evidencia: [
     { nombre: { es: "Carga", en: "Intake" }, ruta: "/evidencia/carga" },

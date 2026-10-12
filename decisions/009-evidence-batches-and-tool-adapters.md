@@ -41,6 +41,11 @@ depend on it), so the confirmation of a batch needs a place that is not the enve
    24 for 51–90 does not meet 5 %; its figures were marked illustrative.) The sample is the rest ordered by
    SHA-256(`huellas.lote` + `:` + id), first _n_, returned in id order: the same bytes in Node, Chromium, Firefox and
    WebKit (e2e). With one envelope per test the "stratified by test" of the plan degenerates; it is not simulated.
+   **Amended in Sprint 7 (B2, found by the Sprint 6 audit):** an envelope that is the **retest of a finding**
+   (`reprueba_de` is set) is also always reviewed, whatever its verdict. A passed retest closes its finding, which is
+   more serious than any other pass, and it must not be closed because the sample happened to leave it out. The batch
+   format does not change; only the rule that computes `revisados` (and so what the validator recomputes) does. The
+   review reports which envelopes are in `siempre` only for this reason (`rePruebas`), so a screen can say so.
 4. **Confirming a batch** (`confirmarLote`). A person confirms it, **separates** some failures to confirm them one by one,
    or sends the whole batch to individual review. Only failures and partials can be separated. A failure that would open
    a **new finding** must be separated: opening one asks for a person's severity, which is given when that envelope is

@@ -269,6 +269,30 @@ un lote sale del motor.
 | `plan` | El pie del paquete ofrece «Descargar el paquete» **y** «Ir a la carga de evidencia» | La carga de evidencia ya tiene pantalla (S6); en el S4 solo se ofrecía la descarga para no dibujar un enlace roto |
 | `barra lateral` | «Evidencia» abre «Carga» (no el primer hallazgo) y las dos páginas de Evidencia, «Carga» y «Hallazgos», tienen enlace | Como en la maqueta; la carga ya existe |
 
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 7)
+
+La maqueta no se regenera en este sprint; estas diferencias las vigila `tests/unit/fidelidad-brecha.test.tsx`, cada una con su
+razón, y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa lo comprueba
+`tests/unit/brecha-interaccion.test.tsx` (regla 22), y `tests/unit/brecha/cinco-pantallas.test.tsx` comprueba que el tablero, la
+brecha, la vista por control y el informe dicen **las mismas cifras en cada fecha** en que algo cambia de estado (regla 23).
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| todas | Las **cifras** no son las de la maqueta (25 planeadas y 8 controles, no 16 y 5) | La maqueta usa «aritmética de maqueta, no el planificador del producto»; el producto cuenta el plan emitido y el libro reales. El gate compara rótulos, columnas, orden y atributos, no números |
+| todas | Los estados «vacío», «cargando» y «error» solo existen en la maqueta; «vacío» se dibuja si no hay datos | Es un export estático: una brecha que no se puede calcular (un hallazgo sin su sobre, una fecha anterior a la evidencia) rompe el build en vez de mostrarse |
+| `tablero` | La banda de validación del instrumento muestra las comprobaciones que el motor corre —RF-10.3 «cierres prohibidos» y E-6 «no detectado no es verificado», con sus ocho semillas— y no las cinco ilustrativas de la maqueta | Las demás (planes de referencia, separación de lo público, severidad contra FIRST) las corre la CI como pruebas; no hay una semilla ejecutable que el build pueda correr y mostrar sin inventarla |
+| `tablero` | «Por decidir» vale 0 y la bandeja de propuestas dice que todavía no existe | La bandeja es del S8 (investigador y extractor); no se inventan propuestas |
+| `tablero` · `brecha` · `informe` | Los marcos con versión nueva dicen «sin registro de la fuente» en vez de listar un marco | No hay registro de la versión que publica cada fuente (RF-05.5); decir «ninguno» sería afirmar lo que no se sabe |
+| `tablero` · `brecha` · `control` · `informe` | El plazo de un hallazgo usa el componente de la página del hallazgo: «En plazo» o «Vencido» con sus días; la maqueta dibuja un chip «Plazo vencido» | Una sola forma de decir un plazo en toda la aplicación |
+| `brecha` | La nota de lo que espera confirmación cita el lote si el sobre está en uno y dice «sugiere» con el veredicto que ya calculó la regla; no menciona al extractor | El extractor no existe todavía |
+| `control` | Los controles equivalentes dicen el marco, la referencia, la fuente (el sitio y la fecha de consulta, como texto inerte) y lo que el mapa no cubre; no traen un resumen del control equivalente | El dato trae el sitio y la fecha de consulta de la fuente, no un resumen del equivalente (regla dura 11: solo identificadores) |
+| `control` | El nombre de cada control es el del catálogo, que lo escribió con otras palabras | Es dato |
+| `control` | Una prueba que dejó un hallazgo con el riesgo aceptado dice «el plazo no corre» | El motor no corre plazo en un riesgo aceptado |
+| `informe` | La ficha de reproducibilidad enseña la huella del informe (la de su contenido) y la de cada plan; la validación del instrumento dice «N de M en verde» con las comprobaciones del motor | La huella la calcula el motor y es idéntica en Node y en los navegadores |
+| `informe` | «Sobres que cuentan» cuenta los sobres que son el último confirmado de una prueba planeada; la maqueta no distinguía de los que quedan fuera de las filas | Una cuenta, un cálculo: sale de la misma brecha |
+| `barra lateral` | «Tablero» y «Brecha» tienen enlace; «Brecha» abre tres páginas (Brecha, Por control, Informe); el logo y la raíz llevan al tablero | Decisión de diseño 25: el tablero es la portada. Sigue «pronto» solo «Propuestas» |
+| `control` (ruta) | El segmento de la ruta de un control no lleva puntos ni mayúsculas: `iso42001-a-6-2-4` | Un export estático no sirve un segmento con puntos; la maqueta ya hacía lo mismo con su archivo |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |

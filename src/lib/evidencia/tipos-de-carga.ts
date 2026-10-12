@@ -80,6 +80,8 @@ export interface VistaDeLote {
   seleccionado: string;
   /** Las fallidas y parciales (se revisan todas), el resto, y cuántos de ese resto entran a la muestra. */
   obligatorias: number;
+  /** De las obligatorias, las que lo son solo por ser la re-prueba de un hallazgo (no fallan). */
+  rePruebas: string[];
   resto: number;
   muestra: number;
   /** Las fallas que abrirían un hallazgo nuevo si el lote se confirma: hay que separarlas y confirmarlas una por una. */

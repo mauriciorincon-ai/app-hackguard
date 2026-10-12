@@ -96,6 +96,7 @@ const NO_SON_CATALOGO = [
   "datos/planes",
   "datos/planificador",
   "datos/evidencia",
+  "datos/brecha",
   "datos/hallazgos",
   "datos/lotes",
   "datos/severidad",

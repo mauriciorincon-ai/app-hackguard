@@ -3,7 +3,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/catalogo",
+      "destination": "/tablero",
       "permanent": false
     },
     {

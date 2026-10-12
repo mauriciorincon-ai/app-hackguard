@@ -73,10 +73,10 @@ export async function cargarHallazgosDelBuild(
   const lotes = L.lotes.lotes
     .map((v) => v.lote)
     .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-  const veredictos = new Map(libro.map((s) => [s.id, s.veredicto] as const));
+  const sobresPorId = new Map(libro.map((s) => [s.id, s] as const));
   const revisiones: Record<string, RevisionDelLote> = {};
   for (const l of lotes)
-    revisiones[l.id] = await revisionDelLote(l, veredictos, L.muestreo);
+    revisiones[l.id] = await revisionDelLote(l, sobresPorId, L.muestreo);
   return {
     libro,
     lotes,

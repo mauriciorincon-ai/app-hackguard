@@ -8,7 +8,7 @@
 // - una falla que abriría un hallazgo nuevo sin separarla: abrir un hallazgo pide la severidad de una persona, y esa
 //   se da al confirmar el sobre solo (como en el S5);
 // - un sobre del lote que ya tiene confirmación individual: se confirmaría dos veces.
-import type { Sobre, SobreEfectivo, Veredicto } from "../evidencia/esquemas.ts";
+import type { Sobre, SobreEfectivo } from "../evidencia/esquemas.ts";
 import { decidirApertura } from "../hallazgos/apertura.ts";
 import type { Hallazgo } from "../hallazgos/esquemas.ts";
 import type { DecisionDeLote, Lote, PlanDeMuestreo } from "./esquemas.ts";
@@ -51,10 +51,7 @@ export async function confirmarLote(e: {
   const faltan = e.lote.sobres.map((s) => s.id).filter((id) => !porId.has(id));
   if (faltan.length > 0) return bloqueo("sobre_inexistente", faltan);
 
-  const veredictos = new Map<string, Veredicto>(
-    e.sobres.map((s) => [s.id, s.veredicto]),
-  );
-  const revision = await revisionDelLote(e.lote, veredictos, e.plan);
+  const revision = await revisionDelLote(e.lote, porId, e.plan);
 
   if (e.decision === "a_revision_individual") {
     const lote = await resellarLote(e.lote, {

@@ -6,5 +6,10 @@
   "/activos/act-demo-asistente",
   "/activos/act-demo-asistente/plan",
   "/evidencia/hallazgos/HZ-0007",
-  "/evidencia/carga"
+  "/evidencia/carga",
+  "/tablero",
+  "/brecha",
+  "/brecha/control",
+  "/brecha/control/iso42001-a-6-2-4",
+  "/brecha/informe"
 ]
