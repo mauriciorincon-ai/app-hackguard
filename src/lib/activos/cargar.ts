@@ -81,7 +81,10 @@ export async function cargarActivosDelBuild(
   for (const { activo, autorizado } of validacion.activos) {
     if (!autorizado) {
       // Sin alcance y reglas no hay plan (regla dura 5): un plan que sobrevivió a su autorización rompe el build.
-      if (existsSync(join(raiz, `datos/planes/${activo.id}.plan.json`)))
+      const emitidos = ["plan.json", "paquete.json"].some((ext) =>
+        existsSync(join(raiz, `datos/planes/${activo.id}.${ext}`)),
+      );
+      if (emitidos)
         falla(
           `${activo.id}: no está autorizado y tiene un plan emitido: bórralo`,
           `${activo.id}: is not authorized and has an issued plan: delete it`,

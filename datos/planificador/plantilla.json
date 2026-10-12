@@ -1,8 +1,8 @@
 {
   "version": "1",
   "nota": {
-    "es": "Plantilla por defecto para activos propios (RF-02.2): se aplica en un paso y se ajusta después. Solo vale para activos propios; un activo con proveedor necesita que las reglas citen su política.",
-    "en": "Default template for own assets (RF-02.2): it is applied in one step and adjusted afterwards. It only applies to own assets; an asset with a provider needs its rules to cite the provider's policy."
+    "es": "Plantilla por defecto para activos propios (RF-02.2): una guía para declarar el alcance y las reglas en el archivo del activo, que se ajusta ahí. Solo vale para activos propios; un activo con proveedor necesita que las reglas citen su política.",
+    "en": "Default template for own assets (RF-02.2): a guide for declaring the scope and the rules in the asset's file, adjusted there. It only applies to own assets; an asset with a provider needs its rules to cite the provider's policy."
   },
   "alcance": [
     {
