@@ -20,12 +20,12 @@ async function validar(sobre: Sobre | Record<string, unknown>, ruta?: string, co
 }
 
 describe("el libro demo", () => {
-  it("los 11 sobres son válidos: solo notas (sin confirmar y fechas de la maqueta)", async () => {
+  it("los 16 sobres son válidos: solo notas (sin confirmar y fechas de la maqueta)", async () => {
     const m = await mundo();
     const r = await validarEvidencia(m.archivosDeSobres, m.contexto);
     expect(r.hallazgos.filter((h) => h.severidad !== "nota")).toEqual([]);
     expect(r.estado).toBe("ok");
-    expect(r.sobres).toHaveLength(11);
+    expect(r.sobres).toHaveLength(16);
     expect(new Set(reglas(r))).toEqual(new Set(["sobre/sin-confirmar", "sobre/demo-anterior-al-plan"]));
   });
 

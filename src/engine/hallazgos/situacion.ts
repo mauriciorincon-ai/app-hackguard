@@ -2,7 +2,7 @@
 // de IA y de la frecuencia que dejó la evidencia), su plazo y, si el riesgo está aceptado, su revisión. UNA cuenta,
 // un cálculo: el CLI, la pantalla del hallazgo y el e2e de determinismo salen de esta función y de ninguna otra
 // (design-system § 9). La fecha de evaluación es una entrada; nada aquí lee el reloj (regla dura 1).
-import type { Sobre } from "../evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../evidencia/esquemas.ts";
 import { diasEntre } from "../fecha.ts";
 import type { EscalaIa } from "../severidad/escala-ia.ts";
 import {
@@ -40,7 +40,7 @@ export type ResultadoDeSituacion =
 
 export function situacionDeHallazgo(
   h: Hallazgo,
-  libro: readonly Sobre[],
+  libro: readonly SobreEfectivo[],
   datos: { escala: EscalaIa; plazos: Plazos; fecha: string },
 ): ResultadoDeSituacion {
   const e = evaluarHallazgo(h, libro);

@@ -107,3 +107,20 @@ export const Sobre = z.strictObject({
   huellas: HuellasDelSobre,
 });
 export type Sobre = z.infer<typeof Sobre>;
+
+/**
+ * La confirmación tal como la ve el motor (ADR-009): la del archivo del sobre (individual) o la de su lote. Solo
+ * existe en memoria: el esquema del sobre no admite `modo: "lote"`, así que nunca se escribe en un archivo.
+ */
+export type ConfirmacionEfectiva = {
+  por: string;
+  fecha: string;
+  modo: "individual" | "lote";
+  /** El lote que confirmó este sobre, si fue por lote. */
+  lote?: string;
+};
+
+/** Un sobre del libro efectivo: el mismo sobre, con la confirmación que cuenta (individual o de su lote). */
+export type SobreEfectivo = Omit<Sobre, "confirmacion"> & {
+  confirmacion: ConfirmacionEfectiva | null;
+};

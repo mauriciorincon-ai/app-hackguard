@@ -30,10 +30,10 @@ const editar = (raiz: string, relativa: string, cambio: (texto: string) => strin
 };
 
 describe("el mundo de los hallazgos del build", () => {
-  it("carga los 11 sobres y los 4 hallazgos demo, en orden, con sus datos", async () => {
+  it("carga los 16 sobres y los 4 hallazgos demo, en orden, con sus datos", async () => {
     const m = await mundo();
     const c = await cargarHallazgosDelBuild(m.instantanea, RAIZ);
-    expect(c.libro).toHaveLength(11);
+    expect(c.libro).toHaveLength(16);
     expect(c.hallazgos.map((h) => h.id)).toEqual(["HZ-0003", "HZ-0005", "HZ-0007", "HZ-0009"]);
     expect(c.escala.version).toBe("1");
     expect(c.plazos.dias.alto).toBe(30);
@@ -61,7 +61,7 @@ describe("el mundo de los hallazgos del build", () => {
     mkdirSync(path.join(raiz, "datos/privado/evidencia"), { recursive: true });
     writeFileSync(path.join(raiz, "datos/privado/evidencia/SOB-9999.json"), "{ no es un sobre");
     const build = await cargarHallazgosDelBuild(m.instantanea, raiz);
-    expect(build.libro).toHaveLength(11);
+    expect(build.libro).toHaveLength(16);
     const cli = await cargarLibroValidado(raiz, m.instantanea, { privados: true });
     expect(cli.sobres.estado).toBe("invalido");
     const publico = await cargarLibroValidado(raiz, m.instantanea, { privados: false });

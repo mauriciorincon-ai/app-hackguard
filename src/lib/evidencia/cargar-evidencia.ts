@@ -21,15 +21,15 @@ import type {
   PruebaConocida,
 } from "../../engine/evidencia/validar.ts";
 import type { ArchivoDeHallazgo } from "../../engine/hallazgos/validar.ts";
+import { PlanDeMuestreo } from "../../engine/lotes/esquemas.ts";
+import { validarPlanDeMuestreo } from "../../engine/lotes/muestra.ts";
+import type { ArchivoDeLote } from "../../engine/lotes/validar.ts";
 import {
   EtiquetasDeHallazgo,
   Plazos,
 } from "../../engine/hallazgos/esquemas.ts";
 import { Paquete, Plan } from "../../engine/planificador/esquemas.ts";
-import {
-  EscalaIa,
-  validarEscalaIa,
-} from "../../engine/severidad/escala-ia.ts";
+import { EscalaIa, validarEscalaIa } from "../../engine/severidad/escala-ia.ts";
 import {
   EtiquetasDeCvss,
   validarEtiquetasDeCvss,
@@ -40,6 +40,9 @@ export const CARPETA_DE_SOBRES_DEMO = "datos/evidencia/demo";
 export const CARPETA_DE_SOBRES_PRIVADA = "datos/privado/evidencia";
 export const CARPETA_DE_HALLAZGOS_DEMO = "datos/hallazgos/demo";
 export const CARPETA_DE_HALLAZGOS_PRIVADA = "datos/privado/hallazgos";
+/** Los lotes: demo versionados y propios en `datos/privado/lotes/` (fuera de `datos/privado/evidencia/`, que se lee recursivo). */
+export const CARPETA_DE_LOTES_DEMO = "datos/lotes/demo";
+export const CARPETA_DE_LOTES_PRIVADA = "datos/privado/lotes";
 const CARPETAS_DE_PLANES = ["datos/planes", "datos/privado/planes"] as const;
 
 function jsonsDe(
@@ -67,6 +70,12 @@ export const cargarHallazgos = (raiz: string): ArchivoDeHallazgo[] => [
   ...jsonsDe(raiz, CARPETA_DE_HALLAZGOS_DEMO),
   ...jsonsDe(raiz, CARPETA_DE_HALLAZGOS_PRIVADA),
 ];
+export const cargarLotes = (raiz: string): ArchivoDeLote[] => [
+  ...jsonsDe(raiz, CARPETA_DE_LOTES_DEMO),
+  ...jsonsDe(raiz, CARPETA_DE_LOTES_PRIVADA),
+];
+export const cargarLotesPublicos = (raiz: string): ArchivoDeLote[] =>
+  jsonsDe(raiz, CARPETA_DE_LOTES_DEMO);
 /** Solo los versionados (demo): lo único que las pantallas del build leen. Lo propio no sale de la CLI. */
 export const cargarSobresPublicos = (raiz: string): ArchivoDeSobre[] =>
   jsonsDe(raiz, CARPETA_DE_SOBRES_DEMO);
@@ -103,6 +112,17 @@ export function cargarEtiquetasDeCvss(raiz: string): EtiquetasDeCvss {
       `${ruta}: ${errores.map((h) => `${h.regla}${h.detalle === null ? "" : ` (${h.detalle.es})`}`).join("; ")}`,
     );
   return etiquetas;
+}
+/** El plan de muestreo, validado con aritmética exacta: un tramo que no cumple su riesgo no se carga (E-5). */
+export function cargarMuestreo(raiz: string): PlanDeMuestreo {
+  const ruta = "datos/evidencia/muestreo.json";
+  const plan = PlanDeMuestreo.parse(leerJson(raiz, ruta));
+  const errores = validarPlanDeMuestreo(plan);
+  if (errores.length > 0)
+    throw new Error(
+      `${ruta}: ${errores.map((e) => `${e.error} (tramo ${e.tramo}${e.r === null ? "" : `, r = ${e.r}`})`).join("; ")}`,
+    );
+  return plan;
 }
 export const cargarEtiquetasDeHallazgo = (raiz: string): EtiquetasDeHallazgo =>
   EtiquetasDeHallazgo.parse(leerJson(raiz, "datos/hallazgos/etiquetas.json"));

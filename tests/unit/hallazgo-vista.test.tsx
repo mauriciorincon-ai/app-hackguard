@@ -2,7 +2,7 @@
 // libro o el hallazgo de la demo y comprueba la cadena de cierre, el plazo, las salidas y lo que la pantalla dice.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { Sobre } from "../../src/engine/evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../../src/engine/evidencia/esquemas.ts";
 import type { Evento, Hallazgo } from "../../src/engine/hallazgos/esquemas.ts";
 import { HallazgoPantalla } from "../../src/components/hallazgo/hallazgo-pantalla";
 import {
@@ -24,7 +24,7 @@ import { HALLAZGOS as DE_LA_MAQUETA } from "../../scripts/maqueta/datos/mundo.mj
 const CONSULTA = instantanea.fecha_evaluacion;
 
 /** Una copia del mundo con otro libro y/u otros hallazgos. */
-function escenario(cambios: { libro?: (l: Sobre[]) => Sobre[]; hallazgos?: (h: Hallazgo[]) => Hallazgo[] }) {
+function escenario(cambios: { libro?: (l: SobreEfectivo[]) => SobreEfectivo[]; hallazgos?: (h: Hallazgo[]) => Hallazgo[] }) {
   const base = mundoDeHallazgos;
   return {
     ...base,
@@ -190,11 +190,11 @@ describe("la severidad", () => {
 });
 
 describe("lo que dio un sobre, en palabras", () => {
-  const sobre = async (resultado: Sobre["resultado"], razon: Sobre["razon"] = null) => {
+  const sobre = async (resultado: SobreEfectivo["resultado"], razon: SobreEfectivo["razon"] = null) => {
     const m0 = await mundoDeLibro();
     return con(m0.sobres["SOB-0019"]!, { resultado, razon });
   };
-  const r = (c: Partial<Sobre["resultado"]>): Sobre["resultado"] => ({ ejecutada: true, evaluadas: null, fallidas: null, alertas: null, metrica: null, ...c });
+  const r = (c: Partial<SobreEfectivo["resultado"]>): SobreEfectivo["resultado"] => ({ ejecutada: true, evaluadas: null, fallidas: null, alertas: null, metrica: null, ...c });
   it("la razón manda sobre el conteo", async () => {
     expect(conteoDeSobre(await sobre(r({ evaluadas: 5, fallidas: 1 }), { es: "porque sí", en: "just so" }))).toEqual({ es: "porque sí", en: "just so" });
   });

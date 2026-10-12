@@ -3,7 +3,7 @@
 // El motor no toca el disco: los textos llegan de `src/lib/evidencia/cargar-evidencia.ts`.
 //
 // «Cerrado» no se escribe: no existe en el archivo. Lo único que puede cerrar un hallazgo es la regla del ciclo.
-import type { Sobre } from "../evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../evidencia/esquemas.ts";
 import {
   comillas,
   describir,
@@ -109,7 +109,7 @@ export interface ArchivoDeHallazgo {
 
 export interface ContextoDeHallazgos {
   /** El libro ya validado, con la ruta de cada sobre. */
-  libro: readonly { ruta: string; sobre: Sobre }[];
+  libro: readonly { ruta: string; sobre: SobreEfectivo }[];
   pruebas: readonly PruebaConocida[];
   /** Devuelve el motivo si el vector CVSS no pasa el validador estricto, o null si pasa. */
   vectorInvalido?: (vector: string) => string | null;

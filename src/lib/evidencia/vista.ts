@@ -3,7 +3,7 @@
 // `situacionDeHallazgo` del motor (la misma función que usa el CLI y el e2e de determinismo); esta capa los lee, los
 // nombra con los textos del catálogo y de `datos/hallazgos/etiquetas.json`, y arma la cadena de cierre.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
-import type { Sobre } from "../../engine/evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../../engine/evidencia/esquemas.ts";
 import { cotaDeFalla } from "../../engine/evidencia/veredicto.ts";
 import type { EvaluacionDeHallazgo } from "../../engine/hallazgos/ciclo.ts";
 import type {
@@ -54,7 +54,7 @@ export function etiquetaPropia(
 }
 
 /** Lo que dio un sobre, en palabras: su razón, o su conteo con la cota si no falló nada, o lo que midió. */
-export function conteoDeSobre(s: Sobre): Bilingue {
+export function conteoDeSobre(s: SobreEfectivo): Bilingue {
   if (s.razon !== null) return s.razon;
   const { fallidas: f, evaluadas: n, alertas: a, metrica: m } = s.resultado;
   if (f !== null && n !== null) {
@@ -105,7 +105,7 @@ const menor = (texto: Bilingue): LineaDeEslabon => ({
 
 /** El cuerpo de un eslabón que cuenta un sobre: fecha, lo que dio, su identificador, su huella y quién lo confirmó. */
 function lineasDeSobre(
-  s: Sobre,
+  s: SobreEfectivo,
   intermedio: LineaDeEslabon[] = [],
 ): LineaDeEslabon[] {
   return [

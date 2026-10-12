@@ -41,6 +41,9 @@ function raizConPropio() {
   // Los plazos son datos del libro; los hallazgos demo NO viajan: la raíz de juguete solo tiene lo propio.
   mkdirSync(path.join(raiz, "datos/hallazgos"), { recursive: true });
   cpSync(path.join(RAIZ, "datos/hallazgos/plazos.json"), path.join(raiz, "datos/hallazgos/plazos.json"));
+  // El plan de muestreo de los lotes también es un dato del libro.
+  mkdirSync(path.join(raiz, "datos/evidencia"), { recursive: true });
+  cpSync(path.join(RAIZ, "datos/evidencia/muestreo.json"), path.join(raiz, "datos/evidencia/muestreo.json"));
   const activo = JSON.parse(readFileSync(path.join(RAIZ, `datos/activos/demo/${ASISTENTE}.json`), "utf8"));
   activo.id = "mi-asistente";
   activo.origen = "propio";
@@ -253,11 +256,12 @@ describe("los comandos y sus errores de uso", () => {
 });
 
 describe("los demo versionados", () => {
-  it("el libro demo valida con salida 0 y trae 11 sobres y 4 hallazgos", () => {
+  it("el libro demo valida con salida 0 y trae 16 sobres, 2 lotes y 4 hallazgos", () => {
     const r = evidencia(["validar", "--json"], RAIZ);
     expect(r.codigo).toBe(0);
     const j = JSON.parse(r.salida);
-    expect(j.sobres.validos).toHaveLength(11);
+    expect(j.sobres.validos).toHaveLength(16);
+    expect(j.lotes.validos).toEqual(["LOTE-0007", "LOTE-0008"]);
     expect(j.hallazgos.validos).toEqual(["HZ-0003", "HZ-0005", "HZ-0007", "HZ-0009"]);
   });
 

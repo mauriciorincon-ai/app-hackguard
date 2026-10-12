@@ -4,7 +4,7 @@
 // que muestra una cadena de cierre que nadie puede reproducir. Solo lee lo versionado (demo): lo propio, ignorado por
 // git, no sale del CLI de quien lo registró (regla dura 8).
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
-import type { Sobre } from "../../engine/evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../../engine/evidencia/esquemas.ts";
 import type { EtiquetasDeHallazgo, Hallazgo, Plazos } from "../../engine/hallazgos/esquemas.ts";
 import type { EscalaIa } from "../../engine/severidad/escala-ia.ts";
 import type { EtiquetasDeCvss } from "../../engine/severidad/etiquetas-cvss.ts";
@@ -18,7 +18,7 @@ import { cargarLibroValidado } from "./cargar-libro.ts";
 
 export interface MundoDeHallazgos {
   /** Todos los sobres válidos, confirmados o no (una propuesta se ve, pero no cuenta). */
-  libro: Sobre[];
+  libro: SobreEfectivo[];
   hallazgos: Hallazgo[];
   escala: EscalaIa;
   plazos: Plazos;

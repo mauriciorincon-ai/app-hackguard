@@ -1,0 +1,17 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Cuántos sobres «del resto» (los que no son fallidas ni parciales) revisa una persona antes de confirmar un lote. Las fallidas y parciales se revisan SIEMPRE; esto es para el resto. Calidad límite del 10 % y riesgo del consumidor del 5 %, con aceptación de cero errores: cada tamaño se comprobó con aritmética exacta para todos los lotes de su tramo. La muestra se elige con la huella del lote, no con azar.",
+    "en": "How many envelopes “of the rest” (those that are neither failures nor partial) a person reviews before confirming a batch. Failures and partials are ALWAYS reviewed; this is for the rest. A 10 % limiting quality and a 5 % consumer's risk, accepting zero errors: each size was checked with exact arithmetic for every batch in its range. The sample is chosen with the batch's fingerprint, not by chance."
+  },
+  "procedimiento": "ISO 2859-2 (muestreo por calidad límite)",
+  "calidad_limite_por_ciento": 10,
+  "riesgo_del_consumidor_por_ciento": 5,
+  "tramos": [
+    { "hasta": 25, "muestra": null },
+    { "hasta": 50, "muestra": 22 },
+    { "hasta": 90, "muestra": 25 },
+    { "hasta": 150, "muestra": 26 },
+    { "hasta": null, "muestra": 29 }
+  ]
+}

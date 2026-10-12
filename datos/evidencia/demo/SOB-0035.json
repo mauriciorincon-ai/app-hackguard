@@ -1,0 +1,54 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0035",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "prueba": "PR-SW-XSS-001",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "herramienta": {
+    "id": "zap",
+    "version": "2.17.0"
+  },
+  "selector": {
+    "tipo": "zap",
+    "pluginids": [
+      40012,
+      40014
+    ],
+    "agregacion": "cualquier_regla"
+  },
+  "regla": "comprobacion_determinista",
+  "k": null,
+  "resultado": {
+    "ejecutada": false,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": null,
+    "metrica": null
+  },
+  "veredicto": "no_ejecutada",
+  "fecha": "2026-10-02",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [
+    {
+      "es": "Sin alertas y sin constancia de que la regla corrió: no se puede decir que la prueba se superó.",
+      "en": "No alerts and no proof that the rule ran: the test cannot be said to have passed."
+    }
+  ],
+  "razon": null,
+  "extracto_redactado": "zap · pluginid 40012, 40014 · sin alertas y sin constancia de ejecución",
+  "corrige": null,
+  "reprueba_de": null,
+  "confirmacion": null,
+  "huellas": {
+    "crudo": "14c3583915759ea0d2889db4e298883ede4b9667ad076b9c5fc68a4b3147ab26",
+    "sobre": "ac5c6ec59542db62b9302a4d19c2f43071980412a158f29f8941cd82f07d8931",
+    "resultado": "f52ee6a9b8f9bc982119de820bb51eed1aff6e621f540f8ba368723e1c0fe4bb"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "formato": "hackguard/lote@1",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "fecha": "2026-10-02",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "confirmacion": null,
+  "id": "LOTE-0008",
+  "herramienta": {
+    "id": "zap",
+    "version": "2.17.0"
+  },
+  "adaptador": {
+    "id": "zap-traditional-json",
+    "version": "1.0.0"
+  },
+  "archivo": {
+    "nombre": "zap.2026-10-02.report.json"
+  },
+  "hora": "15:05",
+  "advertencias": [
+    {
+      "es": "El plan de automatización adjunto cubre 2 de las 3 reglas del plan.",
+      "en": "The attached automation plan covers 2 of the 3 rules in the plan."
+    }
+  ],
+  "sobres": [
+    {
+      "id": "SOB-0034",
+      "huella": "9abf4a08c3526315bab4502ae2ac47dda0fbea72b60de367f73fd0b21a6a7142"
+    },
+    {
+      "id": "SOB-0035",
+      "huella": "ac5c6ec59542db62b9302a4d19c2f43071980412a158f29f8941cd82f07d8931"
+    },
+    {
+      "id": "SOB-0036",
+      "huella": "c9740b4973e569121eade6db3aa7552a195e3e7b0913c87b29e62c4c8ead2db4"
+    }
+  ],
+  "huellas": {
+    "archivo": "b2cc5ed8150d0b1d1195e18650c63c5673aa8a12af896e210b4ad67e7467e36b",
+    "lote": "e64aee44e8013764b05b614bf27d6bda90569886806cb4da9d0dc5dabdd27b15",
+    "registro": "90edff84b0d7ea85e134afdd1feab992b6cbfed786d8d3e3261afc07813aab2f"
+  }
+}
