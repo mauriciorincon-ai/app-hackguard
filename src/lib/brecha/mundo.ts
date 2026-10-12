@@ -54,6 +54,7 @@ export async function armarMundoDeBrecha(e: {
   );
   // Las semillas se corren contra el mundo de HOY: el libro demo de la instantánea oficial y la fecha de su consulta.
   const instrumento = validarInstrumento(e.semillas.semillas, entrada);
+  exigirInstrumentoVerde(instrumento);
   const brecha = await calcularBrecha(entrada);
   if (brecha.problemas.length > 0)
     throw new Error(
@@ -80,6 +81,20 @@ export async function armarMundoDeBrecha(e: {
     instrumento,
     huellaDelInforme,
   };
+}
+
+/**
+ * La regla 9 (C18): si una semilla del instrumento no responde lo que espera, nada se publica. El build se detiene y
+ * nombra la semilla y su diferencia; las pantallas nunca se emiten con un instrumento que no pasa.
+ */
+export function exigirInstrumentoVerde(
+  instrumento: ComprobacionDeInstrumento[],
+): void {
+  const rojas = instrumento.flatMap((c) => c.semillas.filter((s) => !s.pasa));
+  if (rojas.length === 0) return;
+  throw new Error(
+    `la validación del instrumento falló: ${rojas.map((s) => `${s.id} (${s.diferencias.join("; ")})`).join(" | ")} · the instrument validation failed: nothing is published`,
+  );
 }
 
 export { armarBrecha };
