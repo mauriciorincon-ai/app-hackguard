@@ -14,7 +14,7 @@ import {
 } from "../../../src/lib/propuestas/comando.ts";
 import { construirVistaDePropuestas } from "../../../src/lib/propuestas/vista.ts";
 import type { Decision } from "../../../src/engine/propuestas/esquemas.ts";
-import { propuestasDelRepo as base } from "../lib/mundo-de-brecha";
+import { propuestasDemo as base } from "../lib/mundo-de-brecha";
 
 const mundo = (
   cambios: Partial<

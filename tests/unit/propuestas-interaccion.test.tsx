@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { PropuestasPantalla } from "../../src/components/propuestas/propuestas-pantalla";
 import { armarMundoDePropuestas } from "../../src/lib/propuestas/pagina";
 import { construirVistaDePropuestas } from "../../src/lib/propuestas/vista";
-import { propuestasDelRepo as base } from "./lib/mundo-de-brecha";
+import { propuestasDemo as base } from "./lib/mundo-de-brecha";
 
 afterEach(cleanup);
 

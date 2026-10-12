@@ -23,7 +23,8 @@ export const ctx: ContextoDeVerificacion = contextoDeVerificacion(
   RAIZ,
 );
 export const cargadas = await cargarCorridas(RAIZ);
-export const corridas = cargadas.corridas;
+// Solo las corridas demo: las cifras que estas pruebas fijan no deben cambiar cuando el repositorio versiona una corrida real.
+export const corridas = cargadas.corridas.filter((c) => c.lugar === "demo");
 export const propuestas: PropuestaSellada[] = corridas.flatMap(
   (c) => c.corrida.propuestas,
 );

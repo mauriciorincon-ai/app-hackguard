@@ -24,7 +24,8 @@ import {
 import { construirVistaDePropuestas } from "../../../src/lib/propuestas/vista";
 import {
   mundoDeBrecha,
-  propuestasDelRepo as base,
+  propuestasDelRepo,
+  propuestasDemo as base,
 } from "../lib/mundo-de-brecha";
 
 const sinPropuestas = await mundoDeBrecha(undefined, { propuestas: false });
@@ -213,7 +214,7 @@ describe("«marcos con versión nueva» es una sola cuenta", () => {
   });
   it("la huella del informe cubre las propuestas: con otros avisos o con otra cuenta, es otro informe", async () => {
     const con = await mundoDeBrecha();
-    expect(con.propuestas).toEqual(resumenDePropuestas(base));
+    expect(con.propuestas).toEqual(resumenDePropuestas(propuestasDelRepo));
     expect(con.huellaDelInforme).not.toBe(sinPropuestas.huellaDelInforme);
     // la misma entrada da la misma huella
     expect((await mundoDeBrecha()).huellaDelInforme).toBe(con.huellaDelInforme);

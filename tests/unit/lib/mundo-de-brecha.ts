@@ -17,7 +17,10 @@ import {
   nombreDeLaInstantanea,
 } from "./mundo-de-activos";
 import { mundoDeHallazgos } from "./mundo-de-hallazgos";
-import { cargarMundoDePropuestas } from "../../../src/lib/propuestas/pagina.ts";
+import {
+  armarMundoDePropuestas,
+  cargarMundoDePropuestas,
+} from "../../../src/lib/propuestas/pagina.ts";
 import { resumenDePropuestas } from "../../../src/lib/propuestas/resumen.ts";
 
 export { activos, instantanea, mundoDeHallazgos };
@@ -48,6 +51,22 @@ export const propuestasDelRepo = await cargarMundoDePropuestas(
   },
   process.cwd(),
 );
+
+/**
+ * Solo las corridas demo (`propuestas/demo/`): las cifras que las pruebas fijan. El repositorio versiona corridas reales que cambian
+ * esas cuentas (la bandeja y el build las muestran todas), así que las pruebas de cifras no leen el mundo entero.
+ */
+export const propuestasDemo = armarMundoDePropuestas({
+  instantanea: propuestasDelRepo.instantanea,
+  nombre: propuestasDelRepo.nombre,
+  consulta: propuestasDelRepo.consulta,
+  activos: propuestasDelRepo.activos,
+  etiquetas: propuestasDelRepo.etiquetas,
+  umbrales: propuestasDelRepo.umbrales,
+  corridas: propuestasDelRepo.corridas.filter((c) => c.lugar === "demo"),
+  problemasDeCarga: propuestasDelRepo.problemasDeCarga,
+  decisiones: propuestasDelRepo.decisiones,
+});
 
 /**
  * El mundo completo de la brecha en una fecha de consulta (por omisión, la de la instantánea): la entrada de las cinco vistas. Con las
