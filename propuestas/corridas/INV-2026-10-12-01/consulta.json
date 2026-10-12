@@ -1,0 +1,421 @@
+{
+  "formato": "hackguard/consulta@1",
+  "corrida": "INV-2026-10-12-01",
+  "fecha": "2026-10-12",
+  "alcance": {
+    "es": "Todos los marcos del catálogo",
+    "en": "Every framework in the catalog"
+  },
+  "fuentes": [
+    {
+      "marco": "cwe",
+      "nombre": "Common Weakness Enumeration (CWE)",
+      "url": "https://cwe.mitre.org/data/index.html",
+      "http": 200,
+      "huella_de_la_pagina": "ff5afa947a61cf858ff086da2617ef07f26a0c03e9910f8e9555f3820e88aa5a",
+      "caracteres": 5033,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "cwe",
+      "nombre": "Common Weakness Enumeration (CWE)",
+      "url": "https://cwe.mitre.org/top25/",
+      "http": 200,
+      "huella_de_la_pagina": "29a48245cec39839280ecbac47107f4aa38f28535489e8e01abc839b587850c1",
+      "caracteres": 3782,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "cwe",
+      "nombre": "Common Weakness Enumeration (CWE)",
+      "url": "https://cwe.mitre.org/data/xml/cwec_latest.xml.zip",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "iso-iec-42001",
+      "nombre": "ISO/IEC 42001 — Artificial intelligence management system",
+      "url": "https://www.iso.org/standard/81230.html",
+      "http": 403,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_403",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+      "url": "https://arxiv.org/abs/2609.32160",
+      "http": 200,
+      "huella_de_la_pagina": "94e656e536f15db44c3eb89263d8308ed3a78275eb4c68a7fe8faf2e5537e4d9",
+      "caracteres": 4856,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+      "url": "https://export.arxiv.org/api/query?id_list=2609.32160",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Typed Decision Models: An Early Evidence Audit and Evaluation Checklist",
+      "url": "https://arxiv.org/pdf/2609.32160",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "mitre-atlas",
+      "nombre": "MITRE ATLAS",
+      "url": "https://atlas.mitre.org/",
+      "http": 200,
+      "huella_de_la_pagina": "2f9a6fa45a61fee8f7e113e8ea017bf7f8e6ffbf47c93bca6ddad338ba5e6a76",
+      "caracteres": 28,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "mitre-atlas",
+      "nombre": "MITRE ATLAS",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases",
+      "http": 200,
+      "huella_de_la_pagina": "045175899fd34abc2653cff1d74253e2f8cfcac36674d9d05f055abf03cf8b29",
+      "caracteres": 22237,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "mitre-atlas",
+      "nombre": "MITRE ATLAS",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases/download/v2026.09/ATLAS-2026.09.yaml",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": null,
+      "estado": "fuera_de_lista_blanca"
+    },
+    {
+      "marco": "mitre-atlas",
+      "nombre": "MITRE ATLAS",
+      "url": "https://github.com/mitre-atlas/atlas-data/releases.atom",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "mitre-attack",
+      "nombre": "MITRE ATT&CK",
+      "url": "https://attack.mitre.org/resources/versions/",
+      "http": 200,
+      "huella_de_la_pagina": "da65c397f68e87c922a7b30ad2aa5be1df95597afeab1f1b53c1f1472668f17b",
+      "caracteres": 3125,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "mitre-attack",
+      "nombre": "MITRE ATT&CK",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases",
+      "http": 200,
+      "huella_de_la_pagina": "2bb7bded3c75355b82b33b7e27085871e37a7bd57f4b12f60e3f12f1127baa27",
+      "caracteres": 8152,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "mitre-attack",
+      "nombre": "MITRE ATT&CK",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases/download/v19.2/enterprise-attack.json",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": null,
+      "estado": "fuera_de_lista_blanca"
+    },
+    {
+      "marco": "mitre-attack",
+      "nombre": "MITRE ATT&CK",
+      "url": "https://github.com/mitre-attack/attack-stix-data/releases.atom",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "nist-ai-100-2",
+      "nombre": "NIST AI 100-2 — Adversarial Machine Learning: A Taxonomy and Terminology",
+      "url": "https://csrc.nist.gov/pubs/ai/100/2/e2025/final",
+      "http": 200,
+      "huella_de_la_pagina": "4f6920a58b3ac55cfedc101115faa7dff0112d966dce0d37d5305747553f4f43",
+      "caracteres": 5683,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "nist-ai-600-1",
+      "nombre": "NIST AI 600-1 — Generative Artificial Intelligence Profile",
+      "url": "https://doi.org/10.6028/NIST.AI.600-1",
+      "http": 406,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "nist-ai-rmf",
+      "nombre": "NIST AI Risk Management Framework (AI RMF)",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "http": 200,
+      "huella_de_la_pagina": "b8f1b85aa0582fcb16983483e5f53aa86cef3dcd6e7e8ea73878ab619088a41a",
+      "caracteres": 7162,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "nist-ai-rmf",
+      "nombre": "NIST AI Risk Management Framework (AI RMF)",
+      "url": "https://doi.org/10.6028/NIST.AI.100-1",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": null,
+      "estado": "fuera_de_lista_blanca"
+    },
+    {
+      "marco": "nist-ai-rmf",
+      "nombre": "NIST AI Risk Management Framework (AI RMF)",
+      "url": "https://www.nist.gov/news-events/news/rss.xml",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-agentic-top10",
+      "nombre": "OWASP Top 10 for Agentic Applications",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "http": 200,
+      "huella_de_la_pagina": "2a1d91cccde137cb01932bb0be1ec2c4cc2ee2a1cd0dad4f7449a77128d24ea2",
+      "caracteres": 2536,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-agentic-top10",
+      "nombre": "OWASP Top 10 for Agentic Applications",
+      "url": "https://github.com/genai-security-project/crosswalk/tree/main/data/entries",
+      "http": 200,
+      "huella_de_la_pagina": "e86a8b7d8e0c4a10a100d67fcaf69ad47179540b276f09906d79a3a2dca36e5a",
+      "caracteres": 3943,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-agentic-top10",
+      "nombre": "OWASP Top 10 for Agentic Applications",
+      "url": "https://genai.owasp.org/feed/",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-asvs",
+      "nombre": "OWASP Application Security Verification Standard",
+      "url": "https://owasp.org/projects/asvs",
+      "http": 200,
+      "huella_de_la_pagina": "7decd98246df2ab1fab73b9c568d3ca7ec1ac11af03f3e598f7b3f5d664760b2",
+      "caracteres": 5001,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-asvs",
+      "nombre": "OWASP Application Security Verification Standard",
+      "url": "https://github.com/OWASP/ASVS/releases",
+      "http": 200,
+      "huella_de_la_pagina": "f6795c4c421011654aefe1bef24fbdf9be7d4155f02aada19713e4e25ea20036",
+      "caracteres": 9139,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-asvs",
+      "nombre": "OWASP Application Security Verification Standard",
+      "url": "https://github.com/OWASP/ASVS/releases/download/v5.0.0_release/OWASP_Application_Security_Verification_Standard_5.0.0_en.json",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": null,
+      "estado": "fuera_de_lista_blanca"
+    },
+    {
+      "marco": "owasp-asvs",
+      "nombre": "OWASP Application Security Verification Standard",
+      "url": "https://github.com/OWASP/ASVS/releases.atom",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP Top 10 for LLM Applications",
+      "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "http": 200,
+      "huella_de_la_pagina": "0f2b778f226dd3aca828a29bd56caf86c0a11315f53c12dc44c49bcba2601f59",
+      "caracteres": 2472,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP Top 10 for LLM Applications",
+      "url": "https://github.com/genai-security-project/GenAI-LLM-Top10",
+      "http": 200,
+      "huella_de_la_pagina": "d79a29a4980e7277f44334f14109bf03b6f254a0c98f812344c68a2b758ce96c",
+      "caracteres": 6573,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP Top 10 for LLM Applications",
+      "url": "https://raw.githubusercontent.com/genai-security-project/crosswalk/main/MIGRATION.md",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": null,
+      "estado": "fuera_de_lista_blanca"
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP Top 10 for LLM Applications",
+      "url": "https://genai.owasp.org/feed/",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP Top 10 for LLM Applications",
+      "url": "https://genai.owasp.org/download/56857/",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-top10",
+      "nombre": "OWASP Top 10",
+      "url": "https://top10.owasp.org/",
+      "http": 200,
+      "huella_de_la_pagina": "dc4a91a8ce726f173c3fddf4f6af4a4beda5732096d539863312cbbe760a173a",
+      "caracteres": 94,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-top10",
+      "nombre": "OWASP Top 10",
+      "url": "https://github.com/OWASP/Top10",
+      "http": 200,
+      "huella_de_la_pagina": "fb173c9b15963a5c01703ce93db2bcb1b3e0c2fe44bb5e11b85a0cbe994d0c8f",
+      "caracteres": 4856,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-top10",
+      "nombre": "OWASP Top 10",
+      "url": "https://github.com/OWASP/Top10/commits/master.atom",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "owasp-wstg",
+      "nombre": "OWASP Web Security Testing Guide",
+      "url": "https://owasp.org/projects/web-security-testing-guide",
+      "http": 200,
+      "huella_de_la_pagina": "0e4fd355bd0ad9944d0f6e0084de9d929ba1da6c16cf1e85f0ddd17cf4987bf7",
+      "caracteres": 2480,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-wstg",
+      "nombre": "OWASP Web Security Testing Guide",
+      "url": "https://github.com/OWASP/wstg/releases",
+      "http": 200,
+      "huella_de_la_pagina": "16c8822093370afa9f0eda0a4d9025533553dabfef4d4fbe66bb3a668a2ff05b",
+      "caracteres": 14728,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "owasp-wstg",
+      "nombre": "OWASP Web Security Testing Guide",
+      "url": "https://github.com/OWASP/wstg/releases.atom",
+      "http": 200,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_otro",
+      "estado": "no_accesible"
+    },
+    {
+      "marco": "typesafe-jev",
+      "nombre": "Jev 1.13 jaggedness",
+      "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "http": 200,
+      "huella_de_la_pagina": "b39b33697cc67062212615ce66c24c9e7b8c8fb298e887765ab13a7abb25dd59",
+      "caracteres": 9188,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "typesafe-jev",
+      "nombre": "Jev 1.13 jaggedness",
+      "url": "https://docs.typesafe.ai/models.md",
+      "http": 200,
+      "huella_de_la_pagina": "d8b55d864659e8e36e584ab41efd531c0cf14a79328356be6b5c7bb498b9befa",
+      "caracteres": 6147,
+      "motivo": null,
+      "estado": "leida"
+    },
+    {
+      "marco": "typesafe-jev",
+      "nombre": "Jev 1.13 jaggedness",
+      "url": "https://docs.typesafe.ai/llms.txt",
+      "http": 200,
+      "huella_de_la_pagina": "d7215d81a5561e34d60bddff20683e62175cbcaa072af0cf9d2e02705203934c",
+      "caracteres": 16663,
+      "motivo": null,
+      "estado": "leida"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 // Lo que las cinco pantallas de la brecha necesitan, ya calculado y serializable. Ninguna recalcula nada (design-system § 9,
 // «una cuenta, un cálculo»): todo sale de `armarBrecha` y se nombra aquí con los textos del catálogo y de los datos.
+import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Totales } from "../../engine/brecha/calcular.ts";
 import type { EstadoDeControl } from "../../engine/brecha/esquemas.ts";
 import type { Bilingue, Etiqueta } from "../catalogo/tipos.ts";
@@ -48,6 +49,15 @@ export interface BaseDeVista {
   consulta: string;
   vacio: Etiqueta;
 }
+
+/**
+ * Los marcos con versión nueva. Con avisos, se listan; sin ellos, solo se puede decir «ninguno» si el investigador corrió (y entonces se
+ * dice cuándo); sin ninguna corrida, no hay registro de lo que publica cada fuente y se dice, en vez de decir «ninguno».
+ */
+export type EstadoDeMarcos =
+  | { tipo: "avisos"; etiqueta: Etiqueta; avisos: AvisoDeMarco[] }
+  | { tipo: "ninguno"; etiqueta: Etiqueta; corrida: string; fecha: string }
+  | { tipo: "sin_registro"; etiqueta: Etiqueta };
 
 /** Una cifra de arriba: el valor, lo que dice y, si es un estado, su marca (símbolo, rol y color salen de datos). */
 export interface Cifra {
@@ -128,8 +138,8 @@ export interface VistaDeTablero extends BaseDeVista {
     comprobaciones: ComprobacionDeInstrumento[];
   };
   atencion: FilaDeAlerta[];
-  /** La bandeja de propuestas llega con el investigador y el extractor: hoy no hay nada por decidir. */
-  bandeja: Etiqueta;
+  /** La bandeja de propuestas: cuántas esperan tu decisión (la cuenta del motor de propuestas, la misma de la bandeja). */
+  bandeja: { etiqueta: Etiqueta; porDecidir: number; ruta: string };
   activos: FilaDeActivoDeTablero[];
   severidades: { id: string; etiqueta: Etiqueta; n: number }[];
   abiertos: { hallazgo: EnlaceAHallazgo; plazo: VistaDePlazo }[];
@@ -196,7 +206,7 @@ export interface VistaDeBrecha extends BaseDeVista {
     veredictos: { id: string; etiqueta: Etiqueta }[];
   };
   alertas: FilaDeAlerta[];
-  marcos: Etiqueta;
+  marcos: EstadoDeMarcos;
 }
 
 // ── Vista por control ───────────────────────────────────────────────────────────────────────────
@@ -332,7 +342,7 @@ export interface VistaDeInforme extends BaseDeVista {
   hallazgos: FilaDeHallazgoDeInforme[];
   controles: FilaDeControlDeInforme[];
   alertas: FilaDeAlerta[];
-  marcos: Etiqueta;
+  marcos: EstadoDeMarcos;
   riesgos: {
     hallazgo: EnlaceAHallazgo;
     justificacion: Bilingue;

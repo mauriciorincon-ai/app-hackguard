@@ -178,7 +178,15 @@ test.describe("«no detectado» no cuenta", () => {
   }) => {
     await page.goto(TABLERO);
     const comprobaciones = page.locator("[data-comprobacion]");
-    await expect(comprobaciones).toHaveCount(2);
+    // Los cierres del S7 (E-6, RF-10.3) y las semillas de los agentes del S8 (S1: citas inventadas, S2: instrucciones sembradas).
+    await expect(comprobaciones).toHaveCount(4);
+    expect(
+      (
+        await comprobaciones.evaluateAll((nodos) =>
+          nodos.map((n) => n.getAttribute("data-comprobacion")),
+        )
+      ).sort(),
+    ).toEqual(["E-6", "RF-10.3", "S1", "S2"]);
     for (const e of await comprobaciones.all()) {
       await expect(e).toHaveAttribute("data-pasa", "true");
     }

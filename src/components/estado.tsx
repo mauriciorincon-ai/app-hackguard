@@ -89,13 +89,19 @@ export function Sello({
   etiqueta,
   children,
   atributos,
+  menor = false,
 }: {
   etiqueta: Etiqueta;
   children: React.ReactNode;
   atributos?: Record<string, string | boolean>;
+  /** La variante pequeña de un aviso dentro de un panel (la de la maqueta: `hg-sello-menor`). */
+  menor?: boolean;
 }) {
   return (
-    <div className={`hg-sello es-${etiqueta.rol}`} {...atributos}>
+    <div
+      className={`hg-sello${menor ? " hg-sello-menor" : ""} es-${etiqueta.rol}`}
+      {...atributos}
+    >
       <Simbolo nombre={etiqueta.simbolo} />
       <div>
         <span className="hg-sello-titulo">

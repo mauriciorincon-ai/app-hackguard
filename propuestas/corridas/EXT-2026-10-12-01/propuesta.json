@@ -1,0 +1,91 @@
+{
+  "formato": "hackguard/borrador@1",
+  "agente": "extractor",
+  "corrida": "EXT-2026-10-12-01",
+  "fecha": "2026-10-12",
+  "alcance": {
+    "es": "Un texto pegado con el resultado de un escaneo de garak, contra el plan del asistente demo",
+    "en": "One pasted text with a garak scan result, against the demo assistant's plan"
+  },
+  "ejecucion": {
+    "modelo": "claude-sonnet-5-5",
+    "reintentos": 0
+  },
+  "contradicciones": [
+    {
+      "es": "El encabezado del texto declara que es sintético, escrito por el kit de prueba y que ninguna herramienta lo produjo, mientras el cuerpo describe una ejecución de garak. Se propone como demostración sobre el activo demo; la persona decide.",
+      "en": "The text header states it is synthetic, written by the test kit, and that no tool produced it, while the body describes a garak run. It is proposed as a demonstration on the demo asset; a person decides."
+    },
+    {
+      "es": "El texto no indica la zona horaria de la ejecución; el campo es obligatorio y se usó America/Bogota como en la corrida de demostración. La persona debe confirmarla.",
+      "en": "The text does not state the time zone of the run; the field is required and America/Bogota was used, as in the demo run. A person must confirm it."
+    }
+  ],
+  "propuestas": [
+    {
+      "ref": "texto-del-escaner-demo",
+      "tipo": "sobre",
+      "titulo": {
+        "es": "Sobre propuesto desde un texto pegado de garak",
+        "en": "Envelope proposed from a pasted garak text"
+      },
+      "resumen": {
+        "es": "El texto corresponde a la prueba de instrucciones dentro del contenido del plan del asistente demo. El extractor propone el sobre; el veredicto lo calcula la regla de la prueba y lo confirma una persona.",
+        "en": "The text matches the instructions-inside-content test in the demo assistant's plan. The extractor proposes the envelope; the verdict is computed by the test's rule and confirmed by a person."
+      },
+      "activo": "act-demo-asistente",
+      "texto": {
+        "huella": "fddf804aba485c1c3d9e854687a369cf9cd9914d4b931f32eb8d4e8af4f4afa0",
+        "caracteres": 426,
+        "extracto": "garak LLM vulnerability scanner v0.17.0 run 2026-10-12. Target: demo support assistant. Probe suite for instructions inside content, detector base.TriggerListDetector. Summary: 20 attempts evaluated, 0 failed."
+      },
+      "asociacion": "una",
+      "candidatas": [
+        {
+          "prueba": "PR-IA-PINJ-001",
+          "razon": {
+            "es": "El texto nombra la suite de instrucciones dentro del contenido y el detector base.TriggerListDetector, que son los que fija esta prueba para garak.",
+            "en": "The text names the instructions-inside-content suite and the base.TriggerListDetector detector, which are the ones this test sets for garak."
+          },
+          "entrada": {
+            "herramienta": {
+              "id": "garak",
+              "version": "0.17.0"
+            },
+            "fecha": "2026-10-12",
+            "zona_horaria": "America/Bogota",
+            "resultado": {
+              "ejecutada": true,
+              "evaluadas": 20,
+              "fallidas": 0,
+              "alertas": null,
+              "metrica": null
+            }
+          },
+          "citas": [
+            {
+              "campo": "herramienta.version",
+              "texto": "garak LLM vulnerability scanner v0.17.0"
+            },
+            {
+              "campo": "fecha",
+              "texto": "run 2026-10-12"
+            },
+            {
+              "campo": "resultado.ejecutada",
+              "texto": "Summary: 20 attempts evaluated, 0 failed"
+            },
+            {
+              "campo": "resultado.evaluadas",
+              "texto": "20 attempts evaluated"
+            },
+            {
+              "campo": "resultado.fallidas",
+              "texto": "0 failed"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

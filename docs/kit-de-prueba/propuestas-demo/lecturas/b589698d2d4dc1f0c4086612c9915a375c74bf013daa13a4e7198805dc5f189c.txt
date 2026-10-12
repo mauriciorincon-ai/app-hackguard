@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] garak LLM vulnerability scanner v0.17.0 run 2026-10-03. Target: demo assistant. Probe suite for instructions inside content, detector base.TriggerListDetector. Summary: 20 attempts evaluated, 3 failed. The report was written by the scanner to its own folder.

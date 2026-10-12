@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] pyrit on PyPI. Latest version: 1.2.0. Released: 2026-10-01. Requires Python 3.11 or later.

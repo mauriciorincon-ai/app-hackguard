@@ -24,7 +24,7 @@ Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus fi
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
 para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
 cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Desde el Sprint 6 también puedes ver los **lotes** de evidencia que llegan de Garak o ZAP, y su revisión. Desde el Sprint 7 también puedes ver el **tablero** (la portada), la **brecha** y el **informe**: las cinco
-pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones (propuestas) aparecen en la barra lateral con la marca «pronto».
+pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 también puedes ver la **bandeja de propuestas**, donde llega lo que proponen el investigador y el extractor: toda sección de la barra lateral tiene ya su pantalla.
 
 ### Primeros pasos
 
@@ -116,7 +116,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
        `prueba/revision-sin-registro` dice «huella del contenido a revisar: …». Si el contenido cambia después,
        `prueba/revision-desactualizada` da la huella nueva.
 - **Limitaciones conocidas:**
-  - **Solo algunas vistas están en pantalla:** el catálogo, los marcos, los controles y los activos con su plan. Lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
+  - **La pantalla solo lee:** las vistas (catálogo, marcos, controles, activos con su plan, evidencia, tablero, brecha y propuestas) muestran lo que los comandos de arriba escriben; nada de lo que se hace en una pantalla cambia un archivo. Lo que cambia un archivo se hace por comando (ver «El catálogo en pantalla»).
   - **Instantánea bloqueada:** si el catálogo es inválido, no se escribe nada (código 2).
   - **Fecha obligatoria:** la fecha de la instantánea es obligatoria y nunca se toma del reloj. Una fecha anterior
     a la última verificación del catálogo se rechaza (código 3).
@@ -149,7 +149,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
 - **Cómo se usa:**
   1. Abre la aplicación: la raíz te lleva al **Tablero**. La barra lateral tiene cinco secciones; dentro de
      Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos**, la **carga** y los **hallazgos** de **Evidencia**, el
-     **Tablero** y la **Brecha** funcionan. Las demás llevan la marca «pronto».
+     **Tablero**, la **Brecha** y las **Propuestas** (dentro de Catálogo) funcionan. Ninguna sección lleva ya la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
@@ -180,7 +180,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Las propuestas todavía no existen como pantalla.
+  - Las propuestas tienen su pantalla (**Catálogo › Propuestas**): ahí se ve lo que el investigador y el extractor proponen, y la decisión se registra por comando.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -359,9 +359,9 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
 - **Limitaciones conocidas:**
   - Con los datos de demo de hoy ningún control está en evidencia antigua. El estado existe y se cuenta en el tablero, pero
     aparecerá un control cuando su evidencia cumpla el umbral.
-  - Los marcos con versión nueva dicen «sin registro de la fuente»: la app todavía no sabe qué publica cada fuente.
+  - Los marcos con versión nueva salen de las propuestas del investigador: se listan con su propuesta, dicen «ninguno» solo si hay una corrida del investigador que lo respalde (y cuándo fue), y «sin registro» si ninguna corrida ha leído las fuentes.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
-  - La bandeja de propuestas todavía no existe como pantalla: llega con el investigador y el extractor.
+  - La cuenta de «propuestas por decidir» del tablero es la de la bandeja: baja cuando una decisión queda registrada en el libro, no cuando se marca en la pantalla.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -389,6 +389,28 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
     - no entiende frases negadas;
     - favorece a los socios antiguos.
 
+#### Las propuestas y los dos agentes · desde Sprint 008
+
+- **Qué hace:** dos agentes de inteligencia artificial proponen cambios y ninguno decide nada. El **investigador** (`/investigar`) revisa los marcos del catálogo y dice si la fuente oficial publica una versión distinta de la que el catálogo tiene. El **extractor** (`/extraer`) lee un texto con el resultado de una herramienta de pruebas, que guardas en `propuestas/entradas/`, y propone los campos de un sobre de evidencia. Todo lo que proponen llega a **Catálogo › Propuestas**, donde una persona lo aprueba, lo rechaza o lo separa.
+
+- **Qué comprueba el código, no el modelo:**
+  - cada cita tiene que aparecer literal en el texto o en la página de la fuente; si no, la propuesta lo dice;
+  - una versión nueva necesita al menos dos fuentes verificadas; si hay menos, queda en pausa y no se descarta;
+  - el veredicto sugerido lo calcula la regla de la prueba; el modelo nunca emite un veredicto ni una severidad;
+  - si el texto trae una instrucción dirigida al agente, el filtro la marca y la propuesta pide tu revisión, sin cambiar su veredicto;
+  - una fuente que responde 403 o que no es texto legible queda como «no accesible al agente». Nadie la rodea: si necesitas ese documento, léelo tú y haz el cambio a mano.
+
+- **Cómo se usa:**
+  1. **Revisar la bandeja:** abre **Catálogo › Propuestas**. Arriba están las propuestas por decidir, las fuentes sin verificar y las marcadas por el filtro. Con «Quién propone» ves solo las del investigador o solo las del extractor.
+  2. **Decidir:** marca Aprobar, Aprobar tras revisar, Rechazar o Separar. La pantalla no guarda nada: muestra el comando que registra tu decisión, y lo corres tú en tu propia terminal, fuera de Claude Code, con tu nombre y la fecha. Por ejemplo: `pnpm propuestas:decidir PROP-0041 --decision rechazar --por "<tu nombre>" --fecha AAAA-MM-DD --motivo "<por qué>"`.
+  3. **Lo que cambia al decidir:** rechazar o separar solo queda en el libro de decisiones (`datos/propuestas/decisiones.jsonl`). Aprobar una prueba nueva la escribe en `datos/pruebas/` solo si el catálogo entero sigue válido con ella; si no, no escribe nada y te dice por qué. Aprobar un sobre de evidencia crea un sobre **por confirmar**: no cuenta como evidencia hasta que lo confirmes con `pnpm evidencia:confirmar`.
+  4. **Pedir una corrida:** en Claude Code escribe `/investigar marcos`, `/investigar <id-del-marco>` o `/extraer <ruta-del-texto>`. Solo lo pides tú: ningún agente corre solo ni al abrir la app.
+
+- **Límites:**
+  - El investigador lee solo las fuentes de la lista blanca de cada marco. Todavía no puedes pegarle un documento: si la fuente no responde, lo lees tú.
+  - Los agentes solo escriben en `propuestas/`. Los cambios al catálogo, a los planes y a los hallazgos los hace una persona con los comandos de decisión.
+  - Las propuestas PROP-0031 a PROP-0037 son ejemplos sellados; la bandeja muestra también las corridas reales del repositorio.
+
 ### Preguntas frecuentes
 
 - **¿Por qué el catálogo sale «con advertencias» y no «ok»?** Por las 10 pruebas de software sin control. Es lo
@@ -398,15 +420,16 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
 
 ### Historial
 
-| Sprint           | Features añadidas a este manual                                                                                                           |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                                                 |
-| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                  |
-| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                          |
-| 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete |
-| 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página        |
-| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla               |
-| 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco  |
+| Sprint           | Features añadidas a este manual                                                                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                                                                                     |
+| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                                                      |
+| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                                                              |
+| 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete                                     |
+| 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página                                            |
+| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                                                   |
+| 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco                                      |
+| 008 · 2026-10-12 | Las propuestas (la bandeja con sus decisiones por comando) · el investigador de marcos y el extractor de resultados, como skills de Claude Code · avisos de versión en Marcos |
 
 ---
 
@@ -420,7 +443,7 @@ and it takes in results as evidence that a person confirms. Its central idea is 
 vulnerability: it is evidence that a control is failing.
 
 You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
-take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review. Since Sprint 7 the **dashboard** (the front page), the **gap** and the **report** read the same count of confirmed evidence.
+take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review. Since Sprint 7 the **dashboard** (the front page), the **gap** and the **report** read the same count of confirmed evidence. Since Sprint 8 you can also see the **proposals inbox**, where what the researcher and the extractor propose arrives: every section of the sidebar now has its screen.
 
 ### Getting started
 
@@ -512,7 +535,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
        finding `prueba/revision-sin-registro` says “fingerprint of the content to review: …”. If the content
        changes later, `prueba/revision-desactualizada` gives the new one.
 - **Known limitations:**
-  - **Only some views are on screen:** the catalog, the frameworks, the controls and the assets with their plan. Everything else is handled with the commands above (see “The catalog on screen”).
+  - **The screens only read:** the views (catalog, frameworks, controls, assets with their plan, evidence, dashboard, gap and proposals) show what the commands above write; nothing done on a screen changes a file. What changes a file is done by command (see “The catalog on screen”).
   - **Blocked snapshot:** if the catalog is invalid, nothing is written (code 2).
   - **Date required:** the snapshot date is required and is never taken from the clock. A date earlier than the
     catalog's latest verification is rejected (code 3).
@@ -545,7 +568,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to the **Dashboard**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**, the **Dashboard** and the **Gap**. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**, the **Dashboard**, the **Gap** and the **Proposals** (inside Catalog). No section carries the “soon” mark any more.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -576,7 +599,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals do not exist as a screen yet.
+  - Proposals have their screen (**Catalog › Proposals**): it shows what the researcher and the extractor propose, and the decision is recorded by command.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
@@ -751,9 +774,9 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 - **Known limitations:**
   - With today's demo data no control is in stale evidence. The state exists and the dashboard counts it, but a control
     will appear there once its evidence meets the threshold.
-  - Frameworks with a new version say “no source record”: the app does not yet know what each source publishes.
+  - Frameworks with a new version come from the researcher's proposals: they are listed with their proposal, say “none” only when a researcher run backs it (and when it was), and “no record” if no run has read the sources.
   - The screens are tested in Spanish; the English test arrives at the close of the milestone.
-  - The proposals inbox does not exist as a screen yet: it arrives with the researcher and the extractor.
+  - The dashboard's “proposals to decide” count is the inbox's: it goes down when a decision is recorded in the ledger, not when it is marked on screen.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 
@@ -782,6 +805,28 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
     - it does not understand negated sentences;
     - it favours long-standing members.
 
+#### The proposals and the two agents · since Sprint 008
+
+- **What it does:** two artificial-intelligence agents propose changes, and neither decides anything. The **researcher** (`/investigar`) checks the catalog's frameworks and says whether the official source publishes a version different from the one the catalog has. The **extractor** (`/extraer`) reads a text with a testing tool's result, which you save in `propuestas/entradas/`, and proposes the fields of an evidence envelope. Everything they propose goes to **Catalog › Proposals**, where a person approves it, rejects it or splits it.
+
+- **What the code checks, not the model:**
+  - every quote has to appear word for word in the text or on the source's page; if not, the proposal says so;
+  - a new version needs at least two verified sources; with fewer it stays paused and is not discarded;
+  - the suggested verdict is computed by the test's rule; the model never issues a verdict or a severity;
+  - if the text carries an instruction aimed at the agent, the filter flags it and the proposal asks for your review, without changing its verdict;
+  - a source that answers 403 or is not readable text is recorded as «not accessible to the agent». Nobody goes around it: if you need that document, read it yourself and make the change by hand.
+
+- **How to use it:**
+  1. **Review the inbox:** open **Catalog › Proposals**. At the top are the proposals to decide, the sources not verified and those flagged by the filter. With «Who proposes» you see only the researcher's or only the extractor's.
+  2. **Decide:** mark Approve, Approve after review, Reject or Split. The screen saves nothing: it shows the command that records your decision, and you run it yourself in your own terminal, outside Claude Code, with your name and the date. For example: `pnpm propuestas:decidir PROP-0041 --decision rechazar --por "<your name>" --fecha AAAA-MM-DD --motivo "<why>"`.
+  3. **What changes when you decide:** rejecting or splitting only stays in the decision ledger (`datos/propuestas/decisiones.jsonl`). Approving a new test writes it to `datos/pruebas/` only if the whole catalog stays valid with it; if not, nothing is written and it tells you why. Approving an evidence envelope creates an envelope **to confirm**: it does not count as evidence until you confirm it with `pnpm evidencia:confirmar`.
+  4. **Ask for a run:** in Claude Code type `/investigar marcos`, `/investigar <framework-id>` or `/extraer <text-path>`. Only you ask: no agent runs by itself or when the app opens.
+
+- **Limits:**
+  - The researcher reads only the sources on each framework's allowlist. You cannot paste a document into it yet: if a source does not answer, you read it yourself.
+  - The agents write only to `propuestas/`. Changes to the catalog, the plans and the findings are made by a person with the decision commands.
+  - PROP-0031 to PROP-0037 are sealed examples; the inbox also shows the repository's real runs.
+
 ### Frequently asked questions
 
 - **Why does the catalog come out “with warnings” rather than “ok”?** Because of the 10 software tests without a
@@ -791,12 +836,13 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 
 ### History
 
-| Sprint           | Features added to this manual                                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                                             |
-| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                            |
-| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                    |
-| 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download |
-| 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page  |
-| 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                   |
-| 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five         |
+| Sprint           | Features added to this manual                                                                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                                                                                  |
+| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                                                                 |
+| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                                                         |
+| 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download                                      |
+| 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page                                       |
+| 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                                                        |
+| 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five                                              |
+| 008 · 2026-10-12 | Proposals (the inbox with its decisions by command) · the researcher for frameworks and the extractor for results, as Claude Code skills · version notices in Marcos |

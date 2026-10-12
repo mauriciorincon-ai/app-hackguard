@@ -1,0 +1,203 @@
+{
+  "formato": "hackguard/borrador@1",
+  "agente": "extractor",
+  "corrida": "EXT-2026-10-03-01",
+  "fecha": "2026-10-03",
+  "alcance": {
+    "es": "Dos textos pegados de resultados de herramientas, contra el plan del asistente demo",
+    "en": "Two pasted texts with tool results, against the demo assistant's plan"
+  },
+  "ejecucion": {
+    "modelo": "claude-sonnet-5-5 (corrida de demostración)",
+    "reintentos": 0
+  },
+  "contradicciones": [],
+  "propuestas": [
+    {
+      "ref": "texto-del-escaner",
+      "tipo": "sobre",
+      "titulo": {
+        "es": "Sobre propuesto desde un texto pegado",
+        "en": "Envelope proposed from pasted text"
+      },
+      "resumen": {
+        "es": "El texto corresponde a una prueba del plan del asistente demo. El extractor propone el sobre; el veredicto lo calcula la regla de la prueba y lo confirma una persona.",
+        "en": "The text matches a test in the demo assistant's plan. The extractor proposes the envelope; the verdict is computed by the test's rule and confirmed by a person."
+      },
+      "activo": "act-demo-asistente",
+      "texto": {
+        "huella": "b589698d2d4dc1f0c4086612c9915a375c74bf013daa13a4e7198805dc5f189c",
+        "caracteres": 344,
+        "extracto": "garak LLM vulnerability scanner v0.17.0 run 2026-10-03. Target: demo assistant. Probe suite for instructions inside content, detector base.TriggerListDetector. Summary: 20 attempts evaluated, 3 failed. The report was written by the scanner to its own folder."
+      },
+      "asociacion": "alternativas",
+      "candidatas": [
+        {
+          "prueba": "PR-IA-PINJ-001",
+          "entrada": {
+            "herramienta": {
+              "id": "garak",
+              "version": "0.17.0"
+            },
+            "fecha": "2026-10-03",
+            "zona_horaria": "America/Bogota",
+            "resultado": {
+              "ejecutada": true,
+              "evaluadas": 20,
+              "fallidas": 3,
+              "alertas": null,
+              "metrica": null
+            }
+          },
+          "citas": [
+            {
+              "campo": "herramienta.version",
+              "texto": "garak LLM vulnerability scanner v0.17.0"
+            },
+            {
+              "campo": "fecha",
+              "texto": "run 2026-10-03"
+            },
+            {
+              "campo": "resultado.evaluadas",
+              "texto": "20 attempts evaluated"
+            },
+            {
+              "campo": "resultado.fallidas",
+              "texto": "3 failed"
+            }
+          ]
+        },
+        {
+          "prueba": "PR-IA-ENC-002",
+          "entrada": {
+            "herramienta": {
+              "id": "garak",
+              "version": "0.17.0"
+            },
+            "fecha": "2026-10-03",
+            "zona_horaria": "America/Bogota",
+            "resultado": {
+              "ejecutada": true,
+              "evaluadas": 20,
+              "fallidas": 3,
+              "alertas": null,
+              "metrica": null
+            }
+          },
+          "citas": [
+            {
+              "campo": "herramienta.version",
+              "texto": "garak LLM vulnerability scanner v0.17.0"
+            },
+            {
+              "campo": "fecha",
+              "texto": "run 2026-10-03"
+            },
+            {
+              "campo": "resultado.evaluadas",
+              "texto": "20 attempts evaluated"
+            },
+            {
+              "campo": "resultado.fallidas",
+              "texto": "3 failed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "texto-con-dos-pruebas",
+      "tipo": "sobre",
+      "titulo": {
+        "es": "Un texto pegado con resultados de más de una prueba",
+        "en": "One pasted text with results for more than one test"
+      },
+      "resumen": {
+        "es": "El texto trae resultados de varias pruebas distintas del plan. Un sobre cuenta para una sola prueba: sepáralo antes de aprobar.",
+        "en": "The text carries results for several different tests in the plan. An envelope counts for one test only: split it before approving."
+      },
+      "activo": "act-demo-asistente",
+      "texto": {
+        "huella": "c5896c5096bf11eb0d495e7e6a45d5a49531e7a63aafafe24f14d296e0e631b8",
+        "caracteres": 223,
+        "extracto": "promptfoo eval 0.123.1 run 2026-10-03. Test PERM tool permissions: 20 cases, 0 failed. Test LIM step and cost limits: 20 cases, 5 failed."
+      },
+      "asociacion": "mezcla",
+      "candidatas": [
+        {
+          "prueba": "PR-AG-PERM-001",
+          "entrada": {
+            "herramienta": {
+              "id": "promptfoo",
+              "version": "0.123.1"
+            },
+            "fecha": "2026-10-03",
+            "zona_horaria": "America/Bogota",
+            "resultado": {
+              "ejecutada": true,
+              "evaluadas": 20,
+              "fallidas": 0,
+              "alertas": null,
+              "metrica": null
+            }
+          },
+          "citas": [
+            {
+              "campo": "herramienta.version",
+              "texto": "promptfoo eval 0.123.1"
+            },
+            {
+              "campo": "fecha",
+              "texto": "run 2026-10-03"
+            },
+            {
+              "campo": "resultado.evaluadas",
+              "texto": "Test PERM tool permissions: 20 cases, 0 failed"
+            },
+            {
+              "campo": "resultado.fallidas",
+              "texto": "Test PERM tool permissions: 20 cases, 0 failed"
+            }
+          ]
+        },
+        {
+          "prueba": "PR-AG-LIM-001",
+          "entrada": {
+            "herramienta": {
+              "id": "promptfoo",
+              "version": "0.123.1"
+            },
+            "fecha": "2026-10-03",
+            "zona_horaria": "America/Bogota",
+            "resultado": {
+              "ejecutada": true,
+              "evaluadas": 20,
+              "fallidas": 5,
+              "alertas": null,
+              "metrica": null
+            }
+          },
+          "citas": [
+            {
+              "campo": "herramienta.version",
+              "texto": "promptfoo eval 0.123.1"
+            },
+            {
+              "campo": "fecha",
+              "texto": "run 2026-10-03"
+            },
+            {
+              "campo": "resultado.evaluadas",
+              "texto": "Test LIM step and cost limits: 20 cases, 5 failed"
+            },
+            {
+              "campo": "resultado.fallidas",
+              "texto": "Test LIM step and cost limits: 20 cases, 5 failed"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

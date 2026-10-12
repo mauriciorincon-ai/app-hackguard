@@ -25,6 +25,8 @@ import {
   vistaDePlazo,
   vistaDeRevision,
 } from "../evidencia/vista.ts";
+import { avisosDeMarco } from "../propuestas/avisos.ts";
+import { RUTA_DE_PROPUESTAS } from "../propuestas/etiquetas.ts";
 import { etiquetaDeBrecha } from "./etiquetas.ts";
 import type { MundoDeBrecha } from "./mundo.ts";
 import {
@@ -36,6 +38,7 @@ import {
 } from "./textos.ts";
 import type {
   AccionDeControl,
+  EstadoDeMarcos,
   Bilingue,
   Cifra,
   ComprobacionDeInstrumento,
@@ -59,6 +62,28 @@ import type {
 } from "./tipos.ts";
 
 const NORMA = "ISO/IEC 42001";
+
+/**
+ * Los marcos con versión nueva, según las propuestas del investigador (RF-05.5): la misma cuenta de la bandeja y de Marcos. Sin avisos
+ * solo se dice «ninguno» si hubo una corrida del investigador que lo respalde; sin ella, se dice que no hay registro.
+ */
+function estadoDeMarcos(
+  m: MundoDeBrecha,
+  k: ReturnType<typeof contexto>,
+): EstadoDeMarcos {
+  const avisos = avisosDeMarco(m.propuestas.avisos, k.marco);
+  if (avisos.length > 0)
+    return { tipo: "avisos", etiqueta: k.prop("version_nueva"), avisos };
+  const investigacion = m.propuestas.investigacion;
+  if (investigacion !== null)
+    return {
+      tipo: "ninguno",
+      etiqueta: k.prop("vacio"),
+      corrida: investigacion.corrida,
+      fecha: investigacion.fecha,
+    };
+  return { tipo: "sin_registro", etiqueta: k.prop("sin_registro") };
+}
 const VEREDICTOS_DEL_FILTRO = ["superada", "fallida", "no_ejecutada"] as const;
 /** El orden en que el informe cuenta los hallazgos por estado. */
 const ORDEN_DE_ESTADO = [
@@ -122,6 +147,7 @@ function contexto(m: MundoDeBrecha) {
   };
   const prueba = (id: string) => porId(c.pruebas, id);
   const familia = (id: string) => porId(c.familias, id);
+  const marco = (id: string): string => porId(c.marcos, id).nombre;
   const capa = c.controles.find((x) => x.capa === "por_defecto");
   if (capa === undefined)
     throw new Error(
@@ -174,6 +200,7 @@ function contexto(m: MundoDeBrecha) {
     activoCargado,
     prueba,
     familia,
+    marco,
     capa,
     controles,
     control,
@@ -322,12 +349,13 @@ const comprobaciones = (
   m.instrumento.map((c) => ({
     requisito: c.requisito,
     nombre:
-      c.requisito === "RF-10.3"
+      c.nombre ??
+      (c.requisito === "RF-10.3"
         ? { es: "Cierres prohibidos", en: "Forbidden closures" }
         : {
             es: "«No detectado» no es verificado",
             en: "“Not detected” is not verified",
-          },
+          }),
     sembradas: c.sembradas,
     obtenidas: c.obtenidas,
     pasa: c.obtenidas === c.sembradas,
@@ -396,7 +424,7 @@ export function construirVistaDeTablero(m: MundoDeBrecha): VistaDeTablero {
       },
       {
         clave: "por_decidir",
-        valor: "0",
+        valor: String(m.propuestas.porDecidir),
         texto: { es: "propuestas por decidir", en: "proposals to decide" },
         marca: null,
       },
@@ -413,7 +441,11 @@ export function construirVistaDeTablero(m: MundoDeBrecha): VistaDeTablero {
       ...lotes,
       ...urgentes.filter((f) => f.clase !== "plazo"),
     ],
-    bandeja: k.prop("por_decidir"),
+    bandeja: {
+      etiqueta: k.prop("por_decidir"),
+      porDecidir: m.propuestas.porDecidir,
+      ruta: RUTA_DE_PROPUESTAS,
+    },
     activos: b.porActivo.map(({ activo, totales }): FilaDeActivoDeTablero => {
       const a = k.activoCargado(activo);
       return {
@@ -545,7 +577,7 @@ export function construirVistaDeBrecha(m: MundoDeBrecha): VistaDeBrecha {
       })),
     },
     alertas: alertasDe(m, k, true),
-    marcos: k.prop("sin_registro"),
+    marcos: estadoDeMarcos(m, k),
   };
 }
 
@@ -921,7 +953,7 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
         .length,
     })),
     alertas: alertasDe(m, k, false),
-    marcos: k.prop("sin_registro"),
+    marcos: estadoDeMarcos(m, k),
     riesgos: b.aceptados.flatMap((id) => {
       const rev = k.revisionDe(id);
       const ev = k.sit(id).evaluacion;

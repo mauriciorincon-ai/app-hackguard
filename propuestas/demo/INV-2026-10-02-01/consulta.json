@@ -1,0 +1,111 @@
+{
+  "formato": "hackguard/consulta@1",
+  "corrida": "INV-2026-10-02-01",
+  "fecha": "2026-10-02",
+  "alcance": {
+    "es": "Los marcos de las familias modelo de decisión, agente y modelo generativo, y las herramientas del catálogo",
+    "en": "The frameworks of the decision-model, agent and generative-model families, and the catalog's tools"
+  },
+  "fuentes": [
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Lista de 14 comprobaciones · resumen",
+      "url": "https://arxiv.org/abs/2609.32160",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "8fec0f4d53cedc630c3e0a5eb4b32df313ca92712018fd57a5380bdadbe5f521",
+      "caracteres": 515,
+      "motivo": null
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Lista de 14 comprobaciones · texto completo",
+      "url": "https://arxiv.org/pdf/2609.32160",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "2e04d6087bdcbf3c3e70d7a57551733e0686e746875200f00871994747ffb255",
+      "caracteres": 369,
+      "motivo": null
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Lista de 14 comprobaciones · versiones",
+      "url": "https://export.arxiv.org/abs/2609.32160v2",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "08902d2ee1fe9c65cfe81ccba329019d75cfc62ab7d69b91723256d8a7e5ab73",
+      "caracteres": 259,
+      "motivo": null
+    },
+    {
+      "marco": "lista-decision-14",
+      "nombre": "Lista de 14 comprobaciones · anexo",
+      "url": "https://arxiv.org/src/2609.32160/anc",
+      "estado": "no_accesible",
+      "http": 403,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "http_403"
+    },
+    {
+      "marco": "owasp-agentic-top10",
+      "nombre": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "70358729cdb76e00af3192089e03f867fab85481785a5fe5b0d26d32e0da6a45",
+      "caracteres": 314,
+      "motivo": null
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP GenAI LLM Top 10 2026",
+      "url": "https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "018ee92930043e5034711b0663e53cd2bd35f84f732fb5c31a730200bdc03c56",
+      "caracteres": 282,
+      "motivo": null
+    },
+    {
+      "marco": "owasp-llm-top10",
+      "nombre": "OWASP GenAI LLM Top 10 · repositorio",
+      "url": "https://github.com/genai-security-project/GenAI-LLM-Top10",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "e7609b2114d0c4c956bc7c5145b02064a00d92925b876b52ab4b4f4f78a35f6f",
+      "caracteres": 305,
+      "motivo": null
+    },
+    {
+      "marco": "typesafe-jev",
+      "nombre": "Jev · registro de cambios",
+      "url": "https://docs.typesafe.ai/changelog",
+      "estado": "no_accesible",
+      "http": null,
+      "huella_de_la_pagina": null,
+      "caracteres": 0,
+      "motivo": "requiere_sesion"
+    },
+    {
+      "marco": null,
+      "nombre": "PyRIT · versiones",
+      "url": "https://github.com/microsoft/PyRIT/releases",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "c67f90c9ad75ec82486090c83292810299044a9012abc70596b947ca10e5226e",
+      "caracteres": 210,
+      "motivo": null
+    },
+    {
+      "marco": null,
+      "nombre": "PyRIT · paquete",
+      "url": "https://pypi.org/project/pyrit/",
+      "estado": "leida",
+      "http": 200,
+      "huella_de_la_pagina": "ead1d21958b2e47fc8beca3ff2672c552a5e2716f1be60cdc5d1323a550fc970",
+      "caracteres": 176,
+      "motivo": null
+    }
+  ]
+}

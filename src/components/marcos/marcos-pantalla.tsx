@@ -332,7 +332,26 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                   </p>
                 </td>
                 <td data-celda="estado">
-                  {m.fuente ? (
+                  {m.aviso ? (
+                    <>
+                      <p>
+                        <Chip etiqueta={vista.etiquetaDeAviso} />
+                      </p>
+                      <p className="hg-menor" data-aviso-de-version={m.id}>
+                        <span lang="es">
+                          La fuente publica la <Dato>{m.aviso.publicada}</Dato>{" "}
+                          ·{" "}
+                        </span>
+                        <span lang="en">
+                          The source publishes <Dato>{m.aviso.publicada}</Dato>{" "}
+                          ·{" "}
+                        </span>
+                        <Link href={m.aviso.ruta}>
+                          <Dato>{m.aviso.propuesta}</Dato>
+                        </Link>
+                      </p>
+                    </>
+                  ) : m.fuente ? (
                     <p>
                       <Chip etiqueta={m.fuente} />
                     </p>
@@ -379,25 +398,74 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "El investigador comparará la versión del catálogo con la que publique la fuente oficial. Todavía no existe: no hay avisos hasta que se construya, y nunca cambiará nada por su cuenta.",
-                en: "The researcher will compare the catalog's version with the one the official source publishes. It does not exist yet: there are no notices until it is built, and it will never change anything on its own.",
+                es: "El investigador compara la versión del catálogo con la que publica la fuente oficial y lo propone en la bandeja; nunca cambia nada por su cuenta.",
+                en: "The researcher compares the catalog's version with the one the official source publishes and proposes it in the inbox; it never changes anything on its own.",
               }}
             />
           </p>
         </div>
         <div className="hg-panel-cuerpo">
-          <p className="hg-menor" data-sin-avisos>
-            <Estado
-              etiqueta={{
-                rol: "neutro",
-                simbolo: "vacio",
-                nombre: {
-                  es: "Sin avisos registrados",
-                  en: "No notices recorded",
-                },
-              }}
-            />
-          </p>
+          {vista.avisos.length > 0 ? (
+            <ul className="hg-lista" data-avisos>
+              {vista.avisos.map((a) => (
+                <li key={a.propuesta} data-aviso-de-version={a.marco}>
+                  <Chip etiqueta={vista.etiquetaDeAviso} />{" "}
+                  <span data-neutro>{a.nombre}</span>:{" "}
+                  <span lang="es">
+                    el catálogo tiene la <Dato>{a.vigente}</Dato>, la fuente
+                    publica la <Dato>{a.publicada}</Dato> ({a.fecha}) ·{" "}
+                    {a.verificadas} de {a.fuentes} fuentes verificadas por
+                    código ·{" "}
+                  </span>
+                  <span lang="en">
+                    the catalog has <Dato>{a.vigente}</Dato>, the source
+                    publishes <Dato>{a.publicada}</Dato> ({a.fecha}) ·{" "}
+                    {a.verificadas} of {a.fuentes} sources verified by code
+                    ·{" "}
+                  </span>
+                  <Link href={a.ruta}>
+                    <Dato>{a.propuesta}</Dato>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="hg-menor" data-sin-avisos>
+              <Estado
+                etiqueta={{
+                  rol: "neutro",
+                  simbolo: "vacio",
+                  nombre: {
+                    es: "Sin avisos registrados",
+                    en: "No notices recorded",
+                  },
+                }}
+              />{" "}
+              {vista.investigacion ? (
+                <span lang="es">
+                  La corrida del investigador{" "}
+                  <Dato>{vista.investigacion.corrida}</Dato> del{" "}
+                  <Dato>{vista.investigacion.fecha}</Dato> no encontró una
+                  versión distinta de la del catálogo.
+                </span>
+              ) : (
+                <T
+                  t={{
+                    es: "Ninguna corrida del investigador ha leído las fuentes: sin ella no se puede decir si alguna versión cambió. Se pide con /investigar.",
+                    en: "No researcher run has read the sources: without one there is no telling whether any version changed. It is requested with /investigar.",
+                  }}
+                />
+              )}
+              {vista.investigacion ? (
+                <span lang="en">
+                  The researcher&apos;s run{" "}
+                  <Dato>{vista.investigacion.corrida}</Dato> of{" "}
+                  <Dato>{vista.investigacion.fecha}</Dato> found no version
+                  different from the catalog&apos;s.
+                </span>
+              ) : null}
+            </p>
+          )}
         </div>
       </section>
 

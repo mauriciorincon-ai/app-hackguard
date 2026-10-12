@@ -13,6 +13,7 @@ import {
   rotulo,
   rutaDeActivo,
   rutaDePlan,
+  MarcosConVersionNueva,
 } from "../brecha/piezas";
 import { Aviso, Chip, Estado, Huella } from "../estado";
 import { Plazo, Revision } from "../hallazgo/hallazgo-pantalla";
@@ -533,15 +534,7 @@ export function InformePantalla({ v }: { v: VistaDeInforme }) {
               />
             </p>
           )}
-          <p className="hg-menor" data-marcos="sin-registro">
-            <Estado etiqueta={v.marcos} />{" "}
-            <T
-              t={{
-                es: "Marcos con versión nueva: todavía no hay registro de la versión que publica cada fuente.",
-                en: "Frameworks with a new version: there is no record yet of the version each source publishes.",
-              }}
-            />
-          </p>
+          <MarcosConVersionNueva marcos={v.marcos} clase="hg-menor" />
         </Seccion>
 
         <Seccion

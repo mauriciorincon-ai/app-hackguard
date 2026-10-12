@@ -5,18 +5,26 @@ import { armarBrecha, type EntradaDeBrecha } from "../brecha/calcular.ts";
 import type { SobreEfectivo } from "../evidencia/esquemas.ts";
 import { evaluarHallazgo } from "../hallazgos/ciclo.ts";
 import { comparar } from "../planificador/orden.ts";
-import type { Espera, SemillaDeCierre, SobreSembrado } from "./esquemas.ts";
+import type {
+  Espera,
+  RequisitoDeInstrumento,
+  SemillaDeCierre,
+  SobreSembrado,
+} from "./esquemas.ts";
+import type { Texto } from "../catalogo/esquemas.ts";
 
 export interface ResultadoDeSemilla {
   id: string;
-  requisito: SemillaDeCierre["requisito"];
+  requisito: RequisitoDeInstrumento;
   pasa: boolean;
   /** Lo que el motor respondió y la semilla esperaba, una línea por cada diferencia. */
   diferencias: string[];
 }
 
 export interface ComprobacionDeInstrumento {
-  requisito: SemillaDeCierre["requisito"];
+  requisito: RequisitoDeInstrumento;
+  /** El nombre de la comprobación, cuando viene del dato (las semillas de los agentes); los cierres lo nombra la pantalla. */
+  nombre?: Texto;
   sembradas: number;
   /** Las semillas en que el motor respondió lo esperado. */
   obtenidas: number;

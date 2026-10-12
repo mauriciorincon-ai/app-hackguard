@@ -10,7 +10,12 @@ import type {
   UmbralesDeBrecha,
 } from "../../engine/brecha/esquemas.ts";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
+import type { PatronCompilado } from "../../engine/catalogo/filtro.ts";
 import { huella } from "../../engine/huella.ts";
+import {
+  validarSemillasDeAgentes,
+  type SemillasDeAgentes,
+} from "../../engine/propuestas/semillas.ts";
 import {
   validarInstrumento,
   type ComprobacionDeInstrumento,
@@ -18,6 +23,10 @@ import {
 import type { SemillasDeCierre } from "../../engine/instrumento/esquemas.ts";
 import type { MundoDeActivos } from "../activos/cargar.ts";
 import type { MundoDeHallazgos } from "../evidencia/cargar.ts";
+import {
+  SIN_PROPUESTAS,
+  type ResumenDePropuestas,
+} from "../propuestas/resumen.ts";
 import { entradaDeBrecha } from "./entrada.ts";
 
 export interface MundoDeBrecha {
@@ -31,7 +40,9 @@ export interface MundoDeBrecha {
   brecha: Brecha;
   /** Lo que el motor respondió a cada semilla de cierre (C18), agrupado por requisito. */
   instrumento: ComprobacionDeInstrumento[];
-  /** SHA-256 del informe: la brecha, la instantánea y la validación del instrumento, en forma canónica. */
+  /** Lo que las propuestas de los agentes aportan: la cuenta de «por decidir» y los avisos de versión (S8). */
+  propuestas: ResumenDePropuestas;
+  /** SHA-256 del informe: la brecha, la instantánea, la validación del instrumento y las propuestas, en forma canónica. */
   huellaDelInforme: string;
 }
 
@@ -44,7 +55,15 @@ export async function armarMundoDeBrecha(e: {
   umbrales: UmbralesDeBrecha;
   etiquetas: EtiquetasDeBrecha;
   semillas: SemillasDeCierre;
+  /** Las semillas S1 y S2 de los agentes, con los patrones de instrucciones con que se corren (S8). Sin ellas, solo los cierres. */
+  agentes?: {
+    semillas: SemillasDeAgentes;
+    patronesDeInstrucciones: PatronCompilado[];
+  };
+  /** Lo que las propuestas aportan (UNA cuenta, la del motor de propuestas). Sin ellas, nada por decidir y ningún aviso. */
+  propuestas?: ResumenDePropuestas;
 }): Promise<MundoDeBrecha> {
+  const propuestas = e.propuestas ?? SIN_PROPUESTAS;
   const entrada = entradaDeBrecha(
     e.instantanea,
     e.activos,
@@ -53,7 +72,15 @@ export async function armarMundoDeBrecha(e: {
     e.consulta,
   );
   // Las semillas se corren contra el mundo de HOY: el libro demo de la instantánea oficial y la fecha de su consulta.
-  const instrumento = validarInstrumento(e.semillas.semillas, entrada);
+  const instrumento = [
+    ...validarInstrumento(e.semillas.semillas, entrada),
+    ...(e.agentes === undefined
+      ? []
+      : validarSemillasDeAgentes(
+          e.agentes.semillas,
+          e.agentes.patronesDeInstrucciones,
+        )),
+  ];
   exigirInstrumentoVerde(instrumento);
   const brecha = await calcularBrecha(entrada);
   if (brecha.problemas.length > 0)
@@ -68,6 +95,10 @@ export async function armarMundoDeBrecha(e: {
       c.sembradas,
       c.obtenidas,
     ]),
+    propuestas: [
+      propuestas.porDecidir,
+      propuestas.avisos.map((a) => [a.marco, a.publicada, a.propuesta]),
+    ],
   });
   return {
     instantanea: e.instantanea,
@@ -79,6 +110,7 @@ export async function armarMundoDeBrecha(e: {
     etiquetas: e.etiquetas,
     brecha,
     instrumento,
+    propuestas,
     huellaDelInforme,
   };
 }

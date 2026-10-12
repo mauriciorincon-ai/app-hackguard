@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] OWASP GenAI LLM Top 10 2026. LLM01 Prompt Injection. Restrictions given to a model can be eroded across a long conversation, so a refusal that holds at the first turn may not hold at the fortieth.

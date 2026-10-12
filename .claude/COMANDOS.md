@@ -18,6 +18,18 @@ Comandos reutilizables que Claude Code puede invocar en cualquier app del pipeli
 | `/audita-sprint` | Al concluir la construcción, antes del cierre ejecutivo. UNA pasada de un auditor independiente en solo lectura, 4 casillas; críticos y altos se pagan en el sprint, medios y bajos al lote del hito (kit v2.0.0). |
 | `/design-sync` | Al cierre del hito, DESPUÉS del gate humano y solo cuando el usuario lo invoca (lleva `disable-model-invocation`): publica el design system con el bundle `design-sync/` del repo. |
 
+## Skills de HackGuard (producto, no del kit)
+
+Las dos piezas con IA del producto son skills de Claude Code que **solo una persona** invoca (`disable-model-invocation`), corren en su
+propio contexto con un subagente de herramientas mínimas y **solo proponen** (ADR-011). Escriben únicamente
+`propuestas/corridas/<corrida>/propuesta.json`; los hooks de `scripts/propuestas/hooks/` lo impiden fuera. Lo que proponen lo decide una
+persona en `/catalogo/propuestas` (con `pnpm propuestas:decidir`, que corre en su propia terminal).
+
+| Skill | Qué hace |
+|---|---|
+| `/investigar marcos` · `/investigar <marco>` · `/investigar familia <id>` | El investigador: pruebas nuevas, versiones de marcos con su mapa de equivalencias, retiros y cambios de herramientas, con un pasaje literal por fuente que el código verifica. |
+| `/extraer <texto en docs/kit-de-prueba o propuestas/entradas> [activo-demo]` | El extractor: asocia el texto que devolvió una herramienta a una prueba del plan de un activo demo y propone los campos del sobre con una cita literal por campo; el veredicto lo calcula la regla de la prueba. |
+
 ## Cómo Claude Code los usa
 
 Claude Code carga automáticamente los comandos de `.claude/commands/` cuando inicias una sesión en un proyecto. Los invocas escribiendo `/nombre-del-comando` en el chat.

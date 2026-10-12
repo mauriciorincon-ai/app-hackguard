@@ -17,6 +17,11 @@ import {
   nombreDeLaInstantanea,
 } from "./mundo-de-activos";
 import { mundoDeHallazgos } from "./mundo-de-hallazgos";
+import {
+  armarMundoDePropuestas,
+  cargarMundoDePropuestas,
+} from "../../../src/lib/propuestas/pagina.ts";
+import { resumenDePropuestas } from "../../../src/lib/propuestas/resumen.ts";
 
 export { activos, instantanea, mundoDeHallazgos };
 export const umbralesDeBrecha = cargarUmbralesDeBrecha(process.cwd());
@@ -36,9 +41,40 @@ export const entradaDemo = (
 export const etiquetasDeBrecha = cargarEtiquetasDeBrecha(process.cwd());
 export const semillasDeCierre = cargarSemillasDeCierre(process.cwd());
 
-/** El mundo completo de la brecha en una fecha de consulta (por omisión, la de la instantánea): la entrada de las cinco vistas. */
+/** Las propuestas reales del repositorio (las corridas demo selladas y el libro): lo mismo que lee el build. */
+export const propuestasDelRepo = await cargarMundoDePropuestas(
+  {
+    instantanea,
+    nombre: nombreDeLaInstantanea,
+    consulta: instantanea.fecha_evaluacion,
+    activos,
+  },
+  process.cwd(),
+);
+
+/**
+ * Solo las corridas demo (`propuestas/demo/`): las cifras que las pruebas fijan. El repositorio versiona corridas reales que cambian
+ * esas cuentas (la bandeja y el build las muestran todas), así que las pruebas de cifras no leen el mundo entero.
+ */
+export const propuestasDemo = armarMundoDePropuestas({
+  instantanea: propuestasDelRepo.instantanea,
+  nombre: propuestasDelRepo.nombre,
+  consulta: propuestasDelRepo.consulta,
+  activos: propuestasDelRepo.activos,
+  etiquetas: propuestasDelRepo.etiquetas,
+  umbrales: propuestasDelRepo.umbrales,
+  corridas: propuestasDelRepo.corridas.filter((c) => c.lugar === "demo"),
+  problemasDeCarga: propuestasDelRepo.problemasDeCarga,
+  decisiones: propuestasDelRepo.decisiones,
+});
+
+/**
+ * El mundo completo de la brecha en una fecha de consulta (por omisión, la de la instantánea): la entrada de las cinco vistas. Con las
+ * propuestas del repositorio, como el build; con `propuestas: false`, sin ellas (el mundo de antes del S8).
+ */
 export const mundoDeBrecha = (
   consulta: string = instantanea.fecha_evaluacion,
+  { propuestas = true }: { propuestas?: boolean } = {},
 ): Promise<MundoDeBrecha> =>
   armarMundoDeBrecha({
     instantanea,
@@ -49,4 +85,7 @@ export const mundoDeBrecha = (
     umbrales: umbralesDeBrecha,
     etiquetas: etiquetasDeBrecha,
     semillas: semillasDeCierre,
+    ...(propuestas
+      ? { propuestas: resumenDePropuestas(propuestasDelRepo) }
+      : {}),
   });
