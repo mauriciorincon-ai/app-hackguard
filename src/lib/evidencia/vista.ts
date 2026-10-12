@@ -261,7 +261,7 @@ export function construirCadena(
   return [abierto, segundo, tercero, cuarto];
 }
 
-function vistaDePlazo(
+export function vistaDePlazo(
   s: SituacionDeHallazgo,
   etiquetas: EtiquetasDeHallazgo,
 ): VistaDePlazo {
@@ -309,7 +309,7 @@ function vistaDePlazo(
   };
 }
 
-function vistaDeRevision(
+export function vistaDeRevision(
   c: Catalogo,
   s: SituacionDeHallazgo,
 ): VistaDeRevision | null {

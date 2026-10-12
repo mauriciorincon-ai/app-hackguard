@@ -6,7 +6,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/catalogo",
+      "destination": "/tablero",
       "type": 307
     },
     {

@@ -1,0 +1,144 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Etiquetas de estado de las pantallas de la brecha (tablero, brecha, vista por control e informe): el rol de color y el símbolo salen de aquí, nunca del componente (regla dura 12). Los veredictos, las severidades, los estados de hallazgo y de control y las vigencias se nombran con el vocabulario de estados del catálogo.",
+    "en": "State labels of the gap screens (dashboard, gap, control view and report): the colour role and the symbol come from here, never from the component (hard rule 12). Verdicts, severities, finding and control states and freshness are named with the catalog's state vocabulary."
+  },
+  "etiquetas": [
+    {
+      "id": "por_confirmar",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Por confirmar",
+        "en": "To confirm"
+      }
+    },
+    {
+      "id": "por_decidir",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Por decidir",
+        "en": "To decide"
+      }
+    },
+    {
+      "id": "sin_plan",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin plan",
+        "en": "No plan"
+      }
+    },
+    {
+      "id": "ficha_vencida",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Ficha vencida",
+        "en": "Record overdue"
+      }
+    },
+    {
+      "id": "version_nueva",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Versión nueva",
+        "en": "New version"
+      }
+    },
+    {
+      "id": "evidencia_antigua_alerta",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Evidencia antigua",
+        "en": "Stale evidence"
+      }
+    },
+    {
+      "id": "antigua",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Antigua",
+        "en": "Stale"
+      }
+    },
+    {
+      "id": "marcadas_para_revision",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcadas para revisión",
+        "en": "Flagged for review"
+      }
+    },
+    {
+      "id": "instrumento_verde",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "El instrumento pasó su validación",
+        "en": "The instrument passed its validation"
+      }
+    },
+    {
+      "id": "instrumento_rojo",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "La validación del instrumento falló: no se publica nada",
+        "en": "The instrument validation failed: nothing is published"
+      }
+    },
+    {
+      "id": "comprobacion_verde",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "En verde",
+        "en": "Green"
+      }
+    },
+    {
+      "id": "comprobacion_roja",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "En rojo",
+        "en": "Red"
+      }
+    },
+    {
+      "id": "sin_registro",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin registro de la fuente",
+        "en": "No source record"
+      }
+    },
+    {
+      "id": "vacio",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Nada que mostrar",
+        "en": "Nothing to show"
+      }
+    },
+    {
+      "id": "evidencia_esperando",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Hay evidencia esperando tu confirmación",
+        "en": "There is evidence awaiting your confirmation"
+      }
+    }
+  ]
+}

@@ -69,7 +69,7 @@ function Linea({ l }: { l: LineaDeEslabon }) {
   }
 }
 
-function Eslabon({ e }: { e: EslabonDeCadena }) {
+export function Eslabon({ e }: { e: EslabonDeCadena }) {
   return (
     <li className={`hg-eslabon es-${e.pendiente ? "pendiente" : e.etiqueta.rol}`}>
       <Simbolo nombre={e.pendiente ? "vacio" : e.etiqueta.simbolo} />
@@ -303,7 +303,7 @@ function SeveridadCvss({ d }: { d: DetalleDeCvss }) {
   );
 }
 
-function Plazo({ p }: { p: VistaDePlazo }) {
+export function Plazo({ p }: { p: VistaDePlazo }) {
   if (p.corre)
     return (
       <span
@@ -353,7 +353,7 @@ function Plazo({ p }: { p: VistaDePlazo }) {
   );
 }
 
-function Revision({ r }: { r: VistaDeRevision }) {
+export function Revision({ r }: { r: VistaDeRevision }) {
   return (
     <span
       data-fechado="revision"

@@ -162,6 +162,25 @@ describe("la brecha del demo, tal como la calcula el motor", () => {
     expect(b.filas.filter((x) => x.veredicto === "superada")).not.toContain(f);
   });
 
+  it("cada fila dice su estado con la misma regla que el control: sus fallas primero, luego su evidencia", () => {
+    const f = (prueba: string) => fila(b, "act-demo-asistente", prueba);
+    // Con hallazgo sin cerrar (abierto, o el riesgo aceptado): con fallas.
+    expect(f("PR-IA-ENC-002").estado).toBe("con_fallas");
+    expect(f("PR-AG-LIM-001").estado).toBe("con_fallas");
+    // Un «no ejecutada» y una sin sobre no son evidencia.
+    expect(f("PR-SW-XSS-001").estado).toBe("sin_evidencia");
+    expect(
+      b.filas
+        .filter((x) => x.veredicto === null)
+        .every((x) => x.estado === "sin_evidencia"),
+    ).toBe(true);
+    // Con resultado superado y reciente: con evidencia vigente.
+    expect(f("PR-AG-PERM-001").estado).toBe("con_evidencia_vigente");
+    // Y la re-prueba se nombra en la fila: el último sobre de PINJ-001 cierra HZ-0003.
+    expect(f("PR-IA-PINJ-001").repruebaDe).toBe("HZ-0003");
+    expect(f("PR-IA-ENC-002").repruebaDe).toBeNull();
+  });
+
   it("una prueba sin sobre confirmado se dice «sin medir», no «ninguna desviación»", () => {
     const f = b.filas.find((x) => x.veredicto === null)!;
     expect(f.ejecutada).toBe(false);

@@ -23,13 +23,13 @@ describe("servidor: vercel.json y serve.json dicen lo mismo", () => {
     );
   });
 
-  it("mismas redirecciones: la raíz lleva al catálogo y /diseno llega al índice de la maqueta", () => {
+  it("mismas redirecciones: la raíz lleva al tablero y /diseno llega al índice de la maqueta", () => {
     expect(redirecciones(serve.redirects)).toEqual(
       redirecciones(vercel.redirects),
     );
     expect(redirecciones(vercel.redirects)).toEqual(
       [
-        "/ → /catalogo",
+        "/ → /tablero",
         "/diseno → /diseno/index.html",
         "/diseno/ → /diseno/index.html",
       ].sort(),

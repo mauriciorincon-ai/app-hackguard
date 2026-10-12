@@ -115,7 +115,11 @@ export interface FilaDeBrecha {
   fecha: string | null;
   obtenido: ObtenidoDeBrecha | null;
   desviacion: Desviacion;
+  /** El hallazgo que el último sobre intentó cerrar, si es una re-prueba. */
+  repruebaDe: string | null;
   edad: EdadDeEvidencia | null;
+  /** El estado de la fila, con la misma regla que el del control: sus fallas primero, luego su evidencia. */
+  estado: EstadoDeControl;
   vigenciaDeFicha: { dias: number; estado: EstadoDeVigencia };
   /** El hallazgo de esta prueba y este activo que sigue contando como falla, si lo hay. */
   hallazgo: string | null;
@@ -225,7 +229,7 @@ export function desviacionDe(s: SobreEfectivo | null): Desviacion {
     : { tipo: "dentro_del_limite" };
 }
 
-const edadDe = (
+export const edadDe = (
   fecha: string,
   consulta: string,
   umbral: number,
@@ -312,6 +316,17 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
         throw new RangeError(
           `la ficha ${prueba.id} se verificó (${prueba.fecha_verificacion}) después de la fecha de consulta (${e.consulta})`,
         );
+      const edad =
+        ultimo !== null && ejecutada
+          ? edadDe(ultimo.fecha, e.consulta, e.umbrales.evidencia_antigua)
+          : null;
+      const delHallazgo =
+        hallazgos.find(
+          (h) =>
+            h.cuentaComoFalla &&
+            h.activo === activo.id &&
+            h.prueba === prueba.id,
+        )?.id ?? null;
       filas.push({
         activo: activo.id,
         prueba: prueba.id,
@@ -331,21 +346,21 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
                 k: ultimo.k,
               },
         desviacion: desviacionDe(ultimo),
-        edad:
-          ultimo !== null && ejecutada
-            ? edadDe(ultimo.fecha, e.consulta, e.umbrales.evidencia_antigua)
-            : null,
+        repruebaDe: ultimo === null ? null : ultimo.reprueba_de,
+        edad,
+        estado:
+          delHallazgo !== null
+            ? "con_fallas"
+            : !ejecutada
+              ? "sin_evidencia"
+              : edad?.estado === "antigua"
+                ? "evidencia_antigua"
+                : "con_evidencia_vigente",
         vigenciaDeFicha: {
           dias: diasDeFicha,
           estado: estadoDeVigencia(diasDeFicha, e.vigencia),
         },
-        hallazgo:
-          hallazgos.find(
-            (h) =>
-              h.cuentaComoFalla &&
-              h.activo === activo.id &&
-              h.prueba === prueba.id,
-          )?.id ?? null,
+        hallazgo: delHallazgo,
         propuestos: propuestos
           .filter((s) => s.activo === activo.id && s.prueba === prueba.id)
           .map((s) => s.id)
