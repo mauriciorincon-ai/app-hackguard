@@ -27,7 +27,11 @@ import {
   type UmbralesDePropuestas,
   type VeredictoSugerido,
 } from "./esquemas.ts";
-import { verificarFuente, type Lecturas } from "./fuentes.ts";
+import {
+  lecturasConsultadas,
+  verificarFuente,
+  type Lecturas,
+} from "./fuentes.ts";
 import { veredictoDeCandidata, type ReglaDeLaPrueba } from "./veredicto.ts";
 
 export interface DatosDeMarco {
@@ -291,6 +295,7 @@ async function sellarPropuesta(
   id: string,
   borrador: Borrador,
   ctx: ContextoDeVerificacion,
+  consultadas: ReadonlySet<string>,
 ): Promise<PropuestaSellada> {
   const cuerpo = sinRef(p);
   const u = ctx.umbrales;
@@ -329,15 +334,19 @@ async function sellarPropuesta(
     const fuentes = [];
     const similitudes: number[] = [];
     for (const f of cuerpo.fuentes) {
-      const estado = await verificarFuente(f, lista, ctx.lecturas);
+      const estado = await verificarFuente(f, lista, ctx.lecturas, consultadas);
       fuentes.push({ url: f.url, estado });
       const pagina = ctx.lecturas(f.huella_de_la_pagina);
       similitudes.push(
         pagina === undefined ? 0 : similitudDeCita(f.fragmento, pagina),
       );
     }
-    const verificadas = fuentes.filter((f) => f.estado === "verificada").length;
-    const sinVerificar = fuentes.length - verificadas;
+    // U2 cuenta páginas distintas: dos fuentes con la misma dirección cuentan como una.
+    const verificadas = new Set(
+      fuentes.filter((f) => f.estado === "verificada").map((f) => f.url),
+    ).size;
+    const sinVerificar =
+      fuentes.length - fuentes.filter((f) => f.estado === "verificada").length;
     const marcasDeInstruccion = filtrar(
       paraElFiltro(cuerpo),
       ctx.patronesDeInstrucciones,
@@ -493,9 +502,17 @@ export async function sellarCorrida(
   const problemas = problemasDelBorrador(borrador, ctx);
   if (problemas.length > 0) return { ok: false, problemas };
   const propuestas: PropuestaSellada[] = [];
+  // Sin consulta, ninguna fuente se leyó: cada URL citada queda como «url_no_consultada».
+  const consultadas = lecturasConsultadas(consulta?.fuentes ?? []);
   for (const [i, p] of borrador.propuestas.entries())
     propuestas.push(
-      await sellarPropuesta(p, identificador(primerNumero + i), borrador, ctx),
+      await sellarPropuesta(
+        p,
+        identificador(primerNumero + i),
+        borrador,
+        ctx,
+        consultadas,
+      ),
     );
   const fuentes = consulta?.fuentes ?? [];
   const cuerpo = {

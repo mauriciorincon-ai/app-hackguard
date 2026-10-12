@@ -34,12 +34,37 @@ export function enListaBlanca(url: string, lista: readonly string[]): boolean {
 /** El texto de una página leída, por la huella con que la propuesta la nombra. Lo da quien carga (el CLI o el test). */
 export type Lecturas = (huella: string) => string | undefined;
 
+/** La clave de una lectura: la dirección y la huella de la página, como las guarda la consulta del investigador. */
+export const claveDeLectura = (url: string, huella: string): string =>
+  `${url}\n${huella}`;
+
+/**
+ * Las lecturas que la consulta registró como leídas. Una fuente que no está aquí no se leyó en esta corrida: no vale aunque su
+ * fragmento exista en algún texto guardado (un fragmento real de otra página, o una dirección inventada, no verifica nada).
+ */
+export function lecturasConsultadas(
+  fuentes: readonly {
+    url: string;
+    huella_de_la_pagina: string | null;
+    estado: string;
+  }[],
+): ReadonlySet<string> {
+  return new Set(
+    fuentes
+      .filter((f) => f.estado === "leida" && f.huella_de_la_pagina !== null)
+      .map((f) => claveDeLectura(f.url, f.huella_de_la_pagina!)),
+  );
+}
+
 export async function verificarFuente(
   fuente: FuenteCitada,
   lista: readonly string[],
   lecturas: Lecturas,
+  consultadas: ReadonlySet<string>,
 ): Promise<EstadoDeFuente> {
   if (!enListaBlanca(fuente.url, lista)) return "fuera_de_lista_blanca";
+  if (!consultadas.has(claveDeLectura(fuente.url, fuente.huella_de_la_pagina)))
+    return "url_no_consultada";
   const pagina = lecturas(fuente.huella_de_la_pagina);
   if (pagina === undefined) return "sin_lectura";
   // La lectura se busca por la huella, pero la huella se comprueba: un archivo cambiado a mano no verifica nada.

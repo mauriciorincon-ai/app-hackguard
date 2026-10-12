@@ -55,6 +55,10 @@ const DETALLE_DE_FUENTE: Record<string, Bilingue> = {
     es: "La lectura guardada no es la que la propuesta cita: su huella no coincide.",
     en: "The saved reading is not the one the proposal cites: its fingerprint does not match.",
   },
+  url_no_consultada: {
+    es: "La dirección no está entre las que el investigador leyó en esta corrida: no cuenta, aunque el fragmento exista en otra lectura.",
+    en: "The address is not among those the researcher read in this run: it does not count, even if the fragment exists in another reading.",
+  },
 };
 
 const MOTIVOS_DE_NO_ACCESO: Record<string, Bilingue> = {

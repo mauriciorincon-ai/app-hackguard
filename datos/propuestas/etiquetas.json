@@ -87,6 +87,15 @@
       }
     },
     {
+      "id": "fuente_url_no_consultada",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Dirección que el agente no consultó",
+        "en": "Address the agent did not consult"
+      }
+    },
+    {
       "id": "cita_verificada",
       "rol": "positivo",
       "simbolo": "ok",

@@ -10,6 +10,7 @@ import {
 } from "../../../src/lib/propuestas/cargar.ts";
 import type {
   Borrador,
+  Consulta,
   PropuestaSellada,
 } from "../../../src/engine/propuestas/esquemas.ts";
 import type { ContextoDeVerificacion } from "../../../src/engine/propuestas/verificar.ts";
@@ -38,5 +39,26 @@ export const borradorDe = (corrida: string): Borrador =>
 export const consultaDe = (corrida: string) =>
   cargarConsulta(RAIZ, `propuestas/demo/${corrida}`);
 export const copia = <T>(x: T): T => structuredClone(x);
+/**
+ * La consulta que registra como leídas las fuentes del borrador: lo que el investigador leyó de verdad en esa corrida. El sellado solo
+ * da por verificada una fuente cuya dirección y huella están aquí (auditoría, Alto). Solo llena `fuentes`: es lo único que el sellado lee.
+ */
+export const consultaQueLeyo = (b: Borrador): Consulta =>
+  ({
+    fuentes: b.propuestas.flatMap((p) =>
+      ("fuentes" in p && Array.isArray(p.fuentes) ? p.fuentes : []).map(
+        (f: { url: string; huella_de_la_pagina: string }) => ({
+          marco: null,
+          nombre: "fuente de prueba",
+          url: f.url,
+          estado: "leida",
+          http: 200,
+          huella_de_la_pagina: f.huella_de_la_pagina,
+          caracteres: 1,
+          motivo: null,
+        }),
+      ),
+    ),
+  }) as unknown as Consulta;
 export const leerJson = (relativa: string): unknown =>
   JSON.parse(readFileSync(path.join(RAIZ, relativa), "utf8")) as unknown;

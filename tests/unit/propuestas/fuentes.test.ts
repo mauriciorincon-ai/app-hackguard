@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { huellaDeTexto } from "../../../src/engine/propuestas/citas.ts";
 import type { FuenteCitada } from "../../../src/engine/propuestas/esquemas.ts";
 import {
+  claveDeLectura,
   enListaBlanca,
   verificarFuente,
 } from "../../../src/engine/propuestas/fuentes.ts";
@@ -58,11 +59,24 @@ describe("verificar una fuente", () => {
     const h = await huellaDeTexto(PAGINA);
     return (huella: string) => (huella === h ? PAGINA : undefined);
   };
+  // Lo que el investigador leyó de verdad en esta corrida: la dirección por defecto y la huella de su página.
+  const leidas = async () =>
+    new Set([
+      claveDeLectura(
+        "https://genai.owasp.org/resource/x",
+        await huellaDeTexto(PAGINA),
+      ),
+    ]);
 
   it("verificada: en la lista, leída y con el fragmento literal", async () => {
-    expect(await verificarFuente(await fuente(), LISTA, await lecturas())).toBe(
-      "verificada",
-    );
+    expect(
+      await verificarFuente(
+        await fuente(),
+        LISTA,
+        await lecturas(),
+        await leidas(),
+      ),
+    ).toBe("verificada");
   });
   it("fuera de la lista blanca", async () => {
     expect(
@@ -70,13 +84,19 @@ describe("verificar una fuente", () => {
         await fuente({ url: "https://blog.example/x" }),
         LISTA,
         await lecturas(),
+        await leidas(),
       ),
     ).toBe("fuera_de_lista_blanca");
   });
   it("sin lectura: la página no se leyó", async () => {
-    expect(await verificarFuente(await fuente(), LISTA, () => undefined)).toBe(
-      "sin_lectura",
-    );
+    expect(
+      await verificarFuente(
+        await fuente(),
+        LISTA,
+        () => undefined,
+        await leidas(),
+      ),
+    ).toBe("sin_lectura");
   });
   it("la página existe pero no dice lo citado", async () => {
     expect(
@@ -84,15 +104,40 @@ describe("verificar una fuente", () => {
         await fuente({ fragmento: "A permission must not outlive its task." }),
         LISTA,
         await lecturas(),
+        await leidas(),
       ),
     ).toBe("sin_fragmento");
   });
   it("una lectura editada a mano no verifica nada: su huella ya no es la nombrada", async () => {
     const h = await huellaDeTexto(PAGINA);
     expect(
-      await verificarFuente(await fuente(), LISTA, (x) =>
-        x === h ? `${PAGINA} editada` : undefined,
+      await verificarFuente(
+        await fuente(),
+        LISTA,
+        (x) => (x === h ? `${PAGINA} editada` : undefined),
+        await leidas(),
       ),
     ).toBe("pagina_distinta");
+  });
+  it("una dirección que el investigador nunca leyó no verifica, aunque su fragmento exista en otra lectura", async () => {
+    // Auditoría (Alto): sin el par dirección+huella de la consulta, la página guardada no prueba nada.
+    expect(
+      await verificarFuente(
+        await fuente(),
+        LISTA,
+        await lecturas(),
+        new Set<string>(),
+      ),
+    ).toBe("url_no_consultada");
+  });
+  it("la misma dirección leída con otra huella no cuenta como leída", async () => {
+    expect(
+      await verificarFuente(
+        await fuente({ huella_de_la_pagina: "e".repeat(64) }),
+        LISTA,
+        await lecturas(),
+        await leidas(),
+      ),
+    ).toBe("url_no_consultada");
   });
 });

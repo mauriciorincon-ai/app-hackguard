@@ -13,7 +13,15 @@ import {
 } from "../../../src/engine/propuestas/verificar.ts";
 import { huella } from "../../../src/engine/huella.ts";
 import { huellaDeTexto } from "../../../src/engine/propuestas/citas.ts";
-import { borradorDe, consultaDe, copia, corridas, ctx, deId } from "./ayuda.ts";
+import {
+  borradorDe,
+  consultaDe,
+  consultaQueLeyo,
+  copia,
+  corridas,
+  ctx,
+  deId,
+} from "./ayuda.ts";
 
 const INV = "INV-2026-10-02-01";
 const EXT = "EXT-2026-10-03-01";
@@ -187,7 +195,7 @@ describe("U2 y la lista blanca", () => {
     const p = b.propuestas.find((x) => x.ref === "lista-14-v2")!;
     if (p.tipo !== "version_de_marco") throw new Error();
     mutar(p);
-    const r = await sellarCorrida(b, consultaDe(INV), ctx, 31);
+    const r = await sellarCorrida(b, consultaQueLeyo(b), ctx, 31);
     if (!r.ok) throw new Error(JSON.stringify(r.problemas));
     return r.corrida.propuestas.find((x) => x.tipo === "version_de_marco")!;
   };
@@ -219,6 +227,29 @@ describe("U2 y la lista blanca", () => {
     });
     expect(p.verificacion.fuentes[0]!.estado).toBe("sin_lectura");
   });
+  it("dos fuentes con la misma dirección cuentan como una sola página (U2)", async () => {
+    // Auditoría (Alto): U2 cuenta páginas distintas; la misma dirección dos veces no llega a dos.
+    const b = copia(borradorDe(INV));
+    const p = b.propuestas.find((x) => x.ref === "lista-14-v2")!;
+    if (p.tipo !== "version_de_marco") throw new Error();
+    p.fuentes = [p.fuentes[0]!, { ...p.fuentes[0]! }];
+    const r = await sellarCorrida(b, consultaQueLeyo(b), ctx, 31);
+    if (!r.ok) throw new Error(JSON.stringify(r.problemas));
+    const v = r.corrida.propuestas.find((x) => x.tipo === "version_de_marco")!;
+    expect(v.pausa?.motivos.map((m) => m.motivo)).toContain(
+      "fuentes_insuficientes",
+    );
+  });
+  it("sin consulta, ninguna fuente se leyó: cada URL citada queda «url_no_consultada»", async () => {
+    // Auditoría (Alto): una corrida sin consulta.json no puede verificar una URL por su fragmento.
+    const r = await sellarCorrida(copia(borradorDe(INV)), null, ctx, 31);
+    if (!r.ok) throw new Error(JSON.stringify(r.problemas));
+    const estados = r.corrida.propuestas.flatMap((x) =>
+      "verificacion" in x ? x.verificacion.fuentes.map((f) => f.estado) : [],
+    );
+    expect(estados.length).toBeGreaterThan(0);
+    expect(new Set(estados)).toEqual(new Set(["url_no_consultada"]));
+  });
   it("con un umbral de una fuente, una sola verificada basta", async () => {
     const b = copia(borradorDe(INV));
     const p = b.propuestas.find((x) => x.ref === "lista-14-v2")!;
@@ -226,7 +257,7 @@ describe("U2 y la lista blanca", () => {
     p.fuentes = [p.fuentes[0]!];
     const r = await sellarCorrida(
       b,
-      null,
+      consultaQueLeyo(b),
       { ...ctx, umbrales: { ...ctx.umbrales, fuentes_verificadas: 1 } },
       31,
     );
@@ -244,7 +275,12 @@ describe("U3 — un marco de más de 180 días pasa por una persona", () => {
     const marcos = new Map(ctx.marcos);
     const id = "lista-decision-14";
     marcos.set(id, { ...marcos.get(id)!, fecha_version: fechaDelMarco });
-    const r = await sellarCorrida(b, null, { ...ctx, marcos }, 31);
+    const r = await sellarCorrida(
+      b,
+      consultaQueLeyo(b),
+      { ...ctx, marcos },
+      31,
+    );
     if (!r.ok) throw new Error(JSON.stringify(r.problemas));
     return r.corrida.propuestas.find((p) => p.id === "PROP-0032")!;
   };

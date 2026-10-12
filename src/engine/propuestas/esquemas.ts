@@ -249,6 +249,7 @@ export const ESTADOS_DE_FUENTE = [
   "fuera_de_lista_blanca",
   "sin_lectura",
   "pagina_distinta",
+  "url_no_consultada",
 ] as const;
 export type EstadoDeFuente = (typeof ESTADOS_DE_FUENTE)[number];
 

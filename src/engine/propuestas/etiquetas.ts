@@ -16,6 +16,7 @@ export const IDS_DE_ETIQUETAS_DE_PROPUESTAS = [
   "fuente_fuera_de_lista_blanca",
   "fuente_sin_lectura",
   "fuente_pagina_distinta",
+  "fuente_url_no_consultada",
   // Lo que el código comprobó de una cita
   "cita_verificada",
   "cita_no_literal",

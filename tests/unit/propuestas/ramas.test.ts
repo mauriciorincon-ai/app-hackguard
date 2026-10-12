@@ -30,7 +30,15 @@ import {
   cargarPatronesDeInstrucciones,
   cargarSemillasDeAgentes,
 } from "../../../src/lib/propuestas/cargar.ts";
-import { borradorDe, consultaDe, copia, ctx, deId, RAIZ } from "./ayuda.ts";
+import {
+  RAIZ,
+  borradorDe,
+  consultaDe,
+  consultaQueLeyo,
+  copia,
+  ctx,
+  deId,
+} from "./ayuda.ts";
 
 const FECHA = "2026-10-12";
 const METRICA = {
@@ -90,7 +98,7 @@ describe("un retiro y una herramienta con fuentes que sí verifican", () => {
     ]);
     const r = await sellarCorrida(
       borrador,
-      null,
+      consultaQueLeyo(borrador),
       { ...ctx, lecturas: (h) => lecturas.get(h) ?? ctx.lecturas(h) },
       200,
     );
