@@ -21,23 +21,37 @@ const ID = String.raw`[a-z0-9]+(?:[_-][a-z0-9]+)*`;
 /** Lo único que un agente corre: sus dos comandos, tal cual, sin encadenar nada y sin variables de entorno delante. */
 const COMANDOS = {
   investigador: (p) => [
-    new RegExp(String.raw`^pnpm propuestas:buscar --(?:marco|familia) ${ID} --fecha ${FECHA}$`),
+    new RegExp(
+      String.raw`^pnpm propuestas:buscar --(?:marco|familia) ${ID} --fecha ${FECHA}$`,
+    ),
     new RegExp(String.raw`^pnpm propuestas:buscar --todos --fecha ${FECHA}$`),
-    new RegExp(String.raw`^pnpm propuestas:verificar propuestas/corridas/${p}-${NOMBRE_DE_CORRIDA}(?: --json)?$`),
+    new RegExp(
+      String.raw`^pnpm propuestas:verificar propuestas/corridas/${p}-${NOMBRE_DE_CORRIDA}(?: --json)?$`,
+    ),
   ],
   extractor: (p) => [
-    new RegExp(String.raw`^pnpm propuestas:leer (?:docs/kit-de-prueba|propuestas/entradas)/${SEGURA}\.txt --activo ${ID} --fecha ${FECHA}(?: --json)?$`),
-    new RegExp(String.raw`^pnpm propuestas:verificar propuestas/corridas/${p}-${NOMBRE_DE_CORRIDA}(?: --json)?$`),
+    new RegExp(
+      String.raw`^pnpm propuestas:leer (?:docs/kit-de-prueba|propuestas/entradas)/${SEGURA}\.txt --activo ${ID} --fecha ${FECHA}(?: --json)?$`,
+    ),
+    new RegExp(
+      String.raw`^pnpm propuestas:verificar propuestas/corridas/${p}-${NOMBRE_DE_CORRIDA}(?: --json)?$`,
+    ),
   ],
 };
 
 /** Lo único que un agente escribe: el propuesta.json de una corrida SUYA (INV- para el investigador, EXT- para el extractor). */
-const escribible = (agente) => new RegExp(String.raw`^propuestas/corridas/${PREFIJO[agente]}-${NOMBRE_DE_CORRIDA}/propuesta\.json$`);
+const escribible = (agente) =>
+  new RegExp(
+    String.raw`^propuestas/corridas/${PREFIJO[agente]}-${NOMBRE_DE_CORRIDA}/propuesta\.json$`,
+  );
 
 /** Lo que lee: el catálogo y los planes demo, las propuestas y sus lecturas, el contrato de su salida y su skill. Nunca `datos/privado/`. */
 const LEIBLE = (agente) =>
-  new RegExp(String.raw`^(?:(?:datos|propuestas)(?:/|$)|src/engine/propuestas/esquemas\.ts$|\.claude/skills/${agente === "investigador" ? "investigar" : "extraer"}(?:/|$))`);
-const NUNCA = /(?:^|\/)(?:datos\/privado|\.git|\.env[^/]*|node_modules)(?:\/|$)/;
+  new RegExp(
+    String.raw`^(?:(?:datos|propuestas)(?:/|$)|src/engine/propuestas/esquemas\.ts$|\.claude/skills/${agente === "investigador" ? "investigar" : "extraer"}(?:/|$))`,
+  );
+const NUNCA =
+  /(?:^|\/)(?:datos\/privado|\.git|\.env[^/]*|node_modules)(?:\/|$)/;
 
 /** La ruta relativa a la raíz de trabajo, con «/»; `null` si sale de ella. */
 function dentro(ruta, cwd) {
@@ -52,7 +66,9 @@ const ti = e.tool_input ?? {};
 const cwd = e.cwd ?? RAIZ;
 
 if (herramienta === "Bash" && ejecutaDecidir(ti.command))
-  bloquear("BLOQUEADO: decidir una propuesta lo hace solo una persona, en su terminal (la IA propone, el humano aprueba). Arma el comando en la pantalla /catalogo/propuestas y pídeselo al usuario.");
+  bloquear(
+    "BLOQUEADO: decidir una propuesta lo hace solo una persona, en su terminal (la IA propone, el humano aprueba). Arma el comando en la pantalla /catalogo/propuestas y pídeselo al usuario.",
+  );
 
 const agente = agenteDe(e);
 if (agente === null) pasar();
@@ -70,9 +86,29 @@ if (["Write", "Edit", "MultiEdit", "NotebookEdit"].includes(herramienta)) {
 if (["Read", "Glob", "Grep"].includes(herramienta)) {
   // Glob y Grep sin `path` buscan en todo el directorio de trabajo: se les pide una carpeta permitida.
   const ruta = herramienta === "Read" ? ti.file_path : ti.path;
-  const r = dentro(ruta, cwd);
-  const patron = herramienta === "Glob" ? String(ti.pattern ?? "") : herramienta === "Grep" ? String(ti.glob ?? "") : "";
-  if (!r || NUNCA.test(r) || !LEIBLE(agente).test(r) || patron.includes("..") || patron.startsWith("/") || patron.startsWith("~"))
+  // macOS no distingue mayúsculas: `datos/Privado` es `datos/privado`. Toda la comparación va en minúsculas.
+  const dentroDe = dentro(ruta, cwd);
+  const r = dentroDe === null ? null : dentroDe.toLowerCase();
+  const patron =
+    herramienta === "Glob"
+      ? String(ti.pattern ?? "")
+      : herramienta === "Grep"
+        ? String(ti.glob ?? "")
+        : "";
+  // Un patrón o un glob no puede nombrar lo privado ni lo ignorado: ripgrep lo busca aunque .gitignore lo excluya.
+  const patronProhibido = /privado|\.git|\.env|node_modules/i.test(patron);
+  // La raíz `datos` entera no: obliga a nombrar una subcarpeta, y así no se listan los nombres de datos/privado.
+  const raizDeDatos = r === "datos";
+  if (
+    !r ||
+    raizDeDatos ||
+    NUNCA.test(r) ||
+    !LEIBLE(agente).test(r) ||
+    patronProhibido ||
+    patron.includes("..") ||
+    patron.startsWith("/") ||
+    patron.startsWith("~")
+  )
     bloquear(
       `BLOQUEADO: el ${agente} solo lee datos/ (sin datos/privado/), propuestas/, src/engine/propuestas/esquemas.ts y su skill (pidió «${ruta ?? "(todo)"}»).`,
     );
@@ -91,4 +127,6 @@ if (herramienta === "Bash") {
 }
 
 // Cualquier otra herramienta (red, subagentes, edición de cuadernos…) no es de su oficio.
-bloquear(`BLOQUEADO: el ${agente} no usa la herramienta ${herramienta ?? "?"}: solo lee, escribe su propuesta.json y corre sus dos comandos.`);
+bloquear(
+  `BLOQUEADO: el ${agente} no usa la herramienta ${herramienta ?? "?"}: solo lee, escribe su propuesta.json y corre sus dos comandos.`,
+);

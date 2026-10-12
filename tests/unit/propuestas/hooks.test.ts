@@ -263,6 +263,48 @@ describe("cada agente solo lee lo de su oficio", () => {
       "solo lee",
     );
   });
+  it("ni mayúsculas ni un glob cuentan como un rodeo para leer datos/privado/", () => {
+    // Auditoría (Alto): macOS no distingue mayúsculas, y un glob de Grep o de Glob no se miraba contra lo privado.
+    bloquea(
+      leer("investigador", "Read", {
+        file_path: ruta("datos/Privado/README.md"),
+      }),
+      "solo lee",
+    );
+    bloquea(
+      leer("investigador", "Grep", {
+        pattern: "x",
+        path: ruta("datos/marcos"),
+        glob: "../privado/**",
+      }),
+      "solo lee",
+    );
+    bloquea(
+      leer("investigador", "Grep", {
+        pattern: "x",
+        path: ruta("datos"),
+        glob: "privado/**",
+      }),
+      "solo lee",
+    );
+    bloquea(
+      leer("extractor", "Glob", { pattern: "privado/**", path: ruta("datos") }),
+      "solo lee",
+    );
+    bloquea(
+      leer("extractor", "Glob", { pattern: "**/*", path: ruta("datos") }),
+      "solo lee",
+    );
+    // Con una subcarpeta real como «path», solo el patrón puede bloquear: la raíz `datos` ya se rechaza sola.
+    bloquea(
+      leer("investigador", "Grep", {
+        pattern: "x",
+        path: ruta("datos/marcos"),
+        glob: "**/privado/**",
+      }),
+      "solo lee",
+    );
+  });
   it("jamás lee datos/privado/, secretos, el historial ni el código del CLI", () => {
     for (const r of [
       "datos/privado/activos/mi-asistente.json",
