@@ -23,8 +23,8 @@ Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus fi
 **marcos y sus versiones** y los **controles** de ISO/IEC 42001 con las pruebas que les dan evidencia. Debajo de esas
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
 para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
-cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Desde el Sprint 6 también puedes ver los **lotes** de evidencia que llegan de Garak o ZAP, y su revisión. Las demás secciones (tablero y
-brecha) aparecen en la barra lateral con la marca «pronto».
+cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Desde el Sprint 6 también puedes ver los **lotes** de evidencia que llegan de Garak o ZAP, y su revisión. Desde el Sprint 7 también puedes ver el **tablero** (la portada), la **brecha** y el **informe**: las cinco
+pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones (propuestas) aparecen en la barra lateral con la marca «pronto».
 
 ### Primeros pasos
 
@@ -147,9 +147,9 @@ brecha) aparecen en la barra lateral con la marca «pronto».
 - **Qué hace:** muestra el catálogo que ya existía como dato. Es **solo de lectura**: aquí no se edita ni se aprueba
   nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
 - **Cómo se usa:**
-  1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; dentro de
-     Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos**, la **carga** y los **hallazgos** de **Evidencia** funcionan. Las demás
-     llevan la marca «pronto».
+  1. Abre la aplicación: la raíz te lleva al **Tablero**. La barra lateral tiene cinco secciones; dentro de
+     Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos**, la **carga** y los **hallazgos** de **Evidencia**, el
+     **Tablero** y la **Brecha** funcionan. Las demás llevan la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
@@ -180,7 +180,7 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Propuestas, tablero y brecha todavía no existen como pantalla.
+  - Las propuestas todavía no existen como pantalla.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -326,6 +326,43 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   - En la pantalla, «Texto pegado» todavía no carga nada, y «Sobre manual» muestra los pasos del CLI de arriba.
   - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
 
+#### La brecha y el informe · desde Sprint 007
+
+- **Qué hace:** convierte la evidencia que una persona ya confirmó en **brecha**: lo que se planeó contra lo que se ejecutó
+  y lo que se obtuvo, control por control. Son cinco pantallas que leen el mismo cálculo, así que dicen las mismas cifras
+  en cualquier fecha: el **Tablero** (la portada), la **Brecha**, la **vista por control** (la lista y la página de cada control)
+  y el **Informe**.
+- **Cómo se usa:**
+  1. **Tablero:** lo que pide tu atención hoy: los hallazgos vencidos, los lotes por confirmar y las propuestas por decidir.
+     Muestra los hallazgos sin cerrar por severidad, cómo está cada control y si el instrumento pasó su validación
+     («Ver las comprobaciones» las abre).
+  2. **Brecha:** arriba, las cifras: cuántas pruebas planeadas se ejecutaron, cuántas superadas, fallidas y sin ejecutar.
+     Abajo, la cobertura por activo, por familia o por control, y la tabla **Esperado contra obtenido** con una fila por
+     prueba planeada. Puedes filtrarla por activo o por veredicto.
+  3. **Vista por control:** la lista de los controles aplicables, cada uno con su estado: **con evidencia vigente**,
+     **evidencia antigua**, **con fallas** o **sin evidencia**. Abre uno para ver las pruebas que lo cubren, su evidencia y la
+     **cadena de cierre** de sus hallazgos: hallazgo → corrección → re-prueba.
+  4. **Informe:** las ocho secciones de la brecha, con la huella del informe y la ficha de reproducibilidad. Para guardarlo,
+     usa **Imprimir o guardar como PDF**. Sale en papel claro aunque la pantalla esté en oscuro.
+- **Cómo se leen los estados:**
+  - Una prueba **no ejecutada** no cuenta como evidencia: no suma ni a las superadas ni a las fallidas. «No detectado» tampoco
+    se lee como verificado.
+  - Un hallazgo **vencido** dice cuántos días lleva de atraso.
+  - **Aceptar un riesgo no cierra un hallazgo.** El control sigue con fallas hasta que una re-prueba lo cierre; el riesgo
+    aceptado solo se revisa en su fecha.
+  - Un control pasa a **evidencia antigua** cuando su evidencia más reciente tiene 180 días o más.
+- **La fecha de consulta:** es la del commit que se publica, igual que en el catálogo. Las pantallas envejecen solo cuando se
+  vuelven a publicar.
+- **Qué NO hace:** no ejecuta pruebas, no cierra un hallazgo porque deje de aparecer en un escaneo posterior, no decide nada
+  por ti y no mide el nivel de aseguramiento ni certifica cumplimiento. La vista por control es evidencia organizada para quien
+  deba evaluarla.
+- **Limitaciones conocidas:**
+  - Con los datos de demo de hoy ningún control está en evidencia antigua. El estado existe y se cuenta en el tablero, pero
+    aparecerá un control cuando su evidencia cumpla el umbral.
+  - Los marcos con versión nueva dicen «sin registro de la fuente»: la app todavía no sabe qué publica cada fuente.
+  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+  - La bandeja de propuestas todavía no existe como pantalla: llega con el investigador y el extractor.
+
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
 - **Qué hace:** simula un modelo que decide, para que las pruebas de esa familia tengan algo que medir.
@@ -368,7 +405,8 @@ brecha) aparecen en la barra lateral con la marca «pronto».
 | 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                          |
 | 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete |
 | 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página        |
-| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                 |
+| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla               |
+| 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco  |
 
 ---
 
@@ -382,7 +420,7 @@ and it takes in results as evidence that a person confirms. Its central idea is 
 vulnerability: it is evidence that a control is failing.
 
 You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
-take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review.
+take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review. Since Sprint 7 the **dashboard** (the front page), the **gap** and the **report** read the same count of confirmed evidence.
 
 ### Getting started
 
@@ -506,8 +544,8 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 - **What it does:** it shows the catalog that already existed as data. It is **read-only**: nothing is edited or
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
-  1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**. The others carry the “soon” mark.
+  1. Open the app: the root takes you to the **Dashboard**. The sidebar has five sections; inside Catalog, **Tests**,
+     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**, the **Dashboard** and the **Gap**. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -538,7 +576,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals, dashboard and gap do not exist as screens yet; neither does the intake of results.
+  - Proposals do not exist as a screen yet.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
@@ -680,6 +718,43 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   - On the screen, “Pasted text” does not load anything yet, and “Manual envelope” shows the CLI steps above.
   - The screen is tested in Spanish; the English test arrives at the close of the milestone.
 
+#### The gap and the report · since Sprint 007
+
+- **What it does:** turns the evidence that a person has already confirmed into the **gap**: what was planned against what
+  was run and what was obtained, control by control. Five screens read the same calculation, so they show the same figures
+  on any date: the **Dashboard** (the front page), the **Gap**, the **control view** (the list and each control's page) and
+  the **Report**.
+- **How to use it:**
+  1. **Dashboard:** what needs your attention today: overdue findings, batches to confirm and proposals to decide. It shows
+     the open findings by severity, how each control stands, and whether the instrument passed its validation (“See the
+     checks” opens them).
+  2. **Gap:** the figures at the top: how many planned tests were run, how many passed, failed and were not run. Below, the
+     coverage by asset, by family or by control, and the **Expected against obtained** table with one row per planned test.
+     You can filter it by asset or by verdict.
+  3. **Control view:** the list of applicable controls, each with its state: **current evidence**, **stale evidence**,
+     **with failures** or **no evidence**. Open one to see the tests that cover it, its evidence and the **closure chain** of
+     its findings: finding → correction → retest.
+  4. **Report:** the eight sections of the gap, with the report's fingerprint and the reproducibility sheet. To keep it, use
+     **Print or save as PDF**. It prints on light paper even when the screen is dark.
+- **How the states are read:**
+  - A test that was **not run** is not evidence: it adds neither to the passed nor to the failed. “Not detected” is not read
+    as verified either.
+  - An **overdue** finding says how many days it is past its deadline.
+  - **Accepting a risk does not close a finding.** The control stays with failures until a retest closes it; the accepted
+    risk is only reviewed on its date.
+  - A control moves to **stale evidence** when its most recent evidence is 180 days old or more.
+- **The query date:** it is the date of the commit being published, as in the catalog. The screens age only when they are
+  published again.
+- **What it does NOT do:** it runs no tests, it does not close a finding because it stops appearing in a later scan, it
+  decides nothing for you, and it does not measure the level of assurance or certify compliance. The control view is
+  organised evidence for whoever has to evaluate it.
+- **Known limitations:**
+  - With today's demo data no control is in stale evidence. The state exists and the dashboard counts it, but a control
+    will appear there once its evidence meets the threshold.
+  - Frameworks with a new version say “no source record”: the app does not yet know what each source publishes.
+  - The screens are tested in Spanish; the English test arrives at the close of the milestone.
+  - The proposals inbox does not exist as a screen yet: it arrives with the researcher and the extractor.
+
 #### The demo classifier for the “decision model” family · since Sprint 001
 
 - **What it does:** it simulates a model that makes decisions, so the tests of that family have something to
@@ -723,3 +798,5 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 | 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                    |
 | 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download |
 | 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page  |
+| 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                   |
+| 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five         |

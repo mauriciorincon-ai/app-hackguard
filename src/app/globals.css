@@ -105,3 +105,10 @@ html[data-theme="claro"] [data-si-tema="oscuro"] {
   font-family: var(--fuente-dato);
   overflow-wrap: anywhere;
 }
+
+/* Un control equivalente de un marco («NIST AI RMF 1.0 · MEASURE 2.13») puede no caber en 380 px: el dato del
+   mapa de equivalencias parte en vez de empujar la página fuera de la pantalla (la brecha, e2e a 380 px). */
+.hg-propiedades .hg-dato {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

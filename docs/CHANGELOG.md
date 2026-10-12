@@ -3,6 +3,30 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 007 — «La brecha» (2026-10-12)
+
+The confirmed evidence read as a gap: five screens over one calculation, so they say the same figures on every date.
+
+### Added
+
+- **`/tablero`** (the front page), **`/brecha`** (planned against run, by asset, family and control, and the expected-against-obtained table), **`/brecha/control`** and **`/brecha/control/<id>`** (each control's state, its evidence and its closure chain), and **`/brecha/informe`** (eight sections, the reproducibility sheet, printable on light paper).
+- **Gap engine** (`src/engine/brecha/`, ADR-010): coverage, expected against obtained with its deviation, overdue findings with their days, the state of each applicable control (`con_fallas`, `evidencia_antigua`, `con_evidencia_vigente`, `sin_evidencia`), the alerts, and a JCS + SHA-256 fingerprint identical in Node, Chromium, Firefox and WebKit. The 180-day threshold lives in `datos/brecha/umbrales.json`.
+- **Aging matrix** (rule 23): the gap is built on each of the 21 dates on which a state changes; the query date is the build's, never the clock.
+- **Instrument validation (C18):** eight closure seeds in `docs/kit-de-prueba/semillas-de-cierre/`, run by the engine before anything is published.
+- **Labels as data:** `datos/brecha/etiquetas.json` gives each state's colour role and symbol (rule 12).
+- **Manual and guide:** «La brecha y el informe» in the manual; guide block L; block K moves to S6 and the gate's ⭐⭐ steps are numbered in document order.
+- **Gates:** `brecha.spec.ts` (Spanish: the same figures on every screen, the closure chain, «no detectado» not counted, 380 px, axe in both themes, the report's PDF in Chromium), fidelity and interaction gates for the five screens, and eight demonstrations in red.
+
+### Changed
+
+- **A retest of a finding is always reviewed in its batch** (B2), as the failures are. Its regression was red before the fix.
+- **The root and the logo** go to `/tablero`.
+- **The control card** breaks long equivalence references instead of overflowing at 380 px.
+
+### Not in this sprint
+
+- The proposals inbox; the English e2e and captures (milestone close); the medium and low audit items, which go to the milestone's batch.
+
 ## Sprint 006 — «La carga de evidencia» (2026-10-12)
 
 The report of a Garak or ZAP run becomes a batch of envelopes whose verdicts a rule computes; a person confirms the batch by reviewing every failure and a deterministic sample of the rest.
