@@ -1,0 +1,413 @@
+{
+  "formato": "hackguard/plan@1",
+  "activo": {
+    "id": "act-demo-clasificador",
+    "huella": "40d7e29e8eb721d7581ff8e7634b4e1ca0c114c5f1f5d4c2b3d410ffc9b99728"
+  },
+  "instantanea": {
+    "fecha": "2026-10-05",
+    "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+  },
+  "formula": {
+    "version": "1",
+    "huella": "c209b5133c0279654558f9a895000f5b73b466837d24c9100268610db8530e3c"
+  },
+  "entornos": {
+    "version": "1",
+    "huella": "b7fae2608ece8a58943c0f273fcfee98b17610405f2724aa375b48c5931aff7e"
+  },
+  "fecha_emision": "2026-10-11",
+  "resumen": {
+    "candidatas": 12,
+    "otras_familias": 26,
+    "planeadas": 11,
+    "excluidas": 1,
+    "controles_con_prueba": 4,
+    "controles_sin_prueba": 0,
+    "planeadas_sin_control": 0,
+    "sin_herramienta": 0
+  },
+  "planeadas": [
+    {
+      "prueba": "PR-MD-CAL-001",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas y hay casos con la decisión correcta conocida.",
+        "en": "Applies if the asset returns typed decisions and there are cases with the correct decision known."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "scikit-learn",
+        "entorno": "portatil",
+        "version_minima": "1.9.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-MD-EST-001",
+      "razon": {
+        "es": "Aplica si el estado de entrada del modelo lleva texto de terceros.",
+        "en": "Applies if the model's input state carries third-party text."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "checklist",
+        "entorno": "portatil",
+        "version_minima": "0.0.11"
+      },
+      "controles": [
+        "iso42001-A.9.2"
+      ]
+    },
+    {
+      "prueba": "PR-MD-ESTAB-001",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas.",
+        "en": "Applies if the asset returns typed decisions."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "scikit-learn",
+        "entorno": "portatil",
+        "version_minima": "1.9.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-MD-LIM-001",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas.",
+        "en": "Applies if the asset returns typed decisions."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "hackguard-revision",
+        "entorno": "portatil",
+        "version_minima": null
+      },
+      "controles": [
+        "iso42001-A.6.2.2"
+      ]
+    },
+    {
+      "prueba": "PR-MD-PAR-001",
+      "razon": {
+        "es": "Aplica si el activo recibe casos en español y en inglés y hay casos etiquetados en los dos.",
+        "en": "Applies if the asset receives cases in Spanish and English and there are labelled cases in both."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "scikit-learn",
+        "entorno": "portatil",
+        "version_minima": "1.9.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-MD-UMB-001",
+      "razon": {
+        "es": "Aplica si la aplicación compara una probabilidad con un umbral para actuar.",
+        "en": "Applies if the application compares a probability with a threshold to act."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "textattack",
+        "entorno": "portatil",
+        "version_minima": "0.3.11"
+      },
+      "controles": [
+        "iso42001-A.6.2.6"
+      ]
+    },
+    {
+      "prueba": "PR-MD-VAL-001",
+      "razon": {
+        "es": "Aplica si una decisión equivocada puede afectar seriamente a una persona.",
+        "en": "Applies if a wrong decision can seriously affect a person."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "hackguard-revision",
+        "entorno": "portatil",
+        "version_minima": null
+      },
+      "controles": [
+        "iso42001-A.9.2"
+      ]
+    },
+    {
+      "prueba": "PR-MD-VAL-002",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas y hay casos etiquetados.",
+        "en": "Applies if the asset returns typed decisions and there are labelled cases."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "scikit-learn",
+        "entorno": "portatil",
+        "version_minima": "1.9.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-MD-VAL-003",
+      "razon": {
+        "es": "Aplica si la aplicación compara una probabilidad con un umbral para actuar.",
+        "en": "Applies if the application compares a probability with a threshold to act."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "hackguard-revision",
+        "entorno": "portatil",
+        "version_minima": null
+      },
+      "controles": [
+        "iso42001-A.9.2"
+      ]
+    },
+    {
+      "prueba": "PR-MD-COH-001",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas.",
+        "en": "Applies if the asset returns typed decisions."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "checklist",
+        "entorno": "portatil",
+        "version_minima": "0.0.11"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-MD-INV-001",
+      "razon": {
+        "es": "Aplica si el activo devuelve decisiones tipadas.",
+        "en": "Applies if the asset returns typed decisions."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "datos_no_publicos",
+            "razon": {
+              "es": "datos personales o sensibles",
+              "en": "personal or sensitive data"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "checklist",
+        "entorno": "portatil",
+        "version_minima": "0.0.11"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    }
+  ],
+  "excluidas": [
+    {
+      "prueba": "PR-MD-DER-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el modelo lo opera un proveedor que puede cambiar su versión.",
+        "en": "Applies if the model is run by a provider that can change its version."
+      }
+    }
+  ],
+  "cobertura": [
+    {
+      "control": "iso42001-A.6.2.2",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-MD-LIM-001"
+      ]
+    },
+    {
+      "control": "iso42001-A.6.2.4",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-MD-CAL-001",
+        "PR-MD-COH-001",
+        "PR-MD-ESTAB-001",
+        "PR-MD-INV-001",
+        "PR-MD-PAR-001",
+        "PR-MD-VAL-002"
+      ]
+    },
+    {
+      "control": "iso42001-A.6.2.6",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-MD-UMB-001"
+      ]
+    },
+    {
+      "control": "iso42001-A.9.2",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-MD-EST-001",
+        "PR-MD-VAL-001",
+        "PR-MD-VAL-003"
+      ]
+    }
+  ],
+  "paquete": {
+    "huella": "723f5396633c2ea2b1aab6c74b6a35e47f13294919c3fa37df3cd88f36be2038"
+  },
+  "huella": "86ef9654d724803e19f3e30086b7f301f9be8eb5b36a75ea2495d6a5ad6c6a87"
+}

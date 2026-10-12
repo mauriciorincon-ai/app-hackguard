@@ -1,5 +1,6 @@
 import { T, Dato, type Bilingue } from "../texto";
 import Link from "next/link";
+import { PRIMER_ACTIVO } from "@/lib/activos/etiquetas";
 
 const TRAZO = {
   fill: "none",
@@ -98,7 +99,11 @@ const SECCIONES: Seccion[] = [
     nombre: { es: "Catálogo", en: "Catalog" },
     ruta: "/catalogo",
   },
-  { id: "activos", nombre: { es: "Activos", en: "Assets" }, ruta: null },
+  {
+    id: "activos",
+    nombre: { es: "Activos", en: "Assets" },
+    ruta: `/activos/${PRIMER_ACTIVO}`,
+  },
   { id: "evidencia", nombre: { es: "Evidencia", en: "Evidence" }, ruta: null },
   { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: null },
 ];

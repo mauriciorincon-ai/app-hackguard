@@ -22,8 +22,8 @@ que un hallazgo no es una vulnerabilidad: es evidencia de que un control falla.
 Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus filtros, una ficha por prueba), ver los
 **marcos y sus versiones** y los **controles** de ISO/IEC 42001 con las pruebas que les dan evidencia. Debajo de esas
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
-para la familia de modelos de decisión. Las demás secciones (tablero, activos, evidencia y brecha) aparecen en la
-barra lateral con la marca «pronto».
+para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
+cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barra lateral con la marca «pronto».
 
 ### Primeros pasos
 
@@ -115,7 +115,7 @@ barra lateral con la marca «pronto».
        `prueba/revision-sin-registro` dice «huella del contenido a revisar: …». Si el contenido cambia después,
        `prueba/revision-desactualizada` da la huella nueva.
 - **Limitaciones conocidas:**
-  - **Se ve en pantalla solo el catálogo:** lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
+  - **Solo algunas vistas están en pantalla:** el catálogo, los marcos, los controles y los activos con su plan. Lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
   - **Instantánea bloqueada:** si el catálogo es inválido, no se escribe nada (código 2).
   - **Fecha obligatoria:** la fecha de la instantánea es obligatoria y nunca se toma del reloj. Una fecha anterior
     a la última verificación del catálogo se rechaza (código 3).
@@ -147,7 +147,7 @@ barra lateral con la marca «pronto».
   nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
 - **Cómo se usa:**
   1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; dentro de
-     Catálogo, **Pruebas**, **Marcos** y **Controles** funcionan. Las demás llevan la marca «pronto».
+     Catálogo (**Pruebas**, **Marcos** y **Controles**) y **Activos** funcionan. Las demás llevan la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
@@ -178,7 +178,7 @@ barra lateral con la marca «pronto».
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Propuestas, tablero, activos, plan, evidencia y brecha todavía no existen como pantalla.
+  - Propuestas, tablero, evidencia y brecha todavía no existen como pantalla.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -222,6 +222,36 @@ barra lateral con la marca «pronto».
     instantánea nueva.
   - Las pantallas se prueban en español; la prueba en inglés llega al cierre del hito.
 
+#### Activos y plan · desde Sprint 004
+
+- **Qué hace:** muestra cada activo registrado (un asistente, un clasificador, un portal) con su dueño, su proveedor, su
+  perfil, su autorización y el **plan de pruebas** que el planificador calcula para él. Es **solo de lectura**: el plan
+  no se edita en pantalla.
+- **Cómo se usa:**
+  1. Desde **Activos**, la barra lateral abre el primer activo. Arriba, un selector lista los tres activos demo con su
+     estado: «Con plan» o «Registrado, sin plan».
+  2. En la página de un activo ves quién es su dueño y quién su proveedor, qué perfil declara, su alcance y sus reglas
+     de enfrentamiento. Si tiene plan, el carril lateral lleva a él.
+  3. En **Plan** hay un resumen de cuatro cifras y, después, las **pruebas planeadas**. Cada una dice por qué aplica
+     («Aplica porque:»). Una prueba que agregaste tú aparece como «Agregada por ti», con tu justificación.
+  4. Las pruebas que no entran aparecen en **«Excluidas, con su razón»**, con uno de tres motivos: «No aplica» (el perfil
+     no declara esa condición), «Fuera de alcance» (el alcance autorizado no la cubre) o «Quitada por ti».
+  5. **«Cobertura por control»** dice qué controles de ISO/IEC 42001 tienen prueba en el plan y cuáles no («Sin prueba»).
+  6. **«Descargar el paquete»** baja el archivo que describe qué se ejecuta, con su huella. Es el mismo archivo que
+     escribe el comando de emisión, byte a byte.
+- **Sin autorización no hay plan:** el portal de clientes dice «Sin autorización no hay plan» en su página y en la del
+  plan. Para que un activo reciba plan hacen falta su alcance autorizado y sus reglas de enfrentamiento.
+- **Registrar un activo propio:** la página de cualquier activo tiene «Ver la plantilla para activos propios», que
+  muestra qué hace falta. Un activo real se escribe en `datos/privado/activos/`, nunca en `datos/activos/`: esa carpeta
+  versionada solo admite activos demo con `origen: "demo"`. Su plan se emite con
+  `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, que lo escribe en `datos/privado/planes/` con permisos de solo tu usuario.
+  Ningún activo real entra en el repositorio ni en la web pública.
+- **Limitaciones conocidas:**
+  - El estado «en prueba» todavía no existe: hace falta evidencia, que llega en el Sprint 5.
+  - No hay editor de perfil ni de plan en pantalla: un cambio se hace en el archivo del activo y el plan se vuelve a emitir.
+  - Si sale una instantánea oficial nueva, el plan viejo deja de construirse hasta volver a emitirlo.
+  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
 - **Qué hace:** simula un modelo que decide, para que las pruebas de esa familia tengan algo que medir.
@@ -257,11 +287,12 @@ barra lateral con la marca «pronto».
 
 ### Historial
 
-| Sprint           | Features añadidas a este manual                                                                                  |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                        |
-| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                         |
-| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada |
+| Sprint           | Features añadidas a este manual                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                                                 |
+| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                  |
+| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                          |
+| 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete |
 
 ---
 
@@ -274,7 +305,7 @@ It runs no tests itself: it says what is worth checking on an asset, with which 
 and it takes in results as evidence that a person confirms. Its central idea is that a finding is not a
 vulnerability: it is evidence that a control is failing.
 
-You can now **browse the test catalog on screen** (the list with its filters and a record per test); under that screen sits the **test catalog as data**, with the commands to validate it and
+You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
 take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### Getting started
@@ -367,7 +398,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
        finding `prueba/revision-sin-registro` says “fingerprint of the content to review: …”. If the content
        changes later, `prueba/revision-desactualizada` gives the new one.
 - **Known limitations:**
-  - **Only the catalog is on screen:** everything else is handled with the commands above (see “The catalog on screen”).
+  - **Only some views are on screen:** the catalog, the frameworks, the controls and the assets with their plan. Everything else is handled with the commands above (see “The catalog on screen”).
   - **Blocked snapshot:** if the catalog is invalid, nothing is written (code 2).
   - **Date required:** the snapshot date is required and is never taken from the clock. A date earlier than the
     catalog's latest verification is rejected (code 3).
@@ -400,7 +431,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets**. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -431,7 +462,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals, dashboard, assets, plan, evidence and gap do not exist as screens yet.
+  - Proposals, dashboard, evidence and gap do not exist as screens yet.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
@@ -475,6 +506,36 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
     is emitted.
   - The screens are tested in Spanish; English testing arrives at the close of the milestone.
 
+#### Assets and plan · since Sprint 004
+
+- **What it does:** shows each registered asset (an assistant, a classifier, a portal) with its owner, its provider, its
+  profile, its authorization and the **test plan** the planner computes for it. It is **read-only**: the plan is not
+  edited on screen.
+- **How to use it:**
+  1. From **Assets**, the sidebar opens the first asset. At the top, a selector lists the three demo assets with their
+     status: “Has a plan” or “Registered, no plan”.
+  2. On an asset's page you see who owns it and who provides it, which profile it declares, its scope and its
+     engagement rules. If it has a plan, the side panel leads to it.
+  3. On **Plan** there is a summary of four figures and then the **planned tests**. Each one says why it applies
+     (“Applies because:”). A test you added yourself appears as “Added by you”, with your justification.
+  4. The tests that do not make it appear under **“Excluded, with their reason”**, with one of three motives: “Not
+     applicable” (the profile does not declare that condition), “Out of scope” (the authorized scope does not cover it)
+     or “Removed by you”.
+  5. **“Coverage by control”** says which ISO/IEC 42001 controls have a test in the plan and which do not (“No test”).
+  6. **“Download the package”** downloads the file that describes what is run, with its fingerprint. It is the same file
+     the issuing command writes, byte for byte.
+- **No authorization, no plan:** the customer portal says “No authorization, no plan” on its page and on its plan page.
+  For an asset to receive a plan it needs its authorized scope and its engagement rules.
+- **Registering an own asset:** any asset's page has “See the template for own assets”, which shows what is needed. A
+  real asset is written in `datos/privado/activos/`, never in `datos/activos/`: that versioned folder only accepts demo
+  assets with `origen: "demo"`. Its plan is issued with `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, which writes it to
+  `datos/privado/planes/` with permissions for your user only. No real asset enters the repository or the public web.
+- **Known limitations:**
+  - The “in test” status does not exist yet: it needs evidence, which arrives in Sprint 5.
+  - There is no profile or plan editor on screen: a change is made in the asset's file and the plan is issued again.
+  - If a new official snapshot comes out, the old plan stops being built until it is issued again.
+  - The screens are tested in Spanish; the English test arrives at the close of the milestone.
+
 #### The demo classifier for the “decision model” family · since Sprint 001
 
 - **What it does:** it simulates a model that makes decisions, so the tests of that family have something to
@@ -511,8 +572,9 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### History
 
-| Sprint           | Features added to this manual                                                                                |
-| ---------------- | ------------------------------------------------------------------------------------------------------------ |
-| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                          |
-| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                         |
-| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list |
+| Sprint           | Features added to this manual                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                                             |
+| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                            |
+| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                    |
+| 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download |

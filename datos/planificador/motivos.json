@@ -1,0 +1,33 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Los tres motivos por los que una prueba de las familias del activo queda fuera del plan. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
+    "en": "The three reasons a test from the asset's families is left out of the plan. Role and symbol come from here, never from a component (hard rule 12)."
+  },
+  "motivos": [
+    {
+      "id": "perfil",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": { "es": "No aplica", "en": "Not applicable" },
+      "introduce": {
+        "es": "El perfil no declara esta condición:",
+        "en": "The profile does not declare this condition:"
+      }
+    },
+    {
+      "id": "alcance",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": { "es": "Fuera de alcance", "en": "Out of scope" },
+      "introduce": null
+    },
+    {
+      "id": "operador",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": { "es": "Quitada por ti", "en": "Removed by you" },
+      "introduce": null
+    }
+  ]
+}

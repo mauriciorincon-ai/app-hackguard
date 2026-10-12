@@ -1,0 +1,32 @@
+{
+  "version": "1",
+  "origen": {
+    "es": "La fórmula de la maqueta fijada como definitiva en el G-Plan del Sprint 004 (2026-10-11): la prioridad base de la prueba más lo que el perfil del activo suma, con un tope de ajuste y un techo.",
+    "en": "The mockup's formula fixed as final in the Sprint 004 G-Plan (2026-10-11): the test's base priority plus what the asset's profile adds, with an adjustment cap and a ceiling."
+  },
+  "techo": 5,
+  "tope_de_ajuste": 1,
+  "ajustes": [
+    {
+      "id": "exposicion_publica",
+      "cuando": { "campo": "exposicion", "igual": "publica" },
+      "suma": 1,
+      "razon": { "es": "exposición pública", "en": "public exposure" }
+    },
+    {
+      "id": "datos_no_publicos",
+      "cuando": { "campo": "datos", "distinto": "publicos" },
+      "suma": 1,
+      "razon": {
+        "es": "datos personales o sensibles",
+        "en": "personal or sensitive data"
+      }
+    },
+    {
+      "id": "capacidad_de_accion",
+      "cuando": { "campo": "actua", "igual": true },
+      "suma": 1,
+      "razon": { "es": "capacidad de acción", "en": "ability to act" }
+    }
+  ]
+}

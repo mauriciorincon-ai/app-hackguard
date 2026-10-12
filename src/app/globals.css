@@ -99,3 +99,9 @@ html[data-theme="claro"] [data-si-tema="oscuro"] {
     font-size: var(--t-micro);
   }
 }
+
+/* Una huella completa (64 caracteres) cabe en cualquier ancho: parte donde haga falta en vez de desbordar. */
+.hg-huella-completa {
+  font-family: var(--fuente-dato);
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "El catálogo no dice si una herramienta es gratuita o de pago: dice en qué entornos corre. Aquí cada entorno trae su clase y su orden de preferencia (RF-03.3): primero lo que corre en tu máquina, después el plan gratuito de un servicio.",
+    "en": "The catalog does not say whether a tool is free or paid: it says which environments it runs in. Here each environment carries its class and its order of preference (RF-03.3): first what runs on your machine, then a service's free plan."
+  },
+  "entornos": [
+    {
+      "id": "portatil",
+      "orden": 1,
+      "clase": "gratuito_local",
+      "nombre": { "es": "Portátil", "en": "Laptop" }
+    },
+    {
+      "id": "contenedor",
+      "orden": 2,
+      "clase": "gratuito_local",
+      "nombre": { "es": "Contenedor local", "en": "Local container" }
+    },
+    {
+      "id": "plan_gratuito",
+      "orden": 3,
+      "clase": "plan_gratuito_de_un_servicio",
+      "nombre": {
+        "es": "Plan gratuito de un servicio",
+        "en": "Free tier of a service"
+      }
+    }
+  ]
+}

@@ -3,6 +3,31 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 004 — «Del activo al plan» (2026-10-11)
+
+An asset with its owner, provider, profile and authorization gets a test plan computed by code from the official snapshot, with a declarative execution package, and both are on screen.
+
+### Added
+
+- **`/activos/<id>`:** the asset's page with its owner and provider (the provider's policy is cited, or marked «not read»), its profile, its scope and its engagement rules. Three demo assets: the assistant, the classifier and the customer portal.
+- **`/activos/<id>/plan`:** the plan with the planned tests (each with «Applies because:», or «Added by you» and the justification), the excluded tests with one of three reasons (not applicable, out of scope, removed by you), the coverage by control (with «No test» where no planned test covers it), and the execution package. The customer portal has no plan: «No authorization, no plan».
+- **Package download:** `/activos/<id>/paquete.json` serves the same bytes as the versioned file that the planner issues.
+- **Planner:** a pure, deterministic core in `src/engine/planificador/`, with the priority formula, the tool and environment choice, and the coverage in data (`datos/planificador/`). Same input, same bytes, in Node and in Chromium, Firefox and WebKit.
+- **Asset validator:** 21 named rules in `src/engine/activos/`. A demo asset must declare `origen: "demo"`; real assets live in `datos/privado/activos/`, which git ignores.
+- **CLI:** `pnpm activo:validar` and `pnpm plan:emitir <id> --fecha AAAA-MM-DD`. A plan for an own asset is written to `datos/privado/planes/` with mode 0600.
+- **Gates:** plan and package fingerprints across three browsers, fidelity of both screens against the maqueta, the aging matrix for the policy and tool dates, and an e2e with axe in both themes.
+- **ADR-007:** the plan and package format that the evidence book will consume.
+
+### Changed
+
+- **Sidebar:** Assets is a live link to the first demo asset; Evidence, Dashboard and Gap are still marked «soon».
+- **Console shell:** an optional subnavigation slot (Asset / Plan), used only by the asset screens.
+- **Maqueta table:** `docs/diseno/README.md` lists what the product adds or leaves out against the maqueta (Sprint 4). The maqueta itself is not regenerated.
+
+### Not in this sprint
+
+- Real assets, import from a technical sheet, plan re-issue on profile change, a profile or plan editor on screen, evidence and findings (Sprint 5), and the «in test» state (it needs evidence).
+
 ## Sprint 003 — «Marcos y controles» (2026-10-11)
 
 The catalog's other two views go on screen, the list is paginated, and the repo adopts the kit v2.1.0 rule of one live pull request.

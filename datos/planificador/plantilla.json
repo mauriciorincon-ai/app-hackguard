@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Plantilla por defecto para activos propios (RF-02.2): una guía para declarar el alcance y las reglas en el archivo del activo, que se ajusta ahí. Solo vale para activos propios; un activo con proveedor necesita que las reglas citen su política.",
+    "en": "Default template for own assets (RF-02.2): a guide for declaring the scope and the rules in the asset's file, adjusted there. It only applies to own assets; an asset with a provider needs its rules to cite the provider's policy."
+  },
+  "alcance": [
+    {
+      "es": "Solo el entorno de pruebas del activo.",
+      "en": "Only the asset's test environment."
+    },
+    {
+      "es": "Nada administrado por terceros.",
+      "en": "Nothing managed by third parties."
+    }
+  ],
+  "reglas": [
+    {
+      "es": "Nada se prueba contra la infraestructura de terceros.",
+      "en": "Nothing is tested against third-party infrastructure."
+    },
+    {
+      "es": "Ante un fallo que afecte el servicio, la prueba se detiene y se avisa al dueño.",
+      "en": "If a failure affects the service, testing stops and the owner is told."
+    }
+  ]
+}

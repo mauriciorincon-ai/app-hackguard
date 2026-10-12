@@ -1,0 +1,692 @@
+{
+  "formato": "hackguard/plan@1",
+  "activo": {
+    "id": "act-demo-asistente",
+    "huella": "82b37c59f858cb3a2c43da626ccd5c3dcc06bd85d160163977e6264ba85949da"
+  },
+  "instantanea": {
+    "fecha": "2026-10-05",
+    "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+  },
+  "formula": {
+    "version": "1",
+    "huella": "c209b5133c0279654558f9a895000f5b73b466837d24c9100268610db8530e3c"
+  },
+  "entornos": {
+    "version": "1",
+    "huella": "b7fae2608ece8a58943c0f273fcfee98b17610405f2724aa375b48c5931aff7e"
+  },
+  "fecha_emision": "2026-10-11",
+  "resumen": {
+    "candidatas": 26,
+    "otras_familias": 12,
+    "planeadas": 14,
+    "excluidas": 12,
+    "controles_con_prueba": 4,
+    "controles_sin_prueba": 3,
+    "planeadas_sin_control": 6,
+    "sin_herramienta": 0
+  },
+  "planeadas": [
+    {
+      "prueba": "PR-AG-HERR-001",
+      "razon": {
+        "es": "Aplica si el agente llama herramientas cuyo contenido no controla su operador.",
+        "en": "Applies if the agent calls tools whose content its operator does not control."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "inspect",
+        "entorno": "portatil",
+        "version_minima": "0.3.276"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-AG-LIM-001",
+      "razon": {
+        "es": "Aplica si el agente encadena llamadas a herramientas.",
+        "en": "Applies if the agent chains tool calls."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "promptfoo",
+        "entorno": "portatil",
+        "version_minima": "0.123.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.6"
+      ]
+    },
+    {
+      "prueba": "PR-AG-PERM-001",
+      "razon": {
+        "es": "Aplica si el agente llama herramientas que actúan fuera de la conversación.",
+        "en": "Applies if the agent calls tools that act outside the conversation."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "promptfoo",
+        "entorno": "portatil",
+        "version_minima": "0.123.1"
+      },
+      "controles": [
+        "iso42001-A.9.4"
+      ]
+    },
+    {
+      "prueba": "PR-IA-CONT-001",
+      "razon": {
+        "es": "Aplica si llega al modelo texto libre escrito por una persona.",
+        "en": "Applies if free text written by a person reaches the model."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "garak",
+        "entorno": "portatil",
+        "version_minima": "0.17.0"
+      },
+      "controles": [
+        "iso42001-A.9.4"
+      ]
+    },
+    {
+      "prueba": "PR-IA-ENC-002",
+      "razon": {
+        "es": "Aplica si llega al modelo texto libre escrito por una persona.",
+        "en": "Applies if free text written by a person reaches the model."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "garak",
+        "entorno": "portatil",
+        "version_minima": "0.17.0"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-IA-PINJ-001",
+      "razon": {
+        "es": "Aplica si el activo procesa contenido de terceros.",
+        "en": "Applies if the asset processes third-party content."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "garak",
+        "entorno": "portatil",
+        "version_minima": "0.17.0"
+      },
+      "controles": [
+        "iso42001-A.6.2.4"
+      ]
+    },
+    {
+      "prueba": "PR-IA-SAL-001",
+      "razon": {
+        "es": "Aplica si otro programa procesa la salida del modelo o la muestra en una página.",
+        "en": "Applies if another program processes the model's output or shows it on a page."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "promptfoo",
+        "entorno": "portatil",
+        "version_minima": "0.123.1"
+      },
+      "controles": [
+        "iso42001-A.6.2.6"
+      ]
+    },
+    {
+      "prueba": "PR-SW-DEP-001",
+      "razon": {
+        "es": "Aplica si las páginas cargan librerías de JavaScript de terceros.",
+        "en": "Applies if the pages load third-party JavaScript libraries."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    },
+    {
+      "prueba": "PR-SW-TS-001",
+      "razon": {
+        "es": "Aplica si el activo se sirve por internet con un dominio propio.",
+        "en": "Applies if the asset is served over the internet on its own domain."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 4,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    },
+    {
+      "prueba": "PR-SW-XSS-001",
+      "razon": {
+        "es": "Aplica si el activo muestra en sus páginas datos que escriben sus usuarios.",
+        "en": "Applies if the asset shows data written by its users on its pages."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 5,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 5
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    },
+    {
+      "prueba": "PR-AG-REG-001",
+      "razon": {
+        "es": "Aplica si el agente actúa en nombre de una persona.",
+        "en": "Applies if the agent acts on behalf of a person."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "hackguard-revision",
+        "entorno": "portatil",
+        "version_minima": null
+      },
+      "controles": [
+        "iso42001-A.6.2.8"
+      ]
+    },
+    {
+      "prueba": "PR-SW-CLK-001",
+      "razon": null,
+      "agregada": {
+        "fecha": "2026-10-01",
+        "justificacion": {
+          "es": "La interfaz web del asistente se va a incrustar en el portal de clientes; el perfil todavía no lo declara.",
+          "en": "The assistant's web interface will be embedded in the customer portal; the profile does not declare it yet."
+        }
+      },
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    },
+    {
+      "prueba": "PR-SW-CSP-001",
+      "razon": {
+        "es": "Aplica si el activo sirve páginas a un navegador.",
+        "en": "Applies if the asset serves pages to a browser."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    },
+    {
+      "prueba": "PR-SW-ERR-001",
+      "razon": {
+        "es": "Aplica si el activo responde a un navegador.",
+        "en": "Applies if the asset answers a browser."
+      },
+      "agregada": null,
+      "prioridad": {
+        "base": 3,
+        "ajustes": [
+          {
+            "id": "exposicion_publica",
+            "razon": {
+              "es": "exposición pública",
+              "en": "public exposure"
+            }
+          },
+          {
+            "id": "capacidad_de_accion",
+            "razon": {
+              "es": "capacidad de acción",
+              "en": "ability to act"
+            }
+          }
+        ],
+        "ajuste": 1,
+        "final": 4
+      },
+      "herramienta": {
+        "id": "zap",
+        "entorno": "contenedor",
+        "version_minima": "2.17.0"
+      },
+      "controles": []
+    }
+  ],
+  "excluidas": [
+    {
+      "prueba": "PR-AG-CONF-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el agente puede ejecutar acciones que no se deshacen.",
+        "en": "Applies if the agent can perform actions that cannot be undone."
+      }
+    },
+    {
+      "prueba": "PR-AG-EXF-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el agente lee datos sensibles y su salida se muestra renderizada.",
+        "en": "Applies if the agent reads sensitive data and its output is shown rendered."
+      }
+    },
+    {
+      "prueba": "PR-AG-ID-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el agente actúa por usuarios con permisos distintos.",
+        "en": "Applies if the agent acts for users with different permissions."
+      }
+    },
+    {
+      "prueba": "PR-AG-MEM-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el agente guarda información de una conversación para usarla en otra.",
+        "en": "Applies if the agent keeps information from one conversation to use in another."
+      }
+    },
+    {
+      "prueba": "PR-AG-MULTI-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el agente recibe mensajes o tareas de otros agentes.",
+        "en": "Applies if the agent receives messages or tasks from other agents."
+      }
+    },
+    {
+      "prueba": "PR-IA-DATO-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si varias personas usan el activo, cada una con sus datos.",
+        "en": "Applies if several people use the asset, each with their own data."
+      }
+    },
+    {
+      "prueba": "PR-IA-FUGA-001",
+      "motivo": "operador",
+      "razon": {
+        "es": "Las instrucciones internas del demo son públicas en su repositorio.",
+        "en": "The demo's internal instructions are public in its repository."
+      }
+    },
+    {
+      "prueba": "PR-IA-RAG-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el activo consulta una base de documentos antes de responder.",
+        "en": "Applies if the asset queries a document store before answering."
+      }
+    },
+    {
+      "prueba": "PR-SW-ACC-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si el activo tiene usuarios o roles que no deben ver o cambiar lo mismo.",
+        "en": "Applies if the asset has users or roles that must not see or change the same things."
+      }
+    },
+    {
+      "prueba": "PR-SW-LOG-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si los usuarios del activo inician sesión.",
+        "en": "Applies if the asset's users sign in."
+      }
+    },
+    {
+      "prueba": "PR-SW-SES-001",
+      "motivo": "perfil",
+      "razon": {
+        "es": "Aplica si los usuarios del activo inician sesión.",
+        "en": "Applies if the asset's users sign in."
+      }
+    },
+    {
+      "prueba": "PR-SW-SQLI-001",
+      "motivo": "alcance",
+      "razon": {
+        "es": "La base de datos la administra un tercero y no está en el alcance autorizado.",
+        "en": "A third party manages the database and it is not in the authorized scope."
+      }
+    }
+  ],
+  "cobertura": [
+    {
+      "control": "iso42001-A.6.2.4",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-AG-HERR-001",
+        "PR-IA-ENC-002",
+        "PR-IA-PINJ-001"
+      ]
+    },
+    {
+      "control": "iso42001-A.6.2.6",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-AG-LIM-001",
+        "PR-IA-SAL-001"
+      ]
+    },
+    {
+      "control": "iso42001-A.6.2.8",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-AG-REG-001"
+      ]
+    },
+    {
+      "control": "iso42001-A.7.4",
+      "estado": "sin_prueba",
+      "pruebas": []
+    },
+    {
+      "control": "iso42001-A.7.5",
+      "estado": "sin_prueba",
+      "pruebas": []
+    },
+    {
+      "control": "iso42001-A.9.2",
+      "estado": "sin_prueba",
+      "pruebas": []
+    },
+    {
+      "control": "iso42001-A.9.4",
+      "estado": "con_prueba",
+      "pruebas": [
+        "PR-AG-PERM-001",
+        "PR-IA-CONT-001"
+      ]
+    }
+  ],
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+}

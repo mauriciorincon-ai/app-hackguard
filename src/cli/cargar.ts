@@ -85,8 +85,15 @@ export function cargarCatalogo(
   };
 }
 
-/** Carpetas de `datos/` que el catálogo no lee a propósito. */
-const NO_SON_CATALOGO = ["datos/privado", "datos/instantaneas"];
+/** Carpetas de `datos/` que el catálogo no lee a propósito: la instantánea es su derivado y los activos, sus
+ * planes y los datos del planificador pertenecen al planificador (S4), que los lee con `src/lib/activos/cargar-activos.ts`. */
+const NO_SON_CATALOGO = [
+  "datos/privado",
+  "datos/instantaneas",
+  "datos/activos",
+  "datos/planes",
+  "datos/planificador",
+];
 
 /**
  * Los archivos de `datos/` que `cargarCatalogo` no leyó: otra extensión, una carpeta mal escrita o una subcarpeta
@@ -95,8 +102,9 @@ const NO_SON_CATALOGO = ["datos/privado", "datos/instantaneas"];
  */
 export function noLeidos(raiz: string, entrada: CatalogoEnBruto): string[] {
   const leidas = new Set<string>(
-    Object.values(entrada).flatMap((v: ArchivoDeDatos | ArchivoDeDatos[] | null) =>
-      v === null ? [] : Array.isArray(v) ? v.map((a) => a.ruta) : [v.ruta],
+    Object.values(entrada).flatMap(
+      (v: ArchivoDeDatos | ArchivoDeDatos[] | null) =>
+        v === null ? [] : Array.isArray(v) ? v.map((a) => a.ruta) : [v.ruta],
     ),
   );
   const fuera: string[] = [];

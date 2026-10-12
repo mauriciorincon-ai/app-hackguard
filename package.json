@@ -12,6 +12,8 @@
     "test:e2e": "playwright test",
     "catalogo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts validar",
     "catalogo:instantanea": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts instantanea",
+    "activo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts activo-validar",
+    "plan:emitir": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts emitir",
     "clasificador:demo": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/clasificador-demo.ts",
     "prepare": "git config core.hooksPath githooks",
     "maqueta": "node scripts/maqueta/generar.mjs",

@@ -1,0 +1,60 @@
+{
+  "id": "act-demo-portal",
+  "origen": "demo",
+  "nombre": { "es": "Portal demo de clientes", "en": "Demo customer portal" },
+  "descripcion": {
+    "es": "Aplicación web donde un cliente con cuenta consulta y actualiza sus datos.",
+    "en": "Web application where a customer with an account views and updates their data."
+  },
+  "familias": ["software"],
+  "acceso": "caja_negra",
+  "dueno": {
+    "nombre": { "es": "Equipo demo de clientes", "en": "Demo customer team" },
+    "nota": {
+      "es": "Todavía no ha autorizado ninguna prueba.",
+      "en": "Has not authorized any test yet."
+    }
+  },
+  "proveedor": {
+    "nombre": { "es": "Alojamiento demo", "en": "Demo hosting" },
+    "provee": {
+      "es": "El alojamiento de la aplicación.",
+      "en": "Hosting for the application."
+    },
+    "politica": null,
+    "politica_fuente": null,
+    "politica_verificada": null
+  },
+  "perfil": {
+    "pila": {
+      "es": "Aplicación web con base de datos propia.",
+      "en": "Web application with its own database."
+    },
+    "exposicion": "publica",
+    "autenticacion": {
+      "es": "Cuentas con contraseña.",
+      "en": "Accounts with a password."
+    },
+    "datos": "personales",
+    "actua": true,
+    "modelos": { "es": "Ninguno.", "en": "None." },
+    "canales": [{ "es": "Formularios", "en": "Forms" }],
+    "acciones": [
+      {
+        "es": "Actualizar los datos de la cuenta",
+        "en": "Update account data"
+      }
+    ]
+  },
+  "rasgos": {
+    "muestra_datos_del_usuario": true,
+    "se_publica_en_internet": true,
+    "tiene_interfaz_web": true,
+    "tiene_sesiones": true,
+    "usa_base_de_datos": true
+  },
+  "alcance": null,
+  "reglas": null,
+  "entornos": ["contenedor"],
+  "ajustes": []
+}

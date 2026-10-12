@@ -1,0 +1,99 @@
+{
+  "id": "act-demo-clasificador",
+  "origen": "demo",
+  "nombre": {
+    "es": "Clasificador demo de solicitudes",
+    "en": "Demo request classifier"
+  },
+  "descripcion": {
+    "es": "Modelo de decisión propio que recibe una solicitud y devuelve una distribución de probabilidad sobre las categorías que define quien lo llama.",
+    "en": "In-house decision model that receives a request and returns a probability distribution over the categories its caller defines."
+  },
+  "familias": ["modelo_decision"],
+  "acceso": "caja_blanca",
+  "dueno": {
+    "nombre": { "es": "Equipo demo de producto", "en": "Demo product team" },
+    "nota": {
+      "es": "Activo propio del operador. Autoriza las pruebas y recibe los hallazgos.",
+      "en": "The operator's own asset. Authorizes the tests and receives the findings."
+    }
+  },
+  "proveedor": null,
+  "perfil": {
+    "pila": {
+      "es": "Clasificador determinista propio; corre en el portátil.",
+      "en": "In-house deterministic classifier; runs on the laptop."
+    },
+    "exposicion": "interna",
+    "autenticacion": {
+      "es": "No aplica: no se expone en red.",
+      "en": "Not applicable: it is not exposed on a network."
+    },
+    "datos": "personales",
+    "actua": false,
+    "modelos": {
+      "es": "Ninguno de terceros.",
+      "en": "None from third parties."
+    },
+    "canales": [
+      { "es": "Texto de la solicitud", "en": "Request text" },
+      {
+        "es": "Estado con notas de terceros",
+        "en": "State with third-party notes"
+      }
+    ],
+    "acciones": [
+      {
+        "es": "Ninguna: solo devuelve la decisión.",
+        "en": "None: it only returns the decision."
+      }
+    ]
+  },
+  "rasgos": {
+    "decisiones_de_alto_impacto": true,
+    "devuelve_decision_tipada": true,
+    "dispone_de_casos_etiquetados": true,
+    "opera_en_varios_idiomas": true,
+    "procesa_contenido_externo": true,
+    "usa_umbral_de_decision": true
+  },
+  "alcance": {
+    "incluye": [
+      {
+        "es": "El clasificador y sus casos de prueba sintéticos.",
+        "en": "The classifier and its synthetic test cases."
+      }
+    ],
+    "excluye": [
+      {
+        "es": "Cualquier servicio en red: el clasificador no usa ninguno.",
+        "en": "Any network service: the classifier uses none."
+      }
+    ],
+    "familias": ["modelo_decision"],
+    "ventana": {
+      "es": "Sin restricción: corre en el portátil.",
+      "en": "No restriction: it runs on the laptop."
+    },
+    "limites": { "es": "Sin límite de carga.", "en": "No load limit." },
+    "fuera": []
+  },
+  "reglas": [
+    {
+      "texto": {
+        "es": "Solo se usan casos sintéticos; ningún dato de personas reales.",
+        "en": "Only synthetic cases are used; no data from real people."
+      },
+      "cita_proveedor": false
+    },
+    {
+      "texto": {
+        "es": "Plantilla por defecto para activos propios, sin ajustes.",
+        "en": "Default template for own assets, unchanged."
+      },
+      "cita_proveedor": false
+    }
+  ],
+  "entornos": ["portatil"],
+  "ajustes": []
+}
