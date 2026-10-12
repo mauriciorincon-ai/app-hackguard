@@ -137,6 +137,8 @@ export const EtiquetasDeHallazgo = z.strictObject({
       nombre: Texto,
     }),
   ),
+  /** El orden del selector de hallazgos: lo que pide acción primero; a igual estado, por identificador. */
+  orden_del_selector: z.array(z.enum(ESTADOS_DE_HALLAZGO)),
   motivos_de_rechazo: z.array(
     z.strictObject({ id: z.enum(MOTIVOS_DE_RECHAZO), nombre: Texto }),
   ),

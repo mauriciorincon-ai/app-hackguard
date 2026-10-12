@@ -37,10 +37,7 @@ import {
   type TextoBilingue,
 } from "../engine/evidencia/molde.ts";
 import { armarSobre, EntradaDeRegistro } from "../engine/evidencia/registro.ts";
-import {
-  validarEvidencia,
-  type ContextoDeEvidencia,
-} from "../engine/evidencia/validar.ts";
+import { validarEvidencia } from "../engine/evidencia/validar.ts";
 import {
   decidirApertura,
   hallazgoNuevo,
@@ -58,21 +55,17 @@ import {
   FAMILIA_CON_CVSS,
   validarHallazgos,
 } from "../engine/hallazgos/validar.ts";
-import { cargarPatrones } from "../lib/activos/cargar-activos.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
+import { cargarLibroValidado } from "../lib/evidencia/cargar-libro.ts";
 import {
   CARPETA_DE_HALLAZGOS_DEMO,
   CARPETA_DE_HALLAZGOS_PRIVADA,
   CARPETA_DE_SOBRES_DEMO,
   CARPETA_DE_SOBRES_PRIVADA,
   cargarEscalaIa,
-  cargarHallazgos,
-  cargarPlanesEmitidos,
   cargarPlazos,
-  cargarSobres,
   escribirDato,
   origenDelActivo,
-  pruebasConocidas,
 } from "../lib/evidencia/cargar-evidencia.ts";
 
 const USO = {
@@ -147,29 +140,7 @@ function nombreDeEstado(
 
 async function cargarLibro(raiz: string) {
   const { instantanea } = await cargarInstantaneaOficial(raiz);
-  const planes = await cargarPlanesEmitidos(raiz);
-  const contexto: ContextoDeEvidencia = {
-    pruebas: pruebasConocidas(instantanea),
-    planes,
-    patrones: cargarPatrones(raiz),
-  };
-  const archivosDeSobres = cargarSobres(raiz);
-  const archivosDeHallazgos = cargarHallazgos(raiz);
-  const sobres = await validarEvidencia(archivosDeSobres, contexto);
-  const hallazgos = validarHallazgos(archivosDeHallazgos, {
-    libro: sobres.sobres,
-    pruebas: contexto.pruebas,
-    vectorInvalido: motivoDeVectorInvalido,
-  });
-  return {
-    instantanea,
-    planes,
-    contexto,
-    archivosDeSobres,
-    archivosDeHallazgos,
-    sobres,
-    hallazgos,
-  };
+  return cargarLibroValidado(raiz, instantanea, { privados: true });
 }
 
 const CUENTA = {

@@ -1,8 +1,8 @@
 {
   "version": "1",
   "nota": {
-    "es": "Las etiquetas de estado de las pantallas de hallazgo que el vocabulario del catálogo (datos/estados.json) no tiene, y las razones por las que una re-prueba no cierra un hallazgo. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
-    "en": "The status labels of the finding screens that the catalog's vocabulary (datos/estados.json) lacks, and the reasons a re-test does not close a finding. Role and symbol come from here, never from a component (hard rule 12)."
+    "es": "Las etiquetas de estado de las pantallas de hallazgo que el vocabulario del catálogo (datos/estados.json) no tiene —plazo, avisos y eslabones de la cadena de cierre—, el orden del selector de hallazgos y las razones por las que una re-prueba no cierra un hallazgo. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
+    "en": "The status labels of the finding screens that the catalog's vocabulary (datos/estados.json) lacks —deadline, notices and the links of the closure chain—, the order of the finding selector and the reasons a re-test does not close a finding. Role and symbol come from here, never from a component (hard rule 12)."
   },
   "etiquetas": [
     {
@@ -19,7 +19,7 @@
       "rol": "falla",
       "simbolo": "falla",
       "nombre": {
-        "es": "Plazo vencido",
+        "es": "Vencido",
         "en": "Overdue"
       }
     },
@@ -40,7 +40,196 @@
         "es": "El plazo ya no corre",
         "en": "The deadline no longer runs"
       }
+    },
+    {
+      "id": "aviso_plazo_vencido",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Plazo vencido",
+        "en": "Deadline passed"
+      }
+    },
+    {
+      "id": "aviso_revision_vencida",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Toca revisar el riesgo aceptado",
+        "en": "The accepted risk is due for review"
+      }
+    },
+    {
+      "id": "sin_control",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Sin control asignado",
+        "en": "No control assigned"
+      }
+    },
+    {
+      "id": "vector_valido",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Vector válido y completo",
+        "en": "Valid, complete vector"
+      }
+    },
+    {
+      "id": "cadena_abierto",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Hallazgo abierto",
+        "en": "Finding opened"
+      }
+    },
+    {
+      "id": "cadena_riesgo_aceptado",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Riesgo aceptado",
+        "en": "Risk accepted"
+      }
+    },
+    {
+      "id": "cadena_correccion_declarada",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Corrección declarada",
+        "en": "Fix declared"
+      }
+    },
+    {
+      "id": "cadena_correccion_pendiente",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Corrección pendiente",
+        "en": "Fix pending"
+      }
+    },
+    {
+      "id": "cadena_sin_correccion_ni_reprueba",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin corrección ni re-prueba",
+        "en": "No fix and no retest"
+      }
+    },
+    {
+      "id": "cadena_reprueba_superada",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Re-prueba superada",
+        "en": "Retest passed"
+      }
+    },
+    {
+      "id": "cadena_reprueba_por_confirmar",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Re-prueba por confirmar",
+        "en": "Retest to confirm"
+      }
+    },
+    {
+      "id": "cadena_reprueba_no_cierra",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Re-prueba que no cierra",
+        "en": "Retest that does not close"
+      }
+    },
+    {
+      "id": "cadena_reprueba_pendiente",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Re-prueba pendiente",
+        "en": "Retest pending"
+      }
+    },
+    {
+      "id": "cadena_cerrado",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Cerrado por re-prueba",
+        "en": "Closed by retest"
+      }
+    },
+    {
+      "id": "cadena_sin_cerrar",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin cerrar",
+        "en": "Not closed"
+      }
+    },
+    {
+      "id": "cadena_sin_cerrar_cuenta_como_falla",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin cerrar: sigue contando como falla del control",
+        "en": "Not closed: it still counts as a control failure"
+      }
+    },
+    {
+      "id": "cadena_eliminacion",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": {
+        "es": "Cerrado por eliminación",
+        "en": "Closed by removal"
+      }
+    },
+    {
+      "id": "cadena_no_reproducible",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "No reproducible",
+        "en": "Not reproducible"
+      }
+    },
+    {
+      "id": "cadena_sin_reprueba",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin re-prueba: este cierre no la pide",
+        "en": "No retest: this closure does not ask for one"
+      }
+    },
+    {
+      "id": "cadena_cerrado_sin_reprueba",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": {
+        "es": "Cerrado sin re-prueba",
+        "en": "Closed without a retest"
+      }
     }
+  ],
+  "orden_del_selector": [
+    "abierto",
+    "corregido",
+    "re_probado",
+    "aceptado_con_riesgo",
+    "cerrado",
+    "cerrado_por_eliminacion",
+    "no_reproducible"
   ],
   "motivos_de_rechazo": [
     {

@@ -30,6 +30,10 @@ import {
   EscalaIa,
   validarEscalaIa,
 } from "../../engine/severidad/escala-ia.ts";
+import {
+  EtiquetasDeCvss,
+  validarEtiquetasDeCvss,
+} from "../../engine/severidad/etiquetas-cvss.ts";
 
 /** Dónde viven los sobres y los hallazgos: la primera carpeta es pública y solo admite demos (regla dura 8). */
 export const CARPETA_DE_SOBRES_DEMO = "datos/evidencia/demo";
@@ -87,6 +91,19 @@ export function cargarEscalaIa(raiz: string): EscalaIa {
     );
   return escala;
 }
+/** Los nombres de las métricas de CVSS 4.0, validados contra la tabla del validador estricto. */
+export function cargarEtiquetasDeCvss(raiz: string): EtiquetasDeCvss {
+  const ruta = "datos/severidad/cvss-etiquetas.json";
+  const etiquetas = EtiquetasDeCvss.parse(leerJson(raiz, ruta));
+  const errores = validarEtiquetasDeCvss(etiquetas, ruta).hallazgos.filter(
+    (h) => h.severidad === "error",
+  );
+  if (errores.length > 0)
+    throw new Error(
+      `${ruta}: ${errores.map((h) => `${h.regla}${h.detalle === null ? "" : ` (${h.detalle.es})`}`).join("; ")}`,
+    );
+  return etiquetas;
+}
 export const cargarEtiquetasDeHallazgo = (raiz: string): EtiquetasDeHallazgo =>
   EtiquetasDeHallazgo.parse(leerJson(raiz, "datos/hallazgos/etiquetas.json"));
 
@@ -97,9 +114,12 @@ export const cargarEtiquetasDeHallazgo = (raiz: string): EtiquetasDeHallazgo =>
  */
 export async function cargarPlanesEmitidos(
   raiz: string,
+  { privados = true }: { privados?: boolean } = {},
 ): Promise<Record<string, PlanDeActivo>> {
   const planes: Record<string, PlanDeActivo> = {};
-  for (const carpeta of CARPETAS_DE_PLANES) {
+  for (const carpeta of CARPETAS_DE_PLANES.filter(
+    (c) => privados || !c.startsWith("datos/privado/"),
+  )) {
     for (const { ruta, texto } of jsonsDe(raiz, carpeta)) {
       if (!ruta.endsWith(".plan.json")) continue;
       const plan = Plan.parse(JSON.parse(texto) as unknown);

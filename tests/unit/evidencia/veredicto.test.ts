@@ -3,7 +3,7 @@
 // resultado" ni un modelo (reglas duras 1, 2 y 6). Cada regla, en sus límites; y la garantía de E-6/E-7.
 import { describe, expect, it } from "vitest";
 import type { Resultado } from "../../../src/engine/evidencia/esquemas.ts";
-import { calcularVeredicto } from "../../../src/engine/evidencia/veredicto.ts";
+import { calcularVeredicto, cotaDeFalla } from "../../../src/engine/evidencia/veredicto.ts";
 
 const r = (c: Partial<Resultado> = {}): Resultado => ({
   ejecutada: true,
@@ -91,4 +91,18 @@ describe("sin constancia de ejecución, nunca «superada» (E-6/E-7)", () => {
 
 it("una regla que el catálogo no conoce es un error, no un veredicto", () => {
   expect(calcularVeredicto("inventada", r({ evaluadas: 20, fallidas: 0 }), 20)).toEqual({ tipo: "error", motivo: "regla_desconocida" });
+});
+
+describe("cotaDeFalla (regla del tres)", () => {
+  it.each([
+    [20, 15],
+    [116, 3],
+    [30, 10],
+    [3, 100],
+    [1, 100],
+    [2, 100],
+    [100, 3],
+  ])("con k = %i la cota es %i %%", (k, cota) => {
+    expect(cotaDeFalla(k)).toBe(cota);
+  });
 });

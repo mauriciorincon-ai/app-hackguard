@@ -4,7 +4,7 @@ import { chmodSync, cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSy
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { MOTIVOS_DE_RECHAZO } from "../../../src/engine/hallazgos/esquemas.ts";
+import { ESTADOS_DE_HALLAZGO, MOTIVOS_DE_RECHAZO } from "../../../src/engine/hallazgos/esquemas.ts";
 import {
   cargarEscalaIa,
   cargarEtiquetasDeHallazgo,
@@ -85,14 +85,23 @@ describe("los datos que gobiernan a los hallazgos", () => {
     }
   });
 
-  it("las etiquetas de plazo no repiten id y traen rol y símbolo (regla dura 12)", () => {
+  it("las etiquetas no repiten id y traen rol y símbolo (regla dura 12), con las cuatro del plazo", () => {
     const e = cargarEtiquetasDeHallazgo(RAIZ).etiquetas;
     expect(new Set(e.map((x) => x.id)).size).toBe(e.length);
-    expect(e.map((x) => x.id).sort()).toEqual(["en_plazo", "no_corre", "sin_plazo", "vencido"]);
+    expect(e.map((x) => x.id)).toEqual(expect.arrayContaining(["en_plazo", "no_corre", "sin_plazo", "vencido"]));
     for (const x of e) {
       expect(x.rol, x.id).toBeTruthy();
       expect(x.simbolo, x.id).toBeTruthy();
     }
+  });
+});
+
+describe("el orden del selector de hallazgos", () => {
+  it("nombra cada estado del ciclo de vida una vez, de lo que pide acción a lo cerrado", () => {
+    const orden = cargarEtiquetasDeHallazgo(RAIZ).orden_del_selector;
+    expect([...orden].sort()).toEqual([...ESTADOS_DE_HALLAZGO].sort());
+    expect(orden[0]).toBe("abierto");
+    expect(orden.indexOf("cerrado")).toBeGreaterThan(orden.indexOf("aceptado_con_riesgo"));
   });
 });
 

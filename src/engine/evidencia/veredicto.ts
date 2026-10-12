@@ -63,3 +63,11 @@ export function calcularVeredicto(
     }
   }
 }
+
+/**
+ * La cota de la tasa de fallo con cero fallas en k repeticiones, en por ciento (regla del tres, E-2): con 95 % de
+ * confianza la tasa real no supera 3/k. Con k < 3 no dice nada útil y no pasa del total. Una sola cuenta para el
+ * catálogo y para la evidencia.
+ */
+export const cotaDeFalla = (k: number): number =>
+  Math.min(100, Math.round(300 / k));
