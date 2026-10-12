@@ -6,6 +6,7 @@ import path from "node:path";
 import { cargarCatalogo } from "../../cli/cargar.ts";
 import type { Prueba } from "../../engine/catalogo/esquemas.ts";
 import { validarCatalogo } from "../../engine/catalogo/validar.ts";
+import { huellaDelCrudoSintetico } from "../../engine/evidencia/huellas.ts";
 import { siguienteId } from "../../engine/evidencia/libro.ts";
 import { nombreDeArchivo } from "../../engine/evidencia/molde.ts";
 import {
@@ -28,7 +29,11 @@ export type ResultadoDeAplicar =
   | { ok: true; ruta: string; id: string; detalle: string }
   | { ok: false; motivo: string };
 
-/** Crea el sobre por confirmar de una propuesta del extractor. `huellaDelTexto` es la del texto pegado: el texto mismo no entra. */
+/**
+ * Crea el sobre por confirmar de una propuesta del extractor. `huellaDelTexto` es la del texto pegado: el texto mismo no entra. Un sobre
+ * de un activo DEMO no viene de ninguna herramienta real (regla dura 8): su huella de crudo es la del crudo sintético de su id, como
+ * exige el libro; la huella del texto pegado sigue dicha en las advertencias del sobre.
+ */
 export async function crearSobrePorConfirmar(
   raiz: string,
   entrada: EntradaDeRegistro,
@@ -61,7 +66,8 @@ export async function crearSobrePorConfirmar(
     origen,
     emitido,
     regla,
-    crudo: huellaDelTexto,
+    crudo:
+      origen === "demo" ? await huellaDelCrudoSintetico(id) : huellaDelTexto,
   });
   if (!armado.ok) return { ok: false, motivo: armado.motivo };
   const carpeta =
