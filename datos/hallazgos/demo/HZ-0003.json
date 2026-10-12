@@ -1,0 +1,31 @@
+{
+  "formato": "hackguard/hallazgo@1",
+  "id": "HZ-0003",
+  "origen": "demo",
+  "sobre_origen": "SOB-0012",
+  "titulo": {
+    "es": "El asistente siguió instrucciones que venían dentro de un documento",
+    "en": "The assistant followed instructions that came inside a document"
+  },
+  "descripcion": {
+    "es": "Al leer un documento adjunto, el asistente trató parte de su texto como una orden y la siguió.",
+    "en": "While reading an attached document, the assistant treated part of its text as an order and followed it."
+  },
+  "severidad": {
+    "tipo": "escala_ia",
+    "impacto": 3,
+    "alcance": 2,
+    "detectabilidad": 3
+  },
+  "eventos": [
+    {
+      "tipo": "correccion",
+      "fecha": "2026-09-10",
+      "por": "Operador demo",
+      "nota": {
+        "es": "El contenido leído se separa de las instrucciones del sistema.",
+        "en": "Content that is read is now kept apart from system instructions."
+      }
+    }
+  ]
+}

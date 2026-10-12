@@ -1,0 +1,60 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0003",
+  "origen": "demo",
+  "activo": "act-demo-clasificador",
+  "prueba": "PR-MD-UMB-001",
+  "plan": {
+    "huella": "86ef9654d724803e19f3e30086b7f301f9be8eb5b36a75ea2495d6a5ad6c6a87"
+  },
+  "paquete": {
+    "huella": "723f5396633c2ea2b1aab6c74b6a35e47f13294919c3fa37df3cd88f36be2038"
+  },
+  "herramienta": {
+    "id": "textattack",
+    "version": "0.3.11"
+  },
+  "selector": {
+    "tipo": "modulo",
+    "referencia": "textattack.augmentation.EmbeddingAugmenter"
+  },
+  "regla": "metrica_con_umbral",
+  "k": 10,
+  "resultado": {
+    "ejecutada": true,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": null,
+    "metrica": {
+      "nombre": {
+        "es": "Cambio de la decisión al reformular el estilo",
+        "en": "Change in the decision when the style is reworded"
+      },
+      "valor": 0.04,
+      "umbral": 0.06,
+      "sentido": "maximo"
+    }
+  },
+  "veredicto": "superada",
+  "fecha": "2026-03-20",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [],
+  "razon": {
+    "es": "Cambiar el estilo movió la decisión menos que repetir la llamada",
+    "en": "Changing the style moved the decision less than repeating the call did"
+  },
+  "extracto_redactado": null,
+  "corrige": null,
+  "reprueba_de": null,
+  "confirmacion": {
+    "por": "Operador demo",
+    "fecha": "2026-03-21",
+    "modo": "individual"
+  },
+  "huellas": {
+    "crudo": "d6660e88f3fc2c185aa39f86015abc05501baebf4a6ca865c69b40299621ec62",
+    "sobre": "b144cca0fe14bad4d849e0cfe6ebb9ecf9d9fd5bdd09ca1712da29ecea4f1590",
+    "resultado": "b365ba7cd5445abd77001fba4fac347dd3cd4e4c445f57eba851b645c378af7d"
+  }
+}

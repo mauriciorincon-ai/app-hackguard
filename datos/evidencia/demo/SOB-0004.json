@@ -1,0 +1,60 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0004",
+  "origen": "demo",
+  "activo": "act-demo-clasificador",
+  "prueba": "PR-MD-CAL-001",
+  "plan": {
+    "huella": "86ef9654d724803e19f3e30086b7f301f9be8eb5b36a75ea2495d6a5ad6c6a87"
+  },
+  "paquete": {
+    "huella": "723f5396633c2ea2b1aab6c74b6a35e47f13294919c3fa37df3cd88f36be2038"
+  },
+  "herramienta": {
+    "id": "scikit-learn",
+    "version": "1.9.1"
+  },
+  "selector": {
+    "tipo": "modulo",
+    "referencia": "sklearn.calibration.calibration_curve"
+  },
+  "regla": "metrica_con_umbral",
+  "k": 5,
+  "resultado": {
+    "ejecutada": true,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": null,
+    "metrica": {
+      "nombre": {
+        "es": "Error de calibración en la banda del umbral",
+        "en": "Calibration error in the threshold band"
+      },
+      "valor": 0.03,
+      "umbral": 0.05,
+      "sentido": "maximo"
+    }
+  },
+  "veredicto": "superada",
+  "fecha": "2026-03-20",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [],
+  "razon": {
+    "es": "Error de calibración en la banda del umbral dentro de lo declarado",
+    "en": "Calibration error in the threshold band within the declared limit"
+  },
+  "extracto_redactado": null,
+  "corrige": null,
+  "reprueba_de": null,
+  "confirmacion": {
+    "por": "Operador demo",
+    "fecha": "2026-03-21",
+    "modo": "individual"
+  },
+  "huellas": {
+    "crudo": "98dc7b8a4150030e29cec7032c03a90463c0015bb2ffbbf4ddb516f31f70e04b",
+    "sobre": "dadfef61a23c097df62dc96ed458dff3f1e8f799ff8e7b16e00afa8e8857d40c",
+    "resultado": "e08c19a4f4dc19d367627264bfca92a1bdcf15d2b41a5789cbb61edb0a495a53"
+  }
+}

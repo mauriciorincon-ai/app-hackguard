@@ -86,13 +86,17 @@ export function cargarCatalogo(
 }
 
 /** Carpetas de `datos/` que el catálogo no lee a propósito: la instantánea es su derivado y los activos, sus
- * planes y los datos del planificador pertenecen al planificador (S4), que los lee con `src/lib/activos/cargar-activos.ts`. */
+ * planes y los datos del planificador pertenecen al planificador (S4), que los lee con `src/lib/activos/cargar-activos.ts`; los sobres, los
+ * hallazgos y la escala de IA pertenecen al libro de evidencia (S5), que los lee con `src/lib/evidencia/cargar-evidencia.ts`. */
 const NO_SON_CATALOGO = [
   "datos/privado",
   "datos/instantaneas",
   "datos/activos",
   "datos/planes",
   "datos/planificador",
+  "datos/evidencia",
+  "datos/hallazgos",
+  "datos/severidad",
 ];
 
 /**

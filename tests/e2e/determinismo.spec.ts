@@ -14,6 +14,10 @@ import type { construirInstantanea } from "../../src/engine/catalogo/instantanea
 import type { CatalogoEnBruto } from "../../src/engine/catalogo/tipos.ts";
 import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
 import { fechaMasDias } from "../../src/engine/fecha.ts";
+import type { huellaDelLibro } from "../../src/engine/evidencia/libro.ts";
+import type { salidaJsonDeHallazgos } from "../../src/engine/evidencia/informe.ts";
+import type { evaluarHallazgo } from "../../src/engine/hallazgos/ciclo.ts";
+import type { huella } from "../../src/engine/huella.ts";
 import type { planificar } from "../../src/engine/planificador/planificar.ts";
 
 const RAIZ = path.resolve(__dirname, "../..");
@@ -70,6 +74,10 @@ interface Motor {
   construirInstantanea: typeof construirInstantanea;
   evaluarConjunto: typeof evaluarConjunto;
   planificar: typeof planificar;
+  huella: typeof huella;
+  huellaDelLibro: typeof huellaDelLibro;
+  evaluarHallazgo: typeof evaluarHallazgo;
+  salidaJsonDeHallazgos: typeof salidaJsonDeHallazgos;
 }
 
 function node(script: string, ...argumentos: string[]): string {
@@ -91,7 +99,16 @@ const enNode = {
   umbral: "",
   clasificador: "",
   planes: {} as Record<string, { plan: string; paquete: string }>,
+  libro: { libro: "", hallazgos: "" },
 };
+// El libro de evidencia (S5): los sobres y los hallazgos demo, que el navegador recibe en el orden inverso.
+const FECHA_DEL_LIBRO = FECHA_DEL_PLAN;
+const leerCarpeta = (...partes: string[]) =>
+  readdirSync(path.join(RAIZ, ...partes))
+    .filter((f) => f.endsWith(".json"))
+    .sort()
+    .map((f) => leerJson<unknown>(...partes, f));
+let entradaDelLibro: { sobres: unknown[]; hallazgos: unknown[]; fecha: string };
 let entradaDelPlan: {
   activos: Record<string, unknown>;
   instantanea: unknown;
@@ -166,6 +183,23 @@ test.beforeAll(async () => {
       rmSync(carpeta, { recursive: true, force: true });
     }
   }
+  // Node es la referencia del libro: el CLI evalúa los hallazgos tres veces y las huellas coinciden.
+  const listar = () =>
+    JSON.parse(
+      node("src/cli/evidencia.ts", "hallazgos-listar", "--fecha", FECHA_DEL_LIBRO, "--json"),
+    ) as { huella_del_libro: string; huella_de_los_hallazgos: string };
+  const libros = [listar(), listar(), listar()];
+  expect(
+    new Set(libros.map((l) => `${l.huella_del_libro}/${l.huella_de_los_hallazgos}`)).size,
+    "tres corridas del CLI del libro, una sola huella",
+  ).toBe(1);
+  enNode.libro = { libro: libros[0].huella_del_libro, hallazgos: libros[0].huella_de_los_hallazgos };
+  entradaDelLibro = {
+    sobres: leerCarpeta("datos", "evidencia", "demo").reverse(),
+    hallazgos: leerCarpeta("datos", "hallazgos", "demo").reverse(),
+    fecha: FECHA_DEL_LIBRO,
+  };
+
   // El navegador recibe los conjuntos del activo y las pruebas de la instantánea en el orden inverso.
   const instantanea = structuredClone(OFICIAL);
   instantanea.catalogo.pruebas.reverse();
@@ -213,6 +247,10 @@ test.beforeAll(async () => {
         'export { construirInstantanea } from "./src/engine/catalogo/instantanea.ts";',
         'export { evaluarConjunto } from "./src/engine/demo/conjunto.ts";',
         'export { planificar } from "./src/engine/planificador/planificar.ts";',
+        'export { huella } from "./src/engine/huella.ts";',
+        'export { huellaDelLibro } from "./src/engine/evidencia/libro.ts";',
+        'export { salidaJsonDeHallazgos } from "./src/engine/evidencia/informe.ts";',
+        'export { evaluarHallazgo } from "./src/engine/hallazgos/ciclo.ts";',
       ].join("\n"),
       resolveDir: RAIZ,
       loader: "ts",
@@ -338,4 +376,32 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
       expect(paquete).toBe(enNode.planes[id].paquete);
     });
   }
+
+  test("el libro de evidencia y los hallazgos evaluados (sobres y hallazgos en otro orden)", async ({
+    page,
+    browserName,
+  }) => {
+    await abrirMotor(page);
+    const r = await page.evaluate(async (entrada) => {
+      const motor = (globalThis as unknown as { MotorHackGuard: Motor }).MotorHackGuard;
+      const libro = entrada.sobres as Parameters<typeof motor.huellaDelLibro>[0];
+      const hallazgos = entrada.hallazgos as Parameters<typeof motor.evaluarHallazgo>[0][];
+      // El CLI lista por identificador de hallazgo; el navegador recibió la lista al revés y la ordena igual.
+      const filas = [...hallazgos]
+        .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+        .map((h) => motor.evaluarHallazgo(h, libro))
+        .flatMap((e) =>
+          e.ok
+            ? [{ evaluacion: e.evaluacion, estado: { es: "", en: "" }, severidad: null, plazo: null }]
+            : [],
+        );
+      return {
+        libro: await motor.huellaDelLibro(libro),
+        hallazgos: await motor.huella(motor.salidaJsonDeHallazgos(filas, entrada.fecha).hallazgos),
+      };
+    }, entradaDelLibro);
+    console.log(`determinismo · ${browserName} · libro ${r.libro} · hallazgos ${r.hallazgos}`);
+    expect(r.libro).toBe(enNode.libro.libro);
+    expect(r.hallazgos).toBe(enNode.libro.hallazgos);
+  });
 });

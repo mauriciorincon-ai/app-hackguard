@@ -1,0 +1,124 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Las etiquetas de estado de las pantallas de hallazgo que el vocabulario del catálogo (datos/estados.json) no tiene, y las razones por las que una re-prueba no cierra un hallazgo. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
+    "en": "The status labels of the finding screens that the catalog's vocabulary (datos/estados.json) lacks, and the reasons a re-test does not close a finding. Role and symbol come from here, never from a component (hard rule 12)."
+  },
+  "etiquetas": [
+    {
+      "id": "en_plazo",
+      "rol": "neutro",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "En plazo",
+        "en": "On time"
+      }
+    },
+    {
+      "id": "vencido",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Plazo vencido",
+        "en": "Overdue"
+      }
+    },
+    {
+      "id": "sin_plazo",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin plazo",
+        "en": "No deadline"
+      }
+    },
+    {
+      "id": "no_corre",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": {
+        "es": "El plazo ya no corre",
+        "en": "The deadline no longer runs"
+      }
+    }
+  ],
+  "motivos_de_rechazo": [
+    {
+      "id": "sin_correccion",
+      "nombre": {
+        "es": "El hallazgo no tiene una corrección declarada",
+        "en": "The finding has no declared correction"
+      }
+    },
+    {
+      "id": "sin_confirmar",
+      "nombre": {
+        "es": "La re-prueba no está confirmada por una persona",
+        "en": "The re-test is not confirmed by a person"
+      }
+    },
+    {
+      "id": "otro_activo",
+      "nombre": {
+        "es": "La re-prueba es de otro activo",
+        "en": "The re-test is of another asset"
+      }
+    },
+    {
+      "id": "otra_prueba",
+      "nombre": {
+        "es": "La re-prueba es de otra prueba",
+        "en": "The re-test is of another test"
+      }
+    },
+    {
+      "id": "no_ejecutada",
+      "nombre": {
+        "es": "No hay constancia de que la prueba corrió",
+        "en": "There is no proof the test ran"
+      }
+    },
+    {
+      "id": "no_superada",
+      "nombre": {
+        "es": "La re-prueba no dio «superada»",
+        "en": "The re-test did not give “passed”"
+      }
+    },
+    {
+      "id": "anterior_a_la_correccion",
+      "nombre": {
+        "es": "La re-prueba es anterior a la corrección",
+        "en": "The re-test predates the correction"
+      }
+    },
+    {
+      "id": "otra_herramienta",
+      "nombre": {
+        "es": "La re-prueba usó otra herramienta",
+        "en": "The re-test used another tool"
+      }
+    },
+    {
+      "id": "otra_version",
+      "nombre": {
+        "es": "La re-prueba usó otra versión de la herramienta",
+        "en": "The re-test used another version of the tool"
+      }
+    },
+    {
+      "id": "otro_selector",
+      "nombre": {
+        "es": "La re-prueba usó otro selector",
+        "en": "The re-test used another selector"
+      }
+    },
+    {
+      "id": "k_menor",
+      "nombre": {
+        "es": "La re-prueba usó menos repeticiones (k) que la prueba original",
+        "en": "The re-test used fewer repetitions (k) than the original test"
+      }
+    }
+  ]
+}

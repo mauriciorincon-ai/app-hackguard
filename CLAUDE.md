@@ -1,9 +1,9 @@
-# HackGuard — constitución de la app (núcleo, kit v2.1.0)
+# HackGuard — constitución de la app (núcleo, kit v2.2.0)
 
 > Auto-cargado en cada sesión de este repo. Esta app pertenece al pipeline **AI-APPs**; su plan vive en la casa planeadora.
-> Núcleo regenerado por la planeadora el 2026-10-10 (`/nueva-app hackguard` modo regenerar, método v2.0.0) para el S2; sustituye
-> a la constitución v1.33.0 de 687 líneas. Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando
-> una regla se cita, nunca al abrir la sesión. Las reglas duras de producto de HackGuard están aquí, completas.
+> Núcleo regenerado por la planeadora (`/nueva-app hackguard` modo regenerar): v2.0.0 el 2026-10-10, regla 18 de v2.1.0 el 2026-10-11 y
+> v2.2.0 (gate de modelo, regla 29, matriz de hitos) para el S5. Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen
+> solo cuando una regla se cita, nunca al abrir la sesión. Las reglas duras de producto de HackGuard están aquí, completas.
 
 ## Identidad y las dos casas (regla dura)
 
@@ -35,17 +35,28 @@
 2. **Construcción.** ≤ 3 fases; commits convencionales con la etiqueta `[F1]` / `[F2]` / `[F3]` en el subject (de ahí salen las horas por fase). **Un solo STOP al final de la construcción** con el resumen de las fases, **más como máximo 1 mirada de DECISIÓN** si el sprint cambia una decisión del usuario, la promesa o su máquina (las paradas de contenido donde el usuario aprueba datos son producto y no cuentan). Sin STOP por fase; FORMA y TEXTO se maquetan «no vistas» (registro de una línea) y van al gate humano del hito.
 3. **Auditoría de una pasada + checklist manual.** `/audita-sprint` (un auditor independiente en solo lectura, 4 casillas; **críticos y altos se pagan en el sprint, medios y bajos van al lote del hito**). Luego `/deploy-check`: ≤ 10 casillas manuales — **la CI es el gate; si no está en la CI, no es casilla.**
 4. **Cierre ejecutivo.** `sprints/SPRINT_NNN-cierre.md` ≤ 40 líneas con la salida de `node scripts/horas-sprint.mjs` pegada (campos abajo). Reemplaza al summary, la bitácora y la auditoría como archivos aparte (la auditoría es una sección del cierre).
-5. **PR normal** (no en borrador) con el cierre dentro; checks requeridos (`quality` · `e2e` · `lighthouse`) con conclusión propia `success` leídos **al final**, no tras cada push. **El merge squash lo hace el usuario** y borra la rama; después corre `/cierre-sprint hackguard` en la planeadora.
+5. **PR normal** (no en borrador) con el cierre dentro; checks requeridos (`quality` · `e2e` · `lighthouse` · `un-pr-vivo`) con conclusión propia `success` leídos **al final**, no tras cada push. **Antes de abrirlo, `gh pr list --state open` (regla 18): un PR vivo por app.** Al pedir el merge entregas la lista de PRs abiertos, que debe ser ese uno. **El merge squash lo hace el usuario** y borra la rama; después corre `/cierre-sprint hackguard` en la planeadora.
 
 - **Por hito, no por sprint:** gate humano único (≈ 20 min con la página abierta; ⭐/⭐⭐ de la guía, FORMA y TEXTO pendientes, juicio de diseño) · lote de hallazgos medios y bajos · brochure (hito Vitrina) · `design-sync/` y `/design-sync` · `docs/BLUEPRINT.html` · pruebas y capturas en el segundo idioma · adopción del kit y de esta constitución (una vez al abrir el hito; el kit versiona ≤ 1 vez al mes).
+- **Matriz de hitos (método v2.2.0; 4 hitos, ninguno más).** Un hito = los sprints que su objetivo necesite; el gate humano es uno por hito (≈ 20 min con la página abierta).
+
+  | Hito | Objetivo | Entra cuando | Sale cuando (gate humano) | Lo que suma el kit en este hito |
+  |---|---|---|---|---|
+  | **H-1 Vitrina funcional** (= MVP) | diseño, experiencia, propuesta de valor y funciones esenciales, demostrables | visión + maqueta aprobadas (G-Diseño) | flujo principal navegable de punta a punta con datos sintéticos · manual · gate humano aprobado · deuda registrada · **ficha publicada en CV Viva** (export + complemento, build verde; apps de vitrina) · **documentos de arquitectura al día** (`docs/BLUEPRINT.html` as-built, ADRs, `design-system.md`) | automático en cada PR: tests + e2e contra el build · CI con checks propios · gitleaks · Lighthouse 1 corrida · a11y · bilingüe con paridad · cero enlaces · brochure + export |
+  | **H-2 Uso real** (OPCIONAL, nunca impedimento) | el usuario la usa en su caso real; los flujos resuelven el problema | H-1 cerrado | ≥ 1 uso real declarado con fecha en la bitácora, sin defecto bloqueante · datos reales fuera del repo si aplica · arquitectura al día | lo mismo que H-1 |
+  | **H-3 Robustez** | calidad, mantenibilidad, datos y conectividad proporcionales | terceros a la vista o riesgo material (**con o sin H-2**) | pruebas esenciales de lo que cambia · persistencia e integraciones definitivas · lote de medios y bajos pagado · arquitectura al día | cobertura > 70 % en módulos no-UI · request-id y timing · rate limiting · `design-sync/` + checklist de diseño · techo de costo de IA declarado |
+  | **H-4 Producción** (= G-Release) | seguridad, privacidad, despliegue, operación y legal proporcionales | usuarios reales o salida comercial (**con o sin H-2**) | checklist de release corto · observabilidad mínima · legal · smoke en producción · arquitectura al día | suite completa verde en `main` · alerta activa · OWASP + red teaming si hay IA · WCAG AA manual · Privacy Policy + ToS · `/release-check` |
+
+  La vitrina solo exige H-1. H-2 puede estar en curso o no haberse probado: **jamás bloquea H-3 ni H-4** (decisión del usuario, 2026-10-11). Evolución y escalabilidad no son hitos: cada versión repite H-2 → H-4. El sprint de cierre del hito trae lote de medios y bajos, guía al día, manual, BLUEPRINT, `design-sync` y auditoría de la constitución.
 - **Solo por cambio:** aprovisionamiento (tabla y humo solo si hay uno nuevo) · demo en rojo (solo gates propios nuevos) · roadmap de CV Viva (solo si el sprint toca una feature votada) · ADR (solo decisiones irreversibles).
 - **Tamaño:** ≈ 4 h activas de builder por defecto; hasta ≈ 12 h con una línea de justificación. Si el real supera el estimado en más del 50 %, el cierre explica la causa y propone una medida.
-- **Modelo y esfuerzo por fase (default configurable, no regla dura):** cada fase del plan declara modelo, esfuerzo y una línea de por qué; desviarse de la tabla se permite con esa línea en el archivo del sprint.
+- **Modelo por DECISIÓN, nunca por descuido (regla dura del usuario, 2026-10-11; kit v2.2.0).** Cada fase del plan declara el modelo requerido y un esfuerzo **sugerido**; el modelo tope ordinario es **Opus 5.5**; **Fable 5.1 solo en emergencia declarada por el usuario** (validación o planeación extraordinaria), jamás por iniciativa del builder, de una skill ni de un subagente.
 
-  | Actividad | Modelo | Esfuerzo |
+  | Actividad | Modelo requerido | Esfuerzo (sugerido, no se verifica) |
   |---|---|---|
   | Planear sprint, cerrar sprint, preguntas de la planeadora | Opus 5.5 | medium |
-  | Checkpoint de hito, decisión irreversible, auditoría del proceso | Fable 5.1 | high |
+  | Checkpoint de hito, decisión irreversible, auditoría del proceso | Opus 5.5 | high |
+  | **Emergencia declarada por el usuario** (validación o planeación extraordinaria) | Fable 5.1 | — (solo si él lo pide en el mensaje) |
   | Construcción con alcance claro (interfaz, lógica, pruebas) | Sonnet 5.5 | medium |
   | Construcción simple: ajustes de interfaz, textos, cambios pequeños | Haiku 5.5 (en prueba) | medium |
   | Depuración difícil, concurrencia, seguridad | Opus 5.5 | high |
@@ -53,13 +64,14 @@
   | Cierre ejecutivo, script de horas, documentación corta | Haiku 5.5 | low |
   | Subagentes de búsqueda o lectura de archivos | Haiku 5.5 | — |
 
-  - La primera línea de cada fase dice: «Fase N · modelo requerido: X · esfuerzo: Y. Verifica el encabezado de la sesión o `/status`; si no coincide, ejecuta `/model X` y `/effort Y`». El cambio de modelo entre fases se pide dentro del mensaje de fin de fase o del STOP que ya existen: **ninguna parada nueva**.
-  - Si el modelo no coincide con el requerido, o la tarea no corresponde al modelo (trabajo de rutina en Opus o Fable; un mismo problema que falló dos veces con el modelo actual), te detienes y recomiendas en UNA línea: modelo actual · modelo recomendado · por qué · comando exacto para cambiar.
-  - **Haiku 5.5 en construcción simple está en prueba:** si falla dos veces en el mismo problema, recomienda subir a Sonnet 5.5; el cierre registra si Haiku bastó o no; tras 3 sprints se decide si se queda. Nombre completo `claude-haiku-5-5` en `--model` y `/model` hasta confirmar que el alias `haiku` apunta a esa versión.
+  - **Gate de modelo al abrir cada fase:** tu primera línea es «Fase N · modelo requerido: X · modelo activo: Y» (Y lo lees de tu propio encabezado de sesión). Si coinciden, arrancas. **Si no coinciden, NO construyes nada** hasta que el usuario escriba «vamos con Y» (queda registrado en el archivo del sprint como decisión) o cambie con `/model X`. Es un renglón, no una parada del techo. Trabajo de rutina en Opus o Fable también se detiene y se recomienda bajar.
+  - **El esfuerzo es sugerido:** no se verifica, no se reporta como desvío y nunca detiene nada; `/effort` es opcional.
+  - **Relevo, nunca loop (regla 29):** al **segundo intento fallido** sobre el mismo problema, o a los **20 min sin avance verificable** (un test que pasa, un error que cambia), **paras**: escribes en el cierre o la bitácora qué intentaste, qué falló y qué sabes, y pides relevo en UNA línea: «Relevo: modelo actual X · recomiendo Y · por qué · `/model Y`». Prohibido el tercer intento por el mismo camino con el mismo modelo. Escalón: Haiku → Sonnet → Opus; si Opus pide relevo, decide el usuario (Fable solo si él lo declara emergencia).
+  - **Haiku 5.5 en construcción simple está en prueba:** su relevo es Sonnet 5.5 (regla 29); el cierre registra si Haiku bastó o no; tras 3 sprints se decide si se queda. Nombre completo `claude-haiku-5-5` en `/model` hasta confirmar que el alias `haiku` apunta a esa versión.
   - Al cambiar de fase, si el contexto anterior no se necesita, recomienda `/clear` o `/compact`: el archivo del sprint conserva el estado.
   - Los subagentes declaran su modelo en su definición (búsqueda y lectura: Haiku 5.5; auditor: Sonnet 5.5); ninguno hereda Opus o Fable por omisión.
 
-## Reglas del kit (28, una línea cada una)
+## Reglas del kit (29, una línea cada una)
 
 Frecuencia: `[sprint]` cuesta algo en cada sprint · `[hito]` se ejecuta al cerrar o abrir un hito · `[cambio]` solo cuando el sprint toca lo que la regla cubre · `[siempre]` pasiva, costo cero. 🔒 = privacidad o seguridad. El detalle, origen y precedentes de cada una: `docs/REGLAS-ANEXO.md § N`.
 
@@ -92,6 +104,7 @@ Frecuencia: `[sprint]` cuesta algo en cada sprint · `[hito]` se ejecuta al cerr
 26. `[siempre]` **Worktrees prohibidos:** todo ocurre en `~/Code/app-hackguard`; nada de `git worktree` ni `git stash` a secas sobre trabajo ajeno. — § 26
 27. `[siempre]` **La evidencia se escribe después del hecho** («leído como imagen», «N de N», «en verde») con la cuenta tomada del resultado; el conteo de `--minimo-tests` sale de un comando, nunca a mano. — § 27
 28. `[cambio]` **Parejas de versiones entre dos ecosistemas** se vigilan con un test entre lockfiles; no aplica hoy (sin Tauri ni Python). — § 28
+29. `[siempre]` **Relevo, nunca loop (regla dura del usuario, 2026-10-11; kit v2.2.0).** Segundo intento fallido sobre el mismo problema, o 20 min sin avance verificable ⇒ paras, escribes qué intentaste y pides relevo en una línea con el `/model` del escalón siguiente (Haiku → Sonnet → Opus; de Opus decide el usuario). Jamás un tercer intento por el mismo camino con el mismo modelo. — detalle: docs/REGLAS-ANEXO.md § 29
 
 ## Cierre ejecutivo (`sprints/SPRINT_NNN-cierre.md`, ≤ 40 líneas)
 
@@ -100,7 +113,8 @@ nombre · objetivo planeado · resultado · estado · tiempo estimado · tiempo 
 fases planeadas y resultado real · tiempo estimado y real por fase · entregables · no completado · desviaciones · causas · decisiones ·
 deuda generada o aplazada (medios y bajos con `archivo:línea`, al lote del hito) · aprendizajes reutilizables · recomendación para el siguiente ·
 evaluación esfuerzo-beneficio · **auditoría** (4 casillas; C/A con `pagado · <commit>`) · si una fase se pasó más del 50 %: causa y medida ·
-**modelo usado por fase y si hubo desvío** (una línea; si una fase corrió con Haiku 5.5, si bastó o no) · huellas de la instantánea oficial en los cuatro motores si el sprint tocó el catálogo ·
+**modelo usado por fase y si hubo desvío** (una línea; si una fase corrió con Haiku 5.5, si bastó o no) · **relevos** (cuántos · de qué modelo a cuál · por qué; o «ninguno») ·
+huellas de la instantánea o del plan en los cuatro motores si el sprint tocó el catálogo o el planificador ·
 «Para mergear: squash y borrar la rama; después `/cierre-sprint hackguard`».
 
 ## Comandos
@@ -123,4 +137,4 @@ Detalle canónico: `estandares/estandares.md` de la planeadora (solo lectura). �
 - **Vista por control:** «evidencia organizada», separada del nivel de aseguramiento; cadena hallazgo → corrección → re-prueba visible (E-16). **Brecha única de todos los activos**; tablero, brecha, vista por control e informe salen del mismo cálculo (decisión 21 de diseño).
 - **Maqueta como referencia de fidelidad:** `scripts/maqueta/` genera `docs/diseno/` (gate de deriva byte a byte); el producto obedece `design-system.md` y la hoja `docs/diseno/assets/app.css` + `tokens.css` (fuente: `scripts/paleta/`); una decisión de diseño nueva se registra en `docs/diseno/README.md` y se regenera la maqueta, nunca se edita el HTML a mano.
 
-Constitución núcleo kit v2.1.0 — HackGuard, regenerada 2026-10-10 (regla 18 actualizada 2026-10-11). Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.
+Constitución núcleo kit v2.2.0 — HackGuard, regenerada 2026-10-10 (regla 18 2026-10-11; v2.2.0 2026-10-11: gate de modelo, regla 29, matriz de hitos). Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.
