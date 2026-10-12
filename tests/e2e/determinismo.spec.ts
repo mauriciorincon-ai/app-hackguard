@@ -14,10 +14,20 @@ import type { construirInstantanea } from "../../src/engine/catalogo/instantanea
 import type { CatalogoEnBruto } from "../../src/engine/catalogo/tipos.ts";
 import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
 import { fechaMasDias } from "../../src/engine/fecha.ts";
-import type { huellaDelLibro } from "../../src/engine/evidencia/libro.ts";
+import { huellaDelLibro } from "../../src/engine/evidencia/libro.ts";
+import type { Lote } from "../../src/engine/lotes/esquemas.ts";
+import { libroEfectivo } from "../../src/engine/lotes/efectivo.ts";
+import { resellarLote } from "../../src/engine/lotes/huellas.ts";
+import type { PlanDeMuestreo } from "../../src/engine/lotes/esquemas.ts";
+import {
+  revisionDelLote,
+  type RevisionDelLote,
+} from "../../src/engine/lotes/revision.ts";
+import { validarPlanDeMuestreo } from "../../src/engine/lotes/muestra.ts";
+import type { Sobre, Veredicto } from "../../src/engine/evidencia/esquemas.ts";
 import type { salidaJsonDeHallazgos } from "../../src/engine/evidencia/informe.ts";
 import type { situacionDeHallazgo } from "../../src/engine/hallazgos/situacion.ts";
-import type { huella } from "../../src/engine/huella.ts";
+import { sha256, type huella } from "../../src/engine/huella.ts";
 import type { planificar } from "../../src/engine/planificador/planificar.ts";
 
 const RAIZ = path.resolve(__dirname, "../..");
@@ -78,6 +88,9 @@ interface Motor {
   huellaDelLibro: typeof huellaDelLibro;
   situacionDeHallazgo: typeof situacionDeHallazgo;
   salidaJsonDeHallazgos: typeof salidaJsonDeHallazgos;
+  revisionDelLote: typeof revisionDelLote;
+  libroEfectivo: typeof libroEfectivo;
+  validarPlanDeMuestreo: typeof validarPlanDeMuestreo;
 }
 
 function node(script: string, ...argumentos: string[]): string {
@@ -111,9 +124,27 @@ const leerCarpeta = (...partes: string[]) =>
 let entradaDelLibro: {
   sobres: unknown[];
   hallazgos: unknown[];
+  lotes: unknown[];
   escala: unknown;
   plazos: unknown;
   fecha: string;
+};
+// Los lotes (S6): la muestra que una persona revisa y el libro efectivo, con lotes y sobres en otro orden.
+interface EntradaDeLosLotes {
+  plan: unknown;
+  sobres: unknown[];
+  /** Dos escenarios: los lotes demo como están (por confirmar) y con los dos confirmados. */
+  escenarios: { nombre: string; lotes: unknown[] }[];
+  /** Un lote de 60 sobres con 6 que fallan: el resto (54) pide una muestra de 25. */
+  sintetico: { lote: unknown; veredictos: [string, string][] };
+}
+let entradaDeLosLotes: EntradaDeLosLotes;
+const enNodeLotes = {} as {
+  revisiones: Record<string, RevisionDelLote>;
+  sintetico: RevisionDelLote;
+  efectivo: Record<string, [string, string | undefined][]>;
+  huellas: Record<string, string>;
+  plan: unknown[];
 };
 let entradaDelPlan: {
   activos: Record<string, unknown>;
@@ -192,20 +223,116 @@ test.beforeAll(async () => {
   // Node es la referencia del libro: el CLI evalúa los hallazgos tres veces y las huellas coinciden.
   const listar = () =>
     JSON.parse(
-      node("src/cli/evidencia.ts", "hallazgos-listar", "--fecha", FECHA_DEL_LIBRO, "--json"),
+      node(
+        "src/cli/evidencia.ts",
+        "hallazgos-listar",
+        "--fecha",
+        FECHA_DEL_LIBRO,
+        "--json",
+      ),
     ) as { huella_del_libro: string; huella_de_los_hallazgos: string };
   const libros = [listar(), listar(), listar()];
   expect(
-    new Set(libros.map((l) => `${l.huella_del_libro}/${l.huella_de_los_hallazgos}`)).size,
+    new Set(
+      libros.map((l) => `${l.huella_del_libro}/${l.huella_de_los_hallazgos}`),
+    ).size,
     "tres corridas del CLI del libro, una sola huella",
   ).toBe(1);
-  enNode.libro = { libro: libros[0].huella_del_libro, hallazgos: libros[0].huella_de_los_hallazgos };
+  enNode.libro = {
+    libro: libros[0].huella_del_libro,
+    hallazgos: libros[0].huella_de_los_hallazgos,
+  };
   entradaDelLibro = {
     sobres: leerCarpeta("datos", "evidencia", "demo").reverse(),
     hallazgos: leerCarpeta("datos", "hallazgos", "demo").reverse(),
+    lotes: leerCarpeta("datos", "lotes", "demo").reverse(),
     escala: leerJson<unknown>("datos", "severidad", "escala-ia.json"),
     plazos: leerJson<unknown>("datos", "hallazgos", "plazos.json"),
     fecha: FECHA_DEL_LIBRO,
+  };
+
+  // Node es la referencia de los lotes (S6): el mismo motor, en su orden, en el proceso de Node. El navegador recibe
+  // los sobres y los lotes al revés y tiene que dar lo mismo: la muestra sale de la huella del lote y no del orden.
+  const planDeMuestreo = leerJson<PlanDeMuestreo>(
+    "datos",
+    "evidencia",
+    "muestreo.json",
+  );
+  const sobresDemo = leerCarpeta("datos", "evidencia", "demo") as Sobre[];
+  const lotesDemo = leerCarpeta("datos", "lotes", "demo") as Lote[];
+  const veredictosDemo = new Map<string, Veredicto>(
+    sobresDemo.map((x) => [x.id, x.veredicto]),
+  );
+  const confirmados = await Promise.all(
+    lotesDemo.map((l) =>
+      resellarLote(l, {
+        por: "Revisora demo",
+        fecha: "2026-10-03",
+        decision: "confirmado",
+        revisados: l.sobres.map((x) => x.id),
+        separados: l.id === "LOTE-0008" ? ["SOB-0034"] : [],
+      }),
+    ),
+  );
+  const idsSinteticos = Array.from({ length: 60 }, (_, i) => `SOB-${2001 + i}`);
+  const veredictosSinteticos: [string, Veredicto][] = idsSinteticos.map(
+    (id, i) => [
+      id,
+      [2, 17, 33, 48].includes(i)
+        ? "fallida"
+        : [9, 55].includes(i)
+          ? "parcial"
+          : i % 7 === 3
+            ? "no_ejecutada"
+            : "superada",
+    ],
+  );
+  const semilla = await sha256("semilla-del-lote-sintetico");
+  const loteSintetico = {
+    huellas: { archivo: semilla, lote: semilla, registro: semilla },
+    sobres: idsSinteticos.map((id) => ({ id, huella: semilla })),
+  };
+  const escenarios = [
+    { nombre: "por-confirmar", lotes: lotesDemo },
+    { nombre: "confirmados", lotes: confirmados },
+  ];
+  enNodeLotes.plan = validarPlanDeMuestreo(planDeMuestreo);
+  enNodeLotes.revisiones = Object.fromEntries(
+    await Promise.all(
+      lotesDemo.map(
+        async (l) =>
+          [
+            l.id,
+            await revisionDelLote(l, veredictosDemo, planDeMuestreo),
+          ] as const,
+      ),
+    ),
+  );
+  enNodeLotes.sintetico = await revisionDelLote(
+    loteSintetico,
+    new Map(veredictosSinteticos),
+    planDeMuestreo,
+  );
+  enNodeLotes.efectivo = {};
+  enNodeLotes.huellas = {};
+  for (const e of escenarios) {
+    enNodeLotes.efectivo[e.nombre] = libroEfectivo(sobresDemo, e.lotes)
+      .filter((x) => x.confirmacion?.modo === "lote")
+      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+      .map((x) => [x.id, x.confirmacion?.lote] as [string, string | undefined]);
+    enNodeLotes.huellas[e.nombre] = await huellaDelLibro(sobresDemo, e.lotes);
+  }
+  entradaDeLosLotes = {
+    plan: planDeMuestreo,
+    sobres: [...sobresDemo].reverse(),
+    escenarios: escenarios.map((e) => ({
+      nombre: e.nombre,
+      lotes: [...e.lotes].reverse(),
+    })),
+    sintetico: {
+      lote: { ...loteSintetico, sobres: [...loteSintetico.sobres].reverse() },
+      veredictos: [...veredictosSinteticos].reverse(),
+    },
   };
 
   // El navegador recibe los conjuntos del activo y las pruebas de la instantánea en el orden inverso.
@@ -259,6 +386,9 @@ test.beforeAll(async () => {
         'export { huellaDelLibro } from "./src/engine/evidencia/libro.ts";',
         'export { salidaJsonDeHallazgos } from "./src/engine/evidencia/informe.ts";',
         'export { situacionDeHallazgo } from "./src/engine/hallazgos/situacion.ts";',
+        'export { revisionDelLote } from "./src/engine/lotes/revision.ts";',
+        'export { libroEfectivo } from "./src/engine/lotes/efectivo.ts";',
+        'export { validarPlanDeMuestreo } from "./src/engine/lotes/muestra.ts";',
       ].join("\n"),
       resolveDir: RAIZ,
       loader: "ts",
@@ -385,18 +515,30 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     });
   }
 
-  test("el libro de evidencia y los hallazgos evaluados (sobres y hallazgos en otro orden)", async ({
+  test("el libro de evidencia, con sus lotes, y los hallazgos evaluados (todo en otro orden)", async ({
     page,
     browserName,
   }) => {
     await abrirMotor(page);
     const r = await page.evaluate(async (entrada) => {
-      const motor = (globalThis as unknown as { MotorHackGuard: Motor }).MotorHackGuard;
-      const libro = entrada.sobres as Parameters<typeof motor.huellaDelLibro>[0];
-      const hallazgos = entrada.hallazgos as Parameters<typeof motor.situacionDeHallazgo>[0][];
+      const motor = (globalThis as unknown as { MotorHackGuard: Motor })
+        .MotorHackGuard;
+      const sobres = entrada.sobres as Parameters<
+        typeof motor.huellaDelLibro
+      >[0];
+      const lotes = entrada.lotes as Parameters<typeof motor.libroEfectivo>[1];
+      // Lo que cuenta es el libro efectivo (ADR-009): los sobres con la confirmación de su lote, si la tienen.
+      const libro = motor.libroEfectivo(sobres, lotes);
+      const hallazgos = entrada.hallazgos as Parameters<
+        typeof motor.situacionDeHallazgo
+      >[0][];
       const datos = {
-        escala: entrada.escala as Parameters<typeof motor.situacionDeHallazgo>[2]["escala"],
-        plazos: entrada.plazos as Parameters<typeof motor.situacionDeHallazgo>[2]["plazos"],
+        escala: entrada.escala as Parameters<
+          typeof motor.situacionDeHallazgo
+        >[2]["escala"],
+        plazos: entrada.plazos as Parameters<
+          typeof motor.situacionDeHallazgo
+        >[2]["plazos"],
         fecha: entrada.fecha,
       };
       // El CLI lista por identificador de hallazgo; el navegador recibió la lista al revés y la ordena igual.
@@ -406,12 +548,79 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
         .map((h) => motor.situacionDeHallazgo(h, libro, datos))
         .flatMap((r) => (r.ok ? [{ situacion: r.situacion }] : []));
       return {
-        libro: await motor.huellaDelLibro(libro),
-        hallazgos: await motor.huella(motor.salidaJsonDeHallazgos(filas, entrada.fecha).hallazgos),
+        libro: await motor.huellaDelLibro(sobres, lotes),
+        hallazgos: await motor.huella(
+          motor.salidaJsonDeHallazgos(filas, entrada.fecha).hallazgos,
+        ),
       };
     }, entradaDelLibro);
-    console.log(`determinismo · ${browserName} · libro ${r.libro} · hallazgos ${r.hallazgos}`);
+    console.log(
+      `determinismo · ${browserName} · libro ${r.libro} · hallazgos ${r.hallazgos}`,
+    );
     expect(r.libro).toBe(enNode.libro.libro);
     expect(r.hallazgos).toBe(enNode.libro.hallazgos);
+  });
+
+  test("la muestra de cada lote, el libro efectivo y el plan de muestreo (lotes y sobres en otro orden)", async ({
+    page,
+    browserName,
+  }) => {
+    await abrirMotor(page);
+    const r = await page.evaluate(async (entrada) => {
+      const motor = (globalThis as unknown as { MotorHackGuard: Motor })
+        .MotorHackGuard;
+      const plan = entrada.plan as PlanDeMuestreo;
+      const sobres = entrada.sobres as Sobre[];
+      const veredictos = new Map<string, Veredicto>(
+        sobres.map((x) => [x.id, x.veredicto]),
+      );
+      const porConfirmar = entrada.escenarios[0].lotes as Lote[];
+      const revisiones: Record<string, unknown> = {};
+      for (const l of porConfirmar)
+        revisiones[l.id] = await motor.revisionDelLote(l, veredictos, plan);
+      const efectivo: Record<string, unknown> = {};
+      const huellas: Record<string, string> = {};
+      for (const e of entrada.escenarios) {
+        efectivo[e.nombre] = motor
+          .libroEfectivo(sobres, e.lotes as Lote[])
+          .filter((x) => x.confirmacion?.modo === "lote")
+          // El libro efectivo conserva el orden de entrada; se compara ordenado por identificador, como el CLI.
+          .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+          .map((x) => [x.id, x.confirmacion?.lote]);
+        huellas[e.nombre] = await motor.huellaDelLibro(
+          sobres,
+          e.lotes as Lote[],
+        );
+      }
+      return {
+        plan: motor.validarPlanDeMuestreo(plan),
+        revisiones,
+        sintetico: await motor.revisionDelLote(
+          entrada.sintetico.lote as Lote,
+          new Map(entrada.sintetico.veredictos as [string, Veredicto][]),
+          plan,
+        ),
+        efectivo,
+        huellas,
+      };
+    }, entradaDeLosLotes);
+    console.log(
+      `determinismo · ${browserName} · muestra sintética ${r.sintetico.muestra.slice(0, 3).join(",")}… (${r.sintetico.muestra.length}) · libro con lotes ${r.huellas["confirmados"]}`,
+    );
+    // El plan cumple su riesgo con la misma aritmética exacta en cada motor.
+    expect(r.plan).toEqual([]);
+    expect(r.plan).toEqual(enNodeLotes.plan);
+    // Los lotes demo: las que fallan siempre y la muestra, iguales a las de Node.
+    expect(r.revisiones).toEqual(enNodeLotes.revisiones);
+    // 60 sobres con 6 que fallan: las 6 siempre y 25 de los otros 54, los mismos 25 en los tres motores.
+    expect(r.sintetico.siempre).toHaveLength(6);
+    expect(r.sintetico.muestra).toHaveLength(25);
+    expect(r.sintetico).toEqual(enNodeLotes.sintetico);
+    // El libro efectivo: sin lotes confirmados nadie cuenta por lote; confirmados, cuentan los suyos menos el separado.
+    expect(r.efectivo).toEqual(enNodeLotes.efectivo);
+    expect(enNodeLotes.efectivo["por-confirmar"]).toEqual([]);
+    expect(enNodeLotes.efectivo["confirmados"]).toHaveLength(5);
+    expect(r.huellas).toEqual(enNodeLotes.huellas);
+    expect(r.huellas["confirmados"]).not.toBe(r.huellas["por-confirmar"]);
   });
 });

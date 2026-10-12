@@ -45,7 +45,9 @@ export default async function Hallazgo({
         { es: id, en: id },
       ]}
       pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
-      subnav={<SubnavDeEvidencia primero={PRIMER_HALLAZGO} />}
+      subnav={
+        <SubnavDeEvidencia primero={PRIMER_HALLAZGO} actual="hallazgos" />
+      }
     >
       <HallazgoPantalla v={vista} />
     </Consola>

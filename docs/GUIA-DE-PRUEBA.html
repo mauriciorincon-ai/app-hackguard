@@ -159,23 +159,23 @@
 <body>
 <div class="pagina">
   <header>
-    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 005 · 2026-10-11</p>
+    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 006 · 2026-10-12</p>
     <h1>Guía de prueba</h1>
     <p class="suave">Todas las pruebas vigentes de la app. Las 21 del Sprint 001 (el catálogo como dato, por
       terminal) siguen aquí enteras, el Sprint 002 añade el bloque G (el catálogo en pantalla) y el Sprint 003 el bloque H
-      (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos). Filtra por origen para
+      (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos) y el Sprint 006 el bloque K (la carga de evidencia). Filtra por origen para
       correr todo o solo lo que cambió. Las casillas se guardan
       solas en este navegador.</p>
-    <p class="chica"><strong>Gate corto ⭐⭐: 15 paradas declaradas, 14 efectivas · ~30 min. Es el que el gate del hito
+    <p class="chica"><strong>Gate corto ⭐⭐: 18 paradas declaradas, 17 efectivas · ~30 min. Es el que el gate del hito
       exige.</strong> Solo entra lo que únicamente una persona puede juzgar: las 3 paradas del Sprint 001 (la 3 no corre:
       falta el texto de la norma), las 3 del Sprint 002 (fidelidad, avisos y texto de la pantalla) y las 3 del Sprint 003
       (fidelidad de marcos y controles, lo que la app no sabe y el texto de sus avisos) y las 3 del Sprint 004
       (fidelidad de activo y plan, el portal sin plan y el texto de las dos lenguas) y las 3 del Sprint 005
-      (fidelidad con la maqueta, severidad que se explica y «sin cerrar» que se lee como lo que es). Deja fuera 0
-      pruebas ⭐: el gate mínimo son las mismas 15.</p>
-    <p class="chica"><strong>Gate mínimo ⭐: 15 pruebas · ~30 min.</strong> Son los juicios sobre el contenido del
+      (fidelidad con la maqueta, severidad que se explica y «sin cerrar» que se lee como lo que es) y las 3 del Sprint 006 (fidelidad de la carga con la maqueta, la revisión que se entiende y «No ejecutada» de ZAP). Deja fuera 0
+      pruebas ⭐: el gate mínimo son las mismas 18.</p>
+    <p class="chica"><strong>Gate mínimo ⭐: 18 pruebas · ~35 min.</strong> Son los juicios sobre el contenido del
       catálogo y sobre la pantalla que ninguna automatización puede tomar. Lo demás (bloques B a F y las pruebas
-      automáticas de G, H, I y J) lo respalda la CI y se corre en pases completos: 39 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba
+      automáticas de G, H, I, J y K) lo respalda la CI y se corre en pases completos: 42 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba
       automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
     <div class="url-caja">
       <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
@@ -197,7 +197,7 @@
     </div>
     <div class="filtros" role="group" aria-label="Filtrar pruebas por origen">
       <button type="button" data-filtro="todo" class="activo">Todo</button>
-      <button type="button" data-filtro="cambios">Lo que cambió en S2</button>
+      <button type="button" data-filtro="cambios">Lo que cambió en S6</button>
       <button type="button" data-filtro="minimo">Gate mínimo ⭐</button>
       <button type="button" data-filtro="corto">Gate corto ⭐⭐</button>
     </div>
@@ -510,38 +510,67 @@
     <div class="bloque-cabeza"><span class="letra">J</span><h2>Evidencia y hallazgos</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/hallazgos/HZ-0007</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j1"><label for="j1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y, en otra pestaña, <code>/diseno/hallazgo-hz-0007.html</code>. Míralas unos segundos sin leer.
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j1"><label for="j1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y, en otra pestaña, <code>/diseno/hallazgo-hz-0007.html</code>. Míralas unos segundos sin leer.
         <strong>Respuesta esperada: la misma estructura: la cadena de cierre arriba, la severidad y el control que falla en el centro, y «Qué puedes hacer» con las propiedades a la derecha. Lo que cambia (salidas de solo lectura con su comando, la k que sale del paquete) está en la tabla de «Sprint 5» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="origen origen-heredada">S5</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j2"><label for="j2"><strong>¿La severidad se explica sola?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> (escala de IA) busca la tabla «Prioridad de acción» y su celda marcada «este hallazgo». Luego abre <code>/evidencia/hallazgos/HZ-0009</code> (CVSS 4.0) y busca «Cómo se calculó».
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j2"><label for="j2"><strong>¿La severidad se explica sola?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> (escala de IA) busca la tabla «Prioridad de acción» y su celda marcada «este hallazgo». Luego abre <code>/evidencia/hallazgos/HZ-0009</code> (CVSS 4.0) y busca «Cómo se calculó».
         <strong>Respuesta esperada: en la IA la fila es el impacto y la columna la frecuencia observada, y se ve por qué sale «Alto»; en CVSS se ven el vector y la referencia fijada. «Se entiende», o qué no.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="origen origen-heredada">S5</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="j3"><label for="j3"><strong>¿«Sin cerrar» se lee como lo que es?</strong> Abre <code>/evidencia/hallazgos/HZ-0005</code> (aceptado con riesgo) y busca «Sin cerrar: sigue contando como falla del control».
+      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j3"><label for="j3"><strong>¿«Sin cerrar» se lee como lo que es?</strong> Abre <code>/evidencia/hallazgos/HZ-0005</code> (aceptado con riesgo) y busca «Sin cerrar: sigue contando como falla del control».
         <strong>Respuesta esperada: el riesgo aceptado no aparece como resuelto: sigue contando como falla de su control, con su fecha de revisión. «Se entiende», o el texto que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span>
+        <span class="origen origen-heredada">S5</span>
         <span class="minimo">⭐ mínimo</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j4"><label for="j4"><strong>¿El plazo vencido avisa sin asustar?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y lee el aviso de arriba y el plazo en «Propiedades».
+      <li data-origen="heredada"><input type="checkbox" id="j4"><label for="j4"><strong>¿El plazo vencido avisa sin asustar?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y lee el aviso de arriba y el plazo en «Propiedades».
         <strong>Respuesta esperada: «Plazo vencido» con la severidad, los días y lo que se puede hacer (corregir y re-probar, o un cierre alternativo con su justificación).</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j5"><label for="j5"><strong>¿Un hallazgo cerrado se distingue de uno abierto?</strong> Abre <code>/evidencia/hallazgos/HZ-0003</code> (cerrado por re-prueba) y mira la cadena de cierre y «Qué puedes hacer».
+        <span class="origen origen-heredada">S5</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="j5"><label for="j5"><strong>¿Un hallazgo cerrado se distingue de uno abierto?</strong> Abre <code>/evidencia/hallazgos/HZ-0003</code> (cerrado por re-prueba) y mira la cadena de cierre y «Qué puedes hacer».
         <strong>Respuesta esperada: cuatro eslabones con símbolo y texto, sin ninguno pendiente, y «Nada: la evidencia confirmada es inmutable». No hay ningún comando que la cambie.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j6"><label for="j6"><strong>¿«Qué puedes hacer» es de solo lectura?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> busca «Qué puedes hacer». Intenta pulsar cada salida.
+        <span class="origen origen-heredada">S5</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="j6"><label for="j6"><strong>¿«Qué puedes hacer» es de solo lectura?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> busca «Qué puedes hacer». Intenta pulsar cada salida.
         <strong>Respuesta esperada: no hay botones: cada salida dice qué exige y el comando de terminal que la registra. Se lee como una instrucción, no como un control.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j7"><label for="j7"><strong>¿Se llega desde la barra lateral?</strong> Abre <code>/catalogo/PR-IA-PINJ-001</code>, pulsa «Evidencia» en la barra lateral y luego cambia de hallazgo con el selector de arriba.
-        <strong>Respuesta esperada: «Evidencia» abre <code>HZ-0007</code>, y el selector lleva a cada uno de los cuatro, con el actual marcado.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j8"><label for="j8"><strong>¿Se lee en la terminal?</strong> En la raíz del repo corre <code>pnpm hallazgos:listar --fecha 2026-10-11</code>.
+        <span class="origen origen-heredada">S5</span></label></li>
+      <li data-origen="mejorado"><input type="checkbox" id="j7"><label for="j7"><strong>¿Se llega desde la barra lateral?</strong> Abre <code>/catalogo/PR-IA-PINJ-001</code>, pulsa «Evidencia» en la barra lateral y luego el enlace al hallazgo <code>HZ-0007</code> que ofrece la carga de evidencia. Desde el hallazgo, cambia con el selector de la página.
+        <strong>Respuesta esperada: «Evidencia» abre la carga de evidencia, no los hallazgos; desde ahí se llega a <code>HZ-0007</code>, y el selector lleva a cada uno de los cuatro, con el actual marcado.</strong>
+        <span class="origen origen-mejorado">Mejorada en S6</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="j8"><label for="j8"><strong>¿Se lee en la terminal?</strong> En la raíz del repo corre <code>pnpm hallazgos:listar --fecha 2026-10-11</code>.
         <strong>Respuesta esperada: «4 · 3 cuentan como falla de su control», y una línea por hallazgo con su severidad y su plazo: HZ-0007 sale «plazo vencido».</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
-      <li data-origen="nuevo"><input type="checkbox" id="j9"><label for="j9"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/evidencia/hallazgos/HZ-0009</code> y desplázate.
+        <span class="origen origen-heredada">S5</span></label></li>
+      <li data-origen="heredada"><input type="checkbox" id="j9"><label for="j9"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/evidencia/hallazgos/HZ-0009</code> y desplázate.
         <strong>Respuesta esperada: ninguna página se sale de la pantalla; la tabla de la matriz (en HZ-0007) se lee con desplazamiento dentro de su panel.</strong>
-        <span class="origen origen-nuevo">Nuevo · S5</span></label></li>
+        <span class="origen origen-heredada">S5</span></label></li>
     </ul>
-    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un hallazgo cuyo estado o severidad la pantalla dice de una forma y la terminal de otra, una salida que parezca un botón, o un texto que prometa algo que todavía no existe (la carga de resultados llega en S6).</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un hallazgo cuyo estado o severidad la pantalla dice de una forma y la terminal de otra, una salida que parezca un botón, o un texto que prometa algo que todavía no existe.</p></div>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">K</span><h2>La carga de evidencia</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/carga</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="k1"><label for="k1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/carga</code> y, en otra pestaña, <code>/diseno/evidencia.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: la misma estructura: las pestañas de vía, el selector de lotes, el recorrido, la tabla de sobres con su columna «Revisión», la ficha del lote y «Para confirmar». Lo que cambia (solo lectura, comandos en lugar de botones, la fila «Confirmación») está en la tabla «Sprint 6» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="k2"><label for="k2"><strong>¿Se entiende por qué una fallida se revisa siempre y el resto por muestra?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0007</code> y lee «Para confirmar» y la columna «Revisión». Luego busca «Cómo se elige la muestra».
+        <strong>Respuesta esperada: la fallida dice «Siempre» y el resto dice «Muestra» o «Fuera»; «Para confirmar» dice cuántas fallidas se revisan siempre y cuántas del resto entran a la muestra; la tabla de tamaños es la de <code>datos/evidencia/muestreo.json</code>. «Se entiende», o qué cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="k3"><label for="k3"><strong>¿Una prueba de ZAP sin constancia se lee como «No ejecutada»?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0008</code> y busca <code>SOB-0035</code> (XSS, sin constancia de ejecución).
+        <strong>Respuesta esperada: «No ejecutada», con su símbolo y su texto. Nunca dice «Superada»: no hay prueba de que la regla corriera. «Se entiende», o el texto que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span>
+        <span class="minimo">⭐ mínimo</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="k4"><label for="k4"><strong>¿Se llega desde el plan?</strong> Abre <code>/activos/act-demo-asistente/plan</code>, baja al pie y pulsa «Ir a la carga de evidencia».
+        <strong>Respuesta esperada: se abre <code>/evidencia/carga</code> con los dos lotes del demo.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="k5"><label for="k5"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/evidencia/carga</code>, abre <code>LOTE-0008</code> y desplázate.
+        <strong>Respuesta esperada: ninguna página se sale de la pantalla; si una tabla no cabe, se desplaza dentro de su panel y nunca mueve la página entera.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span></label></li>
+      <li data-origen="nuevo"><input type="checkbox" id="k6"><label for="k6"><strong>¿Se lee en la terminal?</strong> En la raíz del repo corre <code>pnpm evidencia:validar --idioma es</code>.
+        <strong>Respuesta esperada: «Lotes: ok» con «2 lotes válidos · 0 confirmados · 2 por confirmar», y dos notas, una por lote, que dicen que sus sobres todavía no cuentan. El comando sale con código 0.</strong>
+        <span class="origen origen-nuevo">Nuevo · S6</span></label></li>
+    </ul>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> una carga cuyo estado o veredicto la pantalla dice de una forma y la terminal de otra, un sobre de ZAP que aparezca como superado sin constancia de que corrió, o una revisión que no explique por qué un sobre entra o no a la muestra.</p></div>
   </section>
 
   <footer>
@@ -575,6 +604,10 @@
           <code>hackguard-s5:</code>: las casillas marcadas antes no se conservan. Nace el bloque J, evidencia y hallazgos: 9 pruebas,
           3 de ellas ⭐ de juicio para el gate del hito (fidelidad con la maqueta, severidad que se explica, «sin cerrar» que se lee
           como lo que es). Ninguna eliminada.</li>
+        <li><strong>S6 · 2026-10-12:</strong> las 9 pruebas del bloque J pasan a «S5» (regresión), salvo J7, que pasa a «Mejorada en S6»:
+          «Evidencia» en la barra lateral ahora abre la carga. Nace el bloque K, la carga de evidencia: 6 pruebas, 3 de ellas ⭐ de
+          juicio para el gate del hito (fidelidad con la maqueta, la revisión que se entiende y «No ejecutada» de ZAP). El NS de las
+          casillas cambia a <code>hackguard-s6:</code>: las casillas marcadas antes no se conservan. Ninguna eliminada.</li>
       </ul>
     </details>
   </footer>
@@ -584,7 +617,7 @@
   (function () {
     // NS VERSIONADO POR SPRINT (regla dura): al publicar la guía de un sprint nuevo se cambia
     // el prefijo (hackguard-s2) — así una regresión sin correr no aparece marcada por el sprint anterior.
-    var NS = "hackguard-s5:";
+    var NS = "hackguard-s6:";
     var casillas = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
     var barra = document.getElementById("barra-avance");
     var contador = document.getElementById("contador");

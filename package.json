@@ -17,6 +17,8 @@
     "evidencia:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts validar",
     "evidencia:registrar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts registrar",
     "evidencia:confirmar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts confirmar",
+    "evidencia:importar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts importar",
+    "evidencia:confirmar-lote": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts confirmar-lote",
     "hallazgos:listar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-listar",
     "hallazgos:declarar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-declarar",
     "severidad:vendor": "node scripts/severidad/vendor-first.mjs",

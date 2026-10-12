@@ -1,0 +1,147 @@
+{
+  "@programName": "ZAP",
+  "@version": "2.17.0",
+  "@generated": "Mon, 12 Oct 2026 14:05:00",
+  "created": "2026-10-12T14:05:00.000000Z",
+  "site": [
+    {
+      "@name": "http://example.com",
+      "@host": "example.com",
+      "@port": "80",
+      "@ssl": "false",
+      "alerts": [
+        {
+          "pluginid": "10035",
+          "alertRef": "10035-1",
+          "alert": "Strict-Transport-Security Header Not Set",
+          "name": "Strict-Transport-Security Header Not Set",
+          "riskcode": "1",
+          "confidence": "3",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": "",
+              "request-header": "CABECERA-DE-PETICION-MARCADOR",
+              "request-body": "CUERPO-DE-PETICION-MARCADOR",
+              "response-header": "CABECERA-DE-RESPUESTA-MARCADOR",
+              "response-body": "CUERPO-DE-RESPUESTA-MARCADOR"
+            },
+            {
+              "id": "-1",
+              "uri": "http://example.com/login",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": "",
+              "request-header": "CABECERA-DE-PETICION-MARCADOR",
+              "request-body": "CUERPO-DE-PETICION-MARCADOR",
+              "response-header": "CABECERA-DE-RESPUESTA-MARCADOR",
+              "response-body": "CUERPO-DE-RESPUESTA-MARCADOR"
+            }
+          ],
+          "count": "2",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3",
+          "tags": {}
+        },
+        {
+          "pluginid": "10020",
+          "alertRef": "10020-1",
+          "alert": "Missing Anti-clickjacking Header",
+          "name": "Missing Anti-clickjacking Header",
+          "riskcode": "2",
+          "confidence": "0",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": "",
+              "request-header": "CABECERA-DE-PETICION-MARCADOR",
+              "request-body": "CUERPO-DE-PETICION-MARCADOR",
+              "response-header": "CABECERA-DE-RESPUESTA-MARCADOR",
+              "response-body": "CUERPO-DE-RESPUESTA-MARCADOR"
+            }
+          ],
+          "count": "1",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3",
+          "tags": {}
+        },
+        {
+          "pluginid": "10096",
+          "alertRef": "10096",
+          "alert": "Timestamp Disclosure - Unix",
+          "name": "Timestamp Disclosure - Unix",
+          "riskcode": "0",
+          "confidence": "1",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/api",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": "",
+              "request-header": "CABECERA-DE-PETICION-MARCADOR",
+              "request-body": "CUERPO-DE-PETICION-MARCADOR",
+              "response-header": "CABECERA-DE-RESPUESTA-MARCADOR",
+              "response-body": "CUERPO-DE-RESPUESTA-MARCADOR"
+            }
+          ],
+          "count": "1",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3",
+          "tags": {}
+        }
+      ],
+      "statistics": {}
+    }
+  ],
+  "statistics": {
+    "stats.pscan.10020.time": "388",
+    "stats.pscan.10038.time": "412",
+    "stats.pscan.10003.time": "270",
+    "stats.pscan.90022.time": "251",
+    "stats.pscan.10035.time": "301"
+  },
+  "afPlanErrors": [],
+  "afPlanWarns": [
+    "AVISO-DEL-PLAN-MARCADOR"
+  ]
+}

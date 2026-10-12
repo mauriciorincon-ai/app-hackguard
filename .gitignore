@@ -32,3 +32,6 @@ public/diseno/
 
 # Respaldos de scripts/demo-rojo.sh (kit v1.35.0): si una demo se interrumpe, no deben entrar a un commit.
 .demo-rojo/
+
+# Entorno y crudo de la fixture de Garak (scripts/adaptadores/fixture-garak.sh): 1,6 GB y cargas de ataque. Se borra al terminar.
+.fixture-garak/

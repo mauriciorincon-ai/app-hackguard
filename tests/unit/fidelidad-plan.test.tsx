@@ -16,8 +16,6 @@ const SOLO_DE_LA_MAQUETA = new Set([
   "Planeando|Planning",
   "El plan no se pudo emitir|The plan could not be issued",
   "La instantánea del catálogo no coincide con su huella|The catalog snapshot does not match its fingerprint",
-  // El producto no tiene todavía la pantalla de carga de evidencia (S6): el pie lleva la descarga del paquete.
-  "Ir a la carga de evidencia|Go to evidence intake",
   // El marco de la sala de la maqueta: la matriz «qué revisar» y el pie con la consulta y la instantánea, que en el producto
   // viven en la barra lateral y no en la página.
   "Qué revisar y qué deberías ver|What to check and what you should see",

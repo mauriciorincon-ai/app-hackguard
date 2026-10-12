@@ -40,8 +40,14 @@ export function SelectorDeHallazgos({
   );
 }
 
-/** «Carga» / «Hallazgos»: las dos páginas de Evidencia; la carga todavía no tiene pantalla y se dice, sin enlace roto. */
-export function SubnavDeEvidencia({ primero }: { primero: string }) {
+/** «Carga» / «Hallazgos»: las dos páginas de Evidencia; la que está abierta lleva `aria-current`. */
+export function SubnavDeEvidencia({
+  primero,
+  actual = "hallazgos",
+}: {
+  primero: string;
+  actual?: "carga" | "hallazgos";
+}) {
   return (
     <nav className="hg-subnav" aria-labelledby="rotulo-subnav-evidencia">
       <p id="rotulo-subnav-evidencia" className="hg-oculto">
@@ -49,15 +55,18 @@ export function SubnavDeEvidencia({ primero }: { primero: string }) {
       </p>
       <ul>
         <li>
-          <span aria-disabled="true">
-            <T t={{ es: "Carga", en: "Intake" }} />{" "}
-            <span className="hg-cuenta">
-              <T t={{ es: "pronto", en: "soon" }} />
-            </span>
-          </span>
+          <Link
+            href="/evidencia/carga"
+            aria-current={actual === "carga" ? "page" : undefined}
+          >
+            <T t={{ es: "Carga", en: "Intake" }} />
+          </Link>
         </li>
         <li>
-          <Link href={rutaDeHallazgo(primero)} aria-current="page">
+          <Link
+            href={rutaDeHallazgo(primero)}
+            aria-current={actual === "hallazgos" ? "page" : undefined}
+          >
             <T t={{ es: "Hallazgos", en: "Findings" }} />
           </Link>
         </li>

@@ -1,0 +1,60 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "De dónde sale cada fixture de los adaptadores, qué se redactó y la huella de lo versionado. Ninguna lleva texto de ataque: la de garak sale de una corrida local contra el generador test.Repeat (sin terceros), con cada texto reemplazado por un marcador; las de ZAP son salidas oficiales de prueba o derivadas declaradas.",
+    "en": "Where each adapter fixture comes from, what was redacted and the fingerprint of what is versioned. None carries attack text: the garak one comes from a local run against the test.Repeat generator (no third party), with every text replaced by a marker; the ZAP ones are official test outputs or declared derivatives."
+  },
+  "fixtures": [
+    {
+      "archivo": "garak-0.17.0.report.redactado.jsonl",
+      "herramienta": "garak",
+      "version": "0.17.0",
+      "derivada": false,
+      "origen": "Corrida local de garak 0.17.0 (PyPI) contra test.Repeat con scripts/adaptadores/fixture-garak.sh, en un entorno ignorado por git, sin red; después se borraron el crudo y el entorno.",
+      "licencia": "Salida de garak (Apache-2.0), redactada",
+      "redaccion": "Prompts, salidas del generador, disparadores (notes.triggers) y rutas locales reemplazados por marcadores; estructura, orden, conteos y puntajes intactos (scripts/adaptadores/redactar-garak.mjs).",
+      "huella_del_crudo": "776cdc4317ac63ffaac2b661fc6d13002d6df7ab4ae50bbfa421dcf8df0b41e8",
+      "huella": "ea8dc9c774d98aa03b5273522d90ee48624b8653baefaff491467da66debdaea"
+    },
+    {
+      "archivo": "zap-traditional-json.oficial.json",
+      "herramienta": "zap",
+      "version": "Dev Build",
+      "derivada": false,
+      "origen": "zaproxy/zap-extensions@a7f2fcf, add-on reports: salida esperada de prueba (basic-traditional-json.json).",
+      "licencia": "Apache-2.0",
+      "redaccion": "Ninguna: es una salida de prueba con marcadores «Test Attack», no una carga.",
+      "huella": "d05d5e466cebdb791ad0c25d58dde92d6e79ed5a1b27d44bf889ec0b8172b995"
+    },
+    {
+      "archivo": "zap-traditional-json-plus.oficial.json",
+      "herramienta": "zap",
+      "version": "Dev Build",
+      "derivada": false,
+      "origen": "zaproxy/zap-extensions@a7f2fcf, add-on reports: salida esperada de prueba (basic-traditional-json-plus.json).",
+      "licencia": "Apache-2.0",
+      "redaccion": "Ninguna: es una salida de prueba con marcadores «Test Attack», no una carga.",
+      "huella": "f67f59302ea808919530aded2f08ccc5b0ecbbb1ecb39c1ee6e4f4f2fb6d56c6"
+    },
+    {
+      "archivo": "zap-traditional-json.derivada.json",
+      "herramienta": "zap",
+      "version": "2.17.0",
+      "derivada": true,
+      "origen": "Derivada de la salida oficial, con la versión 2.17.0 y los pluginid del plan. NO es una corrida de ZAP (sin demonio de Docker en la máquina del constructor).",
+      "licencia": "Apache-2.0 (derivada)",
+      "redaccion": "Los campos attack, evidence y los cuerpos llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "91d85939cacee23ed72c1476d933cf6bff5758d07850e0cc777f60f96178b5b5"
+    },
+    {
+      "archivo": "zap-traditional-json-plus.derivada.json",
+      "herramienta": "zap",
+      "version": "2.17.0",
+      "derivada": true,
+      "origen": "Derivada de la salida oficial «con peticiones y respuestas»: estadísticas por regla con las claves de https://www.zaproxy.org/docs/internal-statistics/ (stats.pscan.<id>.time). NO es una corrida de ZAP; el formato real de statistics no se pudo comprobar sin ZAP.",
+      "licencia": "Apache-2.0 (derivada)",
+      "redaccion": "Los campos attack, evidence, encabezados y cuerpos llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "e1ece813c26dfb8ab3e77bce8fc78e1466fffcafd3ea779842cd2774f84fd46a"
+    }
+  ]
+}

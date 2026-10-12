@@ -17,7 +17,7 @@ describe("lo que cuenta", () => {
   it("solo los confirmados: un sobre propuesto no cuenta", async () => {
     const m = await mundo();
     const libro = Object.values(m.sobres);
-    expect(libro).toHaveLength(11);
+    expect(libro).toHaveLength(16);
     expect(contados(libro)).toHaveLength(10);
     expect(estaConfirmado(m.sobres["SOB-0036"]!)).toBe(false);
     expect(contados(libro).map((s) => s.id)).not.toContain("SOB-0036");

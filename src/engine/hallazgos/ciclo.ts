@@ -7,7 +7,7 @@
 // **La ausencia del hallazgo en un escaneo posterior nunca lo cierra**: sin sobre que lo cite como re-prueba no hay
 // cierre, y un sobre `no_ejecutada` jamás es `superada`.
 import { canonicalizar } from "../huella.ts";
-import type { Sobre } from "../evidencia/esquemas.ts";
+import type { SobreEfectivo } from "../evidencia/esquemas.ts";
 import { comparar } from "../planificador/orden.ts";
 import type {
   EstadoDeHallazgo,
@@ -37,7 +37,7 @@ export const cuentaComoFalla = (e: EstadoDeHallazgo): boolean =>
   ESTADOS_QUE_CUENTAN_COMO_FALLA.includes(e);
 
 export interface CandidataDeReprueba {
-  sobre: Sobre;
+  sobre: SobreEfectivo;
   /** Vacío = es una re-prueba válida y cierra el hallazgo. */
   motivos: MotivoDeRechazo[];
 }
@@ -58,14 +58,14 @@ export interface EvaluacionDeHallazgo {
   /** Cuándo una persona confirmó el sobre del que nace. */
   apertura: string;
   /** El sobre de origen tal como vale hoy (el último que lo corrige, si lo hay). */
-  sobreOrigen: Sobre;
+  sobreOrigen: SobreEfectivo;
   correccion: Correccion | null;
   aceptacion: Aceptacion | null;
   cierre: CierreDeHallazgo | null;
   /** Las re-pruebas confirmadas que lo citan, cada una con lo que le falla para cerrar. */
   candidatas: CandidataDeReprueba[];
   /** Las que lo citan y todavía no están confirmadas: una propuesta no cuenta. */
-  porConfirmar: Sobre[];
+  porConfirmar: SobreEfectivo[];
 }
 
 export type ResultadoDeEvaluacion =
@@ -77,9 +77,9 @@ export type ResultadoDeEvaluacion =
 
 /** El sobre que vale hoy: si otro sobre confirmado lo corrige, vale el último de la cadena. */
 export function sobreVigente(
-  libro: readonly Sobre[],
+  libro: readonly SobreEfectivo[],
   id: string,
-): Sobre | null {
+): SobreEfectivo | null {
   const porId = new Map(libro.map((s) => [s.id, s]));
   let actual = porId.get(id) ?? null;
   const visitados = new Set<string>();
@@ -97,9 +97,9 @@ export function sobreVigente(
 
 /** Qué le falta a una re-prueba para cerrar el hallazgo; lista vacía = cierra. */
 export function motivosDeRechazo(
-  origen: Sobre,
+  origen: SobreEfectivo,
   correccion: Correccion | null,
-  s: Sobre,
+  s: SobreEfectivo,
 ): MotivoDeRechazo[] {
   const m: MotivoDeRechazo[] = [];
   if (correccion === null) m.push("sin_correccion");
@@ -124,7 +124,7 @@ const ultimo = <T>(xs: readonly T[]): T | null => xs[xs.length - 1] ?? null;
 
 export function evaluarHallazgo(
   h: Hallazgo,
-  libro: readonly Sobre[],
+  libro: readonly SobreEfectivo[],
 ): ResultadoDeEvaluacion {
   const original = libro.find((s) => s.id === h.sobre_origen);
   if (original === undefined)

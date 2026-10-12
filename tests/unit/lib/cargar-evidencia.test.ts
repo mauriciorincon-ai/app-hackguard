@@ -30,9 +30,9 @@ afterAll(() => temporales.forEach((d) => rmSync(d, { recursive: true, force: tru
 const modo = (ruta: string) => statSync(ruta).mode & 0o777;
 
 describe("lo que lee", () => {
-  it("los 11 sobres y los 4 hallazgos demo, con su ruta relativa y con «/»", () => {
+  it("los 16 sobres y los 4 hallazgos demo, con su ruta relativa y con «/»", () => {
     const sobres = cargarSobres(RAIZ);
-    expect(sobres).toHaveLength(11);
+    expect(sobres).toHaveLength(16);
     expect(sobres[0]!.ruta).toBe("datos/evidencia/demo/SOB-0003.json");
     expect(cargarHallazgos(RAIZ).map((h) => h.ruta)).toEqual([
       "datos/hallazgos/demo/HZ-0003.json",

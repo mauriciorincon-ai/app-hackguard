@@ -1,0 +1,53 @@
+{
+  "formato": "hackguard/lote@1",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "fecha": "2026-10-02",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "confirmacion": null,
+  "id": "LOTE-0007",
+  "herramienta": {
+    "id": "garak",
+    "version": "0.17.0"
+  },
+  "adaptador": {
+    "id": "garak-report-jsonl",
+    "version": "1.0.0"
+  },
+  "archivo": {
+    "nombre": "garak.2026-10-02.report.jsonl"
+  },
+  "hora": "14:20",
+  "advertencias": [
+    {
+      "es": "El reporte no registra el umbral de la corrida: se usó 0,5, el de garak, y los conteos recalculados coinciden con los suyos.",
+      "en": "The report does not record the run's threshold: 0.5, garak's own, was used, and the recomputed counts match its own."
+    }
+  ],
+  "sobres": [
+    {
+      "id": "SOB-0031",
+      "huella": "2ef2f95f2bda547861e38764de04cf048f60b66c46f8fe3369f063262b792ef7"
+    },
+    {
+      "id": "SOB-0032",
+      "huella": "deca833324ed7b1187a5dad70af7190f51d32ff099eea072b61aa1dfc539ad4d"
+    },
+    {
+      "id": "SOB-0033",
+      "huella": "21b7fecbf4e5a78a6aa3525d41f588e749dc138f522ad52e29d208c32a8b3012"
+    }
+  ],
+  "huellas": {
+    "archivo": "887994c9da83daad43ed30fce92550788f5ec986e9996f3300090cce7f82cbc4",
+    "lote": "c2359bc77276a37925205c87aead143497d7d185c1ce307443dd7e802d29ee75",
+    "registro": "1ba4acb203e2dd7e8065711f0e256f307fe9301e944c4f0efd25f9b0baa0bac8"
+  }
+}

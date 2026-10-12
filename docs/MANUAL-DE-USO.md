@@ -23,7 +23,7 @@ Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus fi
 **marcos y sus versiones** y los **controles** de ISO/IEC 42001 con las pruebas que les dan evidencia. Debajo de esas
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
 para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
-cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Las demás secciones (tablero y
+cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Desde el Sprint 6 también puedes ver los **lotes** de evidencia que llegan de Garak o ZAP, y su revisión. Las demás secciones (tablero y
 brecha) aparecen en la barra lateral con la marca «pronto».
 
 ### Primeros pasos
@@ -148,7 +148,7 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
 - **Cómo se usa:**
   1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; dentro de
-     Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos** y los **hallazgos** de **Evidencia** funcionan. Las demás
+     Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos**, la **carga** y los **hallazgos** de **Evidencia** funcionan. Las demás
      llevan la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
@@ -180,7 +180,7 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Propuestas, tablero y brecha todavía no existen como pantalla; la carga de resultados tampoco.
+  - Propuestas, tablero y brecha todavía no existen como pantalla.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -285,11 +285,45 @@ brecha) aparecen en la barra lateral con la marca «pronto».
   toca revisarlo.
 - **Un hallazgo cerrado** dice que ya no corre el plazo. Si una prueba posterior vuelve a fallar, esa falla abre un
   hallazgo nuevo con su propia evidencia: la evidencia confirmada no se toca.
-- **Qué NO hace:** no ejecuta herramientas, no trae resultados desde Garak ni ZAP (eso llega en el Sprint 6) y no
-  hay pantalla para cargar resultados: «Carga» aparece como «pronto». Que un hallazgo no aparezca en un escaneo posterior
-  **no** lo cierra.
+- **Qué NO hace:** no ejecuta herramientas ni trae resultados desde Garak o ZAP: eso lo hace la carga de evidencia
+  (Sprint 6). Que un hallazgo no aparezca en un escaneo posterior **no** lo cierra.
 - **Limitaciones conocidas:**
   - Los hallazgos de tu activo real van a `datos/privado/`, nunca al repositorio ni a la web pública.
+  - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
+
+#### Carga de evidencia · desde Sprint 006
+
+- **Qué hace:** convierte el reporte de **Garak** o de **ZAP** de una corrida del plan en un **lote** de sobres por confirmar.
+  El veredicto de cada prueba lo calcula su regla, no la herramienta. Una persona confirma el lote: revisa **todas** las
+  fallidas y parciales, y una **muestra** del resto. La pantalla **Evidencia · Carga** muestra los lotes; no confirma nada
+  por sí misma.
+- **Cómo se usa:**
+  1. **Importar el reporte:** `pnpm evidencia:importar --garak <report.jsonl> --activo <id> --por <persona>`, o con
+     `--zap <report.json>`. Si el reporte no trae la fecha o la zona horaria, añade `--fecha AAAA-MM-DD` y `--zona <IANA>`.
+     El archivo se lee una vez: solo se guarda su huella, nunca su contenido. El lote nace por confirmar y todavía no cuenta.
+  2. **Ver el lote:** en **Evidencia · Carga** eliges el lote. La ficha dice la herramienta y su versión, las huellas del
+     archivo, del lote y del registro, y las advertencias. La columna **Revisión** dice si cada sobre se revisa siempre, si
+     está en la muestra o si queda fuera.
+  3. **Confirmar el lote:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD`. Si una falla
+     abriría un hallazgo nuevo, el lote no se confirma hasta que la separes con `--separar <SOB-NNNN>` y la confirmes sola
+     con `pnpm evidencia:confirmar`, con su severidad. Si prefieres revisar cada sobre por separado, usa
+     `--revisar-uno-por-uno` en lugar de confirmar el lote.
+  4. Un lote confirmado cuenta como los sobres confirmados a mano: sus fallidas abren hallazgos, y su evidencia no cambia después.
+- **Cómo se elige la muestra:** todas las fallidas y parciales se revisan siempre. Del resto, lo que no falla, se revisa una
+  muestra según su tamaño: hasta 25 se revisa todo; de 26 a 50, 22; de 51 a 90, 25; de 91 a 150, 26; más de 150, 29. Con ese
+  plan de calidad (hasta 10 % de sobres malos aceptable y un riesgo de 5 % de aceptar un lote peor), la probabilidad de que un
+  lote con 10 % de sobres malos pase la muestra sin encontrar ninguno es menor de 5 %. El sistema elige la muestra con una
+  semilla que sale de la huella del lote: la misma en cualquier computadora y en cualquier navegador.
+- **Qué NO hace:** no ejecuta herramientas, no lee el archivo en el navegador, no pega texto todavía (la pestaña lo dice),
+  ningún modelo decide un veredicto y no guarda el contenido del reporte ni los ataques que usó la herramienta. Con ZAP, una
+  regla sin constancia de que corrió aparece como **No ejecutada**, nunca como superada.
+- **Limitaciones conocidas:**
+  - El reporte de Garak no trae el umbral con el que una prueba cuenta como fallida. La app usa 0,5, que es el valor por
+    omisión de Garak, y lo dice en las advertencias del lote; además comprueba que sus cuentas coincidan con las líneas de
+    resumen del mismo reporte.
+  - Las estadísticas de ZAP se leen con el formato de su documentación. Todavía no se han probado con un reporte real de una
+    corrida de ZAP.
+  - En la pantalla, «Texto pegado» todavía no carga nada, y «Sobre manual» muestra los pasos del CLI de arriba.
   - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
@@ -334,6 +368,7 @@ brecha) aparecen en la barra lateral con la marca «pronto».
 | 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                          |
 | 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete |
 | 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página        |
+| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                 |
 
 ---
 
@@ -347,7 +382,7 @@ and it takes in results as evidence that a person confirms. Its central idea is 
 vulnerability: it is evidence that a control is failing.
 
 You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
-take snapshots of it, and a **demo classifier** for the decision-model family.
+take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review.
 
 ### Getting started
 
@@ -472,7 +507,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets** and the findings under **Evidence**. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -607,10 +642,42 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   as a failure of its control** until it is fixed. When the review date arrives, the page says it is time to review it.
 - **A closed finding** says its deadline no longer runs. If a later test fails again, that failure opens a new finding with its
   own evidence: confirmed evidence is never touched.
-- **What it does NOT do:** it does not run tools, does not bring results from Garak or ZAP (that arrives in Sprint 6), and there
-  is no screen to load results: “Intake” appears as “soon”. A finding missing from a later scan does **not** close it.
+- **What it does NOT do:** it does not run tools and does not bring results from Garak or ZAP: that is the evidence intake
+  (Sprint 6). A finding missing from a later scan does **not** close it.
 - **Known limitations:**
   - The findings of your real asset go to `datos/privado/`, never to the repository or the public web.
+  - The screen is tested in Spanish; the English test arrives at the close of the milestone.
+
+#### Evidence intake · since Sprint 006
+
+- **What it does:** turns the **Garak** or **ZAP** report of a plan run into a **batch** of envelopes waiting for confirmation.
+  Each test's verdict is computed by its rule, not by the tool. A person confirms the batch: they review **every** failed and
+  partial one, and a **sample** of the rest. The **Evidence · Intake** screen shows the batches; it confirms nothing by itself.
+- **How to use it:**
+  1. **Import the report:** `pnpm evidencia:importar --garak <report.jsonl> --activo <id> --por <person>`, or with
+     `--zap <report.json>`. If the report does not carry the date or the time zone, add `--fecha YYYY-MM-DD` and `--zona <IANA>`.
+     The file is read once: only its fingerprint is kept, never its contents. The batch is born pending and does not count yet.
+  2. **See the batch:** in **Evidence · Intake** you choose the batch. Its card shows the tool and its version, the fingerprints
+     of the file, the batch and the record, and the warnings. The **Review** column says whether each envelope is always
+     reviewed, in the sample, or left out.
+  3. **Confirm the batch:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD`. If a failure would
+     open a new finding, the batch is not confirmed until you separate it with `--separar <SOB-NNNN>` and confirm it alone with
+     `pnpm evidencia:confirmar`, with its severity. To review each envelope on its own, use `--revisar-uno-por-uno` instead of
+     confirming the batch.
+  4. A confirmed batch counts like envelopes confirmed by hand: its failures open findings, and its evidence does not change afterwards.
+- **How the sample is chosen:** every failed and partial one is always reviewed. Of the rest, the ones that do not fail, a sample
+  is reviewed according to its size: up to 25, all of them; 26 to 50, 22; 51 to 90, 25; 91 to 150, 26; more than 150, 29. With
+  that quality plan (up to 10 % of bad envelopes acceptable, a 5 % risk of accepting a worse batch), the probability that a batch
+  with 10 % bad envelopes passes the sample without finding one is under 5 %. The system chooses the sample with a seed that comes
+  from the batch's fingerprint: the same on any computer and in any browser.
+- **What it does NOT do:** it does not run tools, does not read the file in the browser, does not paste text yet (the tab says so),
+  no model decides a verdict, and it does not keep the report's contents or the attacks the tool used. With ZAP, a rule with no
+  proof that it ran appears as **Not run**, never as passed.
+- **Known limitations:**
+  - Garak's report does not carry the threshold above which a test counts as failed. The app uses 0.5, Garak's default, and says
+    so in the batch's warnings; it also checks that its counts match the summary lines of the same report.
+  - ZAP's statistics are read with the format in its documentation. They have not yet been tried against a real ZAP run report.
+  - On the screen, “Pasted text” does not load anything yet, and “Manual envelope” shows the CLI steps above.
   - The screen is tested in Spanish; the English test arrives at the close of the milestone.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
