@@ -5,14 +5,14 @@ hito: H-1 Vitrina funcional
 opened: 2026-10-12
 closed: 2026-10-12
 branch: sprint-008/los-agentes
-pr: pendiente
+pr: 21
 ---
 
 # Sprint 008 · «Los agentes»
 
 - **Objetivo planeado:** el investigador y el extractor existen como skills que solo proponen; todo llega a `/catalogo/propuestas`, donde una persona decide; «por decidir» deja de ser fijo.
 - **Resultado:** entregado. Dos skills con subagentes y cinco hooks que solo dejan escribir en `propuestas/corridas/`; bandeja con decisiones por comando; una cuenta para «por decidir» y los avisos de versión; dos corridas reales sin decidir (INV-2026-10-12-01: 3 propuestas; EXT-2026-10-12-01: 1).
-- **Estado:** completo para el alcance; desviaciones abajo. CI: pendiente de leer tras el push.
+- **Estado:** completo para el alcance; desviaciones abajo. CI (PR #21, leída al final): `quality`, `e2e`, `lighthouse` y `un-pr-vivo` en success.
 - **Fases planeadas y resultado:** F1 contrato, motor, CLI y semillas (hecho) · F2 skills, hooks, bandeja y cableado (hecho) · F3 corridas reales, e2e, guía, manual, auditoría y cierre (hecho).
 - **Tiempo (`horas-sprint.mjs`):** estimado 4,25 h · real 3,0 h (F1 1,4 h / 1,5 h estimadas · F2 0,9 h / 2 h · F3 0,7 h / 0,75 h) · diferencia −1,25 h.
 - **Entregables:** `src/engine/propuestas/`, `src/lib/propuestas/`, `src/cli/propuestas.ts`, `src/components/propuestas/`, `src/app/catalogo/propuestas/`, `scripts/propuestas/`, `.claude/{agents,skills}/`, `datos/propuestas/`, `decisions/011`, `propuestas/corridas/` (dos corridas reales), manual ES/EN, bloque M de la guía.
