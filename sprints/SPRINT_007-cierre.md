@@ -5,7 +5,7 @@ hito: H-1 Vitrina funcional
 opened: 2026-10-12
 closed: 2026-10-12
 branch: sprint-007/la-brecha
-pr: abierto al cierre (ver GitHub)
+pr: 19
 ---
 
 # Sprint 007 · «La brecha»
@@ -32,5 +32,5 @@ pr: abierto al cierre (ver GitHub)
 - **Demos en rojo (F2):** 8 de 8, todas volvieron a verde: B2 · cifra distinta entre pantallas · «no detectado» contado · fecha de la matriz · cierre prohibido que pasa · fidelidad · regla 12 · huella solo de navegador (mínimos 72 · 22 · 35 · 45 · 14 · 23 · 11 · 24). F3: semilla rota → el build se detiene con código 1 y nombra la semilla.
 - **Verificación:** `pnpm test` 112 archivos, 2417 pruebas; lint y typecheck limpios; e2e completo 1235 pasan y 1 se salta (el PDF en móvil, a propósito); build y build como proveedor idénticos; `verificar-dependencias` limpio; `pnpm audit`: 1 alta ignorada por ADR-001; gitleaks sin hallazgos. Puerto 3000 ocupado en esta máquina: `E2E_PUERTO=3217` (entorno, no código).
 - **Horas (`scripts/horas-sprint.mjs`, antes de la fila de relevos):** 4 commits · 1 sesión · 3,0 h activas · 10:38 → 13:08 · F1 0,5 h · F2 0,5 h · F3 2,0 h.
-- **CI:** pendiente de leer al abrir el PR; se completa después.
+- **CI (PR #19, leída al final):** `quality` success · `e2e` success (1235 pasan, 1 saltada, 0 flaky) · `lighthouse` success (las 5 rutas nuevas) · `un-pr-vivo` success. Era la primera vez que `lighthouse` corría con las rutas de la brecha.
 - **Para mergear:** squash y borrar la rama; después `/cierre-sprint hackguard`.
