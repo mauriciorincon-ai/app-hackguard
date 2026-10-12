@@ -31,7 +31,11 @@ import {
   type FilaDeListadoDeHallazgo,
 } from "../engine/evidencia/informe.ts";
 import { huella } from "../engine/huella.ts";
-import { confirmar, huellaDelLibro, siguienteId } from "../engine/evidencia/libro.ts";
+import {
+  confirmar,
+  huellaDelLibro,
+  siguienteId,
+} from "../engine/evidencia/libro.ts";
 import {
   nombreDeArchivo,
   type TextoBilingue,
@@ -113,6 +117,12 @@ function opciones(argv: string[]) {
 const imprimir = (valor: unknown) =>
   process.stdout.write(`${JSON.stringify(valor, null, 2)}\n`);
 const escribirTexto = (texto: string) => process.stdout.write(texto);
+/** Los estados de los que ya no se declara nada: cerrados por re-prueba, por eliminación o no reproducibles. */
+const ESTADOS_TERMINALES = new Set<string>([
+  "cerrado",
+  "cerrado_por_eliminacion",
+  "no_reproducible",
+]);
 const json = (valor: unknown) => `${JSON.stringify(valor, null, 2)}\n`;
 
 const entero = (texto: string | undefined, bandera: string): number => {
@@ -534,6 +544,24 @@ async function principal(argv: string[]): Promise<number> {
           L.hallazgos.hallazgos.filter((x) => x.ruta === archivo.ruta),
           o.idioma,
         ),
+      );
+      return CODIGOS_DEL_LIBRO.bloqueado;
+    }
+    // Un hallazgo ya cerrado no admite otra declaración: reabrirlo por esta puerta saltaría la regla de cierre (regla 6).
+    const actual = evaluarHallazgo(
+      h,
+      L.sobres.sobres.map((s) => s.sobre),
+    );
+    if (actual.ok && ESTADOS_TERMINALES.has(actual.evaluacion.estado)) {
+      const estado = nombreDeEstado(
+        L.instantanea,
+        "estado_de_hallazgo",
+        actual.evaluacion.estado,
+      );
+      escribirTexto(
+        o.idioma === "es"
+          ? `${id} ya está «${estado.es}»: no admite otra declaración. Si una prueba posterior vuelve a fallar, abre un hallazgo nuevo.\n`
+          : `${id} is already “${estado.en}”: it takes no further declaration. If a later test fails again, it opens a new finding.\n`,
       );
       return CODIGOS_DEL_LIBRO.bloqueado;
     }

@@ -164,6 +164,20 @@ describe("una re-prueba que SÍ cierra", () => {
     expect(e.candidatas.map((c) => [c.sobre.id, c.motivos])).toEqual([["SOB-0027", []], ["SOB-0030", ["no_superada"]]]);
   });
 
+  it("una re-prueba superada que otro sobre confirmado corrige ya no cierra: vale el corrector", async () => {
+    const m = await mundo();
+    const corrector = await nuevo(m.sobres["SOB-0027"]!, "SOB-0100", {
+      corrige: "SOB-0027",
+      fecha: "2026-09-25",
+      resultado: { ejecutada: true, evaluadas: 20, fallidas: 4, alertas: null, metrica: null },
+      veredicto: "fallida",
+      confirmacion: { por: POR, fecha: "2026-09-25", modo: "individual" },
+    });
+    const e = evaluar(m.hallazgos["HZ-0003"]!, [...Object.values(m.sobres), corrector]);
+    expect(e.estado).toBe("re_probado");
+    expect(e.cierre).toBeNull();
+  });
+
   it("en una prueba determinista (sin k) cierra con una corrida posterior que la supere", async () => {
     const m = await mundo();
     const libro = Object.values(m.sobres).map((s) =>

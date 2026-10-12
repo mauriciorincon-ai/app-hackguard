@@ -193,6 +193,15 @@ describe("la cadena entera, con un activo propio", () => {
   it("12 · el libro entero sigue válido", () => {
     expect(evidencia(["validar"], raiz).codigo).toBe(0);
   });
+
+  it("13 · un hallazgo ya cerrado no admite otra declaración: «corregido» se bloquea (2) y el archivo no cambia", () => {
+    const ruta = path.join(raiz, "datos/privado/hallazgos/HZ-0001.json");
+    const antes = readFileSync(ruta, "utf8");
+    const r = evidencia(["hallazgos-declarar", "HZ-0001", "corregido", "--por", "Ana", "--fecha", "2026-10-17", "--justificacion-es", "x", "--justificacion-en", "x"], raiz);
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("ya está «Cerrado por re-prueba»");
+    expect(readFileSync(ruta, "utf8")).toBe(antes);
+  });
 });
 
 describe("registrar: lo que se rechaza", () => {

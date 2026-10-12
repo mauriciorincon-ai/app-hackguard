@@ -140,9 +140,16 @@ export function evaluarHallazgo(
     h.eventos.filter((e): e is Aceptacion => e.tipo === "aceptacion"),
   );
 
-  const citan = libro
-    .filter((s) => s.reprueba_de === h.id)
-    .sort((a, b) => comparar(a.id, b.id));
+  // Cada re-prueba cuenta por su versión vigente: si otro sobre confirmado la corrige, vale el corrector (regla 6).
+  const vigentes = new Map(
+    libro
+      .filter((s) => s.reprueba_de === h.id)
+      .map((s) => {
+        const v = sobreVigente(libro, s.id) ?? s;
+        return [v.id, v] as const;
+      }),
+  );
+  const citan = [...vigentes.values()].sort((a, b) => comparar(a.id, b.id));
   const candidatas = citan
     .filter((s) => s.confirmacion !== null)
     .map((sobre) => ({
