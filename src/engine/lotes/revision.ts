@@ -3,7 +3,7 @@
 // se ordena por SHA-256(huella del lote + id) y se toman los primeros n que dice el plan de muestreo.
 import type { Veredicto } from "../evidencia/esquemas.ts";
 import { comparar } from "../planificador/orden.ts";
-import type { Lote, PlanDeMuestreo } from "./esquemas.ts";
+import type { PlanDeMuestreo } from "./esquemas.ts";
 import { elegirMuestra, tamanoDeMuestra } from "./muestra.ts";
 
 /** Los veredictos que se revisan siempre: los que fallan. */
@@ -20,8 +20,14 @@ export interface RevisionDelLote {
   revisados: string[];
 }
 
+/** Lo único que la revisión necesita de un lote: su semilla (la huella del lote) y los sobres que cita. */
+export interface LoteParaRevisar {
+  huellas: { lote: string };
+  sobres: readonly { id: string }[];
+}
+
 export async function revisionDelLote(
-  lote: Pick<Lote, "huellas" | "sobres">,
+  lote: LoteParaRevisar,
   veredictos: ReadonlyMap<string, Veredicto>,
   plan: PlanDeMuestreo,
 ): Promise<RevisionDelLote> {

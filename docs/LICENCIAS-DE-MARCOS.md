@@ -105,6 +105,22 @@ viajan en `src/engine/severidad/vendor/first-c5b0d40/LICENSE`. Las huellas de ca
 `tests/unit/severidad/vendor.test.ts` falla si alguien lo edita. «CVSS» es una marca de FIRST.ORG, Inc.; HackGuard solo
 calcula con su referencia y cita el vector.
 
+### Salidas de herramientas en las fixtures de los adaptadores (Sprint 6)
+
+Los adaptadores se prueban contra salidas reales de las herramientas (`tests/fixtures/adaptadores/`, con su
+`MANIFIESTO.json`: origen, licencia, qué se redactó y la huella de cada archivo).
+
+- **ZAP (zap-extensions):** `zap-traditional-json.oficial.json` y `zap-traditional-json-plus.oficial.json` son las salidas
+  esperadas de prueba del complemento de informes, copiadas sin cambios de `zaproxy/zap-extensions` (commit `a7f2fcf`).
+  Licencia **Apache-2.0**, «Copyright the ZAP Development Team»
+  (https://github.com/zaproxy/zap-extensions/blob/main/LICENSE; texto: https://www.apache.org/licenses/LICENSE-2.0). Las
+  dos variantes `*.derivada.json` salen de ellas, con su origen dicho en el manifiesto, y **no son una corrida de ZAP**.
+  Son salidas de prueba con marcadores («Test Attack»), no cargas de ataque.
+- **garak (NVIDIA):** `garak-0.17.0.report.redactado.jsonl` es la salida de una corrida local de garak 0.17.0 (Apache-2.0,
+  https://github.com/NVIDIA/garak) contra su generador de prueba `test.Repeat`, sin red y sin tercero alguno, con cada
+  texto de probe, de salida y cada disparador reemplazado por un marcador. HackGuard **no incluye ni redistribuye código
+  de garak**: el crudo de la corrida y el entorno se borraron, y solo queda la versión redactada y la huella del crudo.
+
 ## English
 
 ### The app's rule
@@ -165,3 +181,19 @@ contributors": redistribution of the source code keeps the notice, the list of c
 `src/engine/severidad/vendor/first-c5b0d40/LICENSE`. Each file's fingerprint is in `VENDOR.json` and
 `tests/unit/severidad/vendor.test.ts` fails if anyone edits it. "CVSS" is a trademark of FIRST.ORG, Inc.; HackGuard only
 computes with its reference and cites the vector.
+
+### Tool outputs in the adapter fixtures (Sprint 6)
+
+The adapters are tested against real tool outputs (`tests/fixtures/adaptadores/`, with its `MANIFIESTO.json`: origin,
+licence, what was redacted and each file's fingerprint).
+
+- **ZAP (zap-extensions):** `zap-traditional-json.oficial.json` and `zap-traditional-json-plus.oficial.json` are the
+  reports add-on's expected test outputs, copied unchanged from `zaproxy/zap-extensions` (commit `a7f2fcf`). Licence
+  **Apache-2.0**, "Copyright the ZAP Development Team"
+  (https://github.com/zaproxy/zap-extensions/blob/main/LICENSE; text: https://www.apache.org/licenses/LICENSE-2.0). The two
+  `*.derivada.json` variants come from them, with their origin stated in the manifest, and **are not a ZAP run**. They are
+  test outputs with markers ("Test Attack"), not attack payloads.
+- **garak (NVIDIA):** `garak-0.17.0.report.redactado.jsonl` is the output of a local run of garak 0.17.0 (Apache-2.0,
+  https://github.com/NVIDIA/garak) against its own `test.Repeat` generator, with no network and no third party, with every
+  probe text, output text and trigger replaced by a marker. HackGuard **neither includes nor redistributes garak code**:
+  the run's raw output and the environment were deleted, and only the redacted version and the raw's fingerprint remain.
