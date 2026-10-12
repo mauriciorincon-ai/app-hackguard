@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     "public/diseno/**",
     // Salida de `vercel build` (scripts/build-como-proveedor.mjs, kit v1.39.0).
     ".vercel/**",
+    // Código de FIRST copiado sin tocar un byte (BSD-2, G-Plan P2) y el módulo que lo envuelve: no es nuestro y no se edita.
+    "src/engine/severidad/vendor/**",
   ]),
   // El núcleo es determinista y corre igual en Node y en los navegadores (regla dura 1, RNF-01): sin azar,
   // sin reloj, sin entorno, sin red, sin idioma del sistema y sin módulos de Node. La fecha de evaluación es

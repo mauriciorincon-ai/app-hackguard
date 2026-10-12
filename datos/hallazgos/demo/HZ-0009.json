@@ -1,0 +1,29 @@
+{
+  "formato": "hackguard/hallazgo@1",
+  "id": "HZ-0009",
+  "origen": "demo",
+  "sobre_origen": "SOB-0021",
+  "titulo": {
+    "es": "Las páginas no declaran su política de contenido",
+    "en": "Pages do not declare their content policy"
+  },
+  "descripcion": {
+    "es": "Cuatro páginas del demo responden sin la política que limita de dónde se cargan los scripts.",
+    "en": "Four demo pages respond without the policy that limits where scripts can load from."
+  },
+  "severidad": {
+    "tipo": "cvss",
+    "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N"
+  },
+  "eventos": [
+    {
+      "tipo": "correccion",
+      "fecha": "2026-09-28",
+      "por": "Operador demo",
+      "nota": {
+        "es": "La política se declara ahora en todas las respuestas con página.",
+        "en": "The policy is now declared on every response that carries a page."
+      }
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 // y a la fecha de la instantánea reproduce su `semaforo` publicado (tests/unit/lib/catalogo-vista.test.ts lo exige).
 // Función pura: ni reloj, ni archivos, ni azar.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
+import { cotaDeFalla } from "../../engine/evidencia/veredicto.ts";
 import {
   desglose,
   etiquetaDe,
@@ -293,10 +294,7 @@ export function construirFicha(
   const k = p.criterio_de_veredicto.repeticiones_k ?? null;
   // Regla del tres (E-2): con cero fallas en k repeticiones, con 95 % de confianza la tasa real de fallo no supera 3/k.
   // Una sola cuenta, con tope de 100 %: con k < 3 la regla no dice nada útil y no se pasa del total.
-  const cota =
-    k && regla.id === REGLA_CON_COTA
-      ? Math.min(100, Math.round(300 / k))
-      : null;
+  const cota = k && regla.id === REGLA_CON_COTA ? cotaDeFalla(k) : null;
   const sel = recomendada.selector;
   const controles = c.controles.flatMap((capa) =>
     capa.areas.flatMap((a) => a.controles),

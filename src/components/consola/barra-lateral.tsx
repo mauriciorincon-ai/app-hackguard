@@ -1,6 +1,7 @@
 import { T, Dato, type Bilingue } from "../texto";
 import Link from "next/link";
 import { PRIMER_ACTIVO } from "@/lib/activos/etiquetas";
+import { PRIMER_HALLAZGO } from "@/lib/evidencia/etiquetas";
 
 const TRAZO = {
   fill: "none",
@@ -104,7 +105,11 @@ const SECCIONES: Seccion[] = [
     nombre: { es: "Activos", en: "Assets" },
     ruta: `/activos/${PRIMER_ACTIVO}`,
   },
-  { id: "evidencia", nombre: { es: "Evidencia", en: "Evidence" }, ruta: null },
+  {
+    id: "evidencia",
+    nombre: { es: "Evidencia", en: "Evidence" },
+    ruta: `/evidencia/hallazgos/${PRIMER_HALLAZGO}`,
+  },
   { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: null },
 ];
 
@@ -124,6 +129,13 @@ const SUBPAGINAS: Record<
       ruta: "/catalogo/controles",
     },
     { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
+  ],
+  evidencia: [
+    { nombre: { es: "Carga", en: "Intake" }, ruta: null },
+    {
+      nombre: { es: "Hallazgos", en: "Findings" },
+      ruta: `/evidencia/hallazgos/${PRIMER_HALLAZGO}`,
+    },
   ],
 };
 

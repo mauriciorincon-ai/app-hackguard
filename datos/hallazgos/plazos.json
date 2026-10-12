@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Días para atender un hallazgo según su severidad, contados desde que una persona confirma el sobre que lo abre. Bajo e informativo no tienen plazo. La fecha de evaluación es una entrada, nunca el reloj (regla dura 10).",
+    "en": "Days to deal with a finding by severity, counted from the day a person confirms the envelope that opens it. Low and informational have no deadline. The evaluation date is an input, never the clock (hard rule 10)."
+  },
+  "dias": {
+    "critico": 7,
+    "alto": 30,
+    "medio": 90,
+    "bajo": null,
+    "informativo": null
+  }
+}

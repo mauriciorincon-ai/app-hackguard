@@ -1,0 +1,395 @@
+{
+ "fuente": "https://www.first.org/cvss/v4.0/examples",
+ "descargado": "2026-10-02",
+ "huella_html": "sha256:363ab519a81478437dc006415276cb1fff7688f6b60af7c7627e825e55c669b8",
+ "reglas": "celda = puntaje y vector en la misma celda; columna = fila de puntajes sobre la fila de vectores; parrafo = «CVSS v4 Score» para vectores sin puntaje en la tabla",
+ "pares": [
+  {
+   "ejemplo": "CVE-2022-41741",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7.3,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2020-3549",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7.7,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "CVE-2020-3549",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:U",
+   "puntaje_publicado": 5.2,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "CVE-2023-3089",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.3,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "CVE-2023-3089",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N/CR:H/IR:L/AR:L/MAV:N/MAC:H/MVC:H/MVI:L/MVA:L",
+   "puntaje_publicado": 8.1,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "CVE-2021-44714",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:A/VC:L/VI:N/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 4.6,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2022-21830",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+   "puntaje_publicado": 5.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2022-22186",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+   "puntaje_publicado": 6.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2023-21989",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:H/UI:N/VC:N/VI:N/VA:N/SC:H/SI:N/SA:N",
+   "puntaje_publicado": 5.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2020-3947",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+   "puntaje_publicado": 9.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2023-48228",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:H/SI:H/SA:H",
+   "puntaje_publicado": 9.3,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2023-30560",
+   "vector": "CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:H/SA:N/S:P/V:D",
+   "puntaje_publicado": 8.3,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "CVE-2026-48172",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:A",
+   "puntaje_publicado": 10,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "OpenSSL Heartbleed Vulnerability ( CVE-2014-0160 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N/E:A",
+   "puntaje_publicado": 8.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Apache log4j JNDI Command Execution “log4shell” Vulnerability ( CVE-2021-44228 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A",
+   "puntaje_publicado": 9.3,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Apache log4j JNDI Command Execution “log4shell” Vulnerability ( CVE-2021-44228 )",
+   "vector": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P/MAC:L/MAT:N/MVC:N/MVI:N/MVA:L",
+   "puntaje_publicado": 5.5,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Juniper Proxy ARP Denial of Service Vulnerability (CVE-2013-6014)",
+   "vector": "CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:H/SI:N/SA:H",
+   "puntaje_publicado": 6.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Lenovo ThnkPwn Exploit ( CVE-2016-5729 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:H/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/R:I",
+   "puntaje_publicado": 8.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Failure to Lock Flash on Resume from sleep ( CVE-2015-2890 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:P/PR:H/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/R:I",
+   "puntaje_publicado": 7.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Intel DCI Issue ( CVE-2018-3652 )",
+   "vector": "CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "regreSSHion – CVE-2024-6387",
+   "vector": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P",
+   "puntaje_publicado": 8.2,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "SQL Injection – CVE-2023-30545",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "On-path Attacker – CVE-2021-23846",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.2,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Denial of Service – CVE-2023-22394",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:L",
+   "puntaje_publicado": 8.7,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Denial of Service – CVE-2023-22394",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:L/E:U",
+   "puntaje_publicado": 6.6,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Cross-Site Scripting (Reflected) – CVE-2022-24682",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:L/VI:L/VA:N/SC:L/SI:L/SA:N",
+   "puntaje_publicado": 5.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Cross-Site Scripting (Stored) – CVE-2020-0926",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+   "puntaje_publicado": 5.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Cross-Site Scripting Expanded Impact – CVE-2024-55228",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:A/VC:H/VI:H/VA:H/SC:L/SI:L/SA:N",
+   "puntaje_publicado": 8.5,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Cross-Site Request Forgery – CVE-2023-5602",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 5.1,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Privilege Escalation (Unprivileged) CVE-2022-20759",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Privilege Escalation (Highly Privileged) CVE-2021-34724",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:H/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.3,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Privilege Escalation (Highly Privileged) CVE-2021-34724",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:H/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N/E:U",
+   "puntaje_publicado": 5.6,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Remote Code Execution ( CVE-2023-28311 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.5,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Remote Code Execution ( CVE-2023-28311 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:U/MUI:A",
+   "puntaje_publicado": 5.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Arbitrary Code Execution CVE-2022-22965",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A",
+   "puntaje_publicado": 9.2,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Physical Access (CVE-2022-20826)",
+   "vector": "CVSS:4.0/AV:P/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 5.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Information Disclosure – CVE-2022-21500",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Information Disclosure - CVE-2021-32570",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:H/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 6.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Command Injection ( CVE-2022-26134 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 9.3,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "ACL Bypass ( CVE-2023-20245 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:L/SA:N",
+   "puntaje_publicado": 6.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "ACL Bypass ( CVE-2023-20245 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:L/SA:N/E:U/CR:L/IR:L/AR:L",
+   "puntaje_publicado": 2.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "ACL Bypass ( CVE-2023-20245 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:L/SI:N/SA:H",
+   "puntaje_publicado": 7.8,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Server-Side Request Forgery (SSRF) ( CVE-2024-1233 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:L/SI:L/SA:L",
+   "puntaje_publicado": 6.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Server-Side Request Forgery (SSRF) ( CVE-2024-1233 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:L/SI:L/SA:L/MSI:N/MSA:N",
+   "puntaje_publicado": 6.9,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Industrial Control Systems (ICS) ( CVE-2023-28728 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:P",
+   "puntaje_publicado": 8.5,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Operational Technology (OT) ( CVE-2022-47379 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/S:P/AU:Y/V:C/RE:L",
+   "puntaje_publicado": 9.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Operational Technology (OT) ( CVE-2022-47379 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:P/CR:L/IR:H/AR:L/MAV:L/MAC:H/MAT:N/MPR:N/MUI:N/MVC:N/MVI:H/MVA:L/MSC:N/MSI:S/MSA:L",
+   "puntaje_publicado": 7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Operational Technology (OT) ( CVE-2022-47379 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/MAV:A/MAC:H/MAT:N/MPR:L/MUI:N/MVC:L/MVI:H/MVA:H/MSC:L/MSI:S/MSA:S/CR:L/IR:H/AR:H/E:P",
+   "puntaje_publicado": 7.4,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "Operational Technology (OT) ( CVE-2022-47379 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/MAV:N/MAC:H/MAT:N/MPR:L/MUI:N/MVC:H/MVI:H/MVA:H/MSC:H/MSI:S/MSA:H/CR:M/IR:H/AR:M/E:P",
+   "puntaje_publicado": 8.7,
+   "regla": "columna"
+  },
+  {
+   "ejemplo": "IOT - Healthcare ( CVE-2020-10627 )",
+   "vector": "CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N/S:P",
+   "puntaje_publicado": 8.6,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "IOT - Healthcare ( CVE-2020-10627 )",
+   "vector": "CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N/MSI:S/S:P",
+   "puntaje_publicado": 9.7,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Value Density ( CVE-2020-28196 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N/V:C",
+   "puntaje_publicado": 8.7,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Management System ( CVE-2023-20048 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:N/VI:N/VA:N/SC:H/SI:L/SA:H",
+   "puntaje_publicado": 6.4,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Management System ( CVE-2023-20048 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:N/VI:N/VA:N/SC:H/SI:L/SA:H/E:U/MAV:A/R:U/V:C",
+   "puntaje_publicado": 2.4,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Ephemeral Build Systems ( CVE-2024-23897 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H",
+   "puntaje_publicado": 10,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Ephemeral Build Systems ( CVE-2024-23897 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:A/CR:H/IR:H/AR:H/MAV:L/MAT:P",
+   "puntaje_publicado": 8.9,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Linux Kernel ( CVE-2026-31431 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 8.5,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Linux Kernel ( CVE-2026-31431 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A/MVC:N/MVI:N/MVA:N",
+   "puntaje_publicado": 0,
+   "regla": "celda"
+  },
+  {
+   "ejemplo": "Windows Kerberos DoS ( CVE-2026-42903 )",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_publicado": 7.1,
+   "regla": "celda"
+  }
+ ],
+ "vectores_sin_puntaje": [],
+ "conflictos_internos_de_la_pagina": [
+  {
+   "ejemplo": "CVE-2023-48228",
+   "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:H/SI:H/SA:H",
+   "puntaje_tabla": 9.3,
+   "parrafo": "CVSS v4 Score: Base 9.4"
+  },
+  {
+   "ejemplo": "Intel DCI Issue ( CVE-2018-3652 )",
+   "vector": "CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_tabla": 7,
+   "parrafo": "CVSS v4 Score: Base 8.6"
+  },
+  {
+   "ejemplo": "Linux Kernel ( CVE-2026-31431 )",
+   "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "puntaje_tabla": 8.5,
+   "parrafo": "CVSS v4 Score: Base 10.0"
+  }
+ ],
+ "enlaces_href_distinto_del_texto": [
+  {
+   "ejemplo": "Operational Technology (OT) ( CVE-2022-47379 )",
+   "href": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:P/CR:L/IR:H/AR:H/MAV:A/MAC:H/MAT:N/MPR:L/MUI:N/MVC:L/MVI:H/MVA:H/MSC:L/MSI:S/MSA:S",
+   "texto": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/MAV:A/MAC:H/MAT:N/MPR:L/MUI:N/MVC:L/MVI:H/MVA:H/MSC:L/MSI:S/MSA:S/CR:L/IR:H/AR:H/E:P"
+  },
+  {
+   "ejemplo": "Windows Kerberos DoS ( CVE-2026-42903 )",
+   "href": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+   "texto": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+  }
+ ]
+}

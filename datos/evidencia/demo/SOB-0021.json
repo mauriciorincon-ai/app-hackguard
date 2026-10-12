@@ -1,0 +1,55 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0021",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "prueba": "PR-SW-CSP-001",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "herramienta": {
+    "id": "zap",
+    "version": "2.17.0"
+  },
+  "selector": {
+    "tipo": "zap",
+    "pluginids": [
+      10038
+    ],
+    "agregacion": "cualquier_regla"
+  },
+  "regla": "comprobacion_determinista",
+  "k": null,
+  "resultado": {
+    "ejecutada": true,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": 1,
+    "metrica": null
+  },
+  "veredicto": "fallida",
+  "fecha": "2026-09-05",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [],
+  "razon": {
+    "es": "1 alerta de riesgo medio y confianza alta en 4 páginas",
+    "en": "1 alert at medium risk and high confidence on 4 pages"
+  },
+  "extracto_redactado": "zap 2.17.0 · 1 alerta (riesgo medio, confianza alta) · regla de política de contenido ausente en 4 páginas",
+  "corrige": null,
+  "reprueba_de": null,
+  "confirmacion": {
+    "por": "Operador demo",
+    "fecha": "2026-09-05",
+    "modo": "individual"
+  },
+  "huellas": {
+    "crudo": "e449bd4e9791d988954ffdae8279d373d6435914610ae947e9e1df3a15d00d9f",
+    "sobre": "1bcaa7f4737ba2520a36310250068a93858072969de766fd1a63b1258c44a5a1",
+    "resultado": "2ac90f29ef1d49108103a1b0a134a109c1d17041fb6f24f77c0c0c59d425d2ae"
+  }
+}

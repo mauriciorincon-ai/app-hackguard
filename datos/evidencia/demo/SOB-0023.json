@@ -1,0 +1,56 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0023",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "prueba": "PR-SW-XSS-001",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "herramienta": {
+    "id": "zap",
+    "version": "2.17.0"
+  },
+  "selector": {
+    "tipo": "zap",
+    "pluginids": [
+      40012,
+      40014
+    ],
+    "agregacion": "cualquier_regla"
+  },
+  "regla": "comprobacion_determinista",
+  "k": null,
+  "resultado": {
+    "ejecutada": false,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": 0,
+    "metrica": null
+  },
+  "veredicto": "no_ejecutada",
+  "fecha": "2026-09-05",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [],
+  "razon": {
+    "es": "Sin alertas, pero no hay constancia de que la regla corrió",
+    "en": "No alerts, but there is no proof that the rule ran"
+  },
+  "extracto_redactado": null,
+  "corrige": null,
+  "reprueba_de": null,
+  "confirmacion": {
+    "por": "Operador demo",
+    "fecha": "2026-09-05",
+    "modo": "individual"
+  },
+  "huellas": {
+    "crudo": "657d98a8d6b0ae5c3fca3fde1dc0e65a066e6822810e19598099df68dcf90236",
+    "sobre": "67f99f24401b0e1323b575882af33a9e6ec329f599abf222fbb5cad052f123a5",
+    "resultado": "90154bec07ca435b500ccf0cade7da51d39baaeccac18e539255eafe3e449f15"
+  }
+}

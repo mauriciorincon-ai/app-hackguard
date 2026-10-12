@@ -23,7 +23,8 @@ Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus fi
 **marcos y sus versiones** y los **controles** de ISO/IEC 42001 con las pruebas que les dan evidencia. Debajo de esas
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
 para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
-cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barra lateral con la marca «pronto».
+cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Las demás secciones (tablero y
+brecha) aparecen en la barra lateral con la marca «pronto».
 
 ### Primeros pasos
 
@@ -147,7 +148,8 @@ cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barr
   nada; para cambiar una prueba se edita su archivo de `datos/` (ver arriba).
 - **Cómo se usa:**
   1. Abre la aplicación: la raíz te lleva a **Catálogo → Pruebas**. La barra lateral tiene cinco secciones; dentro de
-     Catálogo (**Pruebas**, **Marcos** y **Controles**) y **Activos** funcionan. Las demás llevan la marca «pronto».
+     Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos** y los **hallazgos** de **Evidencia** funcionan. Las demás
+     llevan la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
@@ -178,7 +180,7 @@ cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barr
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Propuestas, tablero, evidencia y brecha todavía no existen como pantalla.
+  - Propuestas, tablero y brecha todavía no existen como pantalla; la carga de resultados tampoco.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -247,10 +249,48 @@ cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barr
   `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, que lo escribe en `datos/privado/planes/` con permisos de solo tu usuario.
   Ningún activo real entra en el repositorio ni en la web pública.
 - **Limitaciones conocidas:**
-  - El estado «en prueba» todavía no existe: hace falta evidencia, que llega en el Sprint 5.
+  - El plan no muestra todavía qué pruebas ya tienen evidencia confirmada: la página de cada hallazgo sí la muestra (ver la sección siguiente).
   - No hay editor de perfil ni de plan en pantalla: un cambio se hace en el archivo del activo y el plan se vuelve a emitir.
   - Si sale una instantánea oficial nueva, el plan viejo deja de construirse hasta volver a emitirlo.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+
+#### Evidencia y hallazgos · desde Sprint 005
+
+- **Qué hace:** convierte el resultado de una herramienta en **evidencia**, que una persona confirma. Un sobre confirmado
+  que falla abre un **hallazgo**, con su severidad, su plazo y su ciclo de vida. Un hallazgo no es una vulnerabilidad: es
+  la prueba de que un control no funciona. Solo una **re-prueba válida** lo cierra.
+- **Cómo se usa:**
+  1. **Registrar un resultado:** `pnpm evidencia:registrar <resultado.json> --crudo <archivo>`. Queda como sobre
+     **propuesto**, que todavía no cuenta para nada. El archivo crudo solo sirve para calcular su huella: no se guarda.
+  2. **Confirmar:** `pnpm evidencia:confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD`, y para la severidad,
+     `--cvss <vector>` en software, o `--impacto`, `--alcance` y `--detectabilidad` en los demás. Un sobre confirmado no
+     cambia nunca. Si falló, abre su hallazgo.
+  3. **Ver la lista:** `pnpm hallazgos:listar` dice el estado, la severidad y el plazo de cada hallazgo.
+  4. **Leer un hallazgo:** en **Evidencia**, la barra lateral abre el primero. La página `/evidencia/hallazgos/<id>` tiene:
+     - la **cadena de cierre**: el sobre, la corrección, la re-prueba y el cierre, con lo que falta dibujado como pendiente;
+     - la **severidad**: para software, CVSS 4.0 con su vector y la referencia fijada; para los demás, la tabla de prioridad
+       de acción, con la celda de este hallazgo;
+     - el **control que falla**, con lo que se esperaba y lo que se obtuvo;
+     - **«Qué puedes hacer»**, que dice cada salida, su consecuencia y el comando que la registra. La página solo se lee.
+  5. **Registrar una decisión:** `pnpm hallazgos:declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible>`,
+     con `--por`, `--fecha` y la justificación en los dos idiomas (`--justificacion-es`, `--justificacion-en`). Aceptar un
+     riesgo pide además `--revision-en-dias`.
+  6. **Cerrar:** solo con una re-prueba confirmada. Debe ser de la misma prueba, con la misma herramienta, la misma versión
+     exacta y el mismo selector, con al menos las mismas repeticiones, y debe citar el hallazgo. Si da «superada», el hallazgo
+     se cierra. Pedir «cerrado» a mano sale con error.
+- **Plazos:** crítico, 7 días; alto, 30; medio, 90. Bajo e informativo no tienen plazo. El plazo cuenta desde que una persona
+  confirma el sobre que abre el hallazgo. Si se vence, la página lo avisa con «Plazo vencido».
+- **Aceptar un riesgo no lo cierra:** un hallazgo aceptado con riesgo pide una justificación y una fecha de revisión, y
+  **sigue contando como falla del control** hasta que se corrija. Al llegar la fecha de revisión, la página dice que
+  toca revisarlo.
+- **Un hallazgo cerrado** dice que ya no corre el plazo. Si una prueba posterior vuelve a fallar, esa falla abre un
+  hallazgo nuevo con su propia evidencia: la evidencia confirmada no se toca.
+- **Qué NO hace:** no ejecuta herramientas, no trae resultados desde Garak ni ZAP (eso llega en el Sprint 6) y no
+  hay pantalla para cargar resultados: «Carga» aparece como «pronto». Que un hallazgo no aparezca en un escaneo posterior
+  **no** lo cierra.
+- **Limitaciones conocidas:**
+  - Los hallazgos de tu activo real van a `datos/privado/`, nunca al repositorio ni a la web pública.
+  - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -293,6 +333,7 @@ cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barr
 | 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                  |
 | 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                          |
 | 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete |
+| 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página        |
 
 ---
 
@@ -431,7 +472,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets**. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets** and the findings under **Evidence**. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -462,7 +503,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals, dashboard, evidence and gap do not exist as screens yet.
+  - Proposals, dashboard and gap do not exist as screens yet; neither does the intake of results.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
@@ -531,10 +572,46 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   assets with `origen: "demo"`. Its plan is issued with `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, which writes it to
   `datos/privado/planes/` with permissions for your user only. No real asset enters the repository or the public web.
 - **Known limitations:**
-  - The “in test” status does not exist yet: it needs evidence, which arrives in Sprint 5.
+  - The plan does not yet show which tests already have confirmed evidence: the page of each finding does (see the next section).
   - There is no profile or plan editor on screen: a change is made in the asset's file and the plan is issued again.
   - If a new official snapshot comes out, the old plan stops being built until it is issued again.
   - The screens are tested in Spanish; the English test arrives at the close of the milestone.
+
+#### Evidence and findings · since Sprint 005
+
+- **What it does:** turns a tool's result into **evidence**, which a person confirms. A confirmed envelope that fails opens a
+  **finding**, with its severity, its deadline and its lifecycle. A finding is not a vulnerability: it is proof that a control
+  is not working. Only a valid **retest** closes it.
+- **How to use it:**
+  1. **Record a result:** `pnpm evidencia:registrar <resultado.json> --crudo <archivo>`. It is kept as a **proposed** envelope,
+     which does not count for anything yet. The raw file is used only to compute its fingerprint: it is not stored.
+  2. **Confirm:** `pnpm evidencia:confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD`, and for the severity,
+     `--cvss <vector>` for software, or `--impacto`, `--alcance` and `--detectabilidad` for the rest. A confirmed envelope never
+     changes. If it failed, it opens its finding.
+  3. **See the list:** `pnpm hallazgos:listar` shows the status, the severity and the deadline of each finding.
+  4. **Read a finding:** under **Evidence**, the sidebar opens the first one. The page `/evidencia/hallazgos/<id>` has:
+     - the **closure chain**: the envelope, the fix, the retest and the closure, with what is missing drawn as pending;
+     - the **severity**: for software, CVSS 4.0 with its vector and the pinned reference; for the rest, the action priority
+       table, with this finding's cell;
+     - the **control that fails**, with what was expected and what was obtained;
+     - **“What you can do”**, which says each outcome, its consequence and the command that records it. The page is read-only.
+  5. **Record a decision:** `pnpm hallazgos:declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible>`, with `--por`,
+     `--fecha` and the justification in both languages (`--justificacion-es`, `--justificacion-en`). Accepting a risk also
+     takes `--revision-en-dias`.
+  6. **Close:** only with a confirmed retest. It must be of the same test, with the same tool, the same exact version and
+     the same selector, with at least the same repetitions, and it must cite the finding. If it says “passed”, the finding
+     closes. Asking for “closed” by hand fails.
+- **Deadlines:** critical, 7 days; high, 30; medium, 90. Low and informational have no deadline. The deadline counts from the
+  day a person confirms the envelope that opens the finding. If it expires, the page warns “Deadline passed”.
+- **Accepting a risk does not close it:** an accepted finding asks for a justification and a review date, and it **still counts
+  as a failure of its control** until it is fixed. When the review date arrives, the page says it is time to review it.
+- **A closed finding** says its deadline no longer runs. If a later test fails again, that failure opens a new finding with its
+  own evidence: confirmed evidence is never touched.
+- **What it does NOT do:** it does not run tools, does not bring results from Garak or ZAP (that arrives in Sprint 6), and there
+  is no screen to load results: “Intake” appears as “soon”. A finding missing from a later scan does **not** close it.
+- **Known limitations:**
+  - The findings of your real asset go to `datos/privado/`, never to the repository or the public web.
+  - The screen is tested in Spanish; the English test arrives at the close of the milestone.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 
@@ -578,3 +655,4 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
 | 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                            |
 | 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                    |
 | 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download |
+| 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page  |

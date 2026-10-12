@@ -95,6 +95,16 @@ responde, pero no se descargó entero.
 - **TypeSafe:** documentación de Jev, citada sin reproducir su texto (https://typesafe.ai/legal/terms).
 - **ISO/IEC 42001:2023:** solo identificadores; ISO tiene los derechos del texto.
 
+### Código de terceros: la calculadora de CVSS 4.0 (Sprint 5)
+
+HackGuard puntúa CVSS 4.0 con el **código de puntaje de la calculadora oficial de first.org**, copiado sin tocar un byte en
+`src/engine/severidad/vendor/first-c5b0d40/` (repositorio `FIRSTdotorg/cvss-v4-calculator`, commit
+`c5b0d409ae9f57c44264c6ce5f27d89298e1d32a`). Licencia **BSD-2-Clause**, «Copyright (c) 2023 FIRST.ORG, Inc., Red Hat, and
+contributors»: la redistribución del código fuente conserva el aviso, la lista de condiciones y la exención de garantía, que
+viajan en `src/engine/severidad/vendor/first-c5b0d40/LICENSE`. Las huellas de cada archivo están en `VENDOR.json` y
+`tests/unit/severidad/vendor.test.ts` falla si alguien lo edita. «CVSS» es una marca de FIRST.ORG, Inc.; HackGuard solo
+calcula con su referencia y cita el vector.
+
 ## English
 
 ### The app's rule
@@ -145,3 +155,13 @@ not downloaded whole.
 
 The attributions and notices are the ones listed in the Spanish section above (MITRE and NIST notices are quoted
 verbatim in their original English).
+
+### Third-party code: the CVSS 4.0 calculator (Sprint 5)
+
+HackGuard scores CVSS 4.0 with the **scoring code of first.org's official calculator**, copied without touching a byte into
+`src/engine/severidad/vendor/first-c5b0d40/` (repository `FIRSTdotorg/cvss-v4-calculator`, commit
+`c5b0d409ae9f57c44264c6ce5f27d89298e1d32a`). Licence **BSD-2-Clause**, "Copyright (c) 2023 FIRST.ORG, Inc., Red Hat, and
+contributors": redistribution of the source code keeps the notice, the list of conditions and the disclaimer, which travel in
+`src/engine/severidad/vendor/first-c5b0d40/LICENSE`. Each file's fingerprint is in `VENDOR.json` and
+`tests/unit/severidad/vendor.test.ts` fails if anyone edits it. "CVSS" is a trademark of FIRST.ORG, Inc.; HackGuard only
+computes with its reference and cites the vector.

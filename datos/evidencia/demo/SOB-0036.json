@@ -1,0 +1,51 @@
+{
+  "formato": "hackguard/sobre@1",
+  "id": "SOB-0036",
+  "origen": "demo",
+  "activo": "act-demo-asistente",
+  "prueba": "PR-SW-CSP-001",
+  "plan": {
+    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  },
+  "paquete": {
+    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+  },
+  "herramienta": {
+    "id": "zap",
+    "version": "2.17.0"
+  },
+  "selector": {
+    "tipo": "zap",
+    "pluginids": [
+      10038
+    ],
+    "agregacion": "cualquier_regla"
+  },
+  "regla": "comprobacion_determinista",
+  "k": null,
+  "resultado": {
+    "ejecutada": true,
+    "evaluadas": null,
+    "fallidas": null,
+    "alertas": 0,
+    "metrica": null
+  },
+  "veredicto": "superada",
+  "fecha": "2026-10-02",
+  "zona_horaria": "America/Bogota",
+  "ejecutado_por": "Operador demo",
+  "advertencias": [],
+  "razon": {
+    "es": "Sin alertas, con constancia de que la regla corrió sobre 4 páginas",
+    "en": "No alerts, with proof that the rule ran on 4 pages"
+  },
+  "extracto_redactado": null,
+  "corrige": null,
+  "reprueba_de": "HZ-0009",
+  "confirmacion": null,
+  "huellas": {
+    "crudo": "1fb6ca22d0e358f9837c1137becc3d7029006621ca08fadfbe95505b534fddfb",
+    "sobre": "c9740b4973e569121eade6db3aa7552a195e3e7b0913c87b29e62c4c8ead2db4",
+    "resultado": "47e8262535954d877dc3ef87ce9a5c6776f9d2592571bedb27c9381cee93659d"
+  }
+}

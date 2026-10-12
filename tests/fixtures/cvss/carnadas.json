@@ -1,0 +1,92 @@
+{
+  "fuente": "Spike de adaptadores y CVSS de la planeadora (investigacion/spike-adaptadores-cvss, 2026-10-02): src/cvss/vectores.mjs. Las carnadas son vectores que la calculadora de FIRST ACEPTA o puntúa aunque no son un vector completo y ordenado; el validador estricto los rechaza.",
+  "limite_validos": [
+    {
+      "caso": "X explícita en métricas opcionales",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/MAV:X/S:X/U:X",
+      "puntaje": 9.3
+    },
+    {
+      "caso": "todas las métricas presentes",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:A/CR:H/IR:H/AR:H/MAV:N/MAC:L/MAT:N/MPR:N/MUI:N/MVC:H/MVI:H/MVA:H/MSC:H/MSI:S/MSA:S/S:P/AU:Y/R:I/V:C/RE:H/U:Red",
+      "puntaje": 10
+    },
+    {
+      "caso": "sin impacto alguno (atajo 0.0)",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N",
+      "puntaje": 0
+    }
+  ],
+  "carnadas": [
+    {
+      "caso": "truncado (solo AV)",
+      "vector": "CVSS:4.0/AV:N",
+      "motivo": "base_incompleta"
+    },
+    {
+      "caso": "falta una métrica base al final (SA)",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N",
+      "motivo": "base_incompleta"
+    },
+    {
+      "caso": "falta una métrica base en medio (AT)",
+      "vector": "CVSS:4.0/AV:N/AC:L/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "base_incompleta"
+    },
+    {
+      "caso": "orden alterado (AC antes de AV)",
+      "vector": "CVSS:4.0/AC:L/AV:N/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "fuera_de_orden"
+    },
+    {
+      "caso": "métrica duplicada",
+      "vector": "CVSS:4.0/AV:N/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "metrica_duplicada"
+    },
+    {
+      "caso": "valor inválido (AV:X)",
+      "vector": "CVSS:4.0/AV:X/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "valor_invalido"
+    },
+    {
+      "caso": "valor inexistente (VC:Z)",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:Z/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "valor_invalido"
+    },
+    {
+      "caso": "prefijo en minúsculas",
+      "vector": "cvss:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "prefijo"
+    },
+    {
+      "caso": "prefijo de versión 3.1",
+      "vector": "CVSS:3.1/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "prefijo"
+    },
+    {
+      "caso": "sin prefijo",
+      "vector": "AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "prefijo"
+    },
+    {
+      "caso": "métrica desconocida (XX:N)",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/XX:N",
+      "motivo": "metrica_desconocida"
+    },
+    {
+      "caso": "barra final",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/",
+      "motivo": "segmento_vacio"
+    },
+    {
+      "caso": "opcional fuera de orden (E después de CR)",
+      "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/CR:H/E:A",
+      "motivo": "fuera_de_orden"
+    },
+    {
+      "caso": "valor en minúsculas (av:n)",
+      "vector": "CVSS:4.0/av:n/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+      "motivo": "metrica_desconocida"
+    }
+  ]
+}

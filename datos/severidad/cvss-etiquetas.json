@@ -1,0 +1,382 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Los nombres de las métricas base de CVSS 4.0 y de sus valores, y el nombre de cada grupo de métricas opcionales. Son identificadores del estándar de first.org con su nombre en cada idioma; el puntaje no sale de aquí sino de la referencia fijada.",
+    "en": "The names of CVSS 4.0's base metrics and their values, and the name of each group of optional metrics. They are first.org standard identifiers with a name in each language; the score does not come from here but from the pinned reference."
+  },
+  "metricas": [
+    {
+      "clave": "AV",
+      "nombre": {
+        "es": "Vector de ataque",
+        "en": "Attack vector"
+      },
+      "valores": [
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Red",
+            "en": "Network"
+          }
+        },
+        {
+          "valor": "A",
+          "nombre": {
+            "es": "Red adyacente",
+            "en": "Adjacent"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Local",
+            "en": "Local"
+          }
+        },
+        {
+          "valor": "P",
+          "nombre": {
+            "es": "Físico",
+            "en": "Physical"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "AC",
+      "nombre": {
+        "es": "Complejidad",
+        "en": "Attack complexity"
+      },
+      "valores": [
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Baja",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alta",
+            "en": "High"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "AT",
+      "nombre": {
+        "es": "Requisitos",
+        "en": "Attack requirements"
+      },
+      "valores": [
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        },
+        {
+          "valor": "P",
+          "nombre": {
+            "es": "Presentes",
+            "en": "Present"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "PR",
+      "nombre": {
+        "es": "Privilegios necesarios",
+        "en": "Privileges required"
+      },
+      "valores": [
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajos",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Altos",
+            "en": "High"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "UI",
+      "nombre": {
+        "es": "Interacción de un usuario",
+        "en": "User interaction"
+      },
+      "valores": [
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguna",
+            "en": "None"
+          }
+        },
+        {
+          "valor": "P",
+          "nombre": {
+            "es": "Pasiva",
+            "en": "Passive"
+          }
+        },
+        {
+          "valor": "A",
+          "nombre": {
+            "es": "Activa",
+            "en": "Active"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "VC",
+      "nombre": {
+        "es": "Confidencialidad del sistema",
+        "en": "System confidentiality"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "VI",
+      "nombre": {
+        "es": "Integridad del sistema",
+        "en": "System integrity"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "VA",
+      "nombre": {
+        "es": "Disponibilidad del sistema",
+        "en": "System availability"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "SC",
+      "nombre": {
+        "es": "Confidencialidad de otros sistemas",
+        "en": "Subsequent confidentiality"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "SI",
+      "nombre": {
+        "es": "Integridad de otros sistemas",
+        "en": "Subsequent integrity"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    },
+    {
+      "clave": "SA",
+      "nombre": {
+        "es": "Disponibilidad de otros sistemas",
+        "en": "Subsequent availability"
+      },
+      "valores": [
+        {
+          "valor": "H",
+          "nombre": {
+            "es": "Alto",
+            "en": "High"
+          }
+        },
+        {
+          "valor": "L",
+          "nombre": {
+            "es": "Bajo",
+            "en": "Low"
+          }
+        },
+        {
+          "valor": "N",
+          "nombre": {
+            "es": "Ninguno",
+            "en": "None"
+          }
+        }
+      ]
+    }
+  ],
+  "grupos": [
+    {
+      "id": "amenaza",
+      "claves": [
+        "E"
+      ],
+      "nombre": {
+        "es": "Métrica de amenaza",
+        "en": "Threat metric"
+      }
+    },
+    {
+      "id": "entorno",
+      "claves": [
+        "CR",
+        "IR",
+        "AR",
+        "MAV",
+        "MAC",
+        "MAT",
+        "MPR",
+        "MUI",
+        "MVC",
+        "MVI",
+        "MVA",
+        "MSC",
+        "MSI",
+        "MSA"
+      ],
+      "nombre": {
+        "es": "Métrica de entorno",
+        "en": "Environmental metric"
+      }
+    },
+    {
+      "id": "suplementaria",
+      "claves": [
+        "S",
+        "AU",
+        "R",
+        "V",
+        "RE",
+        "U"
+      ],
+      "nombre": {
+        "es": "Métrica suplementaria",
+        "en": "Supplemental metric"
+      }
+    }
+  ]
+}

@@ -20,6 +20,8 @@ export default defineConfig({
       // Solo *.ts: un include de directorio hace que v8 intente parsear .gitkeep y truene
       // con PARSE_ERROR (K8, ds S1).
       include: ["src/lib/**/*.ts", "src/engine/**/*.ts", "src/components/**/*.tsx"],
+      // Los tipos del código de FIRST (`first.generated.d.ts`) no son código que se ejecute: v8 no puede leerlos como módulo.
+      exclude: ["**/*.d.ts"],
       thresholds: {
         lines: 70,
         functions: 70,

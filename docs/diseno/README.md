@@ -219,14 +219,33 @@ producto lo calcula el motor sobre las 38 pruebas de la instantánea, y manda el
 
 | Pantalla | Diferencia | Razón |
 |---|---|---|
-| `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | «En prueba» exige evidencia, que llega en el S5 |
+| `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | El libro de evidencia (S5) no cambia el estado del activo todavía |
 | `activo`, `plan` | Los estados de pantalla «vacío», «cargando» y «error» solo existen en la maqueta | Es un export estático: un activo o un plan que no cuadra con su huella rompe el build en vez de mostrarse |
 | `plan` | La cabecera y el pie no enseñan la huella solo abreviada: el panel del paquete trae la huella completa del paquete y de la instantánea | El plan se puede reproducir y comparar byte a byte |
-| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S5; un enlace a una pantalla que no existe sería un enlace roto |
+| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S6; un enlace a una pantalla que no existe sería un enlace roto |
 | `plan` | Cada prueba del paquete muestra su selector, `k` y el nombre de su regla de veredicto; no la frase «umbral de fallida: 100 por mil» | Esa frase era ilustrativa; el catálogo da la regla y `k`, y la cota la calcula el informe |
 | `plan` | La herramienta de cada prueba es la que mide su resultado esperado, y puede variar entre pruebas de una misma familia | El catálogo recomienda hasta dos herramientas por prueba; la maqueta fijaba una |
 | `plan` | «Cobertura por control» cuenta los controles que citan las pruebas candidatas del activo, y las pruebas del plan sin control aparte | El catálogo tiene pruebas con control pendiente (las de software); la maqueta suponía todas con control |
 | `activo` | El activo no se edita en pantalla: vive en un archivo validado (`datos/activos/` si es demo, `datos/privado/activos/` si es real) | Registrar un activo es un archivo con esquema (P2 del G-Plan); la pantalla es para leerlo |
+
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 5)
+
+La maqueta no se regenera en este sprint; estas diferencias las vigila `tests/unit/fidelidad-hallazgo.test.tsx`, cada una con su
+razón, y la maqueta las alcanza en el `design-sync` del hito. Los cuatro hallazgos de la maqueta son el oráculo del motor: su estado,
+su severidad y sus fechas salen iguales (`tests/unit/hallazgo-vista.test.tsx`).
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| `hallazgo` | Los estados «vacío», «cargando» y «error» solo existen en la maqueta | Es un export estático: un hallazgo que no cuadra con su libro (huella, sobre de origen, vector) rompe el build en vez de mostrarse |
+| `hallazgo` | «Qué puedes hacer» es de solo lectura: cada salida dice lo que exige y trae el comando que la registra (`pnpm hallazgos:declarar`, `evidencia:registrar`, `evidencia:confirmar`); no hay botones | Un hallazgo es un archivo con esquema y su estado se calcula: nadie lo decide en pantalla (reglas duras 1 y 6) |
+| `hallazgo` | Se ofrece «Registrar la re-prueba» y no «Reabrir» | La re-prueba es el único camino al cierre y en el S5 se registra a mano; reabrir un hallazgo queda fuera del alcance de este sprint |
+| `hallazgo` | «Misma configuración y al menos k = 20» usa la `k` del paquete (en HZ-0007 son 20), no las salidas evaluadas (116) | La regla de cierre compara `k` |
+| `hallazgo` | El nombre del control y «Lo que se esperaba» salen de la instantánea oficial (HZ-0005 enseña `iso42001-A.6.2.6`, que la maqueta dejaba sin control) | Una cuenta, un cálculo: manda el catálogo |
+| `hallazgo` | La cadena sabe decir una re-prueba confirmada que no cierra («Re-prueba que no cierra», con lo que le falta) y los cierres por eliminación o «no reproducible», que no usan re-prueba | La maqueta solo dibujaba los cuatro momentos de la demo; el motor calcula siete estados |
+| `hallazgo` | «Re-prueba por confirmar» dice «Está sin confirmar: todavía no cuenta» y no cita un lote | Los lotes llegan con la carga de evidencia |
+| `hallazgo` | Las métricas opcionales de un vector se nombran por grupo («Métrica de amenaza») sin nombre de valor; sin conteo en el sobre, la frecuencia dice «falló su única medición»; una severidad baja o informativa dice «Esta severidad no tiene plazo» | La maqueta no tenía esos casos; ninguno cambia lo que la pantalla explica |
+| `hallazgo` | El aviso de revisión pide decidir de nuevo (aceptarlo otra vez con justificación nueva, o corregirlo) y no habla de reabrir | No hay reapertura en este sprint |
+| `barra lateral` | «Evidencia» abre el primer hallazgo del selector; «Carga» sigue marcada «pronto» | La carga de evidencia no tiene pantalla todavía: un enlace roto no se dibuja |
 
 ## Cobertura
 
