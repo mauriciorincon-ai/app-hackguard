@@ -21,7 +21,10 @@ import type {
   PruebaConocida,
 } from "../../engine/evidencia/validar.ts";
 import type { ArchivoDeHallazgo } from "../../engine/hallazgos/validar.ts";
-import { PlanDeMuestreo } from "../../engine/lotes/esquemas.ts";
+import {
+  EtiquetasDeCarga,
+  PlanDeMuestreo,
+} from "../../engine/lotes/esquemas.ts";
 import { validarPlanDeMuestreo } from "../../engine/lotes/muestra.ts";
 import type { ArchivoDeLote } from "../../engine/lotes/validar.ts";
 import {
@@ -124,6 +127,11 @@ export function cargarMuestreo(raiz: string): PlanDeMuestreo {
     );
   return plan;
 }
+/** Las etiquetas de estado de la pantalla de carga (`datos/evidencia/etiquetas-de-carga.json`). */
+export const cargarEtiquetasDeCarga = (raiz: string): EtiquetasDeCarga =>
+  EtiquetasDeCarga.parse(
+    leerJson(raiz, "datos/evidencia/etiquetas-de-carga.json"),
+  );
 export const cargarEtiquetasDeHallazgo = (raiz: string): EtiquetasDeHallazgo =>
   EtiquetasDeHallazgo.parse(leerJson(raiz, "datos/hallazgos/etiquetas.json"));
 

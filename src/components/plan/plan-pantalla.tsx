@@ -621,8 +621,8 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "Corre las pruebas con tus herramientas, dentro de estos límites. Es el mismo archivo que escribe el comando que emite el plan.",
-                en: "Run the tests with your tools, within these limits. It is the same file the command that issues the plan writes.",
+                es: "Corre las pruebas con tus herramientas, dentro de estos límites. El paquete es el mismo archivo que escribe el comando que emite el plan. Los resultados vuelven por la carga de evidencia.",
+                en: "Run the tests with your tools, within these limits. The package is the same file the command that issues the plan writes. Results come back through evidence intake.",
               }}
             />
           </p>
@@ -633,6 +633,14 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           >
             <T t={{ es: "Descargar el paquete", en: "Download the package" }} />
           </a>
+          <Link className="hg-boton" href="/evidencia/carga">
+            <T
+              t={{
+                es: "Ir a la carga de evidencia",
+                en: "Go to evidence intake",
+              }}
+            />
+          </Link>
         </div>
       </section>
     </div>

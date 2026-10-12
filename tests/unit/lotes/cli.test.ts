@@ -16,9 +16,12 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { sha256 } from "../../../src/engine/huella.ts";
 import { ASISTENTE, RAIZ } from "../evidencia/ayuda.ts";
+
+// Cada prueba lanza varios procesos de Node: con la máquina cargada, los 5 s por omisión no alcanzan.
+vi.setConfig({ testTimeout: 30_000 });
 
 const FECHA_DEL_PLAN = "2026-10-11";
 const CRUDO_SECRETO = "SALIDA-CRUDA-SECRETA token=abc123 respuesta completa";

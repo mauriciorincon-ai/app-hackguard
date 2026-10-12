@@ -178,10 +178,15 @@ test.describe("«Qué puedes hacer» es de solo lectura", () => {
 });
 
 test.describe("navegación", () => {
-  test("el enlace de la barra lateral lleva al primer hallazgo", async ({
+  test("la barra lateral lleva a la carga y, de ahí, al primer hallazgo", async ({
     page,
   }) => {
     await page.goto("/catalogo/PR-IA-PINJ-001");
+    await page
+      .locator('a[href="/evidencia/carga"]:visible')
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/evidencia\/carga$/);
     await page
       .locator(`a[href="${ruta(ABIERTO)}"]:visible`)
       .first()

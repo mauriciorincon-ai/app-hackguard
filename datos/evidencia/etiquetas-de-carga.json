@@ -1,0 +1,135 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Etiquetas de estado de la pantalla de carga: el rol de color y el símbolo salen de aquí, nunca del componente (regla dura 12). Los veredictos de cada sobre se nombran con el vocabulario de estados del catálogo.",
+    "en": "State labels of the intake screen: the colour role and the symbol come from here, never from the component (hard rule 12). Each envelope's verdict is named with the catalog's state vocabulary."
+  },
+  "etiquetas": [
+    {
+      "id": "siempre_larga",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Se revisa siempre",
+        "en": "Always reviewed"
+      }
+    },
+    {
+      "id": "en_muestra_larga",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "En la muestra",
+        "en": "In the sample"
+      }
+    },
+    {
+      "id": "fuera_de_la_muestra_larga",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Fuera de la muestra",
+        "en": "Outside the sample"
+      }
+    },
+    {
+      "id": "siempre",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Siempre",
+        "en": "Always"
+      }
+    },
+    {
+      "id": "en_muestra",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Muestra",
+        "en": "Sample"
+      }
+    },
+    {
+      "id": "fuera_de_la_muestra",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Fuera",
+        "en": "Out"
+      }
+    },
+    {
+      "id": "paso_hecho",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Hecho",
+        "en": "Done"
+      }
+    },
+    {
+      "id": "paso_por_hacer",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Por hacer",
+        "en": "To do"
+      }
+    },
+    {
+      "id": "paso_confirmar",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Lo confirma una persona",
+        "en": "A person confirms it"
+      }
+    },
+    {
+      "id": "advertencia_del_lote",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Advertencia del lote",
+        "en": "Batch warning"
+      }
+    },
+    {
+      "id": "via_sin_construir",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Esta vía no existe en esta versión",
+        "en": "This route does not exist in this version"
+      }
+    },
+    {
+      "id": "lote_sin_confirmar",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": {
+        "es": "Sin confirmar",
+        "en": "Not confirmed"
+      }
+    },
+    {
+      "id": "lote_confirmado",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Confirmado",
+        "en": "Confirmed"
+      }
+    },
+    {
+      "id": "lote_a_revision_individual",
+      "rol": "neutro",
+      "simbolo": "parcial",
+      "nombre": {
+        "es": "A revisión individual",
+        "en": "To individual review"
+      }
+    }
+  ]
+}

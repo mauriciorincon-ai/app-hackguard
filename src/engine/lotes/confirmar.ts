@@ -80,10 +80,42 @@ export async function confirmarLote(e: {
     .map((s) => s.id);
   if (ya.length > 0) return bloqueo("sobre_ya_confirmado", ya);
 
-  // El libro como quedaría con este lote confirmado: ¿alguna falla que se queda en el lote abriría un hallazgo?
+  const abren = sobresQueAbririanHallazgo({
+    lote: e.lote,
+    libro: e.libro,
+    hallazgos: e.hallazgos,
+    separados,
+    por: e.por,
+    fecha: e.fecha,
+  });
+  if (abren.length > 0) return bloqueo("falla_que_abre_hallazgo", abren);
+
+  const lote = await resellarLote(e.lote, {
+    por: e.por,
+    fecha: e.fecha,
+    decision: "confirmado",
+    revisados: revision.revisados,
+    separados: [...separados].sort(),
+  });
+  return { ok: true, lote, revision };
+}
+
+/**
+ * Las fallas de un lote que, confirmado el lote (menos los separados), abrirían un hallazgo nuevo: no hay otro vivo de
+ * la misma prueba y activo, y no son una re-prueba. La confirmación del lote se presta al libro EN MEMORIA, como lo hace
+ * `libroEfectivo`. Es la única cuenta: la usan `confirmarLote` y la pantalla de carga.
+ */
+export function sobresQueAbririanHallazgo(e: {
+  lote: Pick<Lote, "id" | "sobres">;
+  libro: readonly SobreEfectivo[];
+  hallazgos: readonly Hallazgo[];
+  separados: ReadonlySet<string>;
+  por: string;
+  fecha: string;
+}): string[] {
   const delLote = new Set(e.lote.sobres.map((s) => s.id));
   const hipotetico: SobreEfectivo[] = e.libro.map((s) =>
-    delLote.has(s.id) && !separados.has(s.id) && s.confirmacion === null
+    delLote.has(s.id) && !e.separados.has(s.id) && s.confirmacion === null
       ? {
           ...s,
           confirmacion: {
@@ -95,18 +127,8 @@ export async function confirmarLote(e: {
         }
       : s,
   );
-  const abren = hipotetico
-    .filter((s) => delLote.has(s.id) && !separados.has(s.id))
+  return hipotetico
+    .filter((s) => delLote.has(s.id) && !e.separados.has(s.id))
     .filter((s) => decidirApertura(s, hipotetico, e.hallazgos).abre)
     .map((s) => s.id);
-  if (abren.length > 0) return bloqueo("falla_que_abre_hallazgo", abren);
-
-  const lote = await resellarLote(e.lote, {
-    por: e.por,
-    fecha: e.fecha,
-    decision: "confirmado",
-    revisados: revision.revisados,
-    separados: [...separados].sort(),
-  });
-  return { ok: true, lote, revision };
 }

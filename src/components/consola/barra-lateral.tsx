@@ -92,7 +92,7 @@ interface Seccion {
   ruta: string | null;
 }
 
-// Las cinco secciones de la maqueta (decisión 9 de diseño). Solo Catálogo tiene pantalla en este sprint.
+// Las cinco secciones de la maqueta (decisión 9 de diseño). Las que todavía no tienen pantalla van sin enlace.
 const SECCIONES: Seccion[] = [
   { id: "tablero", nombre: { es: "Tablero", en: "Dashboard" }, ruta: null },
   {
@@ -108,7 +108,7 @@ const SECCIONES: Seccion[] = [
   {
     id: "evidencia",
     nombre: { es: "Evidencia", en: "Evidence" },
-    ruta: `/evidencia/hallazgos/${PRIMER_HALLAZGO}`,
+    ruta: "/evidencia/carga",
   },
   { id: "brecha", nombre: { es: "Brecha", en: "Gap" }, ruta: null },
 ];
@@ -131,7 +131,7 @@ const SUBPAGINAS: Record<
     { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
   ],
   evidencia: [
-    { nombre: { es: "Carga", en: "Intake" }, ruta: null },
+    { nombre: { es: "Carga", en: "Intake" }, ruta: "/evidencia/carga" },
     {
       nombre: { es: "Hallazgos", en: "Findings" },
       ruta: `/evidencia/hallazgos/${PRIMER_HALLAZGO}`,

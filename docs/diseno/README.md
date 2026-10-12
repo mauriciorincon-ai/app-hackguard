@@ -222,7 +222,7 @@ producto lo calcula el motor sobre las 38 pruebas de la instantánea, y manda el
 | `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | El libro de evidencia (S5) no cambia el estado del activo todavía |
 | `activo`, `plan` | Los estados de pantalla «vacío», «cargando» y «error» solo existen en la maqueta | Es un export estático: un activo o un plan que no cuadra con su huella rompe el build en vez de mostrarse |
 | `plan` | La cabecera y el pie no enseñan la huella solo abreviada: el panel del paquete trae la huella completa del paquete y de la instantánea | El plan se puede reproducir y comparar byte a byte |
-| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S6; un enlace a una pantalla que no existe sería un enlace roto |
+| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» (superado en el Sprint 6: ofrece las dos) | La carga de evidencia era del S6; un enlace a una pantalla que no existía habría sido un enlace roto |
 | `plan` | Cada prueba del paquete muestra su selector, `k` y el nombre de su regla de veredicto; no la frase «umbral de fallida: 100 por mil» | Esa frase era ilustrativa; el catálogo da la regla y `k`, y la cota la calcula el informe |
 | `plan` | La herramienta de cada prueba es la que mide su resultado esperado, y puede variar entre pruebas de una misma familia | El catálogo recomienda hasta dos herramientas por prueba; la maqueta fijaba una |
 | `plan` | «Cobertura por control» cuenta los controles que citan las pruebas candidatas del activo, y las pruebas del plan sin control aparte | El catálogo tiene pruebas con control pendiente (las de software); la maqueta suponía todas con control |
@@ -245,7 +245,29 @@ su severidad y sus fechas salen iguales (`tests/unit/hallazgo-vista.test.tsx`).
 | `hallazgo` | «Re-prueba por confirmar» dice «Está sin confirmar: todavía no cuenta» y no cita un lote | Los lotes llegan con la carga de evidencia |
 | `hallazgo` | Las métricas opcionales de un vector se nombran por grupo («Métrica de amenaza») sin nombre de valor; sin conteo en el sobre, la frecuencia dice «falló su única medición»; una severidad baja o informativa dice «Esta severidad no tiene plazo» | La maqueta no tenía esos casos; ninguno cambia lo que la pantalla explica |
 | `hallazgo` | El aviso de revisión pide decidir de nuevo (aceptarlo otra vez con justificación nueva, o corregirlo) y no habla de reabrir | No hay reapertura en este sprint |
-| `barra lateral` | «Evidencia» abre el primer hallazgo del selector; «Carga» sigue marcada «pronto» | La carga de evidencia no tiene pantalla todavía: un enlace roto no se dibuja |
+| `barra lateral` | «Evidencia» abre el primer hallazgo del selector; «Carga» sigue marcada «pronto» (superado en el Sprint 6: «Evidencia» abre «Carga») | La carga de evidencia no tenía pantalla: un enlace roto no se dibuja |
+
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 6)
+
+La maqueta no se regenera en este sprint; estas diferencias las vigila `tests/unit/fidelidad-carga.test.tsx`, cada una con su
+razón, y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa lo comprueba
+`tests/unit/carga-interaccion.test.tsx` (regla 22), y `tests/unit/carga-vista.test.ts` comprueba que lo que la pantalla dice de
+un lote sale del motor.
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| `evidencia` | Los estados «vacío», «cargando» y «error» solo existen en la maqueta; «vacío» se dibuja si no hay un solo lote | Es un export estático: un lote que no cuadra con su libro, su plan o su plan de muestreo rompe el build en vez de mostrarse |
+| `evidencia` | Donde la maqueta pone «Confirmar el lote» y «Revisar uno por uno» como botones que deciden, el producto pone los mismos nombres con su comando (`pnpm evidencia:confirmar-lote`); el comando ya lleva `--separar` con las fallas que abrirían un hallazgo | Un lote es un archivo con esquema y su confirmación la firma una persona con su nombre y la fecha: nadie decide en pantalla (reglas duras 1 y 6) |
+| `evidencia` | Las pestañas «Texto pegado» y «Sobre manual» no tienen formulario: la primera dice que esa vía no existe en esta versión y la segunda enseña los dos comandos del CLI | El extractor de texto pegado es una pieza con IA a demanda que no se construye aquí, y un sobre manual es un archivo con esquema; un campo que parezca funcionar sin guardar nada sería engañar |
+| `evidencia` | «El archivo se leyó una vez: no se guarda» y no «en tu equipo»; el selector de lote lista los lotes ya importados con el CLI | El archivo lo lee el CLI (`pnpm evidencia:importar`); leerlo en el navegador no está construido |
+| `evidencia` | «Cómo se elige la muestra» cita el plan de datos (calidad límite 10 %, riesgo del consumidor 5 %, cero errores) en lugar de «tamaños ilustrativos», y el tramo de 51 a 90 revisa **25** y no 24 | Cada tramo se comprueba con aritmética exacta al cargar el plan y 24 no cumple el 5 %; los tamaños de la maqueta eran ilustrativos |
+| `evidencia` | La tabla de sobres admite «Fuera de la muestra» además de «Siempre» y «Muestra» | Con un lote de más de 25 sobres no todos los que no fallan entran a la muestra; la maqueta solo dibujaba lotes de tres |
+| `evidencia` | «Sobre seleccionado» añade la fila «Confirmación»: propuesta, separado del lote, lo confirmó el lote (con quién y cuándo) o lo confirmó una persona; la ficha del lote añade la huella del registro | El libro efectivo (ADR-009) presta la confirmación de un lote a sus sobres: la pantalla dice por qué un sobre cuenta |
+| `evidencia` | La decisión del lote dibuja solo el estado que tiene (sin confirmar · confirmado · a revisión individual); la maqueta dibuja los tres, ocultos | El estado es un dato del lote y no un botón que se pulsa; «Confirmado» lleva el nombre de quien firmó, no «por ti» |
+| `evidencia` | «Ejecutado por» es el nombre de la persona tal como está en el lote, sin traducción | Un nombre propio no se traduce |
+| `evidencia` | Un sobre que es la re-prueba de un hallazgo dice si cierra o no con el estado que le da el motor, y un lote confirmado dice «cerró el hallazgo» | La misma cuenta que usa el hallazgo: una cuenta, un cálculo |
+| `plan` | El pie del paquete ofrece «Descargar el paquete» **y** «Ir a la carga de evidencia» | La carga de evidencia ya tiene pantalla (S6); en el S4 solo se ofrecía la descarga para no dibujar un enlace roto |
+| `barra lateral` | «Evidencia» abre «Carga» (no el primer hallazgo) y las dos páginas de Evidencia, «Carga» y «Hallazgos», tienen enlace | Como en la maqueta; la carga ya existe |
 
 ## Cobertura
 

@@ -13,6 +13,8 @@ import {
   Huella,
   IdMinusculas,
   Nombre,
+  ROLES,
+  SIMBOLOS,
   Texto,
 } from "../catalogo/esquemas.ts";
 import { IdSobre, ORIGENES_DE_SOBRE } from "../evidencia/esquemas.ts";
@@ -101,3 +103,46 @@ export const PlanDeMuestreo = z.strictObject({
     .min(1),
 });
 export type PlanDeMuestreo = z.infer<typeof PlanDeMuestreo>;
+
+/**
+ * Las etiquetas de estado de la pantalla de carga (regla dura 12: símbolo + texto + color, y el color es un rol que sale
+ * de datos). Son del lote y de su revisión; los veredictos de cada sobre se nombran con el vocabulario del catálogo.
+ */
+export const IDS_DE_ETIQUETAS_DE_CARGA = [
+  "siempre_larga",
+  "en_muestra_larga",
+  "fuera_de_la_muestra_larga",
+  "siempre",
+  "en_muestra",
+  "fuera_de_la_muestra",
+  "paso_hecho",
+  "paso_por_hacer",
+  "paso_confirmar",
+  "advertencia_del_lote",
+  "via_sin_construir",
+  "lote_sin_confirmar",
+  "lote_confirmado",
+  "lote_a_revision_individual",
+] as const;
+export type IdDeEtiquetaDeCarga = (typeof IDS_DE_ETIQUETAS_DE_CARGA)[number];
+
+export const EtiquetasDeCarga = z.strictObject({
+  version: Nombre,
+  nota: Texto,
+  etiquetas: z
+    .array(
+      z.strictObject({
+        id: z.enum(IDS_DE_ETIQUETAS_DE_CARGA),
+        rol: z.enum(ROLES),
+        simbolo: z.enum(SIMBOLOS),
+        nombre: Texto,
+      }),
+    )
+    .refine(
+      (es) =>
+        IDS_DE_ETIQUETAS_DE_CARGA.every((id) => es.some((e) => e.id === id)) &&
+        new Set(es.map((e) => e.id)).size === es.length,
+      { message: "etiquetas-de-carga:cada-id-una-vez" },
+    ),
+});
+export type EtiquetasDeCarga = z.infer<typeof EtiquetasDeCarga>;
