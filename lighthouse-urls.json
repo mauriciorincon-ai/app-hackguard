@@ -2,5 +2,7 @@
   "/catalogo",
   "/catalogo/PR-IA-PINJ-001",
   "/catalogo/marcos",
-  "/catalogo/controles"
+  "/catalogo/controles",
+  "/activos/act-demo-asistente",
+  "/activos/act-demo-asistente/plan"
 ]

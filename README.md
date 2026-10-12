@@ -30,8 +30,8 @@ pnpm build && pnpm start   # y abre /catalogo · and open /catalogo
 
 ## Dónde vive el código · Where the code lives
 
-- `src/engine/`: el núcleo determinista (catálogo, huellas, semáforo, clasificador demo) · the deterministic core.
+- `src/engine/`: el núcleo determinista (catálogo, huellas, semáforo, clasificador demo, activos y planificador) · the deterministic core (catalog, fingerprints, traffic light, demo classifier, assets and planner).
 - `src/cli/`: los comandos que leen `datos/` y llaman al núcleo · the commands that read `datos/` and call the core.
-- `src/app/` y `src/components/`: la interfaz, hoy el catálogo, sus fichas, los marcos y los controles (Next.js, exportación estática) · the interface, today the catalog, its records, the frameworks and the controls (Next.js, static export).
+- `src/app/` y `src/components/`: la interfaz, hoy el catálogo, sus fichas, los marcos, los controles, los activos y sus planes (Next.js, exportación estática) · the interface, today the catalog, its records, the frameworks, the controls, the assets and their plans (Next.js, static export).
 - `src/lib/catalogo/`: lo que la pantalla lee de la instantánea oficial · what the screen reads from the official snapshot.
-- `datos/`: el catálogo como dato, con su huella · the catalog as fingerprinted data.
+- `datos/`: el catálogo como dato, con su huella, y los activos demo con sus planes · the catalog as fingerprinted data, and the demo assets with their plans.
