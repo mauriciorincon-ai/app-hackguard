@@ -1,0 +1,14 @@
+{
+  "nota": "Código de puntaje de la calculadora oficial de CVSS 4.0, copiado sin tocar un byte (G-Plan P2). No se edita: scripts/severidad/vendor-first.mjs lo envuelve y tests/unit/severidad/vendor.test.ts vigila que no cambie.",
+  "origen": "https://github.com/FIRSTdotorg/cvss-v4-calculator",
+  "commit": "c5b0d409ae9f57c44264c6ce5f27d89298e1d32a",
+  "licencia": "BSD-2-Clause (Copyright (c) 2023 FIRST.ORG, Inc., Red Hat, and contributors); el LICENSE viaja con el código",
+  "archivos": {
+    "cvss_score.js": "453ce6767b5c3939b51d1f21315f2649e47b5abeca674be287e94b524472a1bc",
+    "cvss_lookup.js": "d533fe625d95e15b7b488a4bf93dab5f7df16b7e38b0c8ee01281d7b31a8165e",
+    "max_composed.js": "be707cc82c17993a04a84e47b1a8aaa1d0d212b56852254659ce77fd7d959f63",
+    "max_severity.js": "f838ecb41bfd5114456e7fa7df8a8449ca2735c176867886fa34bd011dee0b24",
+    "metrics.js": "99ee2643587071bf744cd090c4bb2db58d523ed0276efd809871b00a12985a4c",
+    "LICENSE": "5d672639189da9bda914dd8c847069cc6959135000b17c45262bb742e5d3b392"
+  }
+}
