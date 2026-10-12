@@ -3,6 +3,7 @@
 // Corre con el TypeScript nativo de Node: `node src/cli/propuestas.ts <comando> [opciones]`.
 //
 //   buscar    --marco <id> | --familia <id> | --todos  --fecha AAAA-MM-DD     (la ÚNICA pieza con red; la usa el investigador)
+//   leer      <archivo> --activo <id> --fecha AAAA-MM-DD                  (el texto pegado del extractor: lo guarda y da su huella)
 //   verificar <propuestas/corridas/<corrida>>  [--json] [--desde n]                        (sella la corrida: sin red)
 //   validar   [--json]                                                          (todas las corridas selladas y el libro)
 //   listar    [--json]                                                          (la bandeja)
@@ -11,9 +12,17 @@
 //
 // El libro de decisiones (`datos/propuestas/decisiones.jsonl`) es de SOLO AGREGAR. Aprobar un sobre crea un sobre POR CONFIRMAR (no lo
 // confirma); una propuesta de demostración no escribe en el catálogo ni en el libro de evidencia sin `--aplicar-a-demo`.
+// Decidir lo hace una persona en su terminal: dentro de una sesión de Claude Code, o sin terminal, se niega (regla dura 2).
 // Códigos de salida: 0 ok · 2 bloqueado (inválido, o lo pedido contradice una regla; no escribe nada) · 3 error de uso o de lectura.
-import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { huella } from "../engine/huella.ts";
 import {
@@ -31,6 +40,7 @@ import {
 import { evaluarCriterios } from "../engine/propuestas/traza.ts";
 import { sellarCorrida } from "../engine/propuestas/verificar.ts";
 import { cargarActivosDelBuild } from "../lib/activos/cargar.ts";
+import { origenDelActivo } from "../lib/evidencia/cargar-evidencia.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
 import { buscar } from "../lib/propuestas/buscar.ts";
 import {
@@ -48,12 +58,15 @@ import {
   crearSobrePorConfirmar,
   escribirPruebaAprobada,
 } from "../lib/propuestas/aplicar.ts";
+import { puedeDecidir } from "../lib/propuestas/frontera.ts";
+import { leerTextoPegado } from "../lib/propuestas/leer.ts";
+import { guardarLectura } from "../lib/propuestas/lecturas.ts";
 
 const CODIGOS = { ok: 0, bloqueado: 2, uso: 3 } as const;
 
 const USO = {
-  es: "uso: propuestas buscar --marco <id> | --familia <id> | --todos --fecha AAAA-MM-DD\n     propuestas verificar <propuestas/corridas/<corrida>> [--json] [--desde n]\n     propuestas validar [--json]\n     propuestas listar [--json]\n     propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <persona> --fecha AAAA-MM-DD [--motivo <texto>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
-  en: "usage: propuestas buscar --marco <id> | --familia <id> | --todos --fecha YYYY-MM-DD\n       propuestas verificar <propuestas/corridas/<run>> [--json]\n       propuestas validar [--json]\n       propuestas listar [--json]\n       propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <person> --fecha YYYY-MM-DD [--motivo <text>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
+  es: "uso: propuestas buscar --marco <id> | --familia <id> | --todos --fecha AAAA-MM-DD\n     propuestas leer <archivo> --activo <id> --fecha AAAA-MM-DD\n     propuestas verificar <propuestas/corridas/<corrida>> [--json] [--desde n]\n     propuestas validar [--json]\n     propuestas listar [--json]\n     propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <persona> --fecha AAAA-MM-DD [--motivo <texto>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
+  en: "usage: propuestas buscar --marco <id> | --familia <id> | --todos --fecha YYYY-MM-DD\n       propuestas leer <file> --activo <id> --fecha YYYY-MM-DD\n       propuestas verificar <propuestas/corridas/<run>> [--json]\n       propuestas validar [--json]\n       propuestas listar [--json]\n       propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <person> --fecha YYYY-MM-DD [--motivo <text>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
 };
 
 class ErrorDeUso extends Error {}
@@ -67,6 +80,7 @@ function opciones(argv: string[]) {
       marco: { type: "string" },
       familia: { type: "string" },
       todos: { type: "boolean", default: false },
+      activo: { type: "string" },
       fecha: { type: "string" },
       decision: { type: "string" },
       por: { type: "string" },
@@ -136,6 +150,18 @@ async function mundo(raiz: string) {
 const todasLasPropuestas = (corridas: CorridaCargada[]): PropuestaSellada[] =>
   corridas.flatMap((c) => c.corrida.propuestas);
 
+/** Los nombres de las carpetas de corrida, selladas o no: una consulta de hoy que aún no se selló también ocupa su número. */
+function carpetasDeCorrida(raiz: string): string[] {
+  return [CARPETA_DE_CORRIDAS, CARPETA_DE_DEMO].flatMap((base) => {
+    const carpeta = path.join(raiz, base);
+    return existsSync(carpeta)
+      ? readdirSync(carpeta, { withFileTypes: true })
+          .filter((e) => e.isDirectory())
+          .map((e) => e.name)
+      : [];
+  });
+}
+
 /** `INV-2026-10-02-01`: la corrida siguiente de ese agente y ese día. */
 function siguienteCorrida(
   existentes: readonly string[],
@@ -159,9 +185,7 @@ async function principal(argv: string[]): Promise<number> {
     if (o.marco === undefined && o.familia === undefined && !o.todos)
       throw new ErrorDeUso("--marco <id> | --familia <id> | --todos");
     const { instantanea } = await cargarInstantaneaOficial(raiz);
-    const { corridas } = await cargarCorridas(raiz);
-    const ids = corridas.map((c) => c.corrida.id);
-    const corrida = siguienteCorrida(ids, "INV", fecha);
+    const corrida = siguienteCorrida(carpetasDeCorrida(raiz), "INV", fecha);
     const alcance =
       o.marco !== undefined
         ? { es: `El marco ${o.marco}`, en: `The framework ${o.marco}` }
@@ -192,13 +216,54 @@ async function principal(argv: string[]): Promise<number> {
     );
     for (const f of noAccesibles)
       escribirTexto(
-        `  fuente_no_accesible_al_agente: ${f.nombre} (${f.motivo ?? "?"}). Adjunta o pega el documento y se procesa como cualquier otra fuente.\n`,
+        `  fuente_no_accesible_al_agente: ${f.nombre} (${f.motivo ?? "?"}). No se rodea: si necesitas ese documento, léelo tú y haz el cambio a mano.\n`,
       );
     return CODIGOS.ok;
   }
 
   const { ctx } = await mundo(raiz);
   const cargadas = await cargarCorridas(raiz);
+
+  if (o.comando === "leer") {
+    const archivo = requerido(o.objetivo, "<archivo con el texto>");
+    const activo = requerido(o.activo, "--activo <id>");
+    const fecha = requerido(o.fecha, "--fecha AAAA-MM-DD");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha))
+      throw new ErrorDeUso("--fecha AAAA-MM-DD");
+    // El extractor solo corre sobre un activo demo con plan (regla dura 8): el plan de uno propio no se le da a un modelo.
+    if (origenDelActivo(raiz, activo) !== "demo" || !ctx.planes.has(activo)) {
+      escribirTexto(
+        `«${activo}» no es un activo demo con plan emitido: el extractor no corre sobre activos propios en este sprint.\n"${activo}" is not a demo asset with an issued plan: the extractor does not run on own assets in this sprint.\n`,
+      );
+      return CODIGOS.bloqueado;
+    }
+    const leido = leerTextoPegado(raiz, archivo);
+    if (!leido.ok) {
+      escribirTexto(`${leido.motivo}.\nNo se leyó nada / Nothing was read.\n`);
+      return CODIGOS.bloqueado;
+    }
+    const huellaDelTexto = await guardarLectura(raiz, leido.texto);
+    const corrida = siguienteCorrida(carpetasDeCorrida(raiz), "EXT", fecha);
+    const carpeta = `${CARPETA_DE_CORRIDAS}/${corrida}`;
+    mkdirSync(path.join(raiz, carpeta), { recursive: true });
+    const salida = {
+      corrida,
+      carpeta,
+      activo,
+      archivo: leido.ruta,
+      texto: {
+        huella: huellaDelTexto,
+        caracteres: leido.texto.replace(/\s+/gu, " ").trim().length,
+      },
+      plan: [...(ctx.planes.get(activo) ?? [])].sort(),
+    };
+    if (o.json) escribirTexto(json(salida));
+    else
+      escribirTexto(
+        `Corrida ${corrida}: texto leído de ${leido.ruta} (${salida.texto.caracteres} caracteres, huella ${huellaDelTexto}).\nEscribe ${carpeta}/propuesta.json con esa huella y esos caracteres; el plan de ${activo} tiene ${salida.plan.length} pruebas.\nRun ${corrida}: text read. Write ${carpeta}/propuesta.json with that fingerprint and character count.\n`,
+      );
+    return CODIGOS.ok;
+  }
 
   if (o.comando === "verificar") {
     const carpeta = carpetaDeCorrida(
@@ -355,6 +420,18 @@ async function principal(argv: string[]): Promise<number> {
   }
 
   if (o.comando === "decidir") {
+    const frontera = puedeDecidir({
+      raiz,
+      repo: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."),
+      env: process.env,
+      tty: Boolean(process.stdin.isTTY),
+    });
+    if (!frontera.ok) {
+      escribirTexto(
+        `Decidir una propuesta lo hace una persona: ${frontera.motivo}.\nNo se registró nada / Nothing was recorded.\n`,
+      );
+      return CODIGOS.bloqueado;
+    }
     const id = requerido(o.objetivo, "<PROP-NNNN>");
     const tipo = requerido(o.decision, "--decision").replace(/-/g, "_");
     const por = requerido(o.por, "--por <persona>");
@@ -408,7 +485,11 @@ async function principal(argv: string[]): Promise<number> {
       decision.decision === "aprobar_tras_revisar";
     const efectosReales =
       aprueba && (p.tipo === "sobre" || p.tipo === "prueba_nueva");
-    if (efectosReales && dePropuesta.lugar === "demo" && !o["aplicar-a-demo"]) {
+    // Una corrida de demostración, o un sobre de un activo demo (aunque la corrida sea real), escribe en datos de demostración.
+    const esDeDemo =
+      dePropuesta.lugar === "demo" ||
+      (p.tipo === "sobre" && origenDelActivo(raiz, p.activo) === "demo");
+    if (efectosReales && esDeDemo && !o["aplicar-a-demo"]) {
       escribirTexto(
         "Esta propuesta es de demostración: aprobarla escribiría en el catálogo o en el libro de evidencia de demostración. Añade --aplicar-a-demo si es lo que quieres.\nThis proposal is a demonstration: approving it would write to the demo catalog or evidence ledger. Add --aplicar-a-demo if that is what you want.\n",
       );

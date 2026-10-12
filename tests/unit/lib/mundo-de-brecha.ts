@@ -17,6 +17,8 @@ import {
   nombreDeLaInstantanea,
 } from "./mundo-de-activos";
 import { mundoDeHallazgos } from "./mundo-de-hallazgos";
+import { cargarMundoDePropuestas } from "../../../src/lib/propuestas/pagina.ts";
+import { resumenDePropuestas } from "../../../src/lib/propuestas/resumen.ts";
 
 export { activos, instantanea, mundoDeHallazgos };
 export const umbralesDeBrecha = cargarUmbralesDeBrecha(process.cwd());
@@ -36,9 +38,24 @@ export const entradaDemo = (
 export const etiquetasDeBrecha = cargarEtiquetasDeBrecha(process.cwd());
 export const semillasDeCierre = cargarSemillasDeCierre(process.cwd());
 
-/** El mundo completo de la brecha en una fecha de consulta (por omisión, la de la instantánea): la entrada de las cinco vistas. */
+/** Las propuestas reales del repositorio (las corridas demo selladas y el libro): lo mismo que lee el build. */
+export const propuestasDelRepo = await cargarMundoDePropuestas(
+  {
+    instantanea,
+    nombre: nombreDeLaInstantanea,
+    consulta: instantanea.fecha_evaluacion,
+    activos,
+  },
+  process.cwd(),
+);
+
+/**
+ * El mundo completo de la brecha en una fecha de consulta (por omisión, la de la instantánea): la entrada de las cinco vistas. Con las
+ * propuestas del repositorio, como el build; con `propuestas: false`, sin ellas (el mundo de antes del S8).
+ */
 export const mundoDeBrecha = (
   consulta: string = instantanea.fecha_evaluacion,
+  { propuestas = true }: { propuestas?: boolean } = {},
 ): Promise<MundoDeBrecha> =>
   armarMundoDeBrecha({
     instantanea,
@@ -49,4 +66,7 @@ export const mundoDeBrecha = (
     umbrales: umbralesDeBrecha,
     etiquetas: etiquetasDeBrecha,
     semillas: semillasDeCierre,
+    ...(propuestas
+      ? { propuestas: resumenDePropuestas(propuestasDelRepo) }
+      : {}),
   });

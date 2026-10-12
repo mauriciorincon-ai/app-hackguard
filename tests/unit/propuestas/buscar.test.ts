@@ -13,7 +13,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Instantanea } from "../../../src/engine/catalogo/instantanea.ts";
-import { huellaDeTexto } from "../../../src/engine/propuestas/citas.ts";
+import {
+  huellaDeTexto,
+  normalizarEspacios,
+} from "../../../src/engine/propuestas/citas.ts";
 import { Consulta } from "../../../src/engine/propuestas/esquemas.ts";
 import {
   buscar,
@@ -138,7 +141,7 @@ describe("lo que se lee y lo que se guarda", () => {
       CARPETA_DE_LECTURAS,
       `${a.huella_de_la_pagina}.txt`,
     );
-    expect(readFileSync(archivo, "utf8")).toBe(texto);
+    expect(normalizarEspacios(readFileSync(archivo, "utf8"))).toBe(texto);
   });
   it("la lectura se guarda con permisos 600 (un derivado nunca nace menos privado que su fuente)", async () => {
     const { consulta } = await filas(

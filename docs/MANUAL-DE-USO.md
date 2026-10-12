@@ -24,7 +24,7 @@ Hoy puedes **recorrer el catálogo de pruebas en pantalla** (la lista con sus fi
 pantallas está el **catálogo como dato**, con sus comandos para validarlo y fotografiarlo, y un **clasificador demo**
 para la familia de modelos de decisión. Desde el Sprint 4 también puedes ver los **activos** y el **plan de pruebas** de
 cada uno. Desde el Sprint 5 también puedes leer los **hallazgos** de la evidencia confirmada. Desde el Sprint 6 también puedes ver los **lotes** de evidencia que llegan de Garak o ZAP, y su revisión. Desde el Sprint 7 también puedes ver el **tablero** (la portada), la **brecha** y el **informe**: las cinco
-pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones (propuestas) aparecen en la barra lateral con la marca «pronto».
+pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 también puedes ver la **bandeja de propuestas**, donde llega lo que proponen el investigador y el extractor: toda sección de la barra lateral tiene ya su pantalla.
 
 ### Primeros pasos
 
@@ -116,7 +116,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
        `prueba/revision-sin-registro` dice «huella del contenido a revisar: …». Si el contenido cambia después,
        `prueba/revision-desactualizada` da la huella nueva.
 - **Limitaciones conocidas:**
-  - **Solo algunas vistas están en pantalla:** el catálogo, los marcos, los controles y los activos con su plan. Lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
+  - **La pantalla solo lee:** las vistas (catálogo, marcos, controles, activos con su plan, evidencia, tablero, brecha y propuestas) muestran lo que los comandos de arriba escriben; nada de lo que se hace en una pantalla cambia un archivo. Lo que cambia un archivo se hace por comando (ver «El catálogo en pantalla»).
   - **Instantánea bloqueada:** si el catálogo es inválido, no se escribe nada (código 2).
   - **Fecha obligatoria:** la fecha de la instantánea es obligatoria y nunca se toma del reloj. Una fecha anterior
     a la última verificación del catálogo se rechaza (código 3).
@@ -149,7 +149,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
 - **Cómo se usa:**
   1. Abre la aplicación: la raíz te lleva al **Tablero**. La barra lateral tiene cinco secciones; dentro de
      Catálogo (**Pruebas**, **Marcos** y **Controles**), **Activos**, la **carga** y los **hallazgos** de **Evidencia**, el
-     **Tablero** y la **Brecha** funcionan. Las demás llevan la marca «pronto».
+     **Tablero**, la **Brecha** y las **Propuestas** (dentro de Catálogo) funcionan. Ninguna sección lleva ya la marca «pronto».
   2. Arriba ves el nombre de la **instantánea** que se está leyendo, su huella abreviada, cuántas pruebas hay y la
      **fecha de consulta**, y cuatro cifras: cuántas pruebas están vigentes, por revisar, vencidas y sin control.
   3. **Filtra** con las píldoras de familia (Software, Agente, Modelo generativo, Modelo de decisión) y con las listas
@@ -180,7 +180,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
   vuelve a publicar**: la fecha de consulta que muestra arriba es la que manda. Una persona que prepare el sitio puede
   fijarla con la variable `HACKGUARD_CONSULTA` (AAAA-MM-DD) para ver cómo se vería otro día.
 - **Limitaciones conocidas:**
-  - Las propuestas todavía no existen como pantalla.
+  - Las propuestas tienen su pantalla (**Catálogo › Propuestas**): ahí se ve lo que el investigador y el extractor proponen, y la decisión se registra por comando.
   - Muestra la **instantánea oficial**, no los archivos sueltos de `datos/`: un cambio en un archivo aparece cuando se
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
@@ -359,9 +359,9 @@ pantallas leen la misma cuenta de la evidencia confirmada. Las demás secciones 
 - **Limitaciones conocidas:**
   - Con los datos de demo de hoy ningún control está en evidencia antigua. El estado existe y se cuenta en el tablero, pero
     aparecerá un control cuando su evidencia cumpla el umbral.
-  - Los marcos con versión nueva dicen «sin registro de la fuente»: la app todavía no sabe qué publica cada fuente.
+  - Los marcos con versión nueva salen de las propuestas del investigador: se listan con su propuesta, dicen «ninguno» solo si hay una corrida del investigador que lo respalde (y cuándo fue), y «sin registro» si ninguna corrida ha leído las fuentes.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
-  - La bandeja de propuestas todavía no existe como pantalla: llega con el investigador y el extractor.
+  - La cuenta de «propuestas por decidir» del tablero es la de la bandeja: baja cuando una decisión queda registrada en el libro, no cuando se marca en la pantalla.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
@@ -420,7 +420,7 @@ and it takes in results as evidence that a person confirms. Its central idea is 
 vulnerability: it is evidence that a control is failing.
 
 You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
-take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review. Since Sprint 7 the **dashboard** (the front page), the **gap** and the **report** read the same count of confirmed evidence.
+take snapshots of it, and a **demo classifier** for the decision-model family. Since Sprint 5 you can also read the **findings** of confirmed evidence, and since Sprint 6 the **batches** that come from Garak and ZAP, with their review. Since Sprint 7 the **dashboard** (the front page), the **gap** and the **report** read the same count of confirmed evidence. Since Sprint 8 you can also see the **proposals inbox**, where what the researcher and the extractor propose arrives: every section of the sidebar now has its screen.
 
 ### Getting started
 
@@ -512,7 +512,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
        finding `prueba/revision-sin-registro` says “fingerprint of the content to review: …”. If the content
        changes later, `prueba/revision-desactualizada` gives the new one.
 - **Known limitations:**
-  - **Only some views are on screen:** the catalog, the frameworks, the controls and the assets with their plan. Everything else is handled with the commands above (see “The catalog on screen”).
+  - **The screens only read:** the views (catalog, frameworks, controls, assets with their plan, evidence, dashboard, gap and proposals) show what the commands above write; nothing done on a screen changes a file. What changes a file is done by command (see “The catalog on screen”).
   - **Blocked snapshot:** if the catalog is invalid, nothing is written (code 2).
   - **Date required:** the snapshot date is required and is never taken from the clock. A date earlier than the
     catalog's latest verification is rejected (code 3).
@@ -545,7 +545,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to the **Dashboard**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**, the **Dashboard** and the **Gap**. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets**, the **intake** and the findings under **Evidence**, the **Dashboard**, the **Gap** and the **Proposals** (inside Catalog). No section carries the “soon” mark any more.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -576,7 +576,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals do not exist as a screen yet.
+  - Proposals have their screen (**Catalog › Proposals**): it shows what the researcher and the extractor propose, and the decision is recorded by command.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
@@ -751,9 +751,9 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 - **Known limitations:**
   - With today's demo data no control is in stale evidence. The state exists and the dashboard counts it, but a control
     will appear there once its evidence meets the threshold.
-  - Frameworks with a new version say “no source record”: the app does not yet know what each source publishes.
+  - Frameworks with a new version come from the researcher's proposals: they are listed with their proposal, say “none” only when a researcher run backs it (and when it was), and “no record” if no run has read the sources.
   - The screens are tested in Spanish; the English test arrives at the close of the milestone.
-  - The proposals inbox does not exist as a screen yet: it arrives with the researcher and the extractor.
+  - The dashboard's “proposals to decide” count is the inbox's: it goes down when a decision is recorded in the ledger, not when it is marked on screen.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
 

@@ -17,6 +17,7 @@ import {
   rotulo,
   rutaDeActivo,
   rutaDePlan,
+  MarcosConVersionNueva,
 } from "./piezas";
 
 /**
@@ -605,15 +606,7 @@ export function BrechaPantalla({ v }: { v: VistaDeBrecha }) {
             filas={v.alertas}
             titulo={{ es: "Vencidos y alertas", en: "Overdue and alerts" }}
           />
-          <p className="hg-panel-pie" data-marcos="sin-registro">
-            <Estado etiqueta={v.marcos} />{" "}
-            <T
-              t={{
-                es: "Marcos con versión nueva: todavía no hay registro de la versión que publica cada fuente, así que no se puede decir si alguno cambió.",
-                en: "Frameworks with a new version: there is no record yet of the version each source publishes, so there is no telling whether any changed.",
-              }}
-            />
-          </p>
+          <MarcosConVersionNueva marcos={v.marcos} clase="hg-panel-pie" />
         </section>
       </div>
     </>

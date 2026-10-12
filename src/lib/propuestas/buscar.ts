@@ -4,17 +4,14 @@
 //   · la petición no lleva cookie, credencial, referencia ni identificador de quien corre: una cabecera fija y nada más;
 //   · un 401, 403 o 429, o una página que pide sesión, se registra `no_accesible` y NUNCA se reintenta con otras cabeceras (RF-07.2b);
 //   · la página no se guarda en el repositorio: solo su texto, en `propuestas/.lecturas/` (ignorada por git), y su huella.
-import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
-import { huellaDeTexto } from "../../engine/propuestas/citas.ts";
 import {
   FORMATO_DE_CONSULTA,
   type Consulta,
 } from "../../engine/propuestas/esquemas.ts";
 import { enListaBlanca } from "../../engine/propuestas/fuentes.ts";
 import { textoDeLaPagina } from "../../engine/propuestas/pagina.ts";
-import { CARPETA_DE_LECTURAS } from "./cargar.ts";
+import { guardarLectura } from "./lecturas.ts";
 
 /** La única cabecera que se manda: dice qué es, no quién lo corre. */
 export const CABECERAS_DE_BUSQUEDA = {
@@ -118,16 +115,7 @@ async function leerUna(
       0,
       MAXIMO_DE_CARACTERES,
     );
-    const huellaDeLaPagina = await huellaDeTexto(texto);
-    mkdirSync(join(raiz, CARPETA_DE_LECTURAS), { recursive: true });
-    writeFileSync(
-      join(raiz, CARPETA_DE_LECTURAS, `${huellaDeLaPagina}.txt`),
-      texto,
-      {
-        encoding: "utf8",
-        mode: 0o600,
-      },
-    );
+    const huellaDeLaPagina = await guardarLectura(raiz, texto);
     return fila({
       estado: "leida",
       url,

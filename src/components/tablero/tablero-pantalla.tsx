@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RUTAS } from "@/lib/brecha/etiquetas";
+import { plural } from "@/lib/brecha/textos";
 import type { VistaDeTablero } from "@/lib/brecha/tipos";
 import {
   Cifras,
@@ -209,14 +210,29 @@ export function TableroPantalla({ v }: { v: VistaDeTablero }) {
                     en: "What needs your attention",
                   }}
                 />
-                <p className="hg-panel-pie" data-bandeja="sin-construir">
-                  <Estado etiqueta={v.bandeja} />{" "}
+                <p
+                  className="hg-panel-pie"
+                  data-bandeja={
+                    v.bandeja.porDecidir > 0 ? "pendientes" : "vacia"
+                  }
+                >
+                  <Estado etiqueta={v.bandeja.etiqueta} />{" "}
                   <T
-                    t={{
-                      es: "La bandeja de propuestas todavía no existe: llega con el investigador y el extractor, y nada espera tu decisión.",
-                      en: "The proposals inbox does not exist yet: it arrives with the researcher and the extractor, and nothing awaits your decision.",
-                    }}
-                  />
+                    t={
+                      v.bandeja.porDecidir > 0
+                        ? {
+                            es: `${v.bandeja.porDecidir} ${plural(v.bandeja.porDecidir, "propuesta espera", "propuestas esperan")} tu decisión.`,
+                            en: `${v.bandeja.porDecidir} ${plural(v.bandeja.porDecidir, "proposal awaits", "proposals await")} your decision.`,
+                          }
+                        : {
+                            es: "Nada espera tu decisión en la bandeja de propuestas.",
+                            en: "Nothing awaits your decision in the proposals inbox.",
+                          }
+                    }
+                  />{" "}
+                  <Link href={v.bandeja.ruta}>
+                    <T t={{ es: "Ver la bandeja", en: "See the inbox" }} />
+                  </Link>
                 </p>
               </section>
 

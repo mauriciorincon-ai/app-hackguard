@@ -1,0 +1,270 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Etiquetas de estado de la bandeja de propuestas (/catalogo/propuestas) y de los avisos de versión: el rol de color y el símbolo salen de aquí, nunca del componente (regla dura 12). Los veredictos se nombran con el vocabulario de estados del catálogo.",
+    "en": "State labels of the proposals inbox (/catalogo/propuestas) and of the version notices: the colour role and the symbol come from here, never from the component (hard rule 12). Verdicts are named with the catalog's state vocabulary."
+  },
+  "etiquetas": [
+    {
+      "id": "por_decidir",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Por decidir",
+        "en": "To decide"
+      }
+    },
+    {
+      "id": "aprobada",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Aprobada",
+        "en": "Approved"
+      }
+    },
+    {
+      "id": "rechazada",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": {
+        "es": "Rechazada",
+        "en": "Rejected"
+      }
+    },
+    {
+      "id": "separada",
+      "rol": "neutro",
+      "simbolo": "parcial",
+      "nombre": {
+        "es": "Separada",
+        "en": "Split"
+      }
+    },
+    {
+      "id": "fuente_verificada",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Fuente verificada",
+        "en": "Source verified"
+      }
+    },
+    {
+      "id": "fuente_sin_fragmento",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Fuente sin verificar",
+        "en": "Source not verified"
+      }
+    },
+    {
+      "id": "fuente_fuera_de_lista_blanca",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Fuente fuera de la lista blanca",
+        "en": "Source outside the whitelist"
+      }
+    },
+    {
+      "id": "fuente_sin_lectura",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Fuente sin lectura guardada",
+        "en": "Source with no saved reading"
+      }
+    },
+    {
+      "id": "fuente_pagina_distinta",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "La página cambió desde que se leyó",
+        "en": "The page changed since it was read"
+      }
+    },
+    {
+      "id": "cita_verificada",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Cita verificada",
+        "en": "Quote verified"
+      }
+    },
+    {
+      "id": "cita_no_literal",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Cita que no es literal",
+        "en": "Quote that is not literal"
+      }
+    },
+    {
+      "id": "cita_valor_sin_respaldo",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "El número no está en la cita",
+        "en": "The number is not in the quote"
+      }
+    },
+    {
+      "id": "marcada_por_el_filtro",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcada por el filtro de contenido",
+        "en": "Flagged by the content filter"
+      }
+    },
+    {
+      "id": "instruccion_sembrada",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Trae una instrucción dirigida al agente",
+        "en": "Carries an instruction aimed at the agent"
+      }
+    },
+    {
+      "id": "motivo_fuentes_insuficientes",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Fuentes verificadas insuficientes",
+        "en": "Not enough verified sources"
+      }
+    },
+    {
+      "id": "motivo_cita_no_verificada",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Una cita o una fuente sin verificar",
+        "en": "A quote or a source not verified"
+      }
+    },
+    {
+      "id": "motivo_marco_antiguo",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marco con versión desactualizada",
+        "en": "Framework version out of date"
+      }
+    },
+    {
+      "id": "motivo_marco_sin_fecha",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "El marco no tiene fecha de versión",
+        "en": "The framework has no version date"
+      }
+    },
+    {
+      "id": "motivo_instruccion_marcada",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Instrucción sembrada en el texto",
+        "en": "Planted instruction in the text"
+      }
+    },
+    {
+      "id": "motivo_contenido_marcado",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcada por el filtro de contenido",
+        "en": "Flagged by the content filter"
+      }
+    },
+    {
+      "id": "motivo_sin_conteos_verificados",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Sin conteo verificado: sin veredicto",
+        "en": "No verified count: no verdict"
+      }
+    },
+    {
+      "id": "motivo_prueba_fuera_del_plan",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Prueba fuera del plan del activo",
+        "en": "Test outside the asset's plan"
+      }
+    },
+    {
+      "id": "motivo_asociacion_a_elegir",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Tú eliges a qué prueba corresponde",
+        "en": "You choose which test it matches"
+      }
+    },
+    {
+      "id": "motivo_texto_sin_lectura",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "No hay lectura del texto pegado",
+        "en": "There is no reading of the pasted text"
+      }
+    },
+    {
+      "id": "aviso_de_version",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Versión nueva publicada",
+        "en": "New version published"
+      }
+    },
+    {
+      "id": "sin_avisos",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin avisos",
+        "en": "No notices"
+      }
+    },
+    {
+      "id": "propuesta_ilegible",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Una propuesta no se pudo leer",
+        "en": "A proposal could not be read"
+      }
+    },
+    {
+      "id": "cifra_fuente_sin_verificar",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "fuente sin verificar",
+        "en": "unverified source"
+      }
+    },
+    {
+      "id": "cifra_marcada_por_el_filtro",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "marcada por el filtro",
+        "en": "flagged by the filter"
+      }
+    }
+  ]
+}

@@ -50,7 +50,7 @@ The app is complete without either skill. A test is written by hand in `datos/pr
 envelope is recorded with `pnpm evidencia:registrar` (manual route, E-6) or imported from Garak or ZAP (ADR-009). When a skill
 produces an invalid file, the run is retried at most twice and then **reported on the inbox** as a proposal that could not be read;
 the other proposals stay. A source that answers 401, 403 or 429, or needs a session, is logged as `fuente_no_accesible_al_agente`
-and the report asks the operator to attach or paste the document (RF-07.2b): it is never retried with other headers.
+and the report says the operator can read that document themselves and make the change by hand: it is never retried with other headers. (Attaching a document for the researcher to process, as RF-07.2b describes, is not built in this sprint; the extractor does accept a pasted text, as a file.)
 
 ## 5. Provider, cost and privacy
 

@@ -7,6 +7,9 @@ import {
 import { fechaDeConsulta } from "@/lib/catalogo/consulta";
 import { fechaDelCommit } from "@/lib/catalogo/fecha-del-commit";
 import { construirVistaDeMarcos } from "@/lib/catalogo/marcos";
+import { etiquetaDePropuesta } from "@/lib/propuestas/etiquetas";
+import { cargarMundoDePropuestas } from "@/lib/propuestas/pagina";
+import { resumenDePropuestas } from "@/lib/propuestas/resumen";
 
 // «Marcos y versiones» se arma en el build desde la instantánea OFICIAL, igual que la lista de pruebas: misma fecha de
 // consulta (HACKGUARD_CONSULTA, o la fecha del commit) y jamás el reloj.
@@ -17,11 +20,20 @@ export default async function Marcos() {
     process.env.HACKGUARD_CONSULTA,
     fechaDelCommit(),
   );
+  // Los avisos de versión salen de las propuestas del investigador: la misma cuenta de la bandeja, el tablero y la brecha.
+  const propuestas = await cargarMundoDePropuestas();
   const vista = construirVistaDeMarcos(
     instantanea,
     nombre,
     consulta,
     listarInstantaneas(),
+    {
+      resumen: resumenDePropuestas(propuestas),
+      etiquetaDeAviso: etiquetaDePropuesta(
+        propuestas.etiquetas,
+        "aviso_de_version",
+      ),
+    },
   );
   return (
     <Consola

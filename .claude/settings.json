@@ -22,6 +22,36 @@
             "command": "input=$(cat); if echo \"$input\" | grep -qE 'git push[^|]*( origin)? +(main|master)( |$|\\\")'; then echo 'BLOQUEADO: push directo a main prohibido. Trabaja en branch sprint-NNN/<tema> y abre PR.'; exit 2; fi; exit 0"
           }
         ]
+      },
+      {
+        "_comment": "Skills /investigar y /extraer (S8, ADR-011, regla «la IA propone, el humano aprueba»): nadie decide una propuesta desde una sesión; cada subagente solo escribe su propuesta.json, solo lee lo de su oficio y solo corre sus dos comandos. Se filtra por agent_type dentro del script; la sesión principal pasa. Prueba: tests/unit/propuestas/hooks.test.ts",
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit|Read|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/scripts/propuestas/hooks/candado.mjs"
+          }
+        ]
+      },
+      {
+        "_comment": "Skills /investigar y /extraer: solo las lanza una persona; ningún agente lanza al investigador ni al extractor con la herramienta Agent.",
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/scripts/propuestas/hooks/sin-lanzar.mjs"
+          }
+        ]
+      },
+      {
+        "_comment": "Skills /investigar y /extraer: nada de lo que un agente corre o escribe lleva un identificador de quien las corre (viaja al repositorio público).",
+        "matcher": "Bash|Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/scripts/propuestas/hooks/sin-identificadores.mjs"
+          }
+        ]
       }
     ],
     "PostToolUse": [

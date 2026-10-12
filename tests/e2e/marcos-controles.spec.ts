@@ -170,7 +170,7 @@ test.describe("/catalogo/controles", () => {
   });
 });
 
-test("la navegación enlaza Marcos y Controles por su ruta, y Propuestas sigue «pronto»", async ({
+test("la navegación enlaza Marcos, Controles y Propuestas por su ruta, y ninguna dice «pronto»", async ({
   page,
 }) => {
   await page.goto("/catalogo");
@@ -181,5 +181,8 @@ test("la navegación enlaza Marcos y Controles por su ruta, y Propuestas sigue �
   await expect(
     page.locator('a[href="/catalogo/controles"]').first(),
   ).toBeAttached();
-  await expect(page.getByText("Propuestas").first()).toBeAttached();
+  await expect(
+    page.locator('a[href="/catalogo/propuestas"]').first(),
+  ).toBeAttached();
+  await expect(page.locator(".hg-nav-proximamente")).toHaveCount(0);
 });

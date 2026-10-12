@@ -5,6 +5,7 @@ import { plural } from "@/lib/brecha/textos";
 import type {
   Bilingue,
   Cifra,
+  EstadoDeMarcos,
   EnlaceAHallazgo,
   Etiqueta,
   EvidenciaVista,
@@ -519,5 +520,82 @@ export function FilaDeBrecha({
         <Veredicto id={f.veredictoId} etiqueta={f.veredicto} />
       </td>
     </tr>
+  );
+}
+
+/**
+ * «Marcos con versión nueva» (RF-05.5), con lo que dicen las propuestas del investigador: los avisos, si los hay; «ninguno» solo si el
+ * investigador corrió (y cuándo); y, sin ninguna corrida, que no hay registro de lo que publica cada fuente. Nada cambia por su cuenta.
+ */
+export function MarcosConVersionNueva({
+  marcos,
+  clase,
+}: {
+  marcos: EstadoDeMarcos;
+  clase: string;
+}) {
+  if (marcos.tipo === "avisos")
+    return (
+      <div className={clase} data-marcos="avisos">
+        <p>
+          <Chip etiqueta={marcos.etiqueta} />{" "}
+          <span>
+            <T
+              t={{
+                es: `Marcos con versión nueva: ${marcos.avisos.length}. La fuente oficial publica una versión distinta de la que tiene el catálogo; nada cambia hasta que una persona lo decida.`,
+                en: `Frameworks with a new version: ${marcos.avisos.length}. The official source publishes a version different from the catalog's; nothing changes until a person decides.`,
+              }}
+            />
+          </span>
+        </p>
+        <ul className="hg-lista">
+          {marcos.avisos.map((a) => (
+            <li key={a.propuesta} data-aviso-de-version={a.marco}>
+              <span data-neutro>{a.nombre}</span>:{" "}
+              <span lang="es">
+                el catálogo tiene la <Dato>{a.vigente}</Dato>, la fuente publica
+                la <Dato>{a.publicada}</Dato> ({a.fecha}) · {a.verificadas} de{" "}
+                {a.fuentes} fuentes verificadas por código ·{" "}
+              </span>
+              <span lang="en">
+                the catalog has <Dato>{a.vigente}</Dato>, the source publishes{" "}
+                <Dato>{a.publicada}</Dato> ({a.fecha}) · {a.verificadas} of{" "}
+                {a.fuentes} sources verified by code ·{" "}
+              </span>
+              <Link href={a.ruta}>
+                <Dato>{a.propuesta}</Dato>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  if (marcos.tipo === "ninguno")
+    return (
+      <p className={clase} data-marcos="ninguno">
+        <Estado etiqueta={marcos.etiqueta} />{" "}
+        <span lang="es">
+          Marcos con versión nueva: ninguno, según la corrida del investigador{" "}
+          <Dato>{marcos.corrida}</Dato> del <Dato>{marcos.fecha}</Dato>. No es
+          una vigilancia continua: dice lo que esa corrida leyó ese día.
+        </span>
+        <span lang="en">
+          Frameworks with a new version: none, according to the
+          researcher&apos;s run <Dato>{marcos.corrida}</Dato> of{" "}
+          <Dato>{marcos.fecha}</Dato>. It is not continuous monitoring: it says
+          what that run read that day.
+        </span>
+      </p>
+    );
+  return (
+    <p className={clase} data-marcos="sin-registro">
+      <Estado etiqueta={marcos.etiqueta} />{" "}
+      <T
+        t={{
+          es: "Marcos con versión nueva: ninguna corrida del investigador dice qué versión publica cada fuente, así que no se puede decir si alguno cambió. Se le pide con /investigar.",
+          en: "Frameworks with a new version: no researcher run says which version each source publishes, so there is no telling whether any changed. It is requested with /investigar.",
+        }}
+      />
+    </p>
   );
 }

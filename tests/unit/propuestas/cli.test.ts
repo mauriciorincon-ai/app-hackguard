@@ -11,6 +11,7 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -55,6 +56,11 @@ function raizDeJuguete() {
   cpSync(
     path.join(RAIZ, "docs/kit-de-prueba/propuestas-demo"),
     path.join(raiz, "docs/kit-de-prueba/propuestas-demo"),
+    { recursive: true },
+  );
+  cpSync(
+    path.join(RAIZ, "docs/kit-de-prueba/textos-pegados"),
+    path.join(raiz, "docs/kit-de-prueba/textos-pegados"),
     { recursive: true },
   );
   rmSync(path.join(raiz, "datos/propuestas/decisiones.jsonl"), { force: true });
@@ -526,5 +532,241 @@ describe("el uso", () => {
   });
   it("sobran argumentos: sale con 3", () => {
     expect(propuestas(["listar", "uno", "dos"], raiz).codigo).toBe(3);
+  });
+});
+
+const TEXTO = "docs/kit-de-prueba/textos-pegados/escaner-demo.txt";
+const leer = (raiz: string, extra: string[] = []) =>
+  propuestas(
+    [
+      "leer",
+      TEXTO,
+      "--activo",
+      "act-demo-asistente",
+      "--fecha",
+      "2026-10-12",
+      ...extra,
+    ],
+    raiz,
+  );
+
+describe("leer: el texto pegado entra por el código, no por el modelo", () => {
+  it("guarda la lectura (600), da la huella y los caracteres, crea la corrida y lista el plan", () => {
+    const raiz = raizDeJuguete();
+    const r = leer(raiz, ["--json"]);
+    expect(r.codigo).toBe(0);
+    const j = JSON.parse(r.salida) as {
+      corrida: string;
+      carpeta: string;
+      texto: { huella: string; caracteres: number };
+      plan: string[];
+    };
+    expect(j.corrida).toBe("EXT-2026-10-12-01");
+    expect(j.texto.huella).toMatch(/^[0-9a-f]{64}$/);
+    expect(j.plan).toContain("PR-IA-PINJ-001");
+    expect(existsSync(path.join(raiz, j.carpeta))).toBe(true);
+    const lectura = path.join(
+      raiz,
+      "propuestas/.lecturas",
+      `${j.texto.huella}.txt`,
+    );
+    expect(readFileSync(lectura, "utf8")).toContain(
+      "garak LLM vulnerability scanner v0.17.0",
+    );
+    expect(statSync(lectura).mode & 0o777).toBe(0o600);
+    expect(readFileSync(lectura, "utf8").length).toBe(j.texto.caracteres);
+  });
+  it("una segunda lectura el mismo día toma el número siguiente", () => {
+    const raiz = raizDeJuguete();
+    leer(raiz);
+    expect(JSON.parse(leer(raiz, ["--json"]).salida).corrida).toBe(
+      "EXT-2026-10-12-02",
+    );
+  });
+  it("sin --json cuenta qué escribir y dónde", () => {
+    const r = leer(raizDeJuguete());
+    expect(r.salida).toContain("Corrida EXT-2026-10-12-01");
+    expect(r.salida).toContain(
+      "propuestas/corridas/EXT-2026-10-12-01/propuesta.json",
+    );
+  });
+  it("solo lee de las dos carpetas permitidas y no deja rastro si se niega", () => {
+    const raiz = raizDeJuguete();
+    const r = propuestas(
+      [
+        "leer",
+        "datos/activos/demo/act-demo-asistente.json",
+        "--activo",
+        "act-demo-asistente",
+        "--fecha",
+        "2026-10-12",
+      ],
+      raiz,
+    );
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("solo se lee de");
+    expect(existsSync(path.join(raiz, "propuestas/corridas"))).toBe(false);
+    expect(existsSync(path.join(raiz, "propuestas/.lecturas"))).toBe(false);
+  });
+  it("solo corre sobre un activo demo con plan: uno propio, o uno que no existe, no recibe nada", () => {
+    const raiz = raizDeJuguete();
+    const demo = JSON.parse(
+      readFileSync(
+        path.join(raiz, "datos/activos/demo/act-demo-asistente.json"),
+        "utf8",
+      ),
+    );
+    mkdirSync(path.join(raiz, "datos/privado/activos"), { recursive: true });
+    writeFileSync(
+      path.join(raiz, "datos/privado/activos/mi-asistente.json"),
+      JSON.stringify({ ...demo, id: "mi-asistente", origen: "propio" }),
+    );
+    for (const activo of ["mi-asistente", "no-existe"]) {
+      const r = propuestas(
+        ["leer", TEXTO, "--activo", activo, "--fecha", "2026-10-12"],
+        raiz,
+      );
+      expect(r.codigo, activo).toBe(2);
+      expect(r.salida, activo).toContain(
+        "no es un activo demo con plan emitido",
+      );
+    }
+    expect(existsSync(path.join(raiz, "propuestas/corridas"))).toBe(false);
+  });
+  it("faltan datos: sale con 3 y dice cuál", () => {
+    const raiz = raizDeJuguete();
+    expect(propuestas(["leer"], raiz).errores).toContain(
+      "<archivo con el texto>",
+    );
+    expect(
+      propuestas(["leer", TEXTO, "--fecha", "2026-10-12"], raiz).errores,
+    ).toContain("--activo");
+    expect(
+      propuestas(["leer", TEXTO, "--activo", "x", "--fecha", "ayer"], raiz)
+        .errores,
+    ).toContain("--fecha");
+  });
+});
+
+describe("el extractor de punta a punta, sin el modelo: leer → escribir el borrador → verificar → decidir", () => {
+  it("el veredicto lo calcula la regla, y aprobar un sobre de un activo demo pide la bandera aunque la corrida sea real", () => {
+    const raiz = raizDeJuguete();
+    const leida = JSON.parse(leer(raiz, ["--json"]).salida) as {
+      carpeta: string;
+      corrida: string;
+      texto: { huella: string; caracteres: number };
+    };
+    const candidata = {
+      prueba: "PR-IA-PINJ-001",
+      entrada: {
+        herramienta: { id: "garak", version: "0.17.0" },
+        fecha: "2026-10-12",
+        zona_horaria: "America/Bogota",
+        resultado: {
+          ejecutada: true,
+          evaluadas: 20,
+          fallidas: 0,
+          alertas: null,
+          metrica: null,
+        },
+      },
+      citas: [
+        {
+          campo: "herramienta.version",
+          texto: "garak LLM vulnerability scanner v0.17.0",
+        },
+        { campo: "fecha", texto: "run 2026-10-12" },
+        { campo: "resultado.evaluadas", texto: "20 attempts evaluated" },
+        { campo: "resultado.fallidas", texto: "0 failed" },
+      ],
+    };
+    const borrador = {
+      formato: "hackguard/borrador@1",
+      agente: "extractor",
+      corrida: leida.corrida,
+      fecha: "2026-10-12",
+      alcance: {
+        es: "Un texto pegado del kit de prueba",
+        en: "A pasted text from the test kit",
+      },
+      ejecucion: { modelo: "claude-sonnet-5-5", reintentos: 0 },
+      contradicciones: [],
+      propuestas: [
+        {
+          ref: "escaner-demo",
+          tipo: "sobre",
+          titulo: {
+            es: "Sobre propuesto desde un texto pegado",
+            en: "Envelope proposed from pasted text",
+          },
+          resumen: {
+            es: "El texto corresponde a una prueba del plan del asistente demo.",
+            en: "The text matches a test in the demo assistant's plan.",
+          },
+          activo: "act-demo-asistente",
+          texto: {
+            huella: leida.texto.huella,
+            caracteres: leida.texto.caracteres,
+            extracto:
+              "garak LLM vulnerability scanner v0.17.0 run 2026-10-12. Summary: 20 attempts evaluated, 0 failed.",
+          },
+          asociacion: "una",
+          candidatas: [candidata],
+        },
+      ],
+    };
+    writeFileSync(
+      path.join(raiz, leida.carpeta, "propuesta.json"),
+      JSON.stringify(borrador),
+    );
+    const sellada = propuestas(["verificar", leida.carpeta], raiz);
+    expect(sellada.codigo).toBe(0);
+    expect(sellada.salida).toContain("PROP-0038");
+    expect(sellada.salida).toContain("sin marca");
+    const corrida = JSON.parse(
+      readFileSync(path.join(raiz, leida.carpeta, "corrida.json"), "utf8"),
+    );
+    const c = corrida.propuestas[0].candidatas[0];
+    expect(
+      c.verificacion.citas.map((x: { estado: string }) => x.estado),
+    ).toEqual(["verificada", "verificada", "verificada", "verificada"]);
+    expect(c.veredicto_sugerido.veredicto).toBe("superada");
+    expect(corrida.propuestas[0].pausa).toBeNull();
+    // Sin la bandera, aprobar escribiría en el libro de evidencia de demostración: se niega.
+    const antes = archivosDeEvidencia(raiz);
+    const sin = decidir(raiz, "PROP-0038", "aprobar");
+    expect(sin.codigo).toBe(2);
+    expect(sin.salida).toContain("--aplicar-a-demo");
+    expect(archivosDeEvidencia(raiz)).toEqual(antes);
+    const con = decidir(raiz, "PROP-0038", "aprobar", ["--aplicar-a-demo"]);
+    expect(con.codigo).toBe(0);
+    expect(
+      archivosDeEvidencia(raiz).filter((a) => !antes.includes(a)),
+    ).toHaveLength(1);
+  });
+});
+
+describe("decidir sobre el repositorio real lo hace una persona", () => {
+  it("sin terminal interactiva (o dentro de una sesión de Claude Code) se niega y no escribe nada", () => {
+    const antes = existsSync(
+      path.join(RAIZ, "datos/propuestas/decisiones.jsonl"),
+    )
+      ? readFileSync(
+          path.join(RAIZ, "datos/propuestas/decisiones.jsonl"),
+          "utf8",
+        )
+      : null;
+    const r = decidir(RAIZ, "PROP-0033", "rechazar", ["--motivo", "x"]);
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("Decidir una propuesta lo hace una persona");
+    const despues = existsSync(
+      path.join(RAIZ, "datos/propuestas/decisiones.jsonl"),
+    )
+      ? readFileSync(
+          path.join(RAIZ, "datos/propuestas/decisiones.jsonl"),
+          "utf8",
+        )
+      : null;
+    expect(despues).toBe(antes);
   });
 });

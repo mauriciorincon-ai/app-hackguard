@@ -5,6 +5,8 @@ import {
   cargarPatronesDeInstrucciones,
   cargarSemillasDeAgentes,
 } from "../propuestas/cargar.ts";
+import { cargarMundoDePropuestas } from "../propuestas/pagina.ts";
+import { resumenDePropuestas } from "../propuestas/resumen.ts";
 import {
   cargarEtiquetasDeBrecha,
   cargarSemillasDeCierre,
@@ -15,6 +17,13 @@ import { armarMundoDeBrecha, type MundoDeBrecha } from "./mundo.ts";
 export async function cargarParaPaginaDeBrecha(): Promise<MundoDeBrecha> {
   const { instantanea, nombre, consulta, activos, mundo } =
     await cargarParaPaginaDeHallazgo();
+  // UNA cuenta de «por decidir» y de avisos de versión para las cinco pantallas: la del motor de propuestas.
+  const propuestas = await cargarMundoDePropuestas({
+    instantanea,
+    nombre,
+    consulta,
+    activos,
+  });
   return armarMundoDeBrecha({
     instantanea,
     nombre,
@@ -24,6 +33,7 @@ export async function cargarParaPaginaDeBrecha(): Promise<MundoDeBrecha> {
     umbrales: cargarUmbralesDeBrecha(),
     etiquetas: cargarEtiquetasDeBrecha(),
     semillas: cargarSemillasDeCierre(),
+    propuestas: resumenDePropuestas(propuestas),
     agentes: {
       semillas: cargarSemillasDeAgentes(),
       patronesDeInstrucciones: cargarPatronesDeInstrucciones(),

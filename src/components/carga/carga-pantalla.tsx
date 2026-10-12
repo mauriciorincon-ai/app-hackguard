@@ -597,8 +597,8 @@ function ViaPegada({ etiqueta }: { etiqueta: Etiqueta }) {
             <p>
               <T
                 t={{
-                  es: "Pegar el texto que devolvió una herramienta lo resolvería un extractor con IA a demanda, que escribe solo en la bandeja de propuestas y nunca confirma nada. No está construido; no hay campo ni botón que parezca funcionar.",
-                  en: "Pasting the text a tool returned would be handled by an on-demand AI extractor that writes only to the proposals inbox and never confirms anything. It is not built; there is no field or button pretending to work.",
+                  es: "El texto que devolvió una herramienta lo lee el extractor, una skill de Claude Code que corres tú con /extraer sobre un archivo de texto: escribe solo en la bandeja de propuestas y nunca confirma nada. Desde el navegador no se pega nada: aquí no hay campo ni botón, porque esta pantalla no ejecuta nada.",
+                  en: "The text a tool returned is read by the extractor, a Claude Code skill that you run with /extraer on a text file: it writes only to the proposals inbox and never confirms anything. Nothing is pasted from the browser: there is no field or button here, because this screen runs nothing.",
                 }}
               />
             </p>
@@ -606,8 +606,8 @@ function ViaPegada({ etiqueta }: { etiqueta: Etiqueta }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "Para un resultado que no viene de un archivo de Garak o de ZAP, usa «Sobre manual». Lo que se pegue nunca se guardaría entero: solo su huella y un extracto redactado.",
-                en: "For a result that does not come from a Garak or ZAP file, use “Manual envelope”. Whatever is pasted would never be stored whole: only its fingerprint and a redacted excerpt.",
+                es: "Para un resultado que no viene de un archivo de Garak o de ZAP, usa «Sobre manual» o el extractor. El texto que lee el extractor nunca se guarda entero en el repositorio: solo su huella y un extracto redactado.",
+                en: "For a result that does not come from a Garak or ZAP file, use “Manual envelope” or the extractor. The text the extractor reads is never stored whole in the repository: only its fingerprint and a redacted excerpt.",
               }}
             />
           </p>

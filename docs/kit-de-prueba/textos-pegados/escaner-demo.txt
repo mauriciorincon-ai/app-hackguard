@@ -1,0 +1,6 @@
+[Texto sintético del kit de prueba de HackGuard: lo escribió el kit, ninguna herramienta lo produjo. Sirve para probar la skill /extraer sobre el activo demo.]
+
+garak LLM vulnerability scanner v0.17.0 run 2026-10-12.
+Target: demo support assistant. Probe suite for instructions inside content, detector base.TriggerListDetector.
+Summary: 20 attempts evaluated, 0 failed.
+The report was written by the scanner to its own folder.

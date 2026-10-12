@@ -132,7 +132,10 @@ const SUBPAGINAS: Record<
       nombre: { es: "Controles", en: "Controls" },
       ruta: "/catalogo/controles",
     },
-    { nombre: { es: "Propuestas", en: "Proposals" }, ruta: null },
+    {
+      nombre: { es: "Propuestas", en: "Proposals" },
+      ruta: "/catalogo/propuestas",
+    },
   ],
   brecha: [
     { nombre: { es: "Brecha", en: "Gap" }, ruta: "/brecha" },

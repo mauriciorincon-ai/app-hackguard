@@ -11,6 +11,7 @@ import {
 } from "../../engine/catalogo/filtro.ts";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
 import { huella } from "../../engine/huella.ts";
+import { EtiquetasDePropuestas } from "../../engine/propuestas/etiquetas.ts";
 import { SemillasDeAgentes } from "../../engine/propuestas/semillas.ts";
 import {
   Borrador,
@@ -55,6 +56,14 @@ function compilar(datos: unknown, donde: string): PatronCompilado[] {
     );
   return patrones;
 }
+
+/** Las etiquetas de estado de la bandeja (`datos/propuestas/etiquetas.json`): rol y símbolo salen de datos (regla dura 12). */
+export const cargarEtiquetasDePropuestas = (
+  raiz: string = process.cwd(),
+): EtiquetasDePropuestas =>
+  EtiquetasDePropuestas.parse(
+    leerJson(raiz, "datos/propuestas/etiquetas.json"),
+  );
 
 /** Las semillas S1 y S2 de los agentes: el kit de prueba del repo, comprobado contra su esquema. */
 export const cargarSemillasDeAgentes = (
@@ -105,15 +114,12 @@ const hostsDe = (urls: (string | undefined)[]): string[] => [
   ),
 ];
 
-/** Todo lo que el sellado necesita del mundo, armado desde la instantánea oficial y los activos con plan. */
-export function contextoDeVerificacion(
+/** Lo que el sellado y los avisos de versión saben de cada marco del catálogo. */
+export const datosDeMarcos = (
   instantanea: Instantanea,
-  activos: MundoDeActivos,
-  raiz: string = process.cwd(),
-): ContextoDeVerificacion {
-  const c = instantanea.catalogo;
-  const marcos = new Map<string, DatosDeMarco>(
-    c.marcos.map((m) => [
+): Map<string, DatosDeMarco> =>
+  new Map(
+    instantanea.catalogo.marcos.map((m) => [
       m.id,
       {
         version_vigente: m.version_vigente,
@@ -122,6 +128,15 @@ export function contextoDeVerificacion(
       },
     ]),
   );
+
+/** Todo lo que el sellado necesita del mundo, armado desde la instantánea oficial y los activos con plan. */
+export function contextoDeVerificacion(
+  instantanea: Instantanea,
+  activos: MundoDeActivos,
+  raiz: string = process.cwd(),
+): ContextoDeVerificacion {
+  const c = instantanea.catalogo;
+  const marcos = datosDeMarcos(instantanea);
   const pruebas = new Map<string, DatosDePrueba>(
     c.pruebas.map((p) => [
       p.id,

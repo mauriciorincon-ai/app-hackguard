@@ -38,3 +38,6 @@ public/diseno/
 
 # Páginas que el investigador leyó (ADR-011): solo viajan la huella y el pasaje citado, nunca la página.
 propuestas/.lecturas/
+
+# Textos que una persona deja para que el extractor los lea (ADR-011): son salida de herramientas, nunca viajan al repositorio.
+propuestas/entradas/

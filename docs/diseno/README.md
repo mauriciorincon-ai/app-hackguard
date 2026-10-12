@@ -281,17 +281,46 @@ brecha, la vista por control y el informe dicen **las mismas cifras en cada fech
 | todas | Las **cifras** no son las de la maqueta (25 planeadas y 8 controles, no 16 y 5) | La maqueta usa «aritmética de maqueta, no el planificador del producto»; el producto cuenta el plan emitido y el libro reales. El gate compara rótulos, columnas, orden y atributos, no números |
 | todas | Los estados «vacío», «cargando» y «error» solo existen en la maqueta; «vacío» se dibuja si no hay datos | Es un export estático: una brecha que no se puede calcular (un hallazgo sin su sobre, una fecha anterior a la evidencia) rompe el build en vez de mostrarse |
 | `tablero` | La banda de validación del instrumento muestra las comprobaciones que el motor corre —RF-10.3 «cierres prohibidos» y E-6 «no detectado no es verificado», con sus ocho semillas— y no las cinco ilustrativas de la maqueta | Las demás (planes de referencia, separación de lo público, severidad contra FIRST) las corre la CI como pruebas; no hay una semilla ejecutable que el build pueda correr y mostrar sin inventarla |
-| `tablero` | «Por decidir» vale 0 y la bandeja de propuestas dice que todavía no existe | La bandeja es del S8 (investigador y extractor); no se inventan propuestas |
-| `tablero` · `brecha` · `informe` | Los marcos con versión nueva dicen «sin registro de la fuente» en vez de listar un marco | No hay registro de la versión que publica cada fuente (RF-05.5); decir «ninguno» sería afirmar lo que no se sabe |
+| `tablero` | «Por decidir» vale 0 y la bandeja de propuestas dice que todavía no existe (superado en el Sprint 8: vale lo que cuenta la bandeja y el pie lleva a ella) | La bandeja es del S8 (investigador y extractor); no se inventan propuestas |
+| `tablero` · `brecha` · `informe` | Los marcos con versión nueva dicen «sin registro de la fuente» en vez de listar un marco (superado en el Sprint 8: salen de las propuestas del investigador) | No hay registro de la versión que publica cada fuente (RF-05.5); decir «ninguno» sería afirmar lo que no se sabe |
 | `tablero` · `brecha` · `control` · `informe` | El plazo de un hallazgo usa el componente de la página del hallazgo: «En plazo» o «Vencido» con sus días; la maqueta dibuja un chip «Plazo vencido» | Una sola forma de decir un plazo en toda la aplicación |
-| `brecha` | La nota de lo que espera confirmación cita el lote si el sobre está en uno y dice «sugiere» con el veredicto que ya calculó la regla; no menciona al extractor | El extractor no existe todavía |
+| `brecha` | La nota de lo que espera confirmación cita el lote si el sobre está en uno y dice «sugiere» con el veredicto que ya calculó la regla; no menciona al extractor (el Sprint 8 no lo cambia: un sobre del extractor se aprueba y se confirma como cualquier otro) | El extractor no existe todavía |
 | `control` | Los controles equivalentes dicen el marco, la referencia, la fuente (el sitio y la fecha de consulta, como texto inerte) y lo que el mapa no cubre; no traen un resumen del control equivalente | El dato trae el sitio y la fecha de consulta de la fuente, no un resumen del equivalente (regla dura 11: solo identificadores) |
 | `control` | El nombre de cada control es el del catálogo, que lo escribió con otras palabras | Es dato |
 | `control` | Una prueba que dejó un hallazgo con el riesgo aceptado dice «el plazo no corre» | El motor no corre plazo en un riesgo aceptado |
 | `informe` | La ficha de reproducibilidad enseña la huella del informe (la de su contenido) y la de cada plan; la validación del instrumento dice «N de M en verde» con las comprobaciones del motor | La huella la calcula el motor y es idéntica en Node y en los navegadores |
 | `informe` | «Sobres que cuentan» cuenta los sobres que son el último confirmado de una prueba planeada; la maqueta no distinguía de los que quedan fuera de las filas | Una cuenta, un cálculo: sale de la misma brecha |
-| `barra lateral` | «Tablero» y «Brecha» tienen enlace; «Brecha» abre tres páginas (Brecha, Por control, Informe); el logo y la raíz llevan al tablero | Decisión de diseño 25: el tablero es la portada. Sigue «pronto» solo «Propuestas» |
+| `barra lateral` | «Tablero» y «Brecha» tienen enlace; «Brecha» abre tres páginas (Brecha, Por control, Informe); el logo y la raíz llevan al tablero | Decisión de diseño 25: el tablero es la portada. Sigue «pronto» solo «Propuestas» (superado en el Sprint 8: «Propuestas» abre la bandeja) |
 | `control` (ruta) | El segmento de la ruta de un control no lleva puntos ni mayúsculas: `iso42001-a-6-2-4` | Un export estático no sirve un segmento con puntos; la maqueta ya hacía lo mismo con su archivo |
+
+## Lo que el producto suma o recorta frente a la maqueta (Sprint 8)
+
+La maqueta no se regenera en este sprint; estas diferencias las vigila `tests/unit/fidelidad-propuestas.test.tsx`, cada una con su razón,
+y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa lo comprueba `tests/unit/propuestas-interaccion.test.tsx`
+(regla 22), que «por decidir» y los avisos de versión son **una sola cuenta** en las cinco pantallas lo comprueba
+`tests/unit/propuestas/una-cuenta.test.tsx`, y los hooks que encierran a las dos skills los corre con sus comandos reales
+`tests/unit/propuestas/hooks.test.ts`.
+
+| Pantalla | Diferencia | Razón |
+|---|---|---|
+| `propuestas` | Las propuestas son las de `propuestas/demo/` (sintéticas, selladas por el código): mismos identificadores y mismos estados (PROP-0031 a 0037), pero **no los mismos títulos, fuentes ni cifras** | La maqueta usa propuestas ilustrativas; el producto muestra lo que el código verificó de las corridas selladas |
+| `propuestas` | PROP-0031, 0032 y 0035 se reescribieron para no duplicar lo que el catálogo real ya tiene: «OWASP LLM 2025 → 2026» (el catálogo ya trae 2026) pasó a «la lista de 14 comprobaciones publicó su revisión v2» (con su mapa de equivalencias) | Una propuesta que repite una prueba o una versión vigente no pasa el sellado |
+| `propuestas` | Una propuesta verificada lleva **dos fuentes**, no una; el carril dice 10 fuentes consultadas, no 14 | U2 del plan v2: con menos de dos fuentes verificadas llega marcada |
+| `propuestas` | Los tipos suman «Retiro de prueba» | El investigador también propone retirar una prueba (RF-07.1) |
+| `propuestas` | Cada propuesta dice **por qué llega marcada** (chips con el umbral que no se cumplió) y, en un sobre, las citas que no se verificaron; el carril suma «Modelo», «Reglas del plan» («5 de 5 se cumplen») y «Huella», y trae también la última corrida del extractor | Es lo que el código verificó (C1 a C5 del plan v2), y la traza que deja cada corrida |
+| `propuestas` | «Veredicto sugerido» dice cuántas fallas en cuántas **solo con los campos cuya cita verificó el código**; sin conteo verificado dice «no hay veredicto» | El veredicto lo calcula la regla de la prueba con campos verificados, jamás el extractor |
+| `propuestas` | Un texto que cuadra con varias pruebas trae un selector de la prueba (el primero viene elegido) | RF-08.2: hasta tres candidatas y elige la persona |
+| `propuestas` | Marcar una decisión **muestra el comando** `pnpm propuestas:decidir …` con `<tu nombre>` y la fecha por llenar, y dice que no se guardó nada | Decisión 12 de diseño: los botones marcan y no guardan; un export estático no escribe, y decidir es de una persona en su terminal (regla dura 2) |
+| `propuestas` | Aprobar una versión de marco, un retiro o un cambio de herramienta **registra la decisión** y dice el cambio que haces tú a mano; aprobar una prueba la deja «aprobada» para la próxima instantánea | ADR-011, decisión 4: ningún agente toca `datos/`, y la instantánea oficial no se regenera |
+| `propuestas` | Aprobar un sobre crea un sobre **por confirmar** con el formato `sobre@1` intacto, sin `origen: extractor`; la propuesta que lo originó queda en el libro y en sus advertencias | ADR-008: `origen` dice dónde vive un sobre (`demo` o `propio`), no quién lo propuso |
+| `propuestas` | Una propuesta marcada por el filtro **o por una instrucción sembrada** se aprueba solo con «La revisé y la apruebo» | El filtro marca, no rechaza (regla dura 3); la orden sembrada del texto pegado marca igual (S2) |
+| `propuestas` | «Adjunta o pega el documento y se procesa como cualquier otra fuente» dice ahora que la fuente queda registrada como «no accesible al agente» y que, si la necesitas, la lees tú y haces el cambio a mano | Pegar un documento para el investigador no está construido: la frase prometía lo que no existe |
+| `propuestas` | El estado «cargando» solo existe en la maqueta; «vacío» se dibuja sin corridas, y «error» lista las corridas que no se pudieron leer (esquema o huella) y deja las demás | Es un export estático: la lectura ocurre en el build, y un libro que no cuadra con las propuestas lo rompe |
+| `tablero` | «Por decidir» es la cuenta de la bandeja y el pie dice cuántas esperan tu decisión y lleva a ella | Una cuenta, un cálculo: `porDecidir` del motor de propuestas |
+| `tablero` | La banda de validación suma S1 (citas inventadas) y S2 (órdenes sembradas): cuatro comprobaciones | Son los supuestos del plan v2; si una falla, el build se detiene (regla dura 9) |
+| `tablero` · `brecha` · `informe` · `marcos` | Los marcos con versión nueva se listan con su propuesta, o dicen «ninguno según la corrida X», o «sin registro» si ninguna corrida del investigador leyó las fuentes; en `marcos`, la fila del marco trae su aviso | Una cuenta, un cálculo: `avisosDeVersion` del motor; sin corrida, «ninguno» afirmaría lo que no se sabe |
+| `barra lateral` | «Propuestas» abre `/catalogo/propuestas`: ya no queda ninguna página «pronto» | La bandeja es del S8 |
+| `carga` | «Texto pegado» dice que el texto lo lee el extractor con `/extraer` sobre un archivo, y que desde el navegador no se pega nada | La skill existe; la pantalla sigue de solo lectura |
 
 ## Cobertura
 

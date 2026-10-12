@@ -3,6 +3,12 @@
 // Lo que la maqueta dibujó con datos ilustrativos y la instantánea no trae (una versión más nueva publicada por la fuente,
 // los nombres de las entradas de cada versión, la historia de instantáneas) no se inventa: se dice que no hay registro.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
+import { avisosDeMarco } from "../propuestas/avisos.ts";
+import {
+  SIN_PROPUESTAS,
+  type ResumenDePropuestas,
+} from "../propuestas/resumen.ts";
+import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Bilingue, Etiqueta, VigenciaVista } from "./tipos.ts";
 import { etiqueta, porId, semaforoDe, vigenciaVista } from "./vista.ts";
 
@@ -43,6 +49,8 @@ export interface FilaDeMarco {
   citan: number;
   /** Etiqueta cuando su fuente oficial no se pudo leer; `null` si se verificó. */
   fuente: Etiqueta | null;
+  /** La versión nueva que una propuesta del investigador dice que publica la fuente, si la hay. */
+  aviso: AvisoDeMarco | null;
   licencia: { nombre: Bilingue; exige: Bilingue };
 }
 
@@ -75,6 +83,11 @@ export interface InstantaneaListada {
 }
 
 export interface VistaDeMarcos {
+  /** Los avisos de versión (RF-05.5): lo que dicen las propuestas del investigador, nunca una comparación a ciegas. */
+  avisos: AvisoDeMarco[];
+  /** La corrida del investigador que respalda «sin avisos», o `null` si ninguna corrió. */
+  investigacion: { corrida: string; fecha: string } | null;
+  etiquetaDeAviso: Etiqueta;
   instantanea: string;
   huella: string;
   consulta: string;
@@ -115,10 +128,25 @@ export function construirVistaDeMarcos(
   nombre: string,
   consulta: string,
   listadas: readonly InstantaneaListada[],
+  propuestas: { resumen: ResumenDePropuestas; etiquetaDeAviso: Etiqueta } = {
+    resumen: SIN_PROPUESTAS,
+    etiquetaDeAviso: {
+      rol: "atencion",
+      simbolo: "aviso",
+      nombre: { es: "Versión nueva", en: "New version" },
+    },
+  },
 ): VistaDeMarcos {
   const c = i.catalogo;
   const s = semaforoDe(i, consulta);
+  const avisos = avisosDeMarco(
+    propuestas.resumen.avisos,
+    (id) => porId(c.marcos, id).nombre,
+  );
   return {
+    avisos,
+    investigacion: propuestas.resumen.investigacion,
+    etiquetaDeAviso: propuestas.etiquetaDeAviso,
     instantanea: nombre,
     huella: i.huella,
     consulta,
@@ -136,6 +164,7 @@ export function construirVistaDeMarcos(
       ),
       citan: c.pruebas.filter((p) => p.marco_id === m.id).length,
       fuente: m.estado === "verificado" ? null : { ...FUENTE_NO_ACCESIBLE },
+      aviso: avisos.find((a) => a.marco === m.id) ?? null,
       licencia: { nombre: m.licencia.nombre, exige: m.licencia.exige },
     })),
     mapas: mapas(c),
