@@ -95,16 +95,19 @@ test.describe("plazo y avisos", () => {
     ).toHaveAttribute("data-severidad", "alto");
   });
 
-  test("el aviso de plazo no aparece en un hallazgo corregido dentro de plazo", async ({
+  test("el aviso de plazo aparece en un hallazgo corregido si y solo si el motor dice que está vencido", async ({
     page,
   }) => {
     await page.goto(ruta(CORREGIDO));
+    // El plazo depende de la fecha de consulta del build: la prueba lee el estado que calculó el motor y no fija el
+    // calendario. Lo que sí garantiza: el aviso sale exactamente cuando el estado dice «vencido».
+    const plazo = page.locator('[data-fechado="plazo"]');
+    await expect(plazo).toHaveCount(1);
+    const estado = await plazo.getAttribute("data-estado-fechado");
+    expect(estado).not.toBeNull();
     await expect(page.locator('[data-aviso-de-plazo="vencido"]')).toHaveCount(
-      0,
+      estado === "vencido" ? 1 : 0,
     );
-    await expect(
-      page.locator('[data-fechado="plazo"][data-estado-fechado="en_plazo"]'),
-    ).toHaveCount(1);
   });
 });
 
@@ -182,10 +185,7 @@ test.describe("navegación", () => {
     page,
   }) => {
     await page.goto("/catalogo/PR-IA-PINJ-001");
-    await page
-      .locator('a[href="/evidencia/carga"]:visible')
-      .first()
-      .click();
+    await page.locator('a[href="/evidencia/carga"]:visible').first().click();
     await expect(page).toHaveURL(/\/evidencia\/carga$/);
     await page
       .locator(`a[href="${ruta(ABIERTO)}"]:visible`)

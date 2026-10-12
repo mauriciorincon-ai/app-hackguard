@@ -3,6 +3,31 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 006 — «La carga de evidencia» (2026-10-12)
+
+The report of a Garak or ZAP run becomes a batch of envelopes whose verdicts a rule computes; a person confirms the batch by reviewing every failure and a deterministic sample of the rest.
+
+### Added
+
+- **`/evidencia/carga`:** the intake screen, read-only, as in the maqueta: the batches, the recorded tools, the review of each envelope («Siempre», «Muestra», «Fuera»), the batch file card with its fingerprints, «Para confirmar» with the commands that decide, the selected envelope and «How the sample is chosen».
+- **Adapters** (`src/engine/adaptadores/`): Garak (`report.jsonl`, range tested 0.17.0) and ZAP (Traditional JSON, with or without requests and responses). An adapter only translates; the verdict comes from the test's rule. ZAP's attack and evidence fields never reach an envelope, and a rule with no proof that it ran is «No ejecutada».
+- **Batches** (`hackguard/lote@1`, ADR-009): one file per import, with three fingerprints (file, batch, record). Confirming a batch covers every failure and partial, plus a sample of the rest drawn with SHA-256 from the batch's fingerprint, and the plan's tiers are checked with exact arithmetic against their risk.
+- **Effective ledger:** a batch's confirmation counts for its envelopes in memory only; the envelope format `hackguard/sobre@1` does not change.
+- **CLI:** `pnpm evidencia:importar` and `pnpm evidencia:confirmar-lote`; `pnpm evidencia:validar` also checks the batches.
+- **Demo data:** two batches (LOTE-0007 Garak, LOTE-0008 ZAP), both pending, and their envelopes.
+- **Fixtures:** Garak's contract is a redacted local run against `test.Repeat`; ZAP's are the official outputs of zap-extensions (Apache-2.0) and two declared derivatives. Attribution in `docs/LICENCIAS-DE-MARCOS.md`.
+- **Gates:** determinism of the sample and the ledger in Node, Chromium, Firefox and WebKit; the sample plan's risk checked for every size; fidelity of the screen against the maqueta; the e2e in Spanish with axe in both themes and at 380 px; eight demonstrations in red.
+
+### Changed
+
+- **Sidebar:** Evidence opens the intake; the findings are one click away.
+- **The plan** links to the intake from its foot.
+- **Hallazgos e2e:** the expiry check reads the state the engine computes instead of assuming a calendar date.
+
+### Not in this sprint
+
+- Pasted text and reading the file in the browser (the screen says so); other tools; coverage by control, report, dashboard and gap (Sprint 7); real evidence; the English e2e (milestone close).
+
 ## Sprint 005 — «Del sobre al hallazgo» (2026-10-11)
 
 A result recorded by hand becomes an evidence envelope, a person confirms it, and a confirmed failure opens a finding with a computed severity, deadline and lifecycle that only a valid retest closes.
