@@ -11,7 +11,6 @@
 // Las pruebas de otras familias no se consideran: se cuentan.
 import { estaAutorizado, type Activo } from "../activos/esquemas.ts";
 import { normalizarActivo } from "../activos/normalizar.ts";
-import type { Prueba } from "../catalogo/esquemas.ts";
 import {
   filtrar,
   type Marca,
@@ -85,7 +84,6 @@ export async function planificar(
   const planeadas: PruebaPlaneada[] = [];
   const elegidas: Elegida[] = [];
   const excluidas: PruebaExcluida[] = [];
-  const porId = new Map<string, Prueba>(candidatas.map((p) => [p.id, p]));
 
   for (const prueba of candidatas) {
     const ajuste = ajustes.get(prueba.id);
@@ -165,7 +163,7 @@ export async function planificar(
     fecha_emision: fecha,
     resumen: {
       candidatas: candidatas.length,
-      otras_familias: pruebas.filter((p) => !porId.has(p.id)).length,
+      otras_familias: pruebas.filter((p) => !activo.familias.includes(p.familia)).length,
       planeadas: planeadas.length,
       excluidas: excluidas.length,
       controles_con_prueba: cobertura.filter((c) => c.estado === "con_prueba")

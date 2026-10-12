@@ -19,7 +19,11 @@ import {
 import path from "node:path";
 import { parseArgs } from "node:util";
 import type { Idioma } from "../engine/catalogo/informe.ts";
-import { validarActivos } from "../engine/activos/validar.ts";
+import {
+  validarActivos,
+  type EstadoDeValidacionDeActivos,
+  type ResultadoDeValidacionDeActivos,
+} from "../engine/activos/validar.ts";
 import {
   CODIGOS_DEL_PLAN,
   codigoDeActivos,
@@ -37,7 +41,7 @@ import {
   cargarActivos,
   cargarDatosDelPlanificador,
   cargarPatrones,
-} from "./cargar-activos.ts";
+} from "../lib/activos/cargar-activos.ts";
 
 const USO = {
   es: "uso: plan activo-validar [<id>] [--json] [--idioma es|en]\n     plan emitir <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]",
@@ -99,9 +103,11 @@ async function principal(argv: string[]): Promise<number> {
       throw new ErrorDeUso(
         `no hay un activo «${o.id}» / there is no asset “${o.id}”`,
       );
-    if (o.json) imprimir(salidaJsonDeActivos(validacion));
-    else process.stdout.write(informeDeActivos(validacion, o.idioma));
-    return codigoDeActivos(validacion.estado);
+    // Con un id, se informa de ese activo y de su código; sin id, de todos.
+    const visto = o.id === undefined ? validacion : delActivo(validacion, o.id);
+    if (o.json) imprimir(salidaJsonDeActivos(visto));
+    else process.stdout.write(informeDeActivos(visto, o.idioma));
+    return codigoDeActivos(visto.estado);
   }
 
   if (o.comando === "emitir") {
@@ -133,24 +139,27 @@ async function principal(argv: string[]): Promise<number> {
 
     let rutas: { plan: string; paquete: string } | null = null;
     if (resultado.emitido) {
-      const propio = encontrado.activo.origen === "propio";
+      // Un activo es propio por su origen y, además, por su carpeta: lo que está en datos/privado/ no sale a datos/planes/.
+      const ruta = archivos.find((a) => a.ruta.endsWith(`/${o.id}.json`))?.ruta ?? "";
+      const propio =
+        encontrado.activo.origen === "propio" || ruta.startsWith("datos/privado/");
       const privada = path.resolve(raiz, CARPETA_PRIVADA_DE_PLANES);
       const salida = path.resolve(
         raiz,
         o.salida ?? (propio ? CARPETA_PRIVADA_DE_PLANES : CARPETA_DE_PLANES),
       );
       // Un derivado jamás nace menos privado que su fuente (regla 17-bis): el plan de un activo propio no
-      // puede quedar en una carpeta versionada.
-      const datos = path.resolve(raiz, "datos");
-      const dentroDeDatos =
-        salida === datos || salida.startsWith(`${datos}${path.sep}`);
+      // puede quedar dentro del repositorio fuera de datos/privado/ (ni en docs/, ni en out/, ni en la raíz).
+      const raizAbs = path.resolve(raiz);
+      const dentroDeRaiz =
+        salida === raizAbs || salida.startsWith(`${raizAbs}${path.sep}`);
       const enPrivada =
         salida === privada || salida.startsWith(`${privada}${path.sep}`);
-      if (propio && dentroDeDatos && !enPrivada)
+      if (propio && dentroDeRaiz && !enPrivada)
         throw new ErrorDeUso(
           "el plan de un activo propio solo se escribe en datos/privado/ / the plan of an own asset is only written in datos/privado/",
         );
-      mkdirSync(salida, { recursive: true });
+      mkdirSync(salida, { recursive: true, mode: propio ? 0o700 : 0o755 });
       const modo = propio ? 0o600 : 0o644;
       const plan = path.join(salida, `${o.id}.plan.json`);
       const paquete = path.join(salida, `${o.id}.paquete.json`);
@@ -201,3 +210,23 @@ principal(process.argv.slice(2)).then(
     process.exitCode = CODIGOS_DEL_PLAN.uso;
   },
 );
+
+/** Los hallazgos y el estado de un solo activo: su ruta acaba en `<id>.json`. */
+function delActivo(
+  v: ResultadoDeValidacionDeActivos,
+  id: string,
+): ResultadoDeValidacionDeActivos {
+  const hallazgos = v.hallazgos.filter((h) => h.ruta.endsWith(`/${id}.json`));
+  const estado: EstadoDeValidacionDeActivos = hallazgos.some(
+    (h) => h.severidad === "error",
+  )
+    ? "invalido"
+    : hallazgos.some((h) => h.severidad === "advertencia")
+      ? "con_advertencias"
+      : "ok";
+  return {
+    estado,
+    hallazgos,
+    activos: v.activos.filter((a) => a.activo.id === id),
+  };
+}

@@ -4,13 +4,13 @@
 // textos y objetos y no sabe de dónde vinieron. Las rutas salen relativas a la raíz y con «/».
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
-import { PatronesDelFiltro } from "../engine/catalogo/esquemas.ts";
+import { PatronesDelFiltro } from "../../engine/catalogo/esquemas.ts";
 import {
   compilarPatrones,
   type PatronCompilado,
-} from "../engine/catalogo/filtro.ts";
-import type { ArchivoDeActivo } from "../engine/activos/validar.ts";
-import { Entornos, Formula } from "../engine/planificador/esquemas.ts";
+} from "../../engine/catalogo/filtro.ts";
+import type { ArchivoDeActivo } from "../../engine/activos/validar.ts";
+import { Entornos, Formula } from "../../engine/planificador/esquemas.ts";
 
 /** Dónde viven los activos: la primera es pública y solo admite demos; la segunda es privada (regla dura 8). */
 export const CARPETAS_DE_ACTIVOS = [

@@ -226,3 +226,20 @@ describe("advertencias y notas: el activo es válido pero algo pide atención", 
     expect(h?.detalle?.es).toContain("dueno");
   });
 });
+
+describe("el origen y la carpeta de un activo cuadran (regla 17-bis)", () => {
+  it("un demo que está en datos/privado/ es un error: su plan saldría como público", async () => {
+    const m = await mundo();
+    const texto = JSON.stringify(m.activos[ASISTENTE]);
+    const r = validarActivos(
+      [{ ruta: "datos/privado/activos/act-demo-asistente.json", texto }],
+      {
+        familias: m.instantanea.catalogo.familias.map((f) => f.id),
+        rasgos: m.instantanea.catalogo.rasgos,
+        pruebas: m.instantanea.catalogo.pruebas,
+      },
+    );
+    expect(reglas(r)).toContain("activo/demo-en-carpeta-privada");
+    expect(r.hallazgos.find((h) => h.regla === "activo/demo-en-carpeta-privada")?.severidad).toBe("error");
+  });
+});

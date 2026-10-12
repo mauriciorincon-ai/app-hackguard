@@ -35,8 +35,8 @@ export function ActivoPantalla({ v }: { v: VistaDeActivo }) {
           <p>
             <T
               t={{
-                es: "Este activo no tiene alcance autorizado ni reglas de enfrentamiento, así que no puede recibir plan. Decláralos con su dueño, o aplica la plantilla para activos propios y ajústala.",
-                en: "This asset has no authorized scope and no rules of engagement, so it cannot receive a plan. Declare them with its owner, or apply the template for own assets and adjust it.",
+                es: "Este activo no tiene alcance autorizado ni reglas de enfrentamiento, así que no puede recibir plan. Su dueño los declara en el archivo del activo y el plan se emite con pnpm plan:emitir.",
+                en: "This asset has no authorized scope and no rules of engagement, so it cannot receive a plan. Its owner declares them in the asset's file and the plan is issued with pnpm plan:emitir.",
               }}
             />
           </p>
@@ -273,8 +273,8 @@ export function ActivoPantalla({ v }: { v: VistaDeActivo }) {
             <div className="hg-panel-cuerpo">
               {v.reglas !== null ? (
                 <ol className="hg-lista">
-                  {v.reglas.map((r) => (
-                    <li key={r.texto.es}>
+                  {v.reglas.map((r, i) => (
+                    <li key={i}>
                       <T t={r.texto} />
                       {r.citaProveedor ? (
                         <>
@@ -346,8 +346,8 @@ export function ActivoPantalla({ v }: { v: VistaDeActivo }) {
                 <p className="hg-menor">
                   <T
                     t={{
-                      es: "Cuando el dueño los declare, el plan se calcula solo desde el perfil.",
-                      en: "Once the owner declares them, the plan is computed from the profile.",
+                      es: "Cuando el dueño los declare y se emita el plan con pnpm plan:emitir, aparece aquí.",
+                      en: "Once the owner declares them and the plan is issued with pnpm plan:emitir, it appears here.",
                     }}
                   />
                 </p>

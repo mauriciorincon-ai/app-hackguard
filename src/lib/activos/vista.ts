@@ -74,7 +74,6 @@ function cabecera(
   i: Instantanea,
   nombre: string,
   consulta: string,
-  hacia: "activo" | "plan",
 ): CabeceraDeActivo & { cargado: MundoDeActivos["activos"][number] } {
   const c = i.catalogo;
   const estadoDe = (con: boolean) =>
@@ -82,7 +81,6 @@ function cabecera(
   const cargado = mundo.activos.find((a) => a.activo.id === id);
   if (cargado === undefined)
     throw new Error(`no hay un activo «${id}» / there is no asset “${id}”`);
-  void hacia;
   return {
     id,
     nombre: cargado.activo.nombre,
@@ -115,7 +113,6 @@ export function construirVistaDeActivo(
     i,
     nombre,
     consulta,
-    "activo",
   );
   const a = cargado.activo;
   const e = (x: string) => etiquetaPropia(mundo.datos.etiquetas, x);
@@ -188,7 +185,7 @@ export function construirVistaDePlan(
   consulta: string,
 ): VistaDePlan {
   const c = i.catalogo;
-  const { cargado, ...cab } = cabecera(id, mundo, i, nombre, consulta, "plan");
+  const { cargado, ...cab } = cabecera(id, mundo, i, nombre, consulta);
   const e = (x: string) => etiquetaPropia(mundo.datos.etiquetas, x);
   const etiquetas = {
     sinAutorizacion: e("sin_autorizacion"),

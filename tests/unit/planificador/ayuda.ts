@@ -5,7 +5,7 @@ import {
   cargarActivos,
   cargarDatosDelPlanificador,
   cargarPatrones,
-} from "../../../src/cli/cargar-activos.ts";
+} from "../../../src/lib/activos/cargar-activos.ts";
 import { Activo } from "../../../src/engine/activos/esquemas.ts";
 import type { Instantanea } from "../../../src/engine/catalogo/instantanea.ts";
 import { cargarInstantaneaOficial } from "../../../src/lib/catalogo/cargar-instantanea.ts";

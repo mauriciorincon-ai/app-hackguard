@@ -13,7 +13,7 @@ An asset with its owner, provider, profile and authorization gets a test plan co
 - **`/activos/<id>/plan`:** the plan with the planned tests (each with «Applies because:», or «Added by you» and the justification), the excluded tests with one of three reasons (not applicable, out of scope, removed by you), the coverage by control (with «No test» where no planned test covers it), and the execution package. The customer portal has no plan: «No authorization, no plan».
 - **Package download:** `/activos/<id>/paquete.json` serves the same bytes as the versioned file that the planner issues.
 - **Planner:** a pure, deterministic core in `src/engine/planificador/`, with the priority formula, the tool and environment choice, and the coverage in data (`datos/planificador/`). Same input, same bytes, in Node and in Chromium, Firefox and WebKit.
-- **Asset validator:** 19 named rules in `src/engine/activos/`. A demo asset must declare `origen: "demo"`; real assets live in `datos/privado/activos/`, which git ignores.
+- **Asset validator:** 21 named rules in `src/engine/activos/`. A demo asset must declare `origen: "demo"`; real assets live in `datos/privado/activos/`, which git ignores.
 - **CLI:** `pnpm activo:validar` and `pnpm plan:emitir <id> --fecha AAAA-MM-DD`. A plan for an own asset is written to `datos/privado/planes/` with mode 0600.
 - **Gates:** plan and package fingerprints across three browsers, fidelity of both screens against the maqueta, the aging matrix for the policy and tool dates, and an e2e with axe in both themes.
 - **ADR-007:** the plan and package format that the evidence book will consume.

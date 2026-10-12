@@ -4,7 +4,7 @@
 // nadie puede reproducir. Los planes se re-emiten con `pnpm plan:emitir`.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { cargarActivosPublicos } from "../../cli/cargar-activos.ts";
+import { cargarActivosPublicos } from "./cargar-activos.ts";
 import { Activo } from "../../engine/activos/esquemas.ts";
 import { normalizarActivo } from "../../engine/activos/normalizar.ts";
 import { validarActivos } from "../../engine/activos/validar.ts";

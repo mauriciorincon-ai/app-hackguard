@@ -1,6 +1,6 @@
 // Validador del activo: lee los archivos de activos, comprueba cada uno contra el esquema y contra el catálogo
 // (rasgos, familias, pruebas) y dice qué encontró, con la regla que lo encontró. Mismo molde de hallazgos que
-// el validador del catálogo; el motor no toca el disco (los textos llegan de `src/cli/cargar-activos.ts`).
+// el validador del catálogo; el motor no toca el disco (los textos llegan de `src/lib/activos/cargar-activos.ts`).
 //
 // Sin alcance ni reglas el activo es VÁLIDO y no está autorizado: no es un error, es el estado «registrado, sin
 // plan» (regla dura 5). Lo que sí es error es un activo que contradice al catálogo o a sí mismo.
@@ -38,6 +38,16 @@ export const REGLAS_DE_ACTIVO = {
     "error",
     "Dos activos comparten id",
     "Two assets share an id",
+  ),
+  "activo/fuera-de-otra-familia": r(
+    "error",
+    "Una prueba fuera del alcance es de una familia que el activo no tiene",
+    "A test out of scope belongs to a family the asset does not have",
+  ),
+  "activo/demo-en-carpeta-privada": r(
+    "error",
+    "Un activo demo está en datos/privado/: su plan saldría como público. Los demos viven en datos/activos/demo/",
+    "A demo asset is in datos/privado/: its plan would come out as public. Demo assets live in datos/activos/demo/",
   ),
   "activo/origen-no-demo-en-datos-publicos": r(
     "error",
@@ -159,6 +169,7 @@ const t = (es: string, en: string): Texto => ({ es, en });
 const comillas = (s: string) => t(`«${s}»`, `“${s}”`);
 const nombreDeArchivo = (ruta: string) => ruta.slice(ruta.lastIndexOf("/") + 1);
 const CARPETA_PUBLICA = "datos/activos/";
+const CARPETA_PRIVADA = "datos/privado/";
 
 function describir(problema: z.core.$ZodIssue): Texto {
   const donde = problema.path.length > 0 ? problema.path.join(".") : "(raíz)";
@@ -227,6 +238,9 @@ export function validarActivos(
         archivo.ruta,
         "origen",
       );
+    // La carpeta decide dónde vive el plan: un demo en la carpeta privada tendría su plan en un sitio público.
+    if (archivo.ruta.startsWith(CARPETA_PRIVADA) && a.origen === "demo")
+      agregar("activo/demo-en-carpeta-privada", archivo.ruta, "origen");
 
     if (
       a.proveedor !== null &&
@@ -272,8 +286,16 @@ export function validarActivos(
       }
       return p;
     };
-    for (const [i, f] of (a.alcance?.fuera ?? []).entries())
-      nombraPrueba(f.prueba, `alcance.fuera.${i}.prueba`);
+    for (const [i, f] of (a.alcance?.fuera ?? []).entries()) {
+      const p = nombraPrueba(f.prueba, `alcance.fuera.${i}.prueba`);
+      if (p !== null && !a.familias.includes(p.familia))
+        agregar(
+          "activo/fuera-de-otra-familia",
+          archivo.ruta,
+          `alcance.fuera.${i}.prueba`,
+          comillas(f.prueba),
+        );
+    }
     const vistas = new Set<string>();
     for (const [i, aj] of a.ajustes.entries()) {
       const campo = `ajustes.${i}.prueba`;

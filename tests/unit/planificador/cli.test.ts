@@ -236,6 +236,25 @@ describe("un activo propio vive en datos/privado/ y su plan también (regla 17-b
     expect(existsSync(path.join(raiz, "datos/planes"))).toBe(false);
   });
 
+  it("un propio que se pide en docs/ o en la raíz del repo es un error de uso: solo datos/privado/ o fuera del repo", async () => {
+    const raiz = await raizConPropio();
+    for (const salida of ["docs", "."]) {
+      const r = correr(
+        ["emitir", "mi-clasificador", "--fecha", FECHA, "--salida", salida],
+        raiz,
+      );
+      expect(r.codigo).toBe(3);
+      expect(r.errores).toContain("solo se escribe en datos/privado/");
+    }
+    expect(existsSync(path.join(raiz, "docs"))).toBe(false);
+  });
+
+  it("la carpeta privada que el CLI crea nace con modo 0700 (regla 17-bis)", async () => {
+    const raiz = await raizConPropio();
+    expect(correr(["emitir", "mi-clasificador", "--fecha", FECHA], raiz).codigo).toBe(0);
+    expect(statSync(path.join(raiz, "datos/privado/planes")).mode & 0o777).toBe(0o700);
+  });
+
   it("un archivo ya existente con otro modo se deja en el que corresponde", async () => {
     const raiz = await raizConPropio();
     correr(["emitir", "mi-clasificador", "--fecha", FECHA], raiz);
@@ -264,6 +283,16 @@ describe("un activo propio vive en datos/privado/ y su plan también (regla 17-b
     expect(r.salida).toContain(
       "El perfil declara un rasgo que el catálogo no tiene",
     );
+    expect(existsSync(path.join(raiz, "datos/privado/planes"))).toBe(false);
+  });
+
+  it("un demo que está en datos/privado/ no recibe plan: su origen y su carpeta no cuadran (2)", async () => {
+    const raiz = await raizConPropio((a) => {
+      a.origen = "demo";
+    });
+    const r = correr(["emitir", "mi-clasificador", "--fecha", FECHA], raiz);
+    expect(r.codigo).toBe(2);
+    expect(existsSync(path.join(raiz, "datos/planes"))).toBe(false);
     expect(existsSync(path.join(raiz, "datos/privado/planes"))).toBe(false);
   });
 

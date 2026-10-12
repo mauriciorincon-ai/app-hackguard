@@ -22,7 +22,7 @@ export function PlantillaParaActivosPropios({
         type="button"
         className="hg-boton"
         data-controlador="alternar"
-        aria-pressed={abierta}
+        aria-expanded={abierta}
         onClick={() => setAbierta((a) => !a)}
       >
         <T
@@ -50,8 +50,8 @@ export function PlantillaParaActivosPropios({
         <p className="hg-menor">
           <T
             t={{
-              es: "Se aplica en un paso y se ajusta después. Solo vale para activos propios: en uno ajeno, el alcance lo declara su dueño.",
-              en: "It is applied in one step and adjusted afterwards. It is only valid for own assets: for someone else's, the owner declares the scope.",
+              es: "Es una guía para declarar el alcance y las reglas de un activo propio en su archivo. Solo vale para activos propios: en uno ajeno, el alcance lo declara su dueño.",
+              en: "It is a guide for declaring the scope and the rules of an own asset in its file. It is only valid for own assets: for someone else's, the owner declares the scope.",
             }}
           />
         </p>

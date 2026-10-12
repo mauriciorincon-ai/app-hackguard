@@ -114,15 +114,15 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           <p>
             <span lang="es">
               Falta el alcance autorizado y las reglas de enfrentamiento.
-              Decláralos en{" "}
-              <Link href={`/activos/${v.id}`}>la página del activo</Link> y
-              vuelve: el plan se calcula solo.
+              Se declaran en el archivo del activo y el plan se emite con
+              pnpm plan:emitir. Mientras tanto, mira{" "}
+              <Link href={`/activos/${v.id}`}>la página del activo</Link>.
             </span>
             <span lang="en">
               The authorized scope and the rules of engagement are missing.
-              Declare them in{" "}
-              <Link href={`/activos/${v.id}`}>the asset&apos;s page</Link> and
-              come back: the plan is computed automatically.
+              They are declared in the asset&apos;s file and the plan is issued
+              with pnpm plan:emitir. Meanwhile, see{" "}
+              <Link href={`/activos/${v.id}`}>the asset&apos;s page</Link>.
             </span>
           </p>
         </Sello>
@@ -518,8 +518,8 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
                         t={
                           c.adaptador
                             ? {
-                                es: "Por su adaptador",
-                                en: "Through its adapter",
+                                es: "Adaptador definido; esta versión no lo lee",
+                                en: "Adapter defined; this version does not read it",
                               }
                             : {
                                 es: "Texto pegado o carga manual",
@@ -587,8 +587,8 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
                 />
               </p>
               <ul className="hg-lista">
-                {p.reglas.map((t) => (
-                  <li key={t.es}>
+                {p.reglas.map((t, i) => (
+                  <li key={i}>
                     <T t={t} />
                   </li>
                 ))}

@@ -115,7 +115,7 @@ cada uno. Las demás secciones (tablero, evidencia y brecha) aparecen en la barr
        `prueba/revision-sin-registro` dice «huella del contenido a revisar: …». Si el contenido cambia después,
        `prueba/revision-desactualizada` da la huella nueva.
 - **Limitaciones conocidas:**
-  - **Se ve en pantalla solo el catálogo:** lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
+  - **Solo algunas vistas están en pantalla:** el catálogo, los marcos, los controles y los activos con su plan. Lo demás se maneja por los comandos de arriba (ver «El catálogo en pantalla»).
   - **Instantánea bloqueada:** si el catálogo es inválido, no se escribe nada (código 2).
   - **Fecha obligatoria:** la fecha de la instantánea es obligatoria y nunca se toma del reloj. Una fecha anterior
     a la última verificación del catálogo se rechaza (código 3).
@@ -305,7 +305,7 @@ It runs no tests itself: it says what is worth checking on an asset, with which 
 and it takes in results as evidence that a person confirms. Its central idea is that a finding is not a
 vulnerability: it is evidence that a control is failing.
 
-You can now **browse the test catalog on screen** (the list with its filters and a record per test); under that screen sits the **test catalog as data**, with the commands to validate it and
+You can now **browse the test catalog on screen** (the list with its filters and a record per test), and see the **assets with their test plan**; under that screen sits the **test catalog as data**, with the commands to validate it and
 take snapshots of it, and a **demo classifier** for the decision-model family.
 
 ### Getting started
@@ -398,7 +398,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
        finding `prueba/revision-sin-registro` says “fingerprint of the content to review: …”. If the content
        changes later, `prueba/revision-desactualizada` gives the new one.
 - **Known limitations:**
-  - **Only the catalog is on screen:** everything else is handled with the commands above (see “The catalog on screen”).
+  - **Only some views are on screen:** the catalog, the frameworks, the controls and the assets with their plan. Everything else is handled with the commands above (see “The catalog on screen”).
   - **Blocked snapshot:** if the catalog is invalid, nothing is written (code 2).
   - **Date required:** the snapshot date is required and is never taken from the clock. A date earlier than the
     catalog's latest verification is rejected (code 3).
