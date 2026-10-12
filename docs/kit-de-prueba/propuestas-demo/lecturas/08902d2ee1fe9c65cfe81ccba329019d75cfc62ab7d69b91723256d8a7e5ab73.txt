@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] arXiv listing 2609.32160v2. Versions: v1 submitted 2026-09-26. v2 submitted 2026-10-01: adds check C5 and renames check T2 to Agreement under repeated or reordered requests.

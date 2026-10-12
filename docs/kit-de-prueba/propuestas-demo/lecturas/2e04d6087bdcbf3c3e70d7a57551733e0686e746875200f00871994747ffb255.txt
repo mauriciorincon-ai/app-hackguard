@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] Fourteen checks for evaluating decision models, full text. Table 2. R3 Choices made after seeing test data. For each choice (threshold, prompt, model, cut-off) the report states whether it was fixed before the test data were opened. A choice made afterwards must be reported as such.

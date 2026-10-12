@@ -322,12 +322,13 @@ const comprobaciones = (
   m.instrumento.map((c) => ({
     requisito: c.requisito,
     nombre:
-      c.requisito === "RF-10.3"
+      c.nombre ??
+      (c.requisito === "RF-10.3"
         ? { es: "Cierres prohibidos", en: "Forbidden closures" }
         : {
             es: "«No detectado» no es verificado",
             en: "“Not detected” is not verified",
-          },
+          }),
     sembradas: c.sembradas,
     obtenidas: c.obtenidas,
     pasa: c.obtenidas === c.sembradas,

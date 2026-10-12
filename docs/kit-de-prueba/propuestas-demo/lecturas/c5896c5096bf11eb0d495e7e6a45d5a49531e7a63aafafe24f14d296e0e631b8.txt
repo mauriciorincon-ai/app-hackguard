@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] promptfoo eval 0.123.1 run 2026-10-03. Test PERM tool permissions: 20 cases, 0 failed. Test LIM step and cost limits: 20 cases, 5 failed.

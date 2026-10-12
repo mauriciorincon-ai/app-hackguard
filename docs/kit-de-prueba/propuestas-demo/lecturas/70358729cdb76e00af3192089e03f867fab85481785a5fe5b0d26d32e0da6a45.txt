@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] Top 10 for agentic applications 2026. ASI03 Identity and Privilege Abuse. Agents inherit and delegate credentials; a credential that outlives its task widens what a compromised agent can reach. Review how credentials are scoped.

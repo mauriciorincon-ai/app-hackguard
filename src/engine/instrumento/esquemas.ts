@@ -66,6 +66,15 @@ export const Espera = z.strictObject({
 });
 export type Espera = z.infer<typeof Espera>;
 
+/** Los requisitos que la validación del instrumento comprueba: los cierres (S7) y los supuestos S1 y S2 del plan de los agentes (S8). */
+export const REQUISITOS_DE_INSTRUMENTO = [
+  "RF-10.3",
+  "E-6",
+  "S1",
+  "S2",
+] as const;
+export type RequisitoDeInstrumento = (typeof REQUISITOS_DE_INSTRUMENTO)[number];
+
 export const SemillaDeCierre = z.strictObject({
   id: z.string().regex(/^[A-Z0-9-]+$/, { message: "formato:id-semilla" }),
   requisito: z.enum(["RF-10.3", "E-6"]),

@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] PyRIT releases. v1.2.0 released 2026-10-01. Changes: new orchestrator options, fixes in scoring. v1.1.0 released 2026-08-20.

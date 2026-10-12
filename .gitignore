@@ -35,3 +35,6 @@ public/diseno/
 
 # Entorno y crudo de la fixture de Garak (scripts/adaptadores/fixture-garak.sh): 1,6 GB y cargas de ataque. Se borra al terminar.
 .fixture-garak/
+
+# Páginas que el investigador leyó (ADR-011): solo viajan la huella y el pasaje citado, nunca la página.
+propuestas/.lecturas/

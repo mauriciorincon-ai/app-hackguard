@@ -2,6 +2,10 @@
 // La fecha de consulta es HACKGUARD_CONSULTA, o la fecha del commit; jamás el reloj. Solo corre en el build.
 import { cargarParaPaginaDeHallazgo } from "../evidencia/pagina.ts";
 import {
+  cargarPatronesDeInstrucciones,
+  cargarSemillasDeAgentes,
+} from "../propuestas/cargar.ts";
+import {
   cargarEtiquetasDeBrecha,
   cargarSemillasDeCierre,
   cargarUmbralesDeBrecha,
@@ -20,5 +24,9 @@ export async function cargarParaPaginaDeBrecha(): Promise<MundoDeBrecha> {
     umbrales: cargarUmbralesDeBrecha(),
     etiquetas: cargarEtiquetasDeBrecha(),
     semillas: cargarSemillasDeCierre(),
+    agentes: {
+      semillas: cargarSemillasDeAgentes(),
+      patronesDeInstrucciones: cargarPatronesDeInstrucciones(),
+    },
   });
 }

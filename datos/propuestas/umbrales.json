@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "plan": {
+    "id": "hackguard-agentes",
+    "version": "2.0.0",
+    "huella": "3021ab885f1379716e327f27e7c4521c2c243c601eaa56d965f38e8f72acfef8"
+  },
+  "similitud_cita": 1,
+  "fuentes_verificadas": 2,
+  "antiguedad_marco_dias": 180,
+  "origen": {
+    "es": "Los tres umbrales que el usuario fijó en el plan v2 de los agentes (U1, U2 y U3, P12): una cita es literal o no vale, una propuesta lleva al menos 2 fuentes verificadas, y un marco con más de 180 días desde su versión pasa a una persona, el mismo plazo que HackGuard usa para la evidencia antigua.",
+    "en": "The three thresholds the user set in the agents plan v2 (U1, U2 and U3, P12): a quote is literal or it does not count, a proposal carries at least 2 verified sources, and a framework more than 180 days past its version goes to a person, the same term HackGuard uses for stale evidence."
+  }
+}

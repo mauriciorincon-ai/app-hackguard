@@ -1,0 +1,1 @@
+[Lectura sintética del kit de prueba de HackGuard: no es el texto de la página real.] GenAI LLM Top 10 repository. README. Each entry has a page with the description, examples at a high level, and mitigations. LLM01 Prompt Injection: restrictions given to a model can be eroded across a long conversation.

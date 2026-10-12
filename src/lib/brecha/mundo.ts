@@ -10,7 +10,12 @@ import type {
   UmbralesDeBrecha,
 } from "../../engine/brecha/esquemas.ts";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
+import type { PatronCompilado } from "../../engine/catalogo/filtro.ts";
 import { huella } from "../../engine/huella.ts";
+import {
+  validarSemillasDeAgentes,
+  type SemillasDeAgentes,
+} from "../../engine/propuestas/semillas.ts";
 import {
   validarInstrumento,
   type ComprobacionDeInstrumento,
@@ -44,6 +49,11 @@ export async function armarMundoDeBrecha(e: {
   umbrales: UmbralesDeBrecha;
   etiquetas: EtiquetasDeBrecha;
   semillas: SemillasDeCierre;
+  /** Las semillas S1 y S2 de los agentes, con los patrones de instrucciones con que se corren (S8). Sin ellas, solo los cierres. */
+  agentes?: {
+    semillas: SemillasDeAgentes;
+    patronesDeInstrucciones: PatronCompilado[];
+  };
 }): Promise<MundoDeBrecha> {
   const entrada = entradaDeBrecha(
     e.instantanea,
@@ -53,7 +63,15 @@ export async function armarMundoDeBrecha(e: {
     e.consulta,
   );
   // Las semillas se corren contra el mundo de HOY: el libro demo de la instantánea oficial y la fecha de su consulta.
-  const instrumento = validarInstrumento(e.semillas.semillas, entrada);
+  const instrumento = [
+    ...validarInstrumento(e.semillas.semillas, entrada),
+    ...(e.agentes === undefined
+      ? []
+      : validarSemillasDeAgentes(
+          e.agentes.semillas,
+          e.agentes.patronesDeInstrucciones,
+        )),
+  ];
   exigirInstrumentoVerde(instrumento);
   const brecha = await calcularBrecha(entrada);
   if (brecha.problemas.length > 0)
