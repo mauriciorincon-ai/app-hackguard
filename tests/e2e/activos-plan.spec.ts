@@ -211,9 +211,9 @@ test.describe("el portal, sin autorización, no recibe plan", () => {
     const plantilla = page.getByRole("button", {
       name: "Ver la plantilla para activos propios",
     });
-    await expect(plantilla).toHaveAttribute("aria-expanded", "false");
+    await expect(plantilla).toHaveAttribute("aria-pressed", "false");
     await plantilla.click();
-    await expect(plantilla).toHaveAttribute("aria-expanded", "true");
+    await expect(plantilla).toHaveAttribute("aria-pressed", "true");
     await expect(
       page.getByText("Alcance de la plantilla").first(),
     ).toBeVisible();

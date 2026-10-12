@@ -22,7 +22,7 @@ export function PlantillaParaActivosPropios({
         type="button"
         className="hg-boton"
         data-controlador="alternar"
-        aria-expanded={abierta}
+        aria-pressed={abierta}
         onClick={() => setAbierta((a) => !a)}
       >
         <T
