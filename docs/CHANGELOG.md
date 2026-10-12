@@ -3,6 +3,32 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 005 — «Del sobre al hallazgo» (2026-10-11)
+
+A result recorded by hand becomes an evidence envelope, a person confirms it, and a confirmed failure opens a finding with a computed severity, deadline and lifecycle that only a valid retest closes.
+
+### Added
+
+- **`/evidencia/hallazgos/<id>`:** four demo findings (HZ-0003, HZ-0005, HZ-0007, HZ-0009), each with its closure chain, its severity, the control it fails, «What you can do» (read-only: each outcome with its consequence and the command that records it) and its properties.
+- **Evidence ledger** (`hackguard/sobre@1`): each envelope keeps three fingerprints (raw, canonical envelope, result without run identifiers). A confirmed envelope never changes; a correction is a new envelope that cites the one it corrects. The raw output of a tool is read only to compute its fingerprint and is never stored.
+- **Findings** (`hackguard/hallazgo@1`): the file stores only human input; the state is computed. Closure needs a confirmed, passed retest of the same test and asset, after the correction, with the same tool, the same exact version, the same selector and at least the same repetitions. The absence of a finding in a later scan never closes it. An accepted risk still counts as a failure of its control.
+- **Severity:** CVSS 4.0 with FIRST's scoring code vendored byte for byte from `c5b0d40` (BSD-2), behind a strict vector validator that rejects truncated or out-of-order vectors. The AI scale is a priority table in data (`datos/severidad/escala-ia.json`), impact first, with validated floor and ceiling.
+- **Deadlines:** critical 7 days, high 30, medium 90; low and informational have none. They count from the confirmation of the envelope that opens the finding (`datos/hallazgos/plazos.json`).
+- **CLI:** `pnpm evidencia:registrar`, `evidencia:confirmar`, `evidencia:validar`, `hallazgos:listar` and `hallazgos:declarar`. A finding already closed takes no further declaration.
+- **Demo data:** 11 envelopes (10 confirmed, 1 proposed) and the 4 findings of the maqueta, as versioned demo data.
+- **Gates:** determinism of the ledger and the findings in Node, Chromium, Firefox and WebKit; fidelity of the four screens against the maqueta; the aging matrix for deadlines and risk reviews; an e2e in Spanish with axe in both themes and at 380 px; eight demonstrations in red.
+- **ADR-008:** the format of the envelope, the ledger and the finding.
+
+### Changed
+
+- **Sidebar:** Evidence opens the first finding; «Intake» is still marked «soon».
+- **Constitution:** kit v2.2.0 (model gate, rule 29, milestone matrix).
+- **Maqueta table:** `docs/diseno/README.md` lists what the product adds or leaves out against the maqueta (Sprint 5).
+
+### Not in this sprint
+
+- The intake screen and the Garak and ZAP adapters (Sprint 6); reopening a finding (D5); coverage by control, report, dashboard and gap (Sprint 7); real evidence; the English e2e (milestone close).
+
 ## Sprint 004 — «Del activo al plan» (2026-10-11)
 
 An asset with its owner, provider, profile and authorization gets a test plan computed by code from the official snapshot, with a declarative execution package, and both are on screen.

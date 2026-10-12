@@ -219,10 +219,10 @@ producto lo calcula el motor sobre las 38 pruebas de la instantánea, y manda el
 
 | Pantalla | Diferencia | Razón |
 |---|---|---|
-| `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | «En prueba» exige evidencia, que llega en el S5 |
+| `activo`, `plan` | El estado del activo se deriva del plan emitido («Con plan» o «Registrado, sin plan»); no existe «En prueba» | El libro de evidencia (S5) no cambia el estado del activo todavía |
 | `activo`, `plan` | Los estados de pantalla «vacío», «cargando» y «error» solo existen en la maqueta | Es un export estático: un activo o un plan que no cuadra con su huella rompe el build en vez de mostrarse |
 | `plan` | La cabecera y el pie no enseñan la huella solo abreviada: el panel del paquete trae la huella completa del paquete y de la instantánea | El plan se puede reproducir y comparar byte a byte |
-| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S5; un enlace a una pantalla que no existe sería un enlace roto |
+| `plan` | El pie del paquete ofrece «Descargar el paquete» (el mismo archivo que escribe `pnpm plan:emitir`) en lugar de «Ir a la carga de evidencia» | La carga de evidencia es del S6; un enlace a una pantalla que no existe sería un enlace roto |
 | `plan` | Cada prueba del paquete muestra su selector, `k` y el nombre de su regla de veredicto; no la frase «umbral de fallida: 100 por mil» | Esa frase era ilustrativa; el catálogo da la regla y `k`, y la cota la calcula el informe |
 | `plan` | La herramienta de cada prueba es la que mide su resultado esperado, y puede variar entre pruebas de una misma familia | El catálogo recomienda hasta dos herramientas por prueba; la maqueta fijaba una |
 | `plan` | «Cobertura por control» cuenta los controles que citan las pruebas candidatas del activo, y las pruebas del plan sin control aparte | El catálogo tiene pruebas con control pendiente (las de software); la maqueta suponía todas con control |

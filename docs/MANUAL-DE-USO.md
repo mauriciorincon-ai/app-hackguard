@@ -472,7 +472,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   approved here; to change a test you edit its `datos/` file (see above).
 - **How to use it:**
   1. Open the app: the root takes you to **Catalog → Tests**. The sidebar has five sections; inside Catalog, **Tests**,
-     **Frameworks** and **Controls** work, and so do **Assets**. The others carry the “soon” mark.
+     **Frameworks** and **Controls** work, and so do **Assets** and the findings under **Evidence**. The others carry the “soon” mark.
   2. At the top you see the name of the **snapshot** being read, its short fingerprint, how many tests there are and
      the **query date**, and four figures: how many tests are current, review due, overdue and without a control.
   3. **Filter** with the family pills (Software, Agent, Generative model, Decision model) and the Framework, Control,
@@ -503,7 +503,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family.
   only when it is published again**: the query date it shows at the top is the one that counts. Whoever prepares the
   site can set it with the `HACKGUARD_CONSULTA` variable (YYYY-MM-DD) to see how it would look on another day.
 - **Known limitations:**
-  - Proposals, dashboard, evidence and gap do not exist as screens yet.
+  - Proposals, dashboard and gap do not exist as screens yet; neither does the intake of results.
   - It shows the **official snapshot**, not the loose `datos/` files: a change to a file shows up when a new snapshot
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
