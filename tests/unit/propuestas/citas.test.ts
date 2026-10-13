@@ -8,6 +8,7 @@ import {
   numeroEnElTexto,
   similitudDeCita,
   verificarCita,
+  versionEnElTexto,
 } from "../../../src/engine/propuestas/citas.ts";
 
 const TEXTO =
@@ -88,5 +89,25 @@ describe("el número tiene que estar en la cita", () => {
     expect(
       verificarCita("fecha", "run 2026-10-09", "2026-10-09", TEXTO).estado,
     ).toBe("no_literal");
+  });
+});
+
+describe("una versión está en el texto como palabra propia (RF-07.5)", () => {
+  it("la encuentra cuando es una palabra suelta", () => {
+    expect(
+      versionEnElTexto("v2", "Revised v2 (2026-10-01): adds check C5."),
+    ).toBe(true);
+    expect(versionEnElTexto("2.0", "Version 2.0 released today")).toBe(true);
+    expect(versionEnElTexto("1.1+", "Version 1.1+ is out")).toBe(true);
+  });
+  it("no la encuentra dentro de otra versión, de una palabra ni de un número", () => {
+    expect(versionEnElTexto("v2", "Revised v20 of the list")).toBe(false);
+    expect(versionEnElTexto("v2", "the rev2 branch")).toBe(false);
+    expect(versionEnElTexto("2", "Version 2.0 released")).toBe(false);
+    expect(versionEnElTexto("2.0", "Version 2.0.1 released")).toBe(false);
+  });
+  it("una versión vacía no está en ningún texto", () => {
+    expect(versionEnElTexto("", "cualquier texto")).toBe(false);
+    expect(versionEnElTexto("   ", "cualquier texto")).toBe(false);
   });
 });

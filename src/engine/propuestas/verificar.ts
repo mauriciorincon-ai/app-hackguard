@@ -8,7 +8,12 @@ import type { PatronCompilado } from "../catalogo/filtro.ts";
 import { filtrar } from "../catalogo/filtro.ts";
 import { huella } from "../huella.ts";
 import { antiguedadDelMarco } from "./antiguedad.ts";
-import { huellaDeTexto, similitudDeCita, verificarCita } from "./citas.ts";
+import {
+  huellaDeTexto,
+  similitudDeCita,
+  verificarCita,
+  versionEnElTexto,
+} from "./citas.ts";
 import {
   FORMATO_DE_CORRIDA,
   type Agente,
@@ -20,6 +25,7 @@ import {
   type Consulta,
   type Corrida,
   type CuerpoDePropuesta,
+  type EstadoDeFuente,
   type MotivoDePausa,
   type Pausa,
   type PropuestaSellada,
@@ -290,6 +296,9 @@ interface Ejecucion {
   tokens: number | null;
 }
 
+/** La señal con la que una `version_de_marco` queda en pausa porque su versión nueva no está en un pasaje verificado (RF-07.5). */
+export const SENAL_VERSION_EN_LA_CITA = "version_en_la_cita";
+
 async function sellarPropuesta(
   p: BorradorDePropuesta,
   id: string,
@@ -331,7 +340,7 @@ async function sellarPropuesta(
   if (cuerpo.tipo !== "sobre") {
     // ── Investigador: fuentes (U2), citas (U1) y antigüedad del marco (U3) ──
     const lista = listaBlancaDe(cuerpo, ctx);
-    const fuentes = [];
+    const fuentes: { url: string; estado: EstadoDeFuente }[] = [];
     const similitudes: number[] = [];
     for (const f of cuerpo.fuentes) {
       const estado = await verificarFuente(f, lista, ctx.lecturas, consultadas);
@@ -365,6 +374,17 @@ async function sellarPropuesta(
       );
     if (sinVerificar > 0)
       agregar("cita_no_verificada", "citas_sin_verificar", 0);
+    // RF-07.5: un aviso de versión solo vale si la versión nueva está dentro de un pasaje que el código verificó. Sin eso la
+    // propuesta llega a la bandeja con su pausa, pero no avisa (`avisosDeVersion`).
+    if (
+      cuerpo.tipo === "version_de_marco" &&
+      !cuerpo.fuentes.some(
+        (f, i) =>
+          fuentes[i]?.estado === "verificada" &&
+          versionEnElTexto(cuerpo.version_nueva, f.fragmento),
+      )
+    )
+      agregar("cita_no_verificada", SENAL_VERSION_EN_LA_CITA, 0);
     if (marco !== undefined && marco.fecha_version === null)
       agregar(
         "marco_sin_fecha",

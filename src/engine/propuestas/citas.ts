@@ -50,6 +50,21 @@ export function numeroEnElTexto(valor: number, texto: string): boolean {
   return new RegExp(`(?<![\\d])${valor}(?![\\d])`, "u").test(texto);
 }
 
+/**
+ * ¿La versión aparece en el texto como una palabra propia? `v2` no está dentro de `v20` ni de `rev2`, y `2` no está dentro de `2.0`:
+ * ni una letra o un dígito pegados delante, ni una letra, un dígito o `.dígito` pegados detrás (RF-07.5: el aviso de versión solo
+ * vale si la versión nueva está dentro del pasaje que el código verificó).
+ */
+export function versionEnElTexto(version: string, texto: string): boolean {
+  const v = version.trim();
+  if (v.length === 0) return false;
+  const escapada = v.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  return new RegExp(
+    `(?<![\\p{L}\\p{N}])${escapada}(?![\\p{L}\\p{N}]|\\.\\p{N})`,
+    "u",
+  ).test(normalizarEspacios(texto));
+}
+
 /** Los campos cuyo valor es un número entero que la cita tiene que contener. */
 const CAMPOS_NUMERICOS: readonly CampoCitable[] = [
   "resultado.evaluadas",

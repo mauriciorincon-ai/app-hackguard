@@ -12,6 +12,7 @@ import {
   sellarCorrida,
 } from "../../../src/engine/propuestas/verificar.ts";
 import { huella } from "../../../src/engine/huella.ts";
+import { avisosDeVersion } from "../../../src/engine/propuestas/avisos.ts";
 import { huellaDeTexto } from "../../../src/engine/propuestas/citas.ts";
 import {
   borradorDe,
@@ -249,6 +250,35 @@ describe("U2 y la lista blanca", () => {
     );
     expect(estados.length).toBeGreaterThan(0);
     expect(new Set(estados)).toEqual(new Set(["url_no_consultada"]));
+  });
+  it("RF-07.5 · una versión nueva que no está en ningún pasaje verificado deja la propuesta en pausa y sin aviso", async () => {
+    const p = await conFuentes((v) => {
+      v.version_nueva = "v3";
+    });
+    if (p.tipo !== "version_de_marco") throw new Error();
+    const motivo = p.pausa?.motivos.find(
+      (m) => m.senal === "version_en_la_cita",
+    );
+    expect(motivo?.motivo).toBe("cita_no_verificada");
+    expect(avisosDeVersion([p], ctx.marcos)).toEqual([]);
+  });
+  it("RF-07.5 · la versión solo en pasajes que no se verificaron no la respalda", async () => {
+    const p = await conFuentes((v) => {
+      v.fuentes[0]!.fragmento = "Revised v2: removes everything.";
+      v.fuentes[1]!.url = "https://ejemplo-ajeno.test/lista-v2";
+    });
+    expect(p.verificacion.fuentes.map((f) => f.estado)).toEqual([
+      "sin_fragmento",
+      "fuera_de_lista_blanca",
+    ]);
+    expect(p.pausa?.motivos.some((m) => m.senal === "version_en_la_cita")).toBe(
+      true,
+    );
+  });
+  it("RF-07.5 · con la versión dentro de un pasaje verificado, ni pausa ni señal de más", async () => {
+    const p = await conFuentes(() => {});
+    expect(p.pausa).toBeNull();
+    expect(avisosDeVersion([p], ctx.marcos)).toHaveLength(1);
   });
   it("con un umbral de una fuente, una sola verificada basta", async () => {
     const b = copia(borradorDe(INV));
