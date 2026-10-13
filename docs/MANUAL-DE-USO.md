@@ -433,6 +433,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 | 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                                                   |
 | 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco                                      |
 | 008 · 2026-10-12 | Las propuestas (la bandeja con sus decisiones por comando) · el investigador de marcos y el extractor de resultados, como skills de Claude Code · avisos de versión en Marcos |
+| 009 · 2026-10-13 | Aportar a mano la lectura de una fuente que el agente no pudo leer (`pnpm propuestas:aportar`) · la presentación pública en `/conoce`                                         |
 
 ---
 
@@ -852,3 +853,4 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 | 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                                                        |
 | 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five                                              |
 | 008 · 2026-10-12 | Proposals (the inbox with its decisions by command) · the researcher for frameworks and the extractor for results, as Claude Code skills · version notices in Marcos |
+| 009 · 2026-10-13 | Contribute by hand the reading of a source the agent could not read (`pnpm propuestas:aportar`) · the public presentation at `/conoce`                               |
