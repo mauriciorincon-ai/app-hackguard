@@ -46,6 +46,7 @@ import { buscar } from "../lib/propuestas/buscar.ts";
 import {
   CARPETA_DE_CORRIDAS,
   CARPETA_DE_DEMO,
+  CARPETA_DE_LECTURAS,
   LIBRO_DE_DECISIONES,
   cargarBorrador,
   cargarConsulta,
@@ -339,6 +340,7 @@ async function principal(argv: string[]): Promise<number> {
     const problemas: string[] = cargadas.problemas.map(
       (p) => `${p.ruta}: ${p.detalle}`,
     );
+    const avisos: string[] = [];
     const ids = new Map<string, string>();
     for (const c of cargadas.corridas) {
       for (const p of c.corrida.propuestas) {
@@ -348,6 +350,18 @@ async function principal(argv: string[]): Promise<number> {
         ids.set(p.id, c.carpeta);
       }
       // Si el borrador sigue junto a la corrida, sellarlo otra vez da la misma huella: nadie editó lo sellado ni cambió el catálogo.
+      if (!existsSync(path.join(raiz, c.carpeta, "propuesta.json"))) continue;
+      // Las lecturas de una corrida real (páginas o texto pegado) viven en `propuestas/.lecturas/`, que git ignora: en un clon limpio no están y el
+      // re-sellado daría otra huella por una razón que no es un defecto. Se dice, no se falla.
+      if (
+        c.lugar === "real" &&
+        !existsSync(path.join(raiz, CARPETA_DE_LECTURAS))
+      ) {
+        avisos.push(
+          `${c.carpeta}: no se pudo sellar otra vez aquí (faltan las lecturas de ${CARPETA_DE_LECTURAS}/, que git ignora); se comprobó solo lo sellado`,
+        );
+        continue;
+      }
       try {
         const borrador = cargarBorrador(raiz, c.carpeta);
         const primero = c.corrida.propuestas[0];
@@ -363,8 +377,10 @@ async function principal(argv: string[]): Promise<number> {
           problemas.push(
             `${c.carpeta}: sellar otra vez el borrador da otra huella; corre pnpm propuestas:verificar ${c.carpeta}`,
           );
-      } catch {
-        // sin borrador: solo se comprueba lo sellado
+      } catch (e) {
+        problemas.push(
+          `${c.carpeta}: no se pudo sellar otra vez el borrador (${e instanceof Error ? e.message : String(e)})`,
+        );
       }
     }
     const propuestas = todasLasPropuestas(cargadas.corridas);
@@ -382,10 +398,10 @@ async function principal(argv: string[]): Promise<number> {
     }
     for (const d of validarDecisiones(propuestas, decisiones))
       problemas.push(`${d.propuesta}: ${d.regla} (${d.detalle})`);
-    if (o.json) escribirTexto(json({ problemas, criterios }));
+    if (o.json) escribirTexto(json({ problemas, avisos, criterios }));
     else if (problemas.length === 0)
       escribirTexto(
-        `Propuestas: ok · ${cargadas.corridas.length} corridas · ${propuestas.length} propuestas · ${decisiones.length} decisiones · criterios ${criterios.map((c) => `${c.id} ${c.cumple ? "✓" : "✗"}`).join(" ")}\nProposals: ok.\n`,
+        `Propuestas: ok · ${cargadas.corridas.length} corridas · ${propuestas.length} propuestas · ${decisiones.length} decisiones · criterios ${criterios.map((c) => `${c.id} ${c.cumple ? "✓" : "✗"}`).join(" ")}\nProposals: ok.\n${avisos.map((a) => `  - ${a}\n`).join("")}`,
       );
     else
       escribirTexto(

@@ -21,11 +21,19 @@ export const CABECERAS_DE_BUSQUEDA = {
 
 const MAXIMO_DE_REDIRECCIONES = 3;
 const MAXIMO_DE_CARACTERES = 400_000;
+/** Una página que declara más bytes que esto no se lee: el tope va antes de bajarla, no después de cortarla. */
+const MAXIMO_DE_BYTES = 5_000_000;
+/** Cuánto espera una petición (y la lectura de su cuerpo) antes de darla por perdida: una fuente colgada no cuelga la búsqueda. */
+export const TIEMPO_MAXIMO_DE_PETICION_MS = 20_000;
 const TIPOS_DE_TEXTO = /^(?:text\/|application\/(?:json|xml|xhtml\+xml))/i;
 
 export type Peticion = (
   url: string,
-  init: { headers: Record<string, string>; redirect: "manual" },
+  init: {
+    headers: Record<string, string>;
+    redirect: "manual";
+    signal: AbortSignal;
+  },
 ) => Promise<{
   status: number;
   headers: { get(nombre: string): string | null };
@@ -39,6 +47,8 @@ export interface OpcionesDeBusqueda {
   fecha: string;
   corrida: string;
   alcance: Consulta["alcance"];
+  /** Tope de tiempo por petición; por omisión, `TIEMPO_MAXIMO_DE_PETICION_MS`. */
+  tiempoMaximoMs?: number;
 }
 
 type FilaDeConsulta = Consulta["fuentes"][number];
@@ -54,6 +64,7 @@ async function leerUna(
   lista: readonly string[],
   peticion: Peticion,
   raiz: string,
+  tiempoMaximoMs: number,
 ): Promise<FilaDeConsulta> {
   const fila = (
     parcial: Partial<FilaDeConsulta> & Pick<FilaDeConsulta, "estado">,
@@ -78,6 +89,7 @@ async function leerUna(
       r = await peticion(url, {
         headers: { ...CABECERAS_DE_BUSQUEDA },
         redirect: "manual",
+        signal: AbortSignal.timeout(tiempoMaximoMs),
       });
     } catch {
       return fila({ estado: "no_accesible", motivo: "sin_red" });
@@ -111,10 +123,23 @@ async function leerUna(
         http: r.status,
         motivo: "http_otro",
       });
-    const texto = textoDeLaPagina(await r.text()).slice(
-      0,
-      MAXIMO_DE_CARACTERES,
-    );
+    if (Number(r.headers.get("content-length") ?? 0) > MAXIMO_DE_BYTES)
+      return fila({
+        estado: "no_accesible",
+        http: r.status,
+        motivo: "http_otro",
+      });
+    let cuerpo: string;
+    try {
+      cuerpo = await r.text();
+    } catch {
+      return fila({
+        estado: "no_accesible",
+        http: r.status,
+        motivo: "sin_red",
+      });
+    }
+    const texto = textoDeLaPagina(cuerpo).slice(0, MAXIMO_DE_CARACTERES);
     const huellaDeLaPagina = await guardarLectura(raiz, texto);
     return fila({
       estado: "leida",
@@ -154,6 +179,7 @@ export async function buscar(
           m.lista_blanca_de_fuentes,
           peticion,
           raiz,
+          opciones.tiempoMaximoMs ?? TIEMPO_MAXIMO_DE_PETICION_MS,
         ),
       );
   return {

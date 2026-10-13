@@ -219,9 +219,17 @@ export async function cargarCorridas(
       const carpeta = `${base}/${nombre}`;
       const archivo = join(raiz, carpeta, "corrida.json");
       if (!existsSync(archivo)) continue;
-      const lectura = Corrida.safeParse(
-        JSON.parse(readFileSync(archivo, "utf8")) as unknown,
-      );
+      let crudo: unknown;
+      try {
+        crudo = JSON.parse(readFileSync(archivo, "utf8")) as unknown;
+      } catch {
+        problemas.push({
+          ruta: `${carpeta}/corrida.json`,
+          detalle: "no es un JSON válido",
+        });
+        continue;
+      }
+      const lectura = Corrida.safeParse(crudo);
       if (!lectura.success) {
         problemas.push({
           ruta: `${carpeta}/corrida.json`,

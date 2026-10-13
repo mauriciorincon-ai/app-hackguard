@@ -12,10 +12,14 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { RAIZ } from "./ayuda.ts";
 
 const HOOKS = path.join(RAIZ, "scripts/propuestas/hooks");
+// El tipo de `process.env` de Next exige `NODE_ENV`; un entorno de prueba mínimo no lo lleva.
+const entorno = (e: Record<string, string>) =>
+  e as unknown as NodeJS.ProcessEnv;
 const IDENTIFICADOR = "zorrillo99";
 const OTRO_IDENTIFICADOR = "ana.ejemplo@example.test";
 
@@ -750,9 +754,74 @@ describe("los subagentes: Sonnet, sin red, con sus hooks", () => {
       expect(s.cuerpo).toContain("$ARGUMENTS");
     });
   }
-  it("los agentes nunca corren un hook roto como si nada: el filtro por nombre existe en la entrada común", () => {
-    const entrada = readFileSync(path.join(HOOKS, "entrada.mjs"), "utf8");
-    expect(entrada).toContain("process.exit(2)");
-    expect(entrada).toContain("uncaughtException");
+  it("un hook roto del agente BLOQUEA (sale con 2): sin `node` y con un script que no carga", () => {
+    const comandos = ["investigador", "extractor"].flatMap((a) =>
+      [
+        ...readFileSync(
+          path.join(RAIZ, ".claude", "agents", `${a}.md`),
+          "utf8",
+        ).matchAll(/command: '(.*)'$/gm),
+      ].map((m) => m[1]!),
+    );
+    expect(comandos.length).toBe(4);
+    for (const comando of comandos) {
+      // Sin `node` en el PATH: un hook que no arranca no puede dejar pasar.
+      const sinNode = spawnSync("/bin/sh", ["-c", comando], {
+        env: entorno({ PATH: "/nonexistent", CLAUDE_PROJECT_DIR: RAIZ }),
+        input: "{}",
+        encoding: "utf8",
+      });
+      expect(sinNode.status, comando).toBe(2);
+      // Con `node`, pero con el script ausente (node sale con 1): también bloquea.
+      const sinScript = spawnSync("/bin/sh", ["-c", comando], {
+        env: entorno({
+          PATH: process.env.PATH ?? "",
+          CLAUDE_PROJECT_DIR: "/nonexistent",
+        }),
+        input: "{}",
+        encoding: "utf8",
+      });
+      expect(sinScript.status, comando).toBe(2);
+    }
+  });
+  it("y un hook sano sigue dejando pasar lo que le toca: el comando de verdad sale con 0", () => {
+    const comando = readFileSync(
+      path.join(RAIZ, ".claude", "agents", "investigador.md"),
+      "utf8",
+    ).match(/command: '(.*candado.*)'$/m)![1]!;
+    const r = spawnSync("/bin/sh", ["-c", comando], {
+      env: entorno({ PATH: process.env.PATH ?? "", CLAUDE_PROJECT_DIR: RAIZ }),
+      input: JSON.stringify({
+        tool_name: "Read",
+        tool_input: {
+          file_path: path.join(
+            RAIZ,
+            "propuestas",
+            "demo",
+            "INV-2026-10-02-01",
+            "corrida.json",
+          ),
+        },
+        cwd: RAIZ,
+      }),
+      encoding: "utf8",
+    });
+    expect(r.status, r.stderr).toBe(0);
+  });
+  it("un script de hook que LANZA con la marca de un agente sale con 2; sin la marca, no (la sesión principal no queda sin herramientas)", () => {
+    const carpeta = mkdtempSync(path.join(tmpdir(), "hook-roto-"));
+    const roto = path.join(carpeta, "roto.mjs");
+    writeFileSync(
+      roto,
+      `import ${JSON.stringify(pathToFileURL(path.join(HOOKS, "entrada.mjs")).href)};\nthrow new Error("boom");\n`,
+    );
+    const conMarca = spawnSync(process.execPath, [roto, "--investigador"], {
+      encoding: "utf8",
+    });
+    expect(conMarca.status).toBe(2);
+    expect(conMarca.stderr).toContain("BLOQUEADO");
+    const sinMarca = spawnSync(process.execPath, [roto], { encoding: "utf8" });
+    expect(sinMarca.status).not.toBe(2);
+    rmSync(carpeta, { recursive: true, force: true });
   });
 });

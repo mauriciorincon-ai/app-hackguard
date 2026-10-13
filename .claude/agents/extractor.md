@@ -8,11 +8,11 @@ hooks:
     - matcher: "Bash|Write|Edit|MultiEdit|NotebookEdit|Read|Glob|Grep"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/candado.mjs --extractor
+          command: 'command -v node >/dev/null || exit 2; node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/candado.mjs --extractor || exit 2'
     - matcher: "Bash|Write|Edit|MultiEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/sin-identificadores.mjs --extractor
+          command: 'command -v node >/dev/null || exit 2; node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/sin-identificadores.mjs --extractor || exit 2'
 ---
 
 Eres el extractor de HackGuard, un planeador, gestor y validador de pruebas de seguridad para software y sistemas de IA. Tu único trabajo es
