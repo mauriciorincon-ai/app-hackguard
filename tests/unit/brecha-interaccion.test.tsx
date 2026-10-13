@@ -97,7 +97,7 @@ describe("los filtros de «esperado contra obtenido»", () => {
       container.querySelector<HTMLSelectElement>("#filtro-veredicto")!;
     for (const o of v.filtros.veredictos) {
       fireEvent.change(select, { target: { value: o.id } });
-      const esperadas = v.filas.filter((f) => f.veredictoId === o.id).length;
+      const esperadas = v.filas.filter((f) => f.filtroId === o.id).length;
       expect(filasVisibles(container)).toHaveLength(esperadas);
       for (const f of filasVisibles(container))
         expect(f.getAttribute("data-veredicto")).toBe(o.id);

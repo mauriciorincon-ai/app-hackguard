@@ -378,7 +378,10 @@ export function TablaDeAlertas({
       </thead>
       <tbody>
         {filas.map((f) => (
-          <FilaDeAlertaVista key={`${f.clase}-${f.id}`} f={f} />
+          <FilaDeAlertaVista
+            key={`${f.clase}-${f.id}-${"activoId" in f ? f.activoId : ""}`}
+            f={f}
+          />
         ))}
       </tbody>
     </table>

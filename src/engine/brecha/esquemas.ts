@@ -41,6 +41,20 @@ export const IDS_DE_ETIQUETAS_DE_BRECHA = [
 ] as const;
 export type IdDeEtiquetaDeBrecha = (typeof IDS_DE_ETIQUETAS_DE_BRECHA)[number];
 
+/** Los textos sueltos de las pantallas de la brecha (las cifras de arriba y el nombre de las comprobaciones): dato, no código. */
+export const IDS_DE_TEXTOS_DE_BRECHA = [
+  "cifra_sin_cerrar",
+  "cifra_vencidos",
+  "cifra_por_confirmar",
+  "cifra_por_decidir",
+  "cifra_graves",
+  "cifra_sin_evidencia",
+  "cifra_ejecutadas",
+  "comprobacion_cierres_prohibidos",
+  "comprobacion_no_detectado",
+] as const;
+export type IdDeTextoDeBrecha = (typeof IDS_DE_TEXTOS_DE_BRECHA)[number];
+
 export const EtiquetasDeBrecha = z.strictObject({
   version: Nombre,
   nota: Texto,
@@ -59,5 +73,6 @@ export const EtiquetasDeBrecha = z.strictObject({
         new Set(es.map((e) => e.id)).size === es.length,
       { message: "etiquetas-de-brecha:cada-id-una-vez" },
     ),
+  textos: z.record(z.enum(IDS_DE_TEXTOS_DE_BRECHA), Texto),
 });
 export type EtiquetasDeBrecha = z.infer<typeof EtiquetasDeBrecha>;
