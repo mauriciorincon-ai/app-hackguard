@@ -159,28 +159,19 @@
 <body>
 <div class="pagina">
   <header>
-    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 008 · 2026-10-12</p>
+    <p class="eyebrow">HackGuard · Guía de prueba viva y acumulativa · Sprint 009 · 2026-10-13</p>
     <h1>Guía de prueba</h1>
     <p class="suave">Todas las pruebas vigentes de la app. Las 21 del Sprint 001 (el catálogo como dato, por
       terminal) siguen aquí enteras, el Sprint 002 añade el bloque G (el catálogo en pantalla) y el Sprint 003 el bloque H
-      (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos) y el Sprint 006 el bloque K (la carga de evidencia) y el Sprint 007 el bloque L (la brecha y el informe) y el Sprint 008 el bloque M (las propuestas y los dos agentes). Filtra por origen para
+      (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos) y el Sprint 006 el bloque K (la carga de evidencia) y el Sprint 007 el bloque L (la brecha y el informe) y el Sprint 008 el bloque M (las propuestas y los dos agentes), y el Sprint 009 el gate del H-1, al principio. Filtra por origen para
       correr todo o solo lo que cambió. Las casillas se guardan
       solas en este navegador.</p>
-    <p class="chica"><strong>Gate corto ⭐⭐: 24 paradas declaradas, 23 efectivas · ~40 min. Es el que el gate del hito
-      exige.</strong> Solo entra lo que únicamente una persona puede juzgar: las 3 paradas del Sprint 001 (la 3 no corre:
-      falta el texto de la norma), las 3 del Sprint 002 (fidelidad, avisos y texto de la pantalla) y las 3 del Sprint 003
-      (fidelidad de marcos y controles, lo que la app no sabe y el texto de sus avisos) y las 3 del Sprint 004
-      (fidelidad de activo y plan, el portal sin plan y el texto de las dos lenguas) y las 3 del Sprint 005
-      (fidelidad con la maqueta, severidad que se explica y «sin cerrar» que se lee como lo que es) y las 3 del Sprint 006 (fidelidad de la carga con la maqueta, la revisión que se entiende y «No ejecutada» de ZAP) y las 3 del Sprint 007 (fidelidad del tablero con la maqueta, la cadena de cierre que se lee y el informe impreso en papel) y las 3 del Sprint 008 (fidelidad de la bandeja con la maqueta, lo que se entiende de quién propone y qué decides, y las dos corridas reales del investigador y del extractor). Deja fuera 0
-      pruebas ⭐: el gate mínimo son las mismas 24.</p>
-    <p class="chica"><strong>Gate mínimo ⭐: 24 pruebas · ~45 min.</strong> Son los juicios sobre el contenido del
-      catálogo y sobre la pantalla que ninguna automatización puede tomar. Lo demás (bloques B a F y las pruebas
-      automáticas de G, H, I, J, K, L y M) lo respalda la CI y se corre en pases completos: 46 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba
-      automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
+    <p class="chica"><strong>Gate corto ⭐⭐: 29 paradas declaradas, 28 efectivas · ~58 min estimados (2 min por parada).</strong> Es el que el gate del H-1 exige, y va al principio para recorrerlo de arriba abajo, agrupado por familia de pantalla. La parada 3 (la norma ISO) no corre hasta el H-4: falta el texto de ISO/IEC 42001:2023; se declara y no se cuenta como efectiva. Las 24 ⭐ de los bloques anteriores están aquí: ninguna se borra. Las 5 de S9 (tema claro, propuestas reales, aportar, la página de presentación y el inglés) van al final de su familia.</p>
+    <p class="chica"><strong>Gate mínimo ⭐: 29 pruebas · ~58 min.</strong> Son los juicios sobre el contenido del catálogo y sobre la pantalla que ninguna automatización puede tomar; es el mismo conjunto que el gate ⭐⭐. Lo demás (bloques B a F y las pruebas automáticas de G a M) lo respalda la CI y se corre en pases completos: 46 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
     <div class="url-caja">
       <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
       <p style="margin:0">Una terminal abierta en la carpeta del repositorio (<code>~/Code/app-hackguard</code>), en
-        la rama <code>sprint-007/la-brecha</code> o en <code>main</code> después del merge, con
+        la rama <code>sprint-009/listo-para-el-gate</code> o en <code>main</code> después del merge, con
         <code>pnpm install</code> hecho una vez. El bloque G se mira en la pantalla: o en el preview del PR (el enlace te
         lo da quien construyó, en el chat) o con <code>pnpm build &amp;&amp; pnpm start</code> y abriendo
         <code>http://localhost:3000/catalogo</code> en el navegador.</p>
@@ -197,17 +188,18 @@
     </div>
     <div class="filtros" role="group" aria-label="Filtrar pruebas por origen">
       <button type="button" data-filtro="todo" class="activo">Todo</button>
-      <button type="button" data-filtro="cambios">Lo que cambió en S7</button>
+      <button type="button" data-filtro="cambios">Lo que cambió en S8 y S9</button>
       <button type="button" data-filtro="minimo">Gate mínimo ⭐</button>
       <button type="button" data-filtro="corto">Gate corto ⭐⭐</button>
     </div>
   </div>
 
-  <section class="bloque">
-    <div class="bloque-cabeza"><span class="letra">A</span><h2>Las tres paradas del gate ⭐</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>docs/LICENCIAS-DE-MARCOS.md</code> · ~15 min · lo que solo una persona puede decidir sobre el contenido del catálogo</p>
+  <section class="bloque bloque-gate" id="gate-h1">
+    <div class="bloque-cabeza"><span class="letra">H1</span><h2>Gate del H-1 · ⭐⭐</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza aquí:</strong> las paradas que solo una persona puede juzgar, en el orden del documento. Cada una dice qué abrir y qué responder; ninguna depende de la anterior.</p>
+    <h3>Marcos y licencias</h3>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="a1"><label for="a1"><strong>¿Apruebas la tabla de marcos y licencias?</strong> Abre <code>docs/LICENCIAS-DE-MARCOS.md</code>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="a1"><label for="a1"><strong>¿Apruebas la tabla de marcos y licencias?</strong> Abre <code>docs/LICENCIAS-DE-MARCOS.md</code>
         (doble clic, o en el editor) y recorre sus dos tablas, «Marcos con versión y fuente (DA-01)» y «Tabla de
         licencias»: cada marco con su versión, su fuente, su licencia y lo que la licencia exige. Esta parada se
         adelantó al cierre de la fase 0 y la aprobaste el 2026-10-04 («Aprobados lo marcos, continua»). Desde
@@ -219,8 +211,8 @@
         cambiar.</strong>
         <span class="origen origen-heredada">S1</span>
         <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 1 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="a2"><label for="a2"><strong>¿Qué hacemos con las pruebas que el filtro marcó?</strong> Con los siete patrones de
+        <span class="minimo">⭐⭐ Parada 1 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="a2"><label for="a2"><strong>¿Qué hacemos con las pruebas que el filtro marcó?</strong> Con los siete patrones de
         hoy, el filtro no marca ninguna de las 38. Para confirmarlo, corre <code>pnpm catalogo:validar</code> y busca <code>filtro/marcada</code>: no
         debe aparecer. Luego abre tres pruebas de <code>datos/pruebas/</code>, una de <code>agente/</code>, una de
         <code>modelo_generativo/</code> y una de <code>software/</code>. Cada una tiene que decir qué se verifica,
@@ -229,14 +221,175 @@
         leer. <strong>Respuesta esperada: «confirmo», o la prueba que quieres reescribir o retirar.</strong>
         <span class="origen origen-heredada">S1</span>
         <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 2 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="a3"><label for="a3"><strong>¿Estos resúmenes del Anexo A dicen lo que dice la norma?</strong> <strong>No corre en este
-        sprint:</strong> no tienes el texto de ISO/IEC 42001:2023 (G-Plan, decisión P1). Marca la casilla cuando
+        <span class="minimo">⭐⭐ Parada 2 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2" data-no-corre><input type="checkbox" id="a3"><label for="a3"><strong>¿Estos resúmenes del Anexo A dicen lo que dice la norma?</strong> <strong>No corre hasta el H-4:</strong> no hay texto de ISO/IEC 42001:2023 en el repo (G-Plan, decisión P1); la norma se lee antes del G-Release. Marca la casilla cuando
         hayas leído el aviso de abajo; no hay nada que juzgar todavía.
         <span class="origen origen-heredada">S1</span>
         <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 3 de 24</span></label></li>
+        <span class="minimo">⭐⭐ Parada 3 de 29</span></label></li>
     </ul>
+    <h3>El catálogo en pantalla</h3>
+    <ul class="pasos">
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="g1"><label for="g1"><strong>¿Esta pantalla es la de la maqueta?</strong> Abre <code>/catalogo</code> y, en otra pestaña, <code>/diseno/catalogo.html</code>.
+        Míralas unos segundos sin leer. Pulsa «Modelo de decisión» en las dos. <strong>Respuesta esperada: la misma
+        aplicación: barra lateral con las cinco secciones y la subnavegación de Catálogo, cifras arriba, píldoras de
+        familia, listas de filtro y una tabla densa; al filtrar queda solo esa familia y el contador lo dice. Solo cambian
+        los datos (38 pruebas reales, no las 21 de la maqueta). «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S2</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 4 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="g2"><label for="g2"><strong>¿Los avisos de vigencia se entienden y dicen lo que hay que hacer?</strong> La pantalla envejece solo al publicarla,
+        así que para verla con fechas distintas construye con una fecha de consulta: <code>HACKGUARD_CONSULTA=2026-11-04 pnpm build &amp;&amp; pnpm start</code>
+        y abre <code>/catalogo</code> y una ficha; repite con <code>HACKGUARD_CONSULTA=2026-12-10</code>. <strong>Respuesta esperada: el 2026-11-04 las
+        pruebas salen «Por revisar» (marca de triángulo, texto y color de atención) con «hace 31 días», y la ficha lleva el aviso «Toca revisarla» sin
+        alarmar; el 2026-12-10 salen «Vencido» (marca de aspa, texto y color de falla) y la ficha lleva «Verificación vencida» con qué hacer. «Se entiende»,
+        o la frase que cambiarías.</strong>
+        <span class="origen origen-heredada">S2</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 5 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="g3"><label for="g3"><strong>¿El texto de la pantalla se entiende en español y en inglés?</strong> Recorre la lista y una ficha con
+        el botón ES/EN de la barra de arriba: los rótulos, los estados, «Resultado esperado», «Por qué importa» y «Cómo se decide el veredicto».
+        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
+        <span class="origen origen-heredada">S2</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 6 de 29</span></label></li>
+    </ul>
+    <h3>Marcos y controles</h3>
+    <ul class="pasos">
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="h1"><label for="h1"><strong>¿Marcos y Controles son las de la maqueta?</strong> Abre <code>/catalogo/marcos</code> y, en otra pestaña, <code>/diseno/marcos.html</code>; luego lo mismo con <code>/catalogo/controles</code> y <code>/diseno/controles.html</code>.
+        Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (cifras arriba, paneles con su tabla, la barra lateral con Marcos y Controles activos). Cambian los datos (14 marcos y 38 controles reales) y, desde S8, el panel «Avisos de versión», que la maqueta no dibuja; lo que la instantánea no sabe dice «sin registro» en vez de inventarse. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S3</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 7 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="h2"><label for="h2"><strong>¿Lo que la app no sabe se dice claro?</strong> En Marcos, mira la columna «Frente a la fuente», el panel «Avisos de versión» y la columna «Qué cambió» de las instantáneas.
+        <strong>Respuesta esperada: «Sin aviso registrado», «Sin avisos registrados» y «Sin comparación registrada». Se lee como un hecho del catálogo, no como un fallo ni como una promesa de algo que llegará. «Se entiende», o la frase que cambiarías.</strong>
+        <span class="origen origen-heredada">S3</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 8 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="h3"><label for="h3"><strong>¿El texto de las dos páginas se entiende?</strong> Lee el aviso «No contrastado con la norma» de Controles y la nota de «Pruebas sin control asignado». Cambia a inglés con el botón de la barra de arriba.
+        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
+        <span class="origen origen-heredada">S3</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 9 de 29</span></label></li>
+    </ul>
+    <h3>Activos y plan</h3>
+    <ul class="pasos">
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="i1"><label for="i1"><strong>¿Activo y plan son los de la maqueta?</strong> Abre <code>/activos/act-demo-asistente</code> y, en otra pestaña, <code>/diseno/activo-act-demo-asistente.html</code>; luego lo mismo con <code>/activos/act-demo-asistente/plan</code> y <code>/diseno/plan-act-demo-asistente.html</code>.
+        Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (el selector de activos arriba, el carril con el plan, las cifras y las tablas). Cambian las cifras del plan: el motor lo calcula con la instantánea oficial y la maqueta usa aritmética ilustrativa, así que manda el motor. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S4</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 10 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="i2"><label for="i2"><strong>¿El portal sin plan se entiende?</strong> Abre <code>/activos/act-demo-portal</code> y luego <code>/activos/act-demo-portal/plan</code>.
+        <strong>Respuesta esperada: «Sin autorización no hay plan» arriba, en las dos páginas, y ninguna tabla de pruebas planeadas ni botón de descarga. Se lee como un hecho sobre el activo, no como un fallo. «Se entiende», o la frase que cambiarías.</strong>
+        <span class="origen origen-heredada">S4</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 11 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="i3"><label for="i3"><strong>¿El texto del plan se entiende en los dos idiomas?</strong> En <code>/activos/act-demo-asistente/plan</code> lee «Aplica porque:», «Excluidas, con su razón» y «Cobertura por control». Cambia a inglés con el botón de la barra de arriba y vuelve a leerlas.
+        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
+        <span class="origen origen-heredada">S4</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 12 de 29</span></label></li>
+    </ul>
+    <h3>Evidencia, hallazgos y carga</h3>
+    <ul class="pasos">
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="j1"><label for="j1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y, en otra pestaña, <code>/diseno/hallazgo-hz-0007.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: la misma estructura: la cadena de cierre arriba, la severidad y el control que falla en el centro, y «Qué puedes hacer» con las propiedades a la derecha. Lo que cambia (salidas de solo lectura con su comando, la k que sale del paquete) está en la tabla de «Sprint 5» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S5</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 13 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="j2"><label for="j2"><strong>¿La severidad se explica sola?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> (escala de IA) busca la tabla «Prioridad de acción» y su celda marcada «este hallazgo». Luego abre <code>/evidencia/hallazgos/HZ-0009</code> (CVSS 4.0) y busca «Cómo se calculó».
+        <strong>Respuesta esperada: en la IA la fila es el impacto y la columna la frecuencia observada, y se ve por qué sale «Alto»; en CVSS se ven el vector y la referencia fijada. «Se entiende», o qué no.</strong>
+        <span class="origen origen-heredada">S5</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 14 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="j3"><label for="j3"><strong>¿«Sin cerrar» se lee como lo que es?</strong> Abre <code>/evidencia/hallazgos/HZ-0005</code> (aceptado con riesgo) y busca «Sin cerrar: sigue contando como falla del control».
+        <strong>Respuesta esperada: el riesgo aceptado no aparece como resuelto: sigue contando como falla de su control, con su fecha de revisión. «Se entiende», o el texto que cambiarías.</strong>
+        <span class="origen origen-heredada">S5</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 15 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="k1"><label for="k1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/carga</code> y, en otra pestaña, <code>/diseno/evidencia.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: la misma estructura: las pestañas de vía, el selector de lotes, el recorrido, la tabla de sobres con su columna «Revisión», la ficha del lote y «Para confirmar». Lo que cambia (solo lectura, comandos en lugar de botones, la fila «Confirmación») está en la tabla «Sprint 6» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S6</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 16 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="k2"><label for="k2"><strong>¿Se entiende por qué una fallida se revisa siempre y el resto por muestra?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0007</code> y lee «Para confirmar» y la columna «Revisión». Luego busca «Cómo se elige la muestra».
+        <strong>Respuesta esperada: la fallida dice «Siempre» y el resto dice «Muestra» o «Fuera»; «Para confirmar» dice cuántas fallidas se revisan siempre y cuántas del resto entran a la muestra; la tabla de tamaños es la de <code>datos/evidencia/muestreo.json</code>. «Se entiende», o qué cambiarías.</strong>
+        <span class="origen origen-heredada">S6</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 17 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="k3"><label for="k3"><strong>¿Una prueba de ZAP sin constancia se lee como «No ejecutada»?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0008</code> y busca <code>SOB-0035</code> (XSS, sin constancia de ejecución).
+        <strong>Respuesta esperada: «No ejecutada», con su símbolo y su texto. Nunca dice «Superada»: no hay prueba de que la regla corriera. «Se entiende», o el texto que cambiarías.</strong>
+        <span class="origen origen-heredada">S6</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 18 de 29</span></label></li>
+    </ul>
+    <h3>La brecha, el tablero y el informe</h3>
+    <ul class="pasos">
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="l1"><label for="l1"><strong>¿Es el tablero de la maqueta?</strong> Abre <code>/tablero</code> y, en otra pestaña, <code>/diseno/tablero.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: la misma estructura: «Lo que pide tu atención», las cifras de arriba, «Hallazgos sin cerrar por severidad», los controles por estado y la banda «El instrumento pasó su validación». Lo que cambia (los datos son los del demo y la fecha de consulta es la del commit) está en la tabla «Sprint 7» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S7</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 19 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="l2"><label for="l2"><strong>¿La cadena de cierre se lee de un vistazo?</strong> Abre <code>/brecha/control/iso42001-a-6-2-4</code> y busca «Cadena de cierre de sus hallazgos».
+        <strong>Respuesta esperada: HZ-0003 aparece cerrado por re-prueba (corrección declarada, re-prueba superada); HZ-0007 sigue abierto, con su corrección y su re-prueba pendientes. «Se lee», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S7</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 20 de 29</span></label></li>
+      <li data-origen="heredada" data-minimo data-corto data-min="2"><input type="checkbox" id="l3"><label for="l3"><strong>¿El informe impreso se lee en papel?</strong> Abre <code>/brecha/informe</code>, pulsa «Imprimir o guardar como PDF» y mira la vista previa de impresión.
+        <strong>Respuesta esperada: papel claro aunque la pantalla esté en oscuro; las tablas salen como tablas; el resumen ocupa su propia hoja; ninguna cifra se corta. «Se lee», o lo que cambiarías.</strong>
+        <span class="origen origen-heredada">S7</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 21 de 29</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t1"><label for="t1"><strong>¿El tema claro se lee igual que el oscuro?</strong> En <code>/tablero</code> y en <code>/brecha/control/iso42001-a-6-2-4</code>, cambia a claro con el botón «Claro» de la barra de arriba. Los símbolos y el texto de cada estado deben decir lo mismo que en oscuro: el color nunca va solo. <strong>Respuesta esperada: se lee igual; si un estado solo se distingue por el color, lo anotas.</strong>
+        <span class="origen origen-nuevo">S9</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 22 de 29</span></label></li>
+    </ul>
+    <h3>Las propuestas</h3>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="m1"><label for="m1"><strong>¿Es la bandeja de la maqueta?</strong> Abre <code>/catalogo/propuestas</code> y, en otra pestaña, <code>/diseno/propuestas.html</code>. Míralas unos segundos sin leer.
+        <strong>Respuesta esperada: el mismo orden: el título y la bajada, las tres cifras de arriba (por decidir, fuente sin verificar y marcadas por el filtro), los filtros de «quién propone», las propuestas con su línea y el carril de la última corrida. Lo que cambia (las propuestas son las corridas reales del repositorio y no las ilustrativas de la maqueta) está en la tabla «Sprint 8» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S8</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 23 de 29</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="m2"><label for="m2"><strong>¿Se entiende quién propone, qué comprobó el código y qué decides tú?</strong> Abre <code>/catalogo/propuestas</code>, elige «Extractor» en el filtro y lee una propuesta sin ayuda de esta guía.
+        <strong>Respuesta esperada: se dice que la inteligencia artificial propone y tú apruebas; cada cita sale como verificada o no; el veredicto sugerido lo calculó la regla de la prueba, no el modelo; la severidad no viene precargada; y cada botón dice qué pasa al marcarlo. «Se entiende», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S8</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 24 de 29</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="m3"><label for="m3"><strong>¿Las dos corridas reales dicen lo que pasó?</strong> En <code>/catalogo/propuestas</code>, mira el carril «Última corrida» del investigador (<code>INV-2026-10-12-01</code>) y del extractor (<code>EXT-2026-10-12-01</code>).
+        <strong>Respuesta esperada: la corrida del investigador dice que ISO/IEC 42001 respondió 403 y queda como «no accesible al agente», sin que se invente un control; la del extractor cita verificadas sus cinco citas y sus contradicciones aparecen en el carril. Si algo no coincide con lo que leíste, repórtalo. «Coincide», o lo que cambiarías.</strong>
+        <span class="origen origen-nuevo">Nuevo · S8</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 25 de 29</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t2"><label for="t2"><strong>¿La bandeja muestra las propuestas que dice el comando?</strong> En una terminal, en la raíz del repo, corre <code>pnpm propuestas:listar</code> y cuenta las líneas con <code>por_decidir</code>. Abre <code>/catalogo/propuestas</code> y compara ese número con «propuestas por decidir» del tablero. <strong>Respuesta esperada: el mismo número: 11 en el cierre de S9 (PROP-0031 a PROP-0041). Si no cuadra, se anota con la hora del comando.</strong>
+        <span class="origen origen-nuevo">S9</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 26 de 29</span></label></li>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t3"><label for="t3"><strong>¿El comando para aportar una lectura se entiende sin esta guía?</strong> En el manual, sección «Las propuestas y los dos agentes», lee el párrafo de <code>aportar</code>. <em>Ese comando lo corres tú en tu terminal, nunca la IA</em>; el manual dice cuál es, qué cuatro opciones lleva y que solo vale para una dirección que el agente no pudo leer. <strong>Respuesta esperada: el párrafo cita el comando, sus cuatro opciones y la frontera, en español y en inglés.</strong>
+        <span class="origen origen-nuevo">S9</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 27 de 29</span></label></li>
+    </ul>
+    <h3>La página de presentación</h3>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t4"><label for="t4"><strong>¿La página de presentación dice lo que el guion pide?</strong> Abre <code>/conoce</code> y, en otra pestaña, <code>docs/BROCHURE-guion.md</code>. Las escenas van en el mismo orden, y las cifras salen de <code>docs/brochure-export.json</code>. <strong>Respuesta esperada: sí; una escena que falte o una cifra que no cuadre se anota en la guía con su nombre.</strong>
+        <span class="origen origen-nuevo">S9</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 28 de 29</span></label></li>
+    </ul>
+    <h3>El inglés de punta a punta</h3>
+    <ul class="pasos">
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t5"><label for="t5"><strong>¿El flujo principal se lee entero en inglés?</strong> Abre <code>/tablero</code> y pulsa «EN» en la barra de arriba. Recorre el catálogo, una ficha, el plan del asistente, la carga, el hallazgo HZ-0007, la brecha, un control y el informe. <strong>Respuesta esperada: ningún texto en español visible; las cifras y los identificadores son los mismos en los dos idiomas.</strong>
+        <span class="origen origen-nuevo">S9</span>
+        <span class="minimo">⭐ mínimo</span>
+        <span class="minimo">⭐⭐ Parada 29 de 29</span></label></li>
+    </ul>
+  </section>
+
+  <section class="bloque">
+    <div class="bloque-cabeza"><span class="letra">A</span><h2>Las tres paradas del gate ⭐</h2></div>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>docs/LICENCIAS-DE-MARCOS.md</code> · ~15 min · lo que solo una persona puede decidir sobre el contenido del catálogo</p>
     <div class="tabla-scroll"><table>
       <tr><th>Qué mirar</th><th>Valor / comportamiento correcto</th></tr>
       <tr><td>Marcos en la tabla</td><td class="valor">14, cada uno con versión, fuente con su código HTTP y licencia</td></tr>
@@ -394,29 +547,6 @@
     <div class="bloque-cabeza"><span class="letra">G</span><h2>El catálogo navegable</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo</code> (o el preview del PR) · ~25 min · tres paradas ⭐ de juicio y cuatro comprobaciones que ya corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g1"><label for="g1"><strong>¿Esta pantalla es la de la maqueta?</strong> Abre <code>/catalogo</code> y, en otra pestaña, <code>/diseno/catalogo.html</code>.
-        Míralas unos segundos sin leer. Pulsa «Modelo de decisión» en las dos. <strong>Respuesta esperada: la misma
-        aplicación: barra lateral con las cinco secciones y la subnavegación de Catálogo, cifras arriba, píldoras de
-        familia, listas de filtro y una tabla densa; al filtrar queda solo esa familia y el contador lo dice. Solo cambian
-        los datos (38 pruebas reales, no las 21 de la maqueta). «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S2</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 4 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g2"><label for="g2"><strong>¿Los avisos de vigencia se entienden y dicen lo que hay que hacer?</strong> La pantalla envejece solo al publicarla,
-        así que para verla con fechas distintas construye con una fecha de consulta: <code>HACKGUARD_CONSULTA=2026-11-04 pnpm build &amp;&amp; pnpm start</code>
-        y abre <code>/catalogo</code> y una ficha; repite con <code>HACKGUARD_CONSULTA=2026-12-10</code>. <strong>Respuesta esperada: el 2026-11-04 las
-        pruebas salen «Por revisar» (marca de triángulo, texto y color de atención) con «hace 31 días», y la ficha lleva el aviso «Toca revisarla» sin
-        alarmar; el 2026-12-10 salen «Vencido» (marca de aspa, texto y color de falla) y la ficha lleva «Verificación vencida» con qué hacer. «Se entiende»,
-        o la frase que cambiarías.</strong>
-        <span class="origen origen-heredada">S2</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 5 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="g3"><label for="g3"><strong>¿El texto de la pantalla se entiende en español y en inglés?</strong> Recorre la lista y una ficha con
-        el botón ES/EN de la barra de arriba: los rótulos, los estados, «Resultado esperado», «Por qué importa» y «Cómo se decide el veredicto».
-        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
-        <span class="origen origen-heredada">S2</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 6 de 24</span></label></li>
       <li data-origen="mejorado"><input type="checkbox" id="g4"><label for="g4">Filtros: pulsa una familia, elige una opción en «Madurez» y pulsa «Quitar filtros».
         <strong>Cada filtro reduce las filas, se suman, el contador dice cuántas quedan y «Quitar filtros» devuelve la lista completa. La lista muestra 20 pruebas por página: «Siguiente» muestra las demás. Un filtro sin resultados dice «Ninguna prueba cumple esos filtros».</strong>
         <span class="origen origen-mejorado">Mejorado en S3</span></label></li>
@@ -437,21 +567,6 @@
     <div class="bloque-cabeza"><span class="letra">H</span><h2>Marcos y controles</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/marcos</code> y <code>/catalogo/controles</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito y cinco comprobaciones que ya corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="h1"><label for="h1"><strong>¿Marcos y Controles son las de la maqueta?</strong> Abre <code>/catalogo/marcos</code> y, en otra pestaña, <code>/diseno/marcos.html</code>; luego lo mismo con <code>/catalogo/controles</code> y <code>/diseno/controles.html</code>.
-        Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (cifras arriba, paneles con su tabla, la barra lateral con Marcos y Controles activos). Solo cambian los datos: 14 marcos y 38 controles reales, y lo que la instantánea no sabe dice «sin registro» en vez de inventarse. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S3</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 7 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="h2"><label for="h2"><strong>¿Lo que la app no sabe se dice claro?</strong> En Marcos, mira la columna «Frente a la fuente», el panel «Avisos de versión» y la columna «Qué cambió» de las instantáneas.
-        <strong>Respuesta esperada: «Sin aviso registrado», «Sin avisos registrados» y «Sin comparación registrada». Se lee como un hecho del catálogo, no como un fallo ni como una promesa de algo que llegará. «Se entiende», o la frase que cambiarías.</strong>
-        <span class="origen origen-heredada">S3</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 8 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="h3"><label for="h3"><strong>¿El texto de las dos páginas se entiende?</strong> Lee el aviso «No contrastado con la norma» de Controles y la nota de «Pruebas sin control asignado». Cambia a inglés con el botón de la barra de arriba.
-        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
-        <span class="origen origen-heredada">S3</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 9 de 24</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="h4"><label for="h4">Desde Catálogo, la barra lateral lleva a Marcos y a Controles.
         <strong>Cada enlace abre su página; Propuestas sigue con la marca «pronto» y no es un enlace.</strong>
         <span class="origen origen-heredada">S3</span></label></li>
@@ -475,21 +590,6 @@
     <div class="bloque-cabeza"><span class="letra">I</span><h2>Activos y plan</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/activos/act-demo-asistente</code> y <code>/activos/act-demo-asistente/plan</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i1"><label for="i1"><strong>¿Activo y plan son los de la maqueta?</strong> Abre <code>/activos/act-demo-asistente</code> y, en otra pestaña, <code>/diseno/activo-act-demo-asistente.html</code>; luego lo mismo con <code>/activos/act-demo-asistente/plan</code> y <code>/diseno/plan-act-demo-asistente.html</code>.
-        Míralas unos segundos sin leer. <strong>Respuesta esperada: la misma estructura (el selector de activos arriba, el carril con el plan, las cifras y las tablas). Cambian las cifras del plan: el motor lo calcula con la instantánea oficial y la maqueta usa aritmética ilustrativa, así que manda el motor. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S4</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 10 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i2"><label for="i2"><strong>¿El portal sin plan se entiende?</strong> Abre <code>/activos/act-demo-portal</code> y luego <code>/activos/act-demo-portal/plan</code>.
-        <strong>Respuesta esperada: «Sin autorización no hay plan» arriba, en las dos páginas, y ninguna tabla de pruebas planeadas ni botón de descarga. Se lee como un hecho sobre el activo, no como un fallo. «Se entiende», o la frase que cambiarías.</strong>
-        <span class="origen origen-heredada">S4</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 11 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="i3"><label for="i3"><strong>¿El texto del plan se entiende en los dos idiomas?</strong> En <code>/activos/act-demo-asistente/plan</code> lee «Aplica porque:», «Excluidas, con su razón» y «Cobertura por control». Cambia a inglés con el botón de la barra de arriba y vuelve a leerlas.
-        El texto de las dos lenguas está «maquetado, no visto»: este es su veredicto. <strong>Respuesta esperada: «se entiende», o el texto que no.</strong>
-        <span class="origen origen-heredada">S4</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 12 de 24</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="i4"><label for="i4">En la página de un activo, el selector arriba lista los tres activos demo. Pulsa el del clasificador.
         <strong>Se abre su página; si estabas en la pestaña «Plan», sigues en «Plan» del nuevo activo.</strong>
         <span class="origen origen-heredada">S4</span></label></li>
@@ -516,21 +616,6 @@
     <div class="bloque-cabeza"><span class="letra">J</span><h2>Evidencia y hallazgos</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/hallazgos/HZ-0007</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j1"><label for="j1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y, en otra pestaña, <code>/diseno/hallazgo-hz-0007.html</code>. Míralas unos segundos sin leer.
-        <strong>Respuesta esperada: la misma estructura: la cadena de cierre arriba, la severidad y el control que falla en el centro, y «Qué puedes hacer» con las propiedades a la derecha. Lo que cambia (salidas de solo lectura con su comando, la k que sale del paquete) está en la tabla de «Sprint 5» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S5</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 13 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j2"><label for="j2"><strong>¿La severidad se explica sola?</strong> En <code>/evidencia/hallazgos/HZ-0007</code> (escala de IA) busca la tabla «Prioridad de acción» y su celda marcada «este hallazgo». Luego abre <code>/evidencia/hallazgos/HZ-0009</code> (CVSS 4.0) y busca «Cómo se calculó».
-        <strong>Respuesta esperada: en la IA la fila es el impacto y la columna la frecuencia observada, y se ve por qué sale «Alto»; en CVSS se ven el vector y la referencia fijada. «Se entiende», o qué no.</strong>
-        <span class="origen origen-heredada">S5</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 14 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="j3"><label for="j3"><strong>¿«Sin cerrar» se lee como lo que es?</strong> Abre <code>/evidencia/hallazgos/HZ-0005</code> (aceptado con riesgo) y busca «Sin cerrar: sigue contando como falla del control».
-        <strong>Respuesta esperada: el riesgo aceptado no aparece como resuelto: sigue contando como falla de su control, con su fecha de revisión. «Se entiende», o el texto que cambiarías.</strong>
-        <span class="origen origen-heredada">S5</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 15 de 24</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="j4"><label for="j4"><strong>¿El plazo vencido avisa sin asustar?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y lee el aviso de arriba y el plazo en «Propiedades».
         <strong>Respuesta esperada: «Plazo vencido» con la severidad, los días y lo que se puede hacer (corregir y re-probar, o un cierre alternativo con su justificación).</strong>
         <span class="origen origen-heredada">S5</span></label></li>
@@ -547,7 +632,7 @@
         <strong>Respuesta esperada: «4 · 3 cuentan como falla de su control», y una línea por hallazgo con su severidad y su plazo: HZ-0007 sale «plazo vencido».</strong>
         <span class="origen origen-heredada">S5</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="j9"><label for="j9"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/evidencia/hallazgos/HZ-0009</code> y desplázate.
-        <strong>Respuesta esperada: ninguna página se sale de la pantalla; la tabla de la matriz (en HZ-0007) se lee con desplazamiento dentro de su panel.</strong>
+        <strong>Respuesta esperada: ninguna página se sale de la pantalla; las tablas anchas de HZ-0009 se leen con desplazamiento dentro de su panel.</strong>
         <span class="origen origen-heredada">S5</span></label></li>
     </ul>
     <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un hallazgo cuyo estado o severidad la pantalla dice de una forma y la terminal de otra, una salida que parezca un botón, o un texto que prometa algo que todavía no existe.</p></div>
@@ -557,21 +642,6 @@
     <div class="bloque-cabeza"><span class="letra">K</span><h2>La carga de evidencia</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/carga</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="k1"><label for="k1"><strong>¿Es la pantalla de la maqueta?</strong> Abre <code>/evidencia/carga</code> y, en otra pestaña, <code>/diseno/evidencia.html</code>. Míralas unos segundos sin leer.
-        <strong>Respuesta esperada: la misma estructura: las pestañas de vía, el selector de lotes, el recorrido, la tabla de sobres con su columna «Revisión», la ficha del lote y «Para confirmar». Lo que cambia (solo lectura, comandos en lugar de botones, la fila «Confirmación») está en la tabla «Sprint 6» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S6</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 16 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="k2"><label for="k2"><strong>¿Se entiende por qué una fallida se revisa siempre y el resto por muestra?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0007</code> y lee «Para confirmar» y la columna «Revisión». Luego busca «Cómo se elige la muestra».
-        <strong>Respuesta esperada: la fallida dice «Siempre» y el resto dice «Muestra» o «Fuera»; «Para confirmar» dice cuántas fallidas se revisan siempre y cuántas del resto entran a la muestra; la tabla de tamaños es la de <code>datos/evidencia/muestreo.json</code>. «Se entiende», o qué cambiarías.</strong>
-        <span class="origen origen-heredada">S6</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 17 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="k3"><label for="k3"><strong>¿Una prueba de ZAP sin constancia se lee como «No ejecutada»?</strong> Abre <code>/evidencia/carga</code>, elige <code>LOTE-0008</code> y busca <code>SOB-0035</code> (XSS, sin constancia de ejecución).
-        <strong>Respuesta esperada: «No ejecutada», con su símbolo y su texto. Nunca dice «Superada»: no hay prueba de que la regla corriera. «Se entiende», o el texto que cambiarías.</strong>
-        <span class="origen origen-heredada">S6</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 18 de 24</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="k4"><label for="k4"><strong>¿Se llega desde el plan?</strong> Abre <code>/activos/act-demo-asistente/plan</code>, baja al pie y pulsa «Ir a la carga de evidencia».
         <strong>Respuesta esperada: se abre <code>/evidencia/carga</code> con los dos lotes del demo.</strong>
         <span class="origen origen-heredada">S6</span></label></li>
@@ -589,21 +659,6 @@
     <div class="bloque-cabeza"><span class="letra">L</span><h2>La brecha y el informe</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/tablero</code> (o el preview del PR) · ~25 min · tres paradas ⭐⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="l1"><label for="l1"><strong>¿Es el tablero de la maqueta?</strong> Abre <code>/tablero</code> y, en otra pestaña, <code>/diseno/tablero.html</code>. Míralas unos segundos sin leer.
-        <strong>Respuesta esperada: la misma estructura: «Lo que pide tu atención», las cifras de arriba, «Hallazgos sin cerrar por severidad», los controles por estado y la banda «El instrumento pasó su validación». Lo que cambia (los datos son los del demo y la fecha de consulta es la del commit) está en la tabla «Sprint 7» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S7</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 19 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="l2"><label for="l2"><strong>¿La cadena de cierre se lee de un vistazo?</strong> Abre <code>/brecha/control/iso42001-a-6-2-4</code> y busca «Cadena de cierre de sus hallazgos».
-        <strong>Respuesta esperada: HZ-0003 aparece cerrado por re-prueba (corrección declarada, re-prueba superada); HZ-0007 sigue abierto, con su corrección y su re-prueba pendientes. «Se lee», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S7</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 20 de 24</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto><input type="checkbox" id="l3"><label for="l3"><strong>¿El informe impreso se lee en papel?</strong> Abre <code>/brecha/informe</code>, pulsa «Imprimir o guardar como PDF» y mira la vista previa de impresión.
-        <strong>Respuesta esperada: papel claro aunque la pantalla esté en oscuro; las tablas salen como tablas; el resumen ocupa su propia hoja; ninguna cifra se corta. «Se lee», o lo que cambiarías.</strong>
-        <span class="origen origen-heredada">S7</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 21 de 24</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="l4"><label for="l4"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/brecha/control/iso42001-a-6-2-4</code> y desplázate.
         <strong>Respuesta esperada: ninguna página se sale de la pantalla; la tabla de «Controles equivalentes» parte sus líneas en vez de empujar la página entera.</strong>
         <span class="origen origen-heredada">S7</span></label></li>
@@ -618,21 +673,6 @@
     <div class="bloque-cabeza"><span class="letra">M</span><h2>Las propuestas y los dos agentes</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/propuestas</code> (o el preview del PR) · ~25 min · tres paradas ⭐⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
     <ul class="pasos">
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="m1"><label for="m1"><strong>¿Es la bandeja de la maqueta?</strong> Abre <code>/catalogo/propuestas</code> y, en otra pestaña, <code>/diseno/propuestas.html</code>. Míralas unos segundos sin leer.
-        <strong>Respuesta esperada: el mismo orden: el título y la bajada, las tres cifras de arriba (por decidir, fuente sin verificar y marcadas por el filtro), los filtros de «quién propone», las propuestas con su línea y el carril de la última corrida. Lo que cambia (las propuestas son las corridas reales del repositorio y no las ilustrativas de la maqueta) está en la tabla «Sprint 8» de <code>docs/diseno/README.md</code>. «Sí, es la misma», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S8</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 22 de 24</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="m2"><label for="m2"><strong>¿Se entiende quién propone, qué comprobó el código y qué decides tú?</strong> Abre <code>/catalogo/propuestas</code>, elige «Extractor» en el filtro y lee una propuesta sin ayuda de esta guía.
-        <strong>Respuesta esperada: se dice que la inteligencia artificial propone y tú apruebas; cada cita sale como verificada o no; el veredicto sugerido lo calculó la regla de la prueba, no el modelo; la severidad no viene precargada; y cada botón dice qué pasa al marcarlo. «Se entiende», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S8</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 23 de 24</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto><input type="checkbox" id="m3"><label for="m3"><strong>¿Las dos corridas reales dicen lo que pasó?</strong> En <code>/catalogo/propuestas</code>, mira el carril «Última corrida» del investigador (<code>INV-2026-10-12-01</code>) y del extractor (<code>EXT-2026-10-12-01</code>).
-        <strong>Respuesta esperada: la corrida del investigador dice que ISO/IEC 42001 respondió 403 y queda como «no accesible al agente», sin que se invente un control; la del extractor cita verificadas sus cinco citas y sus contradicciones aparecen en el carril. Si algo no coincide con lo que leíste, repórtalo. «Coincide», o lo que cambiarías.</strong>
-        <span class="origen origen-nuevo">Nuevo · S8</span>
-        <span class="minimo">⭐ mínimo</span>
-        <span class="minimo">⭐⭐ Parada 24 de 24</span></label></li>
       <li data-origen="nuevo"><input type="checkbox" id="m4"><label for="m4"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/catalogo/propuestas</code> y desplázate por una propuesta.
         <strong>Respuesta esperada: ninguna página se sale de la pantalla; el comando de decisión parte sus líneas en vez de empujar la página entera. «Cabe», o lo que cambiarías.</strong>
         <span class="origen origen-nuevo">Nuevo · S8</span></label></li>
@@ -689,7 +729,7 @@
   (function () {
     // NS VERSIONADO POR SPRINT (regla dura): al publicar la guía de un sprint nuevo se cambia
     // el prefijo (hackguard-s2) — así una regresión sin correr no aparece marcada por el sprint anterior.
-    var NS = "hackguard-s8:";
+    var NS = "hackguard-s9:";
     var casillas = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]'));
     var barra = document.getElementById("barra-avance");
     var contador = document.getElementById("contador");

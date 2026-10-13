@@ -38,6 +38,15 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
   ],
   ["S8-F3", "docs/diseno/README.md", /El extractor no existe todavía/],
   ["ED-7", "docs/diseno/README.md", /es un gate a construir en el S4/],
+  // La guía de prueba (S9: las cuatro filas abiertas del lote)
+  ["S3-M5", "docs/GUIA-DE-PRUEBA.html", /Solo cambian los datos/],
+  ["S3-B10", "docs/GUIA-DE-PRUEBA.html", /No corre en este\s+sprint/],
+  ["S5-11a", "docs/GUIA-DE-PRUEBA.html", /Lo que cambió en S7/],
+  [
+    "S5-11b",
+    "docs/GUIA-DE-PRUEBA.html",
+    /la tabla de la matriz \(en HZ-0007\)/,
+  ],
   // El código y sus comentarios
   [
     "S3-X",

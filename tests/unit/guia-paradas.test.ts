@@ -42,4 +42,43 @@ describe("el gate corto ⭐⭐ de la guía de prueba se camina en orden", () => 
       `se corre en pases completos: ${todas - minimo} pruebas más`,
     );
   });
+
+  // S9: el gate se lee de arriba abajo, así que sus paradas viven todas en su bloque, al principio del documento.
+  it("todas las ⭐⭐ están dentro del bloque del gate, antes del primer bloque de pruebas", () => {
+    const inicio = guia.indexOf('id="gate-h1"');
+    const fin = guia.indexOf('<section class="bloque">');
+    expect(inicio).toBeGreaterThan(-1);
+    expect(fin).toBeGreaterThan(inicio);
+    const fuera = [...guia.matchAll(/⭐⭐ Parada (\d+) de/g)].filter(
+      (m) => m.index! < inicio || m.index! >= fin,
+    );
+    expect(fuera.map((m) => m[0])).toEqual([]);
+  });
+
+  it("cada prueba del gate ⭐⭐ es también ⭐ mínimo (el corto es un subconjunto)", () => {
+    const corto = [...guia.matchAll(/<li data-origen="[a-z]+"([^>]*)>/g)]
+      .map((m) => m[1])
+      .filter((atributos) => atributos.includes("data-corto"));
+    expect(corto.length).toBe(paradas.length);
+    expect(corto.filter((a) => !a.includes("data-minimo"))).toEqual([]);
+  });
+
+  // Cada parada declara sus minutos (data-min) y la cabecera da el total: si no cuadran, el total miente.
+  it("la cabecera declara efectivas y minutos, y cuadran con las paradas", () => {
+    const cabecera = guia.match(
+      /Gate corto ⭐⭐: (\d+) paradas declaradas, (\d+) efectivas · ~(\d+) min/,
+    );
+    expect(cabecera, "la cabecera del gate corto con minutos").not.toBeNull();
+    const noCorre = [
+      ...guia.matchAll(/<li data-origen="[a-z]+"[^>]*data-no-corre/g),
+    ].length;
+    expect(Number(cabecera![2])).toBe(paradas.length - noCorre);
+    const minutos = [
+      ...guia.matchAll(
+        /<li data-origen="[a-z]+"[^>]*data-corto[^>]*data-min="(\d+)"/g,
+      ),
+    ].map((m) => Number(m[1]));
+    expect(minutos.length).toBe(paradas.length);
+    expect(minutos.reduce((a, b) => a + b, 0)).toBe(Number(cabecera![3]));
+  });
 });
