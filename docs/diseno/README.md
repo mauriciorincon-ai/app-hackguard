@@ -245,6 +245,7 @@ su severidad y sus fechas salen iguales (`tests/unit/hallazgo-vista.test.tsx`).
 | `hallazgo` | «Re-prueba por confirmar» dice «Está sin confirmar: todavía no cuenta» y no cita un lote | Los lotes llegan con la carga de evidencia |
 | `hallazgo` | Las métricas opcionales de un vector se nombran por grupo («Métrica de amenaza») sin nombre de valor; sin conteo en el sobre, la frecuencia dice «falló su única medición»; una severidad baja o informativa dice «Esta severidad no tiene plazo» | La maqueta no tenía esos casos; ninguno cambia lo que la pantalla explica |
 | `hallazgo` | El aviso de revisión pide decidir de nuevo (aceptarlo otra vez con justificación nueva, o corregirlo) y no habla de reabrir | No hay reapertura en este sprint |
+| `hallazgo` | Un riesgo aceptado ofrece también «Registrar la corrección» (y «Registrar la re-prueba» si ya está corregido), y «Aceptar el riesgo» otra vez solo cuando la revisión venció (Sprint 9) | Aceptar no cierra: la corrección habilita la re-prueba que lo cierra, y el aviso de revisión prometía acciones que la lista no ofrecía; la maqueta solo ofrecía eliminar o «no se reproduce» |
 | `barra lateral` | «Evidencia» abre el primer hallazgo del selector; «Carga» sigue marcada «pronto» (superado en el Sprint 6: «Evidencia» abre «Carga») | La carga de evidencia no tenía pantalla: un enlace roto no se dibuja |
 
 ## Lo que el producto suma o recorta frente a la maqueta (Sprint 6)

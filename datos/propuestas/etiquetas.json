@@ -249,6 +249,15 @@
       }
     },
     {
+      "id": "bandeja_vacia",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "La bandeja está vacía",
+        "en": "The inbox is empty"
+      }
+    },
+    {
       "id": "propuesta_ilegible",
       "rol": "falla",
       "simbolo": "falla",

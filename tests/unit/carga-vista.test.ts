@@ -2,7 +2,13 @@
 // La vista de la carga (`/evidencia/carga`): lo que la pantalla dice de cada lote sale del motor (la revisión, el libro
 // efectivo, qué fallas abrirían un hallazgo) y no se recalcula en el componente. Con los dos lotes demo —el de garak y el de
 // ZAP— y con un lote ya decidido de las dos maneras.
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { CargaPantalla } from "../../src/components/carga/carga-pantalla";
+import { RAIZ } from "./evidencia/ayuda.ts";
 import {
   conLoteDecidido,
   conMuestreo,
@@ -130,6 +136,31 @@ describe("la vista de la carga con los dos lotes demo", () => {
     expect(r.every((p) => p.simbolo.length > 0 && p.rol.length > 0)).toBe(true);
   });
 
+  it("cada sobre trae el identificador de su veredicto y las cuentas salen de él, no del nombre", () => {
+    for (const l of v.lotes)
+      for (const s of l.sobres)
+        expect([
+          "fallida",
+          "parcial",
+          "no_ejecutada",
+          "superada",
+          "no_aplicable",
+        ]).toContain(s.veredictoId);
+    expect(v.lotes.flatMap((l) => l.reparto).reduce((a, r) => a + r.n, 0)).toBe(
+      v.resumen.sobres,
+    );
+  });
+
+  it("la nota del plan de muestreo sale de los datos y es la que la pantalla muestra", () => {
+    const m = JSON.parse(
+      readFileSync(path.join(RAIZ, "datos/evidencia/muestreo.json"), "utf8"),
+    ) as { nota: { es: string; en: string } };
+    expect(v.muestreo.nota).toEqual(m.nota);
+    const html = renderToStaticMarkup(createElement(CargaPantalla, { v }));
+    expect(html).toContain(m.nota.es.slice(0, 60));
+    expect(html).toContain(m.nota.en.slice(0, 60));
+  });
+
   it("es una función pura: dos llamadas dan lo mismo", () => {
     expect(JSON.stringify(vistaDeCarga())).toBe(JSON.stringify(v));
   });
@@ -174,6 +205,28 @@ describe("la vista con un lote ya decidido", () => {
     expect(s36.nota?.es).toContain("cerró el hallazgo");
     expect(s36.hallazgo?.estado.nombre.es).toBe("Cerrado por re-prueba");
     expect(v.resumen.lotesPorConfirmar).toBe(1);
+  });
+
+  it("«sobres propuestos» no cuenta los que el lote ya confirmó, y las fallidas y la no ejecutada se cuentan sobre los mismos", async () => {
+    const antes = vistaDeCarga();
+    const v = vistaDeCarga(await conLoteDecidido("LOTE-0008", confirmado));
+    const todos = v.lotes.flatMap((l) => l.sobres);
+    const propuestos = todos.filter(
+      (s) =>
+        s.confirmacion.tipo === "propuesta" ||
+        s.confirmacion.tipo === "separado",
+    );
+    expect(todos).toHaveLength(antes.resumen.sobres);
+    // dos sobres del lote 8 cuentan por el lote: ya no son una propuesta
+    expect(v.resumen.sobres).toBe(antes.resumen.sobres - 2);
+    expect(v.resumen.sobres).toBe(propuestos.length);
+    expect(v.resumen.lotesPorConfirmar).toBe(1);
+    expect(v.resumen.nFallidas).toBe(
+      propuestos.filter((s) => s.veredictoId === "fallida").length,
+    );
+    expect(v.resumen.nNoEjecutadas).toBe(
+      propuestos.filter((s) => s.veredictoId === "no_ejecutada").length,
+    );
   });
 
   it("mandado a revisión individual: nadie cuenta y el recorrido lo dice", async () => {

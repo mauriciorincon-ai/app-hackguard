@@ -21,3 +21,21 @@ describe("las carpetas del motor no se importan en círculo", () => {
     expect(importaDe("lotes", "evidencia").length).toBeGreaterThan(0);
   });
 });
+
+describe("lo que marca la opción actual de una lista de páginas (S5-9)", () => {
+  const recorrer = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? recorrer(path.join(d, e.name))
+        : e.name.endsWith(".tsx")
+          ? [path.join(d, e.name)]
+          : [],
+    );
+  it('un selector de páginas dice aria-current="page"; solo la barra lateral usa "true" (una sección que contiene subpáginas)', () => {
+    const malos = recorrer(path.join(RAIZ, "src/components"))
+      .filter((f) => !f.endsWith(path.join("consola", "barra-lateral.tsx")))
+      .filter((f) => /aria-current=\{[^}]*"true"/.test(readFileSync(f, "utf8")))
+      .map((f) => path.relative(RAIZ, f));
+    expect(malos).toEqual([]);
+  });
+});

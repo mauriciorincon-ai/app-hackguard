@@ -24,7 +24,7 @@ export function SelectorDeHallazgos({
             <Link
               className="hg-opcion"
               href={rutaDeHallazgo(h.id)}
-              aria-current={h.actual ? "true" : undefined}
+              aria-current={h.actual ? "page" : undefined}
             >
               <span className="hg-opcion-titulo" data-neutro>
                 {h.id}

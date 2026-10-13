@@ -20,6 +20,7 @@ import { nombreDeMetrica } from "../../engine/severidad/etiquetas-cvss.ts";
 import type { MundoDeActivos } from "../activos/cargar.ts";
 import { construirFicha, etiqueta } from "../catalogo/vista.ts";
 import type { MundoDeHallazgos } from "./cargar.ts";
+import { frasePorDias } from "../catalogo/etiquetas.ts";
 import { PISO_Y_TECHO } from "./etiquetas.ts";
 import type {
   AccionDeHallazgo,
@@ -106,6 +107,7 @@ const menor = (texto: Bilingue): LineaDeEslabon => ({
 /** El cuerpo de un eslabón que cuenta un sobre: fecha, lo que dio, su identificador, su huella y quién lo confirmó. */
 function lineasDeSobre(
   s: SobreEfectivo,
+  firma: Etiqueta,
   intermedio: LineaDeEslabon[] = [],
 ): LineaDeEslabon[] {
   return [
@@ -116,7 +118,13 @@ function lineasDeSobre(
     { tipo: "huella", hex: s.huellas.sobre },
     ...(s.confirmacion === null
       ? []
-      : [{ tipo: "firma", fecha: s.confirmacion.fecha } as const]),
+      : [
+          {
+            tipo: "firma",
+            fecha: s.confirmacion.fecha,
+            etiqueta: firma,
+          } as const,
+        ]),
   ];
 }
 
@@ -129,12 +137,13 @@ export function construirCadena(
 ): EslabonDeCadena[] {
   const e: EvaluacionDeHallazgo = s.evaluacion;
   const origen = e.sobreOrigen;
+  const firma = etiquetaPropia(etiquetas, "firma_confirmada");
   const abierto = eslabon(etiquetas, "cadena_abierto", [
     fecha(e.apertura),
     menor(conteoDeSobre(origen)),
     { tipo: "sobre", id: origen.id },
     { tipo: "huella", hex: origen.huellas.sobre },
-    { tipo: "firma", fecha: e.apertura },
+    { tipo: "firma", fecha: e.apertura, etiqueta: firma },
   ]);
 
   const decision = (tipo: "eliminacion" | "no_reproducible") =>
@@ -190,7 +199,7 @@ export function construirCadena(
     tercero = eslabon(
       etiquetas,
       "cadena_reprueba_superada",
-      lineasDeSobre(valida, [
+      lineasDeSobre(valida, firma, [
         menor(
           kDelOriginal !== null && valida.k !== null
             ? {
@@ -222,7 +231,7 @@ export function construirCadena(
     tercero = eslabon(
       etiquetas,
       "cadena_reprueba_no_cierra",
-      lineasDeSobre(ultima.sobre, [
+      lineasDeSobre(ultima.sobre, firma, [
         {
           tipo: "motivos",
           motivos: ultima.motivos.map(
@@ -322,6 +331,7 @@ export function vistaDeRevision(
     dias: r.dias,
     total: r.total,
     fecha: r.fecha,
+    frase: frasePorDias(r.dias),
   };
 }
 
@@ -403,6 +413,9 @@ function detalleDeCvss(
       };
     }),
     referencia: sev.referencia,
+    repositorio: sev.referencia.split("@")[0] ?? sev.referencia,
+    commit: sev.referencia.split("@")[1] ?? "",
+    partesDelVector: sev.vector.split("/"),
   };
 }
 
@@ -410,6 +423,8 @@ function detalleDeCvss(
 export function accionesDe(
   id: string,
   e: EvaluacionDeHallazgo,
+  /** El riesgo aceptado ya pasó su fecha de revisión: hay que decidir de nuevo. */
+  revisionVencida: boolean = false,
 ): { nada: Bilingue | null; lista: AccionDeHallazgo[] } {
   if (
     e.estado === "cerrado" ||
@@ -426,7 +441,12 @@ export function accionesDe(
   const declarar = (accion: string, extra = "") =>
     `pnpm hallazgos:declarar ${id} ${accion} --por <persona> --fecha AAAA-MM-DD${extra} --justificacion-es "<texto>" --justificacion-en "<text>"`;
   const lista: AccionDeHallazgo[] = [];
-  if (e.estado === "abierto" || e.estado === "re_probado")
+  // Un riesgo aceptado se corrige igual (aceptarlo no lo cierra): la corrección es lo que habilita la re-prueba que lo cierra.
+  if (
+    e.estado === "abierto" ||
+    e.estado === "re_probado" ||
+    e.estado === "aceptado_con_riesgo"
+  )
     lista.push({
       id: "corregir",
       nombre: { es: "Registrar la corrección", en: "Record the fix" },
@@ -436,7 +456,11 @@ export function accionesDe(
       },
       comando: declarar("corregido"),
     });
-  if (e.estado === "corregido" || e.estado === "re_probado")
+  if (
+    e.estado === "corregido" ||
+    e.estado === "re_probado" ||
+    (e.estado === "aceptado_con_riesgo" && e.correccion !== null)
+  )
     lista.push({
       id: "reprobar",
       nombre: { es: "Registrar la re-prueba", en: "Record the retest" },
@@ -446,7 +470,8 @@ export function accionesDe(
       },
       comando: `pnpm evidencia:registrar <resultado.json> --crudo <archivo>  ·  pnpm evidencia:confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD`,
     });
-  if (e.estado !== "aceptado_con_riesgo")
+  // Aceptarlo otra vez (con una justificación nueva) es lo que se hace cuando la revisión venció.
+  if (e.estado !== "aceptado_con_riesgo" || revisionVencida)
     lista.push({
       id: "aceptar",
       nombre: { es: "Aceptar el riesgo", en: "Accept the risk" },
@@ -590,7 +615,7 @@ export function construirVistaDeHallazgo(
         conteo: conteoDeSobre(e.sobreOrigen),
       },
     },
-    acciones: accionesDe(id, e),
+    acciones: accionesDe(id, e, revision?.estadoId === "toca_revisar"),
     propiedades: {
       plazo,
       revision,

@@ -468,5 +468,6 @@ export function construirVistaDePropuestas(
       etiqueta: etiquetaDePropuesta(m.etiquetas, "propuesta_ilegible"),
     })),
     vacio: filas.length === 0,
+    etiquetaDeVacio: etiquetaDePropuesta(m.etiquetas, "bandeja_vacia"),
   };
 }

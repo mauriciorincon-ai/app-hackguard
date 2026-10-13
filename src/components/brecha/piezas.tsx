@@ -407,7 +407,7 @@ export function SelectorDeControles({
             <Link
               className="hg-opcion"
               href={rutaDeControl(x.id)}
-              aria-current={x.actual ? "true" : undefined}
+              aria-current={x.actual ? "page" : undefined}
             >
               <span className="hg-opcion-titulo" data-neutro>
                 {x.id}

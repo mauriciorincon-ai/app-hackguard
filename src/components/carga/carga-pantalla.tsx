@@ -562,12 +562,7 @@ function ViaAdaptador({
         </div>
         <div className="hg-panel-cuerpo">
           <p className="hg-menor">
-            <T
-              t={{
-                es: "Las fallidas y las parciales se revisan siempre, todas. De las demás se revisa una muestra cuyo tamaño depende del lote; con un lote pequeño, la muestra es el lote entero. Cada tamaño se comprueba con aritmética exacta al cargar el plan.",
-                en: "Failed and partial ones are always reviewed, all of them. Of the rest a sample is reviewed, sized by the batch; with a small batch, the sample is the whole batch. Each size is checked with exact arithmetic when the plan loads.",
-              }}
-            />
+            <T t={v.muestreo.nota} />
           </p>
           <dl className="hg-propiedades hg-propiedades-en-columnas hg-propiedades-en-tres">
             {v.muestreo.filas.map((f) => (
@@ -756,7 +751,7 @@ export function CargaPantalla({ v }: { v: VistaDeCarga }) {
 
       {v.lotes.length === 0 ? (
         <Aviso
-          etiqueta={{ rol: "neutro", simbolo: "vacio" }}
+          etiqueta={v.etiquetas.nada_por_confirmar}
           titulo={{ es: "No hay nada por confirmar", en: "Nothing to confirm" }}
         >
           <p>

@@ -101,7 +101,7 @@ export function selectorDeObjetos(rotulo, items, existentes) {
   const lis = items
     .map(({ archivo, titulo, nota, actual }) => {
       const dentro = `<span class="hg-opcion-nombre">${titulo}</span><span>${nota}</span>`;
-      return `<li><a class="hg-opcion" href="${destino(archivo, existentes)}"${actual ? ' aria-current="true"' : ""}>${dentro}</a></li>`;
+      return `<li><a class="hg-opcion" href="${destino(archivo, existentes)}"${actual ? ' aria-current="page"' : ""}>${dentro}</a></li>`;
     })
     .join("");
   return `<nav ${atributo("aria-label", rotulo)}><ul class="hg-selector">${lis}</ul></nav>`;

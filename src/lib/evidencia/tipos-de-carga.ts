@@ -34,6 +34,8 @@ export interface SobreDeLote {
   id: string;
   prueba: { id: string; nombre: Bilingue };
   veredicto: Etiqueta;
+  /** El identificador del veredicto: con él se cuenta, nunca con su nombre. */
+  veredictoId: string;
   /** Si una persona lo revisa siempre (fallida o parcial), porque cae en la muestra, o no entra a la revisión. */
   revision: "siempre" | "muestra" | "fuera";
   /** La revisión dicha en una palabra (celda de tabla) y en una frase (ficha). */
@@ -118,6 +120,7 @@ export interface VistaDeCarga {
   activos: { id: string; nombre: Bilingue; huellaDelPlan: string | null }[];
   resumen: {
     lotesPorConfirmar: number;
+    /** Los sobres que todavía son una propuesta (ni el lote ni una persona los han confirmado); las dos cifras de abajo cuentan sobre ellos. */
     sobres: number;
     fallidas: Etiqueta;
     nFallidas: number;
@@ -127,6 +130,8 @@ export interface VistaDeCarga {
   lotes: VistaDeLote[];
   muestreo: {
     filas: FilaDeMuestreo[];
+    /** La nota del plan de muestreo (`datos/evidencia/muestreo.json`): la pantalla la muestra tal cual, no la repite. */
+    nota: Bilingue;
     procedimiento: string;
     calidadLimite: number;
     riesgoDelConsumidor: number;

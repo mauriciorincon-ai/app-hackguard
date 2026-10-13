@@ -26,6 +26,9 @@ const SOLO_DE_LA_MAQUETA = new Set([
 const SOLO_DEL_PRODUCTO = new Set([
   // La maqueta dibuja botones que decide una persona en pantalla; el producto es de solo lectura y cada salida trae su comando.
   "Registrar la re-prueba|Record the retest",
+  // Un riesgo aceptado no está cerrado: se corrige igual, y la corrección habilita la re-prueba que lo cierra (S5-2, Sprint 9). La
+  // maqueta solo ofrecía eliminar o «no se reproduce» en HZ-0005.
+  "Registrar la corrección|Record the fix",
 ]);
 
 // Dónde la maqueta y el catálogo oficial no dicen lo mismo de los controles (el producto lee el catálogo): la maqueta dejaba

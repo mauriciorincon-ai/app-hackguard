@@ -164,7 +164,7 @@ describe("el selector y las dos páginas del activo", () => {
       mundo.activos.length,
     );
     expect(
-      s.querySelector('a[aria-current="true"]')?.getAttribute("href"),
+      s.querySelector('a[aria-current="page"]')?.getAttribute("href"),
     ).toBe(`/activos/${ASISTENTE}/plan`);
     const n = doc(<SubnavDelActivo id={ASISTENTE} abierta="plan" />);
     expect(

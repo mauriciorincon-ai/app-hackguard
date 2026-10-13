@@ -1,8 +1,8 @@
 // @vitest-environment node
 // Las etiquetas de estado de la carga son dato (regla dura 12: símbolo + texto + color, y el color es un rol que sale de
-// `datos/evidencia/etiquetas-de-carga.json`): el esquema exige cada etiqueta una vez, y ningún componente de la carga escribe un
-// rol de color de estado a mano.
-import { readdirSync, readFileSync } from "node:fs";
+// `datos/evidencia/etiquetas-de-carga.json`): el esquema exige cada etiqueta una vez y su versión. Que ningún componente escriba un
+// rol de color a mano lo vigila `etiquetas-en-componentes.test.ts`, para todas las pantallas.
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ROLES, SIMBOLOS } from "../../src/engine/catalogo/esquemas.ts";
@@ -60,19 +60,30 @@ describe("el vocabulario de la carga", () => {
   });
 });
 
-describe("ningún componente de la carga escribe un rol de color a mano (regla dura 12)", () => {
-  const carpeta = path.join(RAIZ, "src/components/carga");
-  const archivos = readdirSync(carpeta).filter((f) => f.endsWith(".tsx"));
-  it("hay componentes que mirar", () => {
-    expect(archivos.length).toBeGreaterThanOrEqual(2);
+describe("el archivo de etiquetas de la carga", () => {
+  it("el esquema fija la versión del formato: otra versión se rechaza", () => {
+    const base = crudo();
+    expect(datos.version).toBe("1");
+    expect(EtiquetasDeCarga.safeParse({ ...base, version: "2" }).success).toBe(
+      false,
+    );
   });
-  for (const f of archivos)
-    it(`${f} solo usa roles que llegan de los datos`, () => {
-      const texto = readFileSync(path.join(carpeta, f), "utf8");
-      // «es-falla», «es-acento»…: un rol de estado literal. Los que llegan de los datos se arman con `es-${…}`.
-      const literales = [...texto.matchAll(/["'`\s]es-(?!\$\{)[a-z]+/g)].map(
-        (m) => m[0].trim(),
-      );
-      expect(literales).toEqual([]);
-    });
+
+  it("cada archivo de etiquetas declara su versión y su nota en los dos idiomas (la nota es su documentación, no un campo de pantalla)", () => {
+    for (const f of [
+      "datos/brecha/etiquetas.json",
+      "datos/evidencia/etiquetas-de-carga.json",
+      "datos/hallazgos/etiquetas.json",
+      "datos/planificador/etiquetas.json",
+      "datos/propuestas/etiquetas.json",
+    ]) {
+      const d = JSON.parse(readFileSync(path.join(RAIZ, f), "utf8")) as {
+        version: string;
+        nota: { es: string; en: string };
+      };
+      expect(d.version, f).toBe("1");
+      expect(d.nota.es.length, f).toBeGreaterThan(20);
+      expect(d.nota.en.length, f).toBeGreaterThan(20);
+    }
+  });
 });

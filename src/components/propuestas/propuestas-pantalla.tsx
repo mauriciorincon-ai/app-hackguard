@@ -902,7 +902,7 @@ export function PropuestasPantalla({ v }: { v: VistaDePropuestas }) {
 
       {v.vacio ? (
         <Aviso
-          etiqueta={{ rol: "neutro", simbolo: "vacio" }}
+          etiqueta={v.etiquetaDeVacio}
           titulo={{ es: "La bandeja está vacía", en: "The inbox is empty" }}
         >
           <p>

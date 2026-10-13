@@ -169,6 +169,8 @@ export interface VistaDePropuestas {
   /** Corridas que no se pudieron leer (esquema o huella): no se muestran para aprobar. */
   ilegibles: { ruta: string; detalle: string; etiqueta: Etiqueta }[];
   vacio: boolean;
+  /** La etiqueta del aviso de la bandeja vacía. */
+  etiquetaDeVacio: Etiqueta;
 }
 
 /** Un marco cuya fuente oficial publica una versión distinta de la del catálogo (RF-05.5), según una propuesta del investigador. */

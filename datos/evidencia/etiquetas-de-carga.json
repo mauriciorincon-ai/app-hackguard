@@ -130,6 +130,15 @@
         "es": "A revisión individual",
         "en": "To individual review"
       }
+    },
+    {
+      "id": "nada_por_confirmar",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Nada por confirmar",
+        "en": "Nothing to confirm"
+      }
     }
   ]
 }

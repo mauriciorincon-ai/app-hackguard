@@ -95,18 +95,16 @@ test.describe("plazo y avisos", () => {
     ).toHaveAttribute("data-severidad", "alto");
   });
 
-  test("el aviso de plazo aparece en un hallazgo corregido si y solo si el motor dice que está vencido", async ({
+  test("un hallazgo corregido dentro de su plazo de 90 días no muestra el aviso de plazo vencido", async ({
     page,
   }) => {
     await page.goto(ruta(CORREGIDO));
-    // El plazo depende de la fecha de consulta del build: la prueba lee el estado que calculó el motor y no fija el
-    // calendario. Lo que sí garantiza: el aviso sale exactamente cuando el estado dice «vencido».
+    // La fecha de consulta del build del e2e está fijada en playwright.config.ts (2026-10-05): el estado es un valor, no el calendario.
     const plazo = page.locator('[data-fechado="plazo"]');
     await expect(plazo).toHaveCount(1);
-    const estado = await plazo.getAttribute("data-estado-fechado");
-    expect(estado).not.toBeNull();
+    await expect(plazo).toHaveAttribute("data-estado-fechado", "en_plazo");
     await expect(page.locator('[data-aviso-de-plazo="vencido"]')).toHaveCount(
-      estado === "vencido" ? 1 : 0,
+      0,
     );
   });
 });
@@ -204,7 +202,7 @@ test.describe("navegación", () => {
     );
     await expect(selector.locator("a")).toHaveCount(TODOS.length);
     await expect(
-      selector.locator(`a[href="${ruta(ABIERTO)}"][aria-current="true"]`),
+      selector.locator(`a[href="${ruta(ABIERTO)}"][aria-current="page"]`),
     ).toHaveCount(1);
     await selector.locator(`a[href="${ruta(CERRADO)}"]`).click();
     await expect(page).toHaveURL(new RegExp(`${ruta(CERRADO)}$`));

@@ -41,6 +41,7 @@ export const IDS_DE_ETIQUETAS_DE_PROPUESTAS = [
   // Avisos de versión y errores
   "aviso_de_version",
   "sin_avisos",
+  "bandeja_vacia",
   "propuesta_ilegible",
 ] as const;
 export type IdDeEtiquetaDePropuestas =

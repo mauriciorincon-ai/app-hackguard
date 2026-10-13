@@ -21,7 +21,7 @@ function selector(actual, existentes) {
     const h = HALLAZGOS.find((x) => x.id === id);
     const archivo = archivoDeHallazgo(id);
     const texto = `<span class="hg-opcion-titulo" data-neutro>${id}</span><span>${t(ESTADO_DE_HALLAZGO[h.estado].nombre)}</span>`;
-    return `<li><a class="hg-opcion" href="${destino(archivo, existentes)}"${id === actual ? ' aria-current="true"' : ""}>${texto}</a></li>`;
+    return `<li><a class="hg-opcion" href="${destino(archivo, existentes)}"${id === actual ? ' aria-current="page"' : ""}>${texto}</a></li>`;
   }).join("");
   return `<nav ${atributo("aria-label", { es: "Hallazgos", en: "Findings" })}><ul class="hg-selector">${items}</ul></nav>`;
 }
