@@ -563,3 +563,26 @@ describe("los demo versionados", () => {
     ).toBe(antes);
   });
 });
+
+describe("las escrituras de la CLI son todo o nada (S5-4a)", () => {
+  const IA = ["--impacto", "3", "--alcance", "2", "--detectabilidad", "3"];
+  it("si el hallazgo no se puede escribir, el sobre NO queda confirmado ni queda un archivo a medias", () => {
+    const raiz = raizConPropio();
+    expect(registrar(raiz, "t.json").codigo).toBe(0);
+    const sobre = "datos/privado/evidencia/SOB-0001.json";
+    const antes = readFileSync(path.join(raiz, sobre), "utf8");
+    // Un ARCHIVO donde debería haber una carpeta: crear la carpeta del hallazgo falla, también para root.
+    writeFileSync(
+      path.join(raiz, "datos/privado/hallazgos"),
+      "no soy una carpeta",
+    );
+    const r = evidencia(
+      ["confirmar", "SOB-0001", "--por", "Ana", "--fecha", "2026-10-12", ...IA],
+      raiz,
+    );
+    expect(r.codigo).not.toBe(0);
+    expect(readFileSync(path.join(raiz, sobre), "utf8")).toBe(antes);
+    expect(JSON.parse(antes).confirmacion).toBeNull();
+    expect(existsSync(path.join(raiz, `${sobre}.tmp`))).toBe(false);
+  });
+});

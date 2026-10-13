@@ -305,7 +305,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   2. **Ver el lote:** en **Evidencia · Carga** eliges el lote. La ficha dice la herramienta y su versión, las huellas del
      archivo, del lote y del registro, y las advertencias. La columna **Revisión** dice si cada sobre se revisa siempre, si
      está en la muestra o si queda fuera.
-  3. **Confirmar el lote:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD`. Si una falla
+  3. **Confirmar el lote:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n>`. Confirmar un lote es afirmar que revisaste los sobres que la regla pide revisar (todas las fallidas y parciales, más la muestra): sin `--revisados`, el comando te los nombra y no confirma nada. Si una falla
      abriría un hallazgo nuevo, el lote no se confirma hasta que la separes con `--separar <SOB-NNNN>` y la confirmes sola
      con `pnpm evidencia:confirmar`, con su severidad. Si prefieres revisar cada sobre por separado, usa
      `--revisar-uno-por-uno` en lugar de confirmar el lote.
@@ -723,7 +723,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   2. **See the batch:** in **Evidence · Intake** you choose the batch. Its card shows the tool and its version, the fingerprints
      of the file, the batch and the record, and the warnings. The **Review** column says whether each envelope is always
      reviewed, in the sample, or left out.
-  3. **Confirm the batch:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD`. If a failure would
+  3. **Confirm the batch:** `pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n>`. Confirming a batch is stating that you reviewed the envelopes the rule asks you to review (every failed and partial one, plus the sample): without `--revisados` the command names them and confirms nothing. If a failure would
      open a new finding, the batch is not confirmed until you separate it with `--separar <SOB-NNNN>` and confirm it alone with
      `pnpm evidencia:confirmar`, with its severity. To review each envelope on its own, use `--revisar-uno-por-uno` instead of
      confirming the batch.

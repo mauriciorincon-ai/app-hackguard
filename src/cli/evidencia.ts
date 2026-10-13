@@ -55,7 +55,6 @@ import { armarLote, siguienteIdDeLote } from "../engine/lotes/armar.ts";
 import { confirmarLote } from "../engine/lotes/confirmar.ts";
 import { revisionDelLote } from "../engine/lotes/revision.ts";
 import { fallasSinHallazgo, validarLotes } from "../engine/lotes/validar.ts";
-import { situacionDeHallazgo } from "../engine/hallazgos/situacion.ts";
 import { motivoDeVectorInvalido } from "../engine/severidad/cvss.ts";
 import {
   Hallazgo,
@@ -68,6 +67,7 @@ import {
 } from "../engine/hallazgos/validar.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
 import { cargarLibroValidado } from "../lib/evidencia/cargar-libro.ts";
+import { situarParaListar } from "../lib/evidencia/situar.ts";
 import {
   CARPETA_DE_HALLAZGOS_DEMO,
   CARPETA_DE_HALLAZGOS_PRIVADA,
@@ -78,12 +78,13 @@ import {
   cargarEscalaIa,
   cargarPlazos,
   escribirDato,
+  escribirDatosJuntos,
   origenDelActivo,
 } from "../lib/evidencia/cargar-evidencia.ts";
 
 const USO = {
-  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
-  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
 };
 
 class ErrorDeUso extends Error {}
@@ -104,6 +105,7 @@ function opciones(argv: string[]) {
       zona: { type: "string" },
       separar: { type: "string", multiple: true },
       "revisar-uno-por-uno": { type: "boolean", default: false },
+      revisados: { type: "string" },
       cvss: { type: "string" },
       impacto: { type: "string" },
       alcance: { type: "string" },
@@ -465,9 +467,19 @@ async function principal(argv: string[]): Promise<number> {
       );
       return CODIGOS_DEL_LIBRO.bloqueado;
     }
-    for (const n of nuevosSobres)
-      escribirDato(raiz, n.ruta, n.texto, origen === "propio");
-    escribirDato(raiz, rutaDelLote, json(armado.lote), origen === "propio");
+    // Los sobres y su lote son uno: si el lote no se escribe, no quedan propuestas huérfanas.
+    escribirDatosJuntos(raiz, [
+      ...nuevosSobres.map((n) => ({
+        relativa: n.ruta,
+        contenido: n.texto,
+        privado: origen === "propio",
+      })),
+      {
+        relativa: rutaDelLote,
+        contenido: json(armado.lote),
+        privado: origen === "propio",
+      },
+    ]);
     const revision = await revisionDelLote(
       armado.lote,
       new Map(armado.sobres.map((x) => [x.id, x])),
@@ -477,8 +489,8 @@ async function principal(argv: string[]): Promise<number> {
       armado.sobres.filter((x) => x.veredicto === v).length;
     escribirTexto(
       o.idioma === "es"
-        ? `Lote ${armado.lote.id} armado en ${rutaDelLote} con ${armado.sobres.length} sobres (${cuenta("fallida")} fallidas, ${cuenta("parcial")} parciales, ${cuenta("no_ejecutada")} no ejecutadas, ${cuenta("superada")} superadas), SIN confirmar (no cuentan).\nSe revisan siempre ${revision.siempre.length} y ${revision.muestra.length} de los otros ${revision.resto}: ${revision.revisados.join(", ")}.\nConfírmalo con: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <persona> --fecha AAAA-MM-DD\n`
-        : `Batch ${armado.lote.id} built at ${rutaDelLote} with ${armado.sobres.length} envelopes (${cuenta("fallida")} failed, ${cuenta("parcial")} partial, ${cuenta("no_ejecutada")} not run, ${cuenta("superada")} passed), NOT confirmed (they do not count).\n${revision.siempre.length} are always reviewed, plus ${revision.muestra.length} of the other ${revision.resto}: ${revision.revisados.join(", ")}.\nConfirm it with: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <person> --fecha YYYY-MM-DD\n`,
+        ? `Lote ${armado.lote.id} armado en ${rutaDelLote} con ${armado.sobres.length} sobres (${cuenta("fallida")} fallidas, ${cuenta("parcial")} parciales, ${cuenta("no_ejecutada")} no ejecutadas, ${cuenta("superada")} superadas), SIN confirmar (no cuentan).\nSe revisan siempre ${revision.siempre.length} y ${revision.muestra.length} de los otros ${revision.resto}: ${revision.revisados.join(", ")}.\nConfírmalo con: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <persona> --fecha AAAA-MM-DD --revisados ${revision.revisados.length}\n`
+        : `Batch ${armado.lote.id} built at ${rutaDelLote} with ${armado.sobres.length} envelopes (${cuenta("fallida")} failed, ${cuenta("parcial")} partial, ${cuenta("no_ejecutada")} not run, ${cuenta("superada")} passed), NOT confirmed (they do not count).\n${revision.siempre.length} are always reviewed, plus ${revision.muestra.length} of the other ${revision.resto}: ${revision.revisados.join(", ")}.\nConfirm it with: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <person> --fecha YYYY-MM-DD --revisados ${revision.revisados.length}\n`,
     );
     return [...nuevosSuyos, ...loteSuyo].some(
       (h) => h.severidad === "advertencia",
@@ -551,8 +563,8 @@ async function principal(argv: string[]): Promise<number> {
           `Only failures and partials can be separated; these are not: ${lista}.`,
         ],
         sobre_ya_confirmado: [
-          `Estos sobres ya tienen una confirmación individual y se confirmarían dos veces: ${lista}. Sepáralos del lote.`,
-          `These envelopes already have an individual confirmation and would be confirmed twice: ${lista}. Separate them from the batch.`,
+          `Estos sobres ya tienen una confirmación individual y se confirmarían dos veces: ${lista}. Si son fallidas o parciales, sepáralos con --separar; si no, no pueden entrar a una confirmación por lote: usa --revisar-uno-por-uno.`,
+          `These envelopes already have an individual confirmation and would be confirmed twice: ${lista}. If they are failures or partials, separate them with --separar; if not, they cannot be part of a batch confirmation: use --revisar-uno-por-uno.`,
         ],
         falla_que_abre_hallazgo: [
           `Estas fallas abrirían un hallazgo y piden la severidad de una persona: sepáralas con --separar y confírmalas una por una (pnpm evidencia:confirmar): ${lista}.`,
@@ -601,6 +613,18 @@ async function principal(argv: string[]): Promise<number> {
           sinHallazgo,
           o.idioma,
         ),
+      );
+      return CODIGOS_DEL_LIBRO.bloqueado;
+    }
+    const aRevisar = decidido.lote.confirmacion?.revisados ?? [];
+    if (
+      decidido.lote.confirmacion?.decision === "confirmado" &&
+      o.revisados !== String(aRevisar.length)
+    ) {
+      // Confirmar un lote es afirmar que se revisaron los sobres que la regla pide revisar (todas las fallidas y parciales, más la
+      // muestra): se dicen y se pide el número, para que no se confirme sin haberlos mirado (S6-B7).
+      escribirTexto(
+        `Confirmar el lote ${id} es afirmar que revisaste estos ${aRevisar.length} sobres: ${aRevisar.join(", ") || "(ninguno)"}.\nCuando los hayas revisado, repite el comando con --revisados ${aRevisar.length}. No se confirmó nada.\nConfirming batch ${id} is stating that you reviewed these ${aRevisar.length} envelopes: ${aRevisar.join(", ") || "(none)"}.\nOnce you have, repeat the command with --revisados ${aRevisar.length}. Nothing was confirmed.\n`,
       );
       return CODIGOS_DEL_LIBRO.bloqueado;
     }
@@ -776,14 +800,23 @@ async function principal(argv: string[]): Promise<number> {
       const r = razones[decision.motivo];
       mensajes.push(o.idioma === "es" ? r[0] : r[1]);
     }
-    escribirDato(
-      raiz,
-      valido.ruta,
-      json(confirmado),
-      confirmado.origen === "propio",
-    );
-    if (aEscribir !== null)
-      escribirDato(raiz, aEscribir.ruta, aEscribir.texto, aEscribir.privado);
+    // El sobre confirmado y el hallazgo que abre son uno: si el hallazgo no se puede escribir, el sobre queda sin confirmar.
+    escribirDatosJuntos(raiz, [
+      {
+        relativa: valido.ruta,
+        contenido: json(confirmado),
+        privado: confirmado.origen === "propio",
+      },
+      ...(aEscribir === null
+        ? []
+        : [
+            {
+              relativa: aEscribir.ruta,
+              contenido: aEscribir.texto,
+              privado: aEscribir.privado,
+            },
+          ]),
+    ]);
     escribirTexto(
       `${o.idioma === "es" ? `Sobre ${id} confirmado por ${por} el ${fecha}: veredicto «${confirmado.veredicto}».` : `Envelope ${id} confirmed by ${por} on ${fecha}: verdict “${confirmado.veredicto}”.`}\n${mensajes.filter((m) => m !== "").join("\n")}\n`,
     );
@@ -799,28 +832,29 @@ async function principal(argv: string[]): Promise<number> {
       fecha,
     };
     const filas: FilaDeListadoDeHallazgo[] = [];
-    for (const h of L.hallazgos.validos) {
-      const r = situacionDeHallazgo(h, libro, datos);
-      if (!r.ok) {
-        // Un sobre de origen que no cuenta ya lo dijo la validación; la fecha o el vector sí son cosa de quien pregunta.
-        if (r.motivo.startsWith("fecha_anterior"))
-          throw new ErrorDeUso(`--fecha: ${r.motivo} (${r.detalle})`);
-        continue;
-      }
+    const { situaciones, omitidos } = situarParaListar(
+      L.hallazgos.validos,
+      libro,
+      datos,
+    );
+    // La fecha es cosa de quien pregunta: un error de uso. Lo demás que no se pudo situar se DICE al final, no se esconde.
+    const tarde = omitidos.find((x) => x.motivo.startsWith("fecha_anterior"));
+    if (tarde !== undefined)
+      throw new ErrorDeUso(`--fecha: ${tarde.motivo} (${tarde.detalle})`);
+    for (const situacion of situaciones)
       filas.push({
-        situacion: r.situacion,
+        situacion,
         estado: nombreDeEstado(
           L.instantanea,
           "estado_de_hallazgo",
-          r.situacion.evaluacion.estado,
+          situacion.evaluacion.estado,
         ),
         nivel: nombreDeEstado(
           L.instantanea,
           "severidad",
-          r.situacion.severidad.nivel,
+          situacion.severidad.nivel,
         ),
       });
-    }
     if (o.json) {
       const salida = salidaJsonDeHallazgos(filas, fecha);
       // Las dos huellas que los navegadores deben reproducir con las listas en otro orden (RNF-01).
@@ -833,6 +867,12 @@ async function principal(argv: string[]): Promise<number> {
         huella_de_los_hallazgos: await huella(salida.hallazgos),
       });
     } else escribirTexto(informeDeHallazgos(filas, fecha, o.idioma));
+    if (omitidos.length > 0) {
+      process.stderr.write(
+        `No se pudieron situar ${omitidos.length} hallazgo(s) y NO salen en la lista: ${omitidos.map((x) => `${x.id} (${x.motivo})`).join(", ")}.\n${omitidos.length} finding(s) could not be placed and are NOT in the list: ${omitidos.map((x) => `${x.id} (${x.motivo})`).join(", ")}.\n`,
+      );
+      return CODIGOS_DEL_LIBRO.invalido;
+    }
     return L.sobres.estado === "invalido" || L.hallazgos.estado === "invalido"
       ? CODIGOS_DEL_LIBRO.invalido
       : L.sobres.estado === "con_advertencias" ||

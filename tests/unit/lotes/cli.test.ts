@@ -296,21 +296,29 @@ describe("la cadena entera de la carga, con un activo propio", () => {
       leer(raiz, `datos/privado/evidencia/${id}.json`),
     );
     const semilla = (json(raiz, L1).huellas as { lote: string }).lote;
-    const r = evidencia(
-      [
-        "confirmar-lote",
-        "LOTE-0001",
-        "--por",
-        "Ana",
-        "--fecha",
-        "2026-10-13",
-        "--separar",
-        "SOB-0001",
-        "--separar",
-        "SOB-0003",
-      ],
-      raiz,
-    );
+    const orden = [
+      "confirmar-lote",
+      "LOTE-0001",
+      "--por",
+      "Ana",
+      "--fecha",
+      "2026-10-13",
+      "--separar",
+      "SOB-0001",
+      "--separar",
+      "SOB-0003",
+    ];
+    // Confirmar un lote es afirmar que se revisaron los sobres que la regla pide: sin el número, no confirma y los nombra (S6-B7).
+    const sinAtestar = evidencia(orden, raiz);
+    expect(sinAtestar.codigo).toBe(2);
+    expect(sinAtestar.salida).toContain("SOB-0001, SOB-0002, SOB-0003");
+    expect(sinAtestar.salida).toContain("--revisados 3");
+    expect(json(raiz, L1).confirmacion).toBeNull();
+    // Un número que no es el de los sobres a revisar tampoco vale.
+    const mal = evidencia([...orden, "--revisados", "2"], raiz);
+    expect(mal.codigo).toBe(2);
+    expect(json(raiz, L1).confirmacion).toBeNull();
+    const r = evidencia([...orden, "--revisados", "3"], raiz);
     expect(r.codigo).toBe(0);
     expect(r.salida).toContain(
       "Lote LOTE-0001 confirmado por Ana el 2026-10-13: 1 sobres cuentan desde hoy; 2 se confirman uno por uno (SOB-0001, SOB-0003)",
@@ -594,5 +602,54 @@ describe("importar: lo que se rechaza", () => {
     expect(lote.zona_horaria).toBe("Europe/Madrid");
     // El reporte de garak trae su fecha: --fecha no la pisa.
     expect(lote.fecha).not.toBe("2030-01-01");
+  });
+});
+
+describe("un sobre ya confirmado uno por uno se dice con una salida que existe (S6-B9)", () => {
+  it("si no es una falla no se puede separar: el mensaje manda a «uno por uno», no a «sepáralo»", () => {
+    const raiz = raizConPropio();
+    const garak = reporteDeGarak(raiz);
+    const importado = evidencia(
+      [
+        "importar",
+        "--garak",
+        garak,
+        "--activo",
+        "mi-asistente",
+        "--por",
+        "Ana",
+        "--zona",
+        "America/Bogota",
+      ],
+      raiz,
+    );
+    expect(importado.codigo).toBe(0);
+    // SOB-0002 es la superada: se confirma por su cuenta, sin severidad.
+    expect(
+      evidencia(
+        ["confirmar", "SOB-0002", "--por", "Ana", "--fecha", "2026-10-13"],
+        raiz,
+      ).codigo,
+    ).toBe(0);
+    const r = evidencia(
+      [
+        "confirmar-lote",
+        "LOTE-0001",
+        "--por",
+        "Ana",
+        "--fecha",
+        "2026-10-13",
+        "--separar",
+        "SOB-0001",
+        "--separar",
+        "SOB-0003",
+      ],
+      raiz,
+    );
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("SOB-0002");
+    expect(r.salida).toContain("usa --revisar-uno-por-uno");
+    expect(r.salida).toContain("use --revisar-uno-por-uno");
+    expect(r.salida).not.toContain("Sepáralos del lote");
   });
 });

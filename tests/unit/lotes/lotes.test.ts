@@ -238,6 +238,23 @@ describe("armar un lote desde el reporte de ZAP", () => {
     expect(lote.herramienta).toEqual({ id: "zap", version: "2.17.0" });
   });
 
+  it("el lote demo LOTE-0008 es un recorte declarado de lo que arma `importar` sobre la misma fixture (S6-B5, ADR-009)", async () => {
+    const m = await mundoDeLotes();
+    const demo = m.lotes["LOTE-0008"]!;
+    const c = corridaDe(ADAPTADOR_DE_ZAP, ZAP_PLUS, "2.17.0");
+    const { sobres } = await armadoOk(await entradaDe(ADAPTADOR_DE_ZAP, c));
+    const real = Object.fromEntries(sobres.map((s) => [s.prueba, s.veredicto]));
+    // Lo que el demo enseña son tres de las seis pruebas, con el veredicto que calcula la regla sobre el mismo reporte.
+    for (const ref of demo.sobres) {
+      const s = m.sobres[ref.id]!;
+      expect(real[s.prueba], `${s.prueba} de ${ref.id}`).toBe(s.veredicto);
+    }
+    // Y lo que difiere queda dicho: menos sobres, y una advertencia redactada a mano que ningún adaptador emite.
+    expect(demo.sobres.length).toBeLessThan(sobres.length);
+    const delAdaptador = new Set(c.advertencias.map((a) => a.es));
+    expect(demo.advertencias.some((a) => !delAdaptador.has(a.es))).toBe(true);
+  });
+
   it("ningún texto del ataque, de la evidencia ni de los cuerpos llega a un sobre ni al lote", async () => {
     const c = corridaDe(ADAPTADOR_DE_ZAP, ZAP_PLUS, "2.17.0");
     const { lote, sobres } = await armadoOk(
