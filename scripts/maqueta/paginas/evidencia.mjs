@@ -286,7 +286,7 @@ ${campo("pegado-texto", { es: "Pega aquí lo que te devolvió la herramienta", e
 <section class="hg-tarjeta hg-tarjeta-accion">
 <h2 class="hg-tarjeta-titulo">${t({ es: "Proponer", en: "Propose" })}</h2>
 ${faltan(1)}
-<button type="button" class="hg-boton hg-boton-primario" data-controlador="alternar" aria-pressed="false">${t({ es: "Proponer un sobre", en: "Propose an envelope" })}</button>
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="alternar" aria-expanded="false">${t({ es: "Proponer un sobre", en: "Propose an envelope" })}</button>
 <div class="hg-revelado">
 <p data-si-completo="false">${chip({ rol: "atencion", simbolo: "aviso", nombre: { es: "Falta el texto", en: "The text is missing" } })}</p>
 <p class="hg-consecuencia" data-si-completo="true">${tHtml(
@@ -326,7 +326,7 @@ ${campo("manual-desviacion", { es: "Diferencia con lo esperado", en: "Difference
 <section class="hg-tarjeta hg-tarjeta-accion">
 <h2 class="hg-tarjeta-titulo">${t({ es: "Guardar", en: "Save" })}</h2>
 ${faltan(5)}
-<button type="button" class="hg-boton hg-boton-primario" data-controlador="alternar" aria-pressed="false">${t({ es: "Guardar el sobre", en: "Save the envelope" })}</button>
+<button type="button" class="hg-boton hg-boton-primario" data-controlador="alternar" aria-expanded="false">${t({ es: "Guardar el sobre", en: "Save the envelope" })}</button>
 <div class="hg-revelado">
 <p data-si-completo="false">${chip({ rol: "atencion", simbolo: "aviso", nombre: { es: "Faltan campos obligatorios", en: "Required fields are missing" } })}</p>
 <p class="hg-consecuencia" data-si-completo="true">${t({

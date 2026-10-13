@@ -77,9 +77,12 @@ test.describe("/catalogo", () => {
     await expect(
       page.getByRole("button", { name: /Siguiente/ }),
     ).toBeDisabled();
+    // WCAG 2.4.3: en el extremo el botón pulsado se desactiva y el foco pasa al otro, no cae al <body>.
+    await expect(page.getByRole("button", { name: /Anterior/ })).toBeFocused();
     await page.getByRole("button", { name: /Anterior/ }).click();
     expect(await idsVisibles(page)).toEqual(primera);
     await expect(page.getByRole("button", { name: /Anterior/ })).toBeDisabled();
+    await expect(page.getByRole("button", { name: /Siguiente/ })).toBeFocused();
   });
 
   test("un filtro devuelve a la página 1 y el filtro «herramienta» reduce la lista", async ({

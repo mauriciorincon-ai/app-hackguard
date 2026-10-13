@@ -10,7 +10,7 @@ import {
 } from "../propuestas/resumen.ts";
 import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Bilingue, Etiqueta, VigenciaVista } from "./tipos.ts";
-import { etiqueta, porId, semaforoDe, vigenciaVista } from "./vista.ts";
+import { porId, semaforoDe, vigenciaVista } from "./vista.ts";
 
 /** Los tres cambios que el mapa de equivalencias registra entre una versión y la siguiente. */
 export const CAMBIOS: Record<string, Bilingue> = {
@@ -151,10 +151,7 @@ export function construirVistaDeMarcos(
       version: m.version_vigente,
       fechaVersion: m.fecha_version ?? null,
       fechaPorVerificar: m.por_verificar.includes("fecha_version"),
-      vigencia: vigenciaVista(
-        c,
-        s.marcos.find((v) => v.id === m.id)!,
-      ),
+      vigencia: vigenciaVista(c, porId(s.marcos, m.id)),
       citan: c.pruebas.filter((p) => p.marco_id === m.id).length,
       fuente: m.estado === "verificado" ? null : { ...FUENTE_NO_ACCESIBLE },
       aviso: avisos.find((a) => a.marco === m.id) ?? null,
@@ -167,6 +164,3 @@ export function construirVistaDeMarcos(
     })),
   };
 }
-
-// `etiqueta` se reexporta para que la pantalla de marcos pida los estados del vocabulario por el mismo camino que el catálogo.
-export { etiqueta };

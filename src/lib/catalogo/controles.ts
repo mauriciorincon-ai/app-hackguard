@@ -35,8 +35,6 @@ export interface PruebaSinControl {
   id: string;
   nombre: Bilingue;
   queVerifica: Bilingue;
-  /** `true` si el dato la marca «control pendiente» (una persona decidirá cuál). */
-  pendiente: boolean;
 }
 
 export interface VistaDeControles {
@@ -44,10 +42,8 @@ export interface VistaDeControles {
   huella: string;
   consulta: string;
   capa: {
-    nombre: Bilingue;
     descripcion: Bilingue;
     marco: string;
-    version: string;
     /** `true` si no hay ninguna capa propia además de la por defecto. */
     sinCapaPropia: boolean;
     controles: number;
@@ -81,10 +77,8 @@ export function construirVistaDeControles(
     huella: i.huella,
     consulta,
     capa: {
-      nombre: capa.nombre,
       descripcion: capa.descripcion,
       marco: porId(c.marcos, capa.marco_id).nombre,
-      version: capa.version_marco,
       sinCapaPropia: c.controles.every((x) => x.capa === "por_defecto"),
       controles: todos.length,
       sinContrastar: todos.filter((x) => !x.verificado_contra_norma).length,
@@ -119,7 +113,6 @@ export function construirVistaDeControles(
         id: p.id,
         nombre: p.nombre,
         queVerifica: p.que_verifica,
-        pendiente: p.control_pendiente === true,
       })),
   };
 }

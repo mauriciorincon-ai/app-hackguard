@@ -54,7 +54,7 @@ export function tablero({ consulta, umbrales, existentes }) {
       es: `${verdes} de ${VALIDACION.length} comprobaciones en verde con la instantánea ${INSTANTANEA.version}. Corre antes de publicar cualquier cosa; si una falla, no se publica nada.`,
       en: `${verdes} of ${VALIDACION.length} checks green with snapshot ${INSTANTANEA.version}. It runs before anything is published; if one fails, nothing is published.`,
     })}</p>
-<button type="button" class="hg-boton hg-boton-discreto" data-controlador="alternar" aria-pressed="false">${t({ es: "Ver las comprobaciones", en: "See the checks" })}</button>
+<button type="button" class="hg-boton hg-boton-discreto" data-controlador="alternar" aria-expanded="false">${t({ es: "Ver las comprobaciones", en: "See the checks" })}</button>
 <div class="hg-revelado">
 <table class="hg-tabla">
 <caption class="hg-oculto">${t({ es: "Comprobaciones de la validación del instrumento", en: "Instrument validation checks" })}</caption>

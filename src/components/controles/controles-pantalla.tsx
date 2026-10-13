@@ -7,6 +7,7 @@ import {
 } from "@/lib/catalogo/etiquetas";
 import type { VistaDeControles } from "@/lib/catalogo/controles";
 import { Aviso, Chip, Estado, Huella } from "../estado";
+import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
 
 /**
@@ -17,20 +18,6 @@ import { Dato, T } from "../texto";
 
 const CON_PRUEBAS = E.areas_con_pruebas;
 const SIN_PRUEBAS = E.sin_pruebas;
-
-function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
-  return (
-    <thead>
-      <tr>
-        {columnas.map((c) => (
-          <th key={c.es} scope="col">
-            <T t={c} />
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
 
 export function ControlesVacio() {
   return (
@@ -254,10 +241,18 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. La vista por control, con el estado de cada control y su evidencia, todavía no existe como pantalla.",
-                en: "A test giving evidence to a control does not say the control is met: it says where to look. The control view, with each control's status and evidence, does not exist as a screen yet.",
+                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. El estado de cada control y su evidencia están en la vista por control.",
+                en: "A test giving evidence to a control does not say the control is met: it says where to look. Each control's status and evidence are in the control view.",
               }}
-            />
+            />{" "}
+            <Link href="/brecha/control">
+              <T
+                t={{
+                  es: "Abrir la vista por control",
+                  en: "Open the control view",
+                }}
+              />
+            </Link>
           </p>
         </div>
         <table className="hg-tabla">

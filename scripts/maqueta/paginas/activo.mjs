@@ -74,7 +74,7 @@ ${par({ es: "Límites de carga", en: "Load limits" }, `<span>${t(a.alcance.limit
     : `<div class="hg-panel-cuerpo">
 <p>${chip(SIN_DECLARAR)}</p>
 <div>
-<button type="button" class="hg-boton" data-controlador="alternar" aria-pressed="false">${t({ es: "Ver la plantilla para activos propios", en: "See the template for own assets" })}</button>
+<button type="button" class="hg-boton" data-controlador="alternar" aria-expanded="false">${t({ es: "Ver la plantilla para activos propios", en: "See the template for own assets" })}</button>
 <div class="hg-revelado">
 <div class="hg-contraste">
 <div><p class="hg-rotulo">${t({ es: "Alcance de la plantilla", en: "Template scope" })}</p>${lista(PLANTILLA.alcance)}</div>

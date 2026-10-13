@@ -67,3 +67,64 @@ describe("ninguna prueba sube su propio timeout (S6-T1, S6-T2)", () => {
     expect(con).toEqual([]);
   });
 });
+
+describe("la fila de cabeceras de una tabla vive en un solo sitio (S3-B2)", () => {
+  const recorrer = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? recorrer(path.join(d, e.name))
+        : e.name.endsWith(".tsx")
+          ? [path.join(d, e.name)]
+          : [],
+    );
+  it("ninguna pantalla define su propia `Cabeceras`", () => {
+    const copias = recorrer(path.join(RAIZ, "src/components"))
+      .filter((f) => !f.endsWith("cabeceras.tsx"))
+      .filter((f) => /function Cabeceras\b/.test(readFileSync(f, "utf8")))
+      .map((f) => path.relative(RAIZ, f));
+    expect(copias).toEqual([]);
+    expect(
+      readFileSync(path.join(RAIZ, "src/components/cabeceras.tsx"), "utf8"),
+    ).toMatch(/export function Cabeceras\b/);
+  });
+});
+
+describe("un botón que despliega algo dice aria-expanded, no aria-pressed (S4-AP)", () => {
+  const recorrer = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? recorrer(path.join(d, e.name))
+        : /\.(tsx|mjs|css|js)$/.test(e.name)
+          ? [path.join(d, e.name)]
+          : [],
+    );
+  it("el botón que precede a un `.hg-revelado` lleva aria-expanded, en los componentes y en la maqueta", () => {
+    const malos: string[] = [];
+    for (const f of [
+      ...recorrer(path.join(RAIZ, "src/components")),
+      ...recorrer(path.join(RAIZ, "scripts/maqueta/paginas")),
+    ]) {
+      const t = readFileSync(f, "utf8");
+      for (const m of t.matchAll(/class(?:Name)?="hg-revelado"/g)) {
+        const antes = t.slice(0, m.index);
+        const fin = antes.lastIndexOf("</button>");
+        const inicio = antes.lastIndexOf("<button", fin);
+        if (inicio < 0) continue;
+        if (/aria-pressed[=:{]/.test(antes.slice(inicio, fin)))
+          malos.push(path.relative(RAIZ, f));
+      }
+    }
+    expect(malos).toEqual([]);
+  });
+
+  it("la hoja del sistema muestra el revelado con aria-expanded, no con aria-pressed", () => {
+    const css = readFileSync(
+      path.join(RAIZ, "docs/diseno/assets/app.css"),
+      "utf8",
+    );
+    expect(css).toMatch(
+      /\[data-controlador="alternar"\]\[aria-expanded="true"\] \+ \.hg-revelado/,
+    );
+    expect(css).not.toMatch(/\[aria-pressed="true"\] \+ \.hg-revelado/);
+  });
+});

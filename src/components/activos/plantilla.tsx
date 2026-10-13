@@ -6,7 +6,7 @@ import { T, type Bilingue } from "../texto";
 
 /**
  * «Ver la plantilla para activos propios»: el botón abre lo que lo sigue (la hoja del sistema muestra `.hg-revelado`
- * cuando el botón que lo precede está pulsado). Solo cambia lo que se ve; el árbol es el mismo en los dos idiomas.
+ * cuando el botón que lo precede está expandido: `aria-expanded`, no `aria-pressed`). Solo cambia lo que se ve; el árbol es el mismo en los dos idiomas.
  */
 export function PlantillaParaActivosPropios({
   alcance,
@@ -22,7 +22,7 @@ export function PlantillaParaActivosPropios({
         type="button"
         className="hg-boton"
         data-controlador="alternar"
-        aria-pressed={abierta}
+        aria-expanded={abierta}
         onClick={() => setAbierta((a) => !a)}
       >
         <T

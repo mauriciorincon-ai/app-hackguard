@@ -19,6 +19,14 @@ export const LECTORES: readonly (readonly [string, string])[] = [
   ["marcas_de_instruccion", "src/lib/propuestas/vista.ts"],
   // Lo que una persona aporta a una corrida (RF-07.2b)
   ["aportes", "src/lib/propuestas/vista.ts"],
+  // La vista de los controles (S3-B11): los campos que nadie leía se borraron; estos dos los lee la pantalla
+  ["sinCapaPropia", "src/components/controles/controles-pantalla.tsx"],
+  ["sinContrastar", "src/components/controles/controles-pantalla.tsx"],
+  // La carga y la bandeja (S6-B11, L9c)
+  ["veredictoId", "src/lib/evidencia/vista-de-carga.ts"],
+  ["etiquetaDeVacio", "src/components/propuestas/propuestas-pantalla.tsx"],
+  ["frase", "src/components/hallazgo/hallazgo-pantalla.tsx"],
+  ["partesDelVector", "src/components/hallazgo/hallazgo-pantalla.tsx"],
 ];
 
 describe("cada campo del contrato tiene un lector de producción", () => {

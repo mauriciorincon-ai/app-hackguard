@@ -8,6 +8,7 @@ import {
 } from "@/lib/catalogo/marcos";
 import { Chip, Estado, Fechado, Huella } from "../estado";
 import { Aviso } from "../estado";
+import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
 
 /**
@@ -23,20 +24,6 @@ const COLUMNAS_MARCOS = [
   { es: "Frente a la fuente", en: "Against the source" },
   { es: "Vigencia", en: "Freshness" },
 ];
-
-function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
-  return (
-    <thead>
-      <tr>
-        {columnas.map((c) => (
-          <th key={c.es} scope="col">
-            <T t={c} />
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
 
 function Mapa({ m }: { m: MapaDeEquivalencias }) {
   return (
@@ -364,9 +351,14 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                   )}
                 </td>
                 <td>
+                  {/* Un marco cuya fuente no se pudo leer no está «verificado»: lo que se fecha es la última revisión (S3-B5). */}
                   <Fechado
                     vigencia={m.vigencia}
-                    rotulo={{ es: "Verificado", en: "Verified" }}
+                    rotulo={
+                      m.fuente
+                        ? { es: "Revisado", en: "Reviewed" }
+                        : { es: "Verificado", en: "Verified" }
+                    }
                   />
                   <p className="hg-menor">
                     <span lang="es">

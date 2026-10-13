@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { T } from "../texto";
 
 const TRAZO = {
@@ -46,6 +47,17 @@ export function Paginacion({
   cuenta: number;
   irA: (pagina: number) => void;
 }) {
+  // Al llegar a un extremo el botón que se pulsó queda desactivado y el foco caería al <body> (WCAG 2.4.3): pasa al otro botón.
+  const anterior = useRef<HTMLButtonElement>(null);
+  const siguiente = useRef<HTMLButtonElement>(null);
+  const pulsado = useRef<"anterior" | "siguiente" | null>(null);
+  useEffect(() => {
+    if (pulsado.current === "siguiente" && actual >= total)
+      anterior.current?.focus();
+    if (pulsado.current === "anterior" && actual <= 1)
+      siguiente.current?.focus();
+    pulsado.current = null;
+  }, [actual, total]);
   return (
     <nav
       className="hg-paginacion"
@@ -55,8 +67,12 @@ export function Paginacion({
       <button
         type="button"
         className="hg-boton hg-boton-discreto"
+        ref={anterior}
         disabled={actual <= 1}
-        onClick={() => irA(actual - 1)}
+        onClick={() => {
+          pulsado.current = "anterior";
+          irA(actual - 1);
+        }}
       >
         <Flecha hacia="atras" />
         <T t={{ es: "Anterior", en: "Previous" }} />
@@ -74,8 +90,12 @@ export function Paginacion({
       <button
         type="button"
         className="hg-boton hg-boton-discreto"
+        ref={siguiente}
         disabled={actual >= total}
-        onClick={() => irA(actual + 1)}
+        onClick={() => {
+          pulsado.current = "siguiente";
+          irA(actual + 1);
+        }}
       >
         <T t={{ es: "Siguiente", en: "Next" }} />
         <Flecha hacia="adelante" />

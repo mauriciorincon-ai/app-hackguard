@@ -25,7 +25,8 @@ import { Paginacion } from "./paginacion";
  * no se vuelven a pintar ni a hidratar una por una, solo se muestran u ocultan según los filtros (con 38 filas con los dos
  * idiomas, hidratarlas costaba más del presupuesto de bloqueo del hilo principal). El navegador recibe solo lo que el
  * filtro lee de cada fila. Se ven `POR_PAGINA` por página; las demás siguen en el documento, ocultas (la primera pintura ya
- * trae ocultas las que no son de la página 1: el servidor las dibuja con `hidden`).
+ * trae ocultas las que no son de la página 1: el servidor las dibuja con `hidden`). Paginar recorta la primera pintura, pero por sí
+ * solo no cumplió el presupuesto de rendimiento (ver `paginacion.ts`).
  */
 export function ListaFiltrable({
   familias,

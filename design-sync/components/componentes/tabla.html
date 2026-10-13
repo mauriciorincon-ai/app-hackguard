@@ -1115,12 +1115,13 @@ a.hg-boton {
   }
 }
 
-/* Revelado: contenido que abre el botón que lo precede. */
+/* Revelado: contenido que abre el botón que lo precede. Un botón que despliega algo dice `aria-expanded`, no `aria-pressed`
+   (`aria-pressed` es para un interruptor que queda elegido, como los botones de filtro). */
 .hg-revelado {
   display: none;
 }
 
-[data-controlador="alternar"][aria-pressed="true"] + .hg-revelado {
+[data-controlador="alternar"][aria-expanded="true"] + .hg-revelado {
   display: block;
 }
 
