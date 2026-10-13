@@ -179,15 +179,25 @@ L12 documentos y guía · L13 externos y humanos.
 | ED-8    | B   | `design-sync/project.json:2-3`                                                                  | el bundle no está publicado (`projectId` null)                                  | –   | L13 | imposible      | lo publica `/design-sync`, que invoca el usuario (regla 16); sitio: después del gate ⭐⭐; el bundle se regenera en F2                                           |
 | ED-9    | B   | `README.md:1-4`                                                                                 | el README del estampado                                                         | –   | –   | ya no aplica   | 693c292                                                                                                                                                          |
 
+## Auditoría de la constitución (F2)
+
+Las doce reglas duras contra el código, hecha para `docs/BLUEPRINT.html` («Reglas duras y dónde se cumplen»). Diez se cumplen con su
+mecanismo citado; dos tienen una brecha que no se paga en el sprint, con razón y sitio. No se inventó una tercera.
+
+| Id     | Sev | Dónde (hoy)                                                          | Defecto                                                                                           | Min | Gr. | Estado    | Pago o evidencia                                                                                                                                                                                             |
+| ------ | --- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --- | --- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| S9-R9  | M   | `scripts/verificar-salida-publicada.mjs`, `.github/workflows/ci.yml` | regla 9: no hay lista blanca de lo que viaja a un paquete público; `--publico` es una lista negra | 45  | L13 | imposible | no existe paquete público: el modo público es del H-2 y el alcance del sprint lo excluye; sitio: el sprint que lo construya (lista blanca y job de CI); el piso es `--publico`                               |
+| S9-R10 | M   | `src/engine/catalogo/esquemas.ts:331`                                | regla 10 y ADR-002 (decisión 6): los selectores no se arman desde un registro por adaptador       | 45  | L13 | imposible | extraerlos exige sacar las primitivas de `esquemas.ts` (un ciclo de importación) y sin un quinto adaptador el registro sería una abstracción de un solo uso; sitio: el sprint del quinto adaptador (roadmap) |
+
 ## Cuentas al cierre de F1 (por comando) y reestimación
 
 | Estado                        |   Filas |
 | ----------------------------- | ------: |
 | pagado (con su sha y su test) |      92 |
 | ya no aplica (con evidencia)  |      25 |
-| imposible (con razón y sitio) |       7 |
+| imposible (con razón y sitio) |       9 |
 | abierta, se paga en F3 (guía) |       4 |
-| **Total**                     | **128** |
+| **Total**                     | **130** |
 
 Las 4 abiertas son las filas de la guía de prueba (S3-M5, S3-B10, S5-11a, S5-11b), que F3 reescribe junto con el bloque «Gate del H-1».
 Contado con: `python3` sobre las tablas de este archivo, columna «Estado». Nominal inicial: 97 abiertas, 48 de 5 min, 39 de 15 y 10 de 45
@@ -198,9 +208,10 @@ que pierde un campo arregla varias filas y lo verifica `tsc`; una sola regla de 
 gate de «campo con lector» cubre los huérfanos) el trabajo de F1 se estima en ≈ 8 h, y el sprint entero en ≈ 12 h (el tope), contra
 las 7,75 h del plan aprobado. Si el real pasa de 18 h, el cierre explica la causa y la medida. Ninguna fila queda abierta al cerrar.
 
-**Las 7 filas «imposible»** son: S2-M5 y ED-1 (miradas humanas, van al gate), S1-P3 (texto de la norma ISO, H-4), S1-ADR1 y S1-ADR5
+**Las 9 filas «imposible»** son: S2-M5 y ED-1 (miradas humanas, van al gate), S1-P3 (texto de la norma ISO, H-4), S1-ADR1 y S1-ADR5
 (sin parche publicado en `braces` ni en `serve`), ED-8 (`/design-sync`, que invoca el usuario) y S5-7b (fijar el umbral antes de la
-prueba exige reabrir el formato del sobre, ADR-007, congelado; declarado en ADR-008 y en el manual).
+prueba exige reabrir el formato del sobre, ADR-007, congelado; declarado en ADR-008 y en el manual) y las dos de la auditoría de la
+constitución, S9-R9 (lista blanca del paquete público, H-2) y S9-R10 (registro de selectores por adaptador, quinto adaptador).
 
 **Una fila pagada a medias, dicho aquí:** S3-B11 borró los campos y el reexport sin lector; `rechazadasDe` y `CatalogoConError` se
 quedan porque son el estado de error del diseño (§ 6) y su disparador, un catálogo inválido, rompe el build antes de pintar la pantalla.

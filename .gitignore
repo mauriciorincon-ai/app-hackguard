@@ -29,6 +29,7 @@ datos/privado/*
 
 # Maqueta copiada por scripts/copiar-maqueta.mjs en cada build: derivado de docs/diseno/.
 public/diseno/
+public/conoce/
 
 # Respaldos de scripts/demo-rojo.sh (kit v1.35.0): si una demo se interrumpe, no deben entrar a un commit.
 .demo-rojo/

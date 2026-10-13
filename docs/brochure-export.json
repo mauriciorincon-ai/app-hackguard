@@ -12,162 +12,164 @@
     "enlaces.produccion": "null cuando la app no tiene URL pública. `razon` explica por qué, y es lo que la vitrina muestra en lugar del enlace. Nunca se rellena con un enlace de repositorio ni con una promesa."
   },
   "schema_version": "1.0.0",
-  "actualizado": "2026-10-11",
+  "actualizado": "2026-10-13",
   "app": {
     "slug": "hackguard",
     "nombre": "HackGuard",
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 2,
+    "sprints_cerrados": 9,
     "version_repo": "0.1.0"
   },
   "promesa": {
     "tagline": "Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.",
     "intro": "Para cada una de tus apps, HackGuard te ayuda a responder cuatro preguntas que casi nadie contesta: qué probaste, qué esperabas, qué obtuviste y qué te falta. Es un catálogo vivo de pruebas de seguridad para software y para IA, cada una atada a su marco con versión. No ejecuta las pruebas: las corres afuera y traes los resultados como evidencia que una persona confirma.",
     "para_quien": "Para quien construye apps con IA y hoy prueba su seguridad tarde, sin plan y sin memoria, y quiere mostrar evidencia fechada cuando alguien pregunte «¿cómo sabes que esto es seguro?». Y para quien mire esa evidencia: el auditor de gobierno de IA, el par de seguridad que recorre el catálogo y el líder sin formación técnica.",
-    "diferencial": "Cada prueba queda atada a su marco con versión y, cuando se puede, al control de ISO/IEC 42001 al que le da evidencia. Los gestores de hallazgos acumulan alertas, las plataformas de red teaming encuentran fallas y las herramientas de gobierno llenan matrices de controles; HackGuard une las tres en un solo hilo trazable: prueba con resultado esperado, marco con versión, control del Anexo A, evidencia con huella y cierre solo por re-prueba. Lo hace con un núcleo determinista que cualquiera puede volver a correr y obtener los mismos bytes, con la IA solo proponiendo y siempre bajo aprobación humana, y sin guardar jamás una carga: describe qué se verifica, nunca cómo se rompe. Hoy existe el primer eslabón de esa cadena, el catálogo, y ya se recorre en pantalla."
+    "diferencial": "Cada prueba queda atada a su marco con versión y, cuando se puede, al control de ISO/IEC 42001 al que le da evidencia. Los gestores de hallazgos acumulan alertas, las plataformas de red teaming encuentran fallas y las herramientas de gobierno llenan matrices de controles; HackGuard une las tres en un solo hilo trazable: prueba con resultado esperado, marco con versión, control del Anexo A, evidencia con huella y cierre solo por re-prueba. Ese hilo ya está construido de punta a punta sobre activos demo: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Lo hace con un núcleo determinista que cualquiera puede volver a correr y obtener los mismos bytes, con la IA solo proponiendo —un investigador y un extractor que escriben únicamente en una bandeja— y siempre bajo aprobación humana, y sin guardar jamás una carga: describe qué se verifica, nunca cómo se rompe."
   },
   "funcionalidades": {
-    "total": 19,
-    "fuente_del_conteo": "docs/MANUAL-DE-USO.md",
+    "total": 18,
+    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión",
     "descartadas": [],
     "grupos": [
       {
         "orden": 1,
         "estrella": true,
         "nombre": "El catálogo vivo",
-        "linea": "Lo que HackGuard sabe vive como dato validado, con versión, con huella y sin una sola carga operativa.",
+        "linea": "Lo que HackGuard sabe vive como dato validado, con versión y con huella, y se lee sin color.",
         "features": [
           {
-            "id": "C1",
+            "id": "F01",
             "nombre": "Pruebas que no entran a medias",
-            "que_hace": "Cada prueba llega con su marco y su versión, lo que se verifica, por qué importa, la herramienta, el resultado esperado, la regla del veredicto y a qué activos aplica. Lo incompleto se rechaza al cargar el catálogo, con la regla que lo detectó.",
+            "que_hace": "Cada prueba llega con su marco y versión, su resultado esperado, su regla de veredicto y cuándo aplica; si es sobre un sistema que varía entre corridas, con cuántas repeticiones. Lo incompleto se rechaza al cargar, con 61 reglas con nombre y severidad.",
             "seccion_manual": "El catálogo como dato · desde Sprint 001"
           },
           {
-            "id": "C2",
-            "nombre": "Cuatro familias, 38 pruebas",
-            "que_hace": "Software, agente, modelo generativo y modelo de decisión, cada una con sus pruebas escritas en español e inglés. Ninguna dice cómo se ejecuta un ataque.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
-          },
-          {
-            "id": "C3",
+            "id": "F02",
             "nombre": "Un filtro que marca, nunca censura",
-            "que_hace": "Si el texto de una prueba tiene forma de instrucción operativa, queda marcada y no entra a la instantánea hasta que una persona la reescribe, la retira o la aprueba. El manual dice también lo que el filtro no ve.",
+            "que_hace": "Si el texto de una prueba parece describir cómo atacar en vez de qué verificar, queda marcado para que una persona decida. Nombrar una técnica o un módulo de una herramienta nunca es motivo de marca.",
             "seccion_manual": "El catálogo como dato · desde Sprint 001"
           },
           {
-            "id": "C4",
+            "id": "F03",
             "nombre": "Semáforo de vigencia que se lee sin color",
-            "que_hace": "Cada prueba, marco, herramienta y familia muestra cuánto lleva sin verificarse: vigente, por revisar desde 30 días, vencido desde 60. Siempre con marca y nombre, nunca solo un color.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
+            "que_hace": "Cada prueba, marco, familia y herramienta muestra cuánto lleva sin revisarse, con símbolo, texto y color; la fecha de consulta es una entrada del build, nunca el reloj.",
+            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
           },
           {
-            "id": "C5",
+            "id": "F04",
             "nombre": "Memoria entre versiones de un marco",
-            "que_hace": "Una referencia a un marco sin versión no se acepta, y los mapas de equivalencia entre versiones viven como dato para que un hallazgo viejo siga apuntando a la entrada correcta cuando el marco renumere.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
+            "que_hace": "Cuando un marco se renumera, los hallazgos viejos siguen apuntando a la entrada correcta mediante un mapa de equivalencias; una referencia sin versión no se acepta y cada versión del catálogo queda congelada con huella.",
+            "seccion_manual": "Marcos y controles · desde Sprint 003"
           },
           {
-            "id": "C6",
+            "id": "F05",
             "nombre": "Los controles de ISO/IEC 42001 en palabras propias",
-            "que_hace": "38 controles del Anexo A con resúmenes propios, nunca el texto de la norma. Cada control declara que aún no se contrastó con la norma, y las pruebas sin control se ven como advertencia.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
+            "que_hace": "La estructura del Anexo A con resúmenes propios, nunca el texto de la norma, y para cada control qué pruebas lo cubren; una prueba sin control se acepta pero su deuda se ve.",
+            "seccion_manual": "Marcos y controles · desde Sprint 003"
           },
           {
-            "id": "C7",
-            "nombre": "Instantáneas congeladas con huella",
-            "que_hace": "Una foto del catálogo en una fecha, con una huella SHA-256 sobre JSON canónico. La misma fecha y los mismos datos dan la misma huella en cualquier computador y navegador.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
+            "id": "F06",
+            "nombre": "La familia que nadie prueba todavía",
+            "que_hace": "Los modelos de decisión tipados, con un activo demo propio que imita el contrato de un producto real: calibración, cruce de umbral, paridad español/inglés y «válido pero equivocado».",
+            "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
           },
           {
-            "id": "C8",
-            "nombre": "Nada se publica con el catálogo inválido",
-            "que_hace": "Si el catálogo tiene un solo error, no se escribe ninguna instantánea. La fecha es obligatoria y nunca sale del reloj.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
-          },
-          {
-            "id": "C9",
-            "nombre": "Sumar una prueba con una semilla",
-            "que_hace": "Se copia una semilla de referencia, se redacta en los dos idiomas y se valida contra el catálogo real sin copiarla a datos/ hasta que no quede ningún error.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
-          },
-          {
-            "id": "C10",
-            "nombre": "Salida en español, en inglés o para otra máquina",
-            "que_hace": "Todo comando acepta la salida en inglés y una salida JSON que lee otro programa; el código de salida dice si el catálogo está ok, con advertencias o inválido.",
-            "seccion_manual": "El catálogo como dato · desde Sprint 001"
+            "id": "F07",
+            "nombre": "Un investigador que propone con pruebas",
+            "que_hace": "A demanda, una skill de Claude Code busca pruebas nuevas, versiones de marcos y retiros; ninguna fuente llega a tus ojos sin que el código verifique que existe y dice lo que se cita. Tú apruebas.",
+            "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
           }
         ]
       },
       {
         "orden": 2,
         "estrella": false,
-        "nombre": "La familia que nadie prueba todavía",
-        "linea": "Los modelos de decisión tipados, con un activo demo propio contra el que las pruebas tienen algo que medir.",
+        "nombre": "El plan",
+        "linea": "Tu app descrita como activo y un plan que explica cada decisión, byte a byte reproducible.",
         "features": [
           {
-            "id": "M1",
-            "nombre": "Un activo demo propio para la familia más nueva",
-            "que_hace": "Un clasificador determinista que decide solicitudes inventadas de una biblioteca y responde con una distribución de probabilidad sobre opciones tipadas, imitando el contrato de respuesta de Jev, de TypeSafe.",
-            "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
+            "id": "F08",
+            "nombre": "Tu app, descrita como activo",
+            "que_hace": "Tipo, exposición, datos y modelos que consume, con el dueño y el proveedor separados y el alcance autorizado y las reglas de enfrentamiento declarados antes de cualquier plan: sin ellos no hay plan.",
+            "seccion_manual": "Activos y plan · desde Sprint 004"
           },
           {
-            "id": "M2",
-            "nombre": "Métricas sobre las probabilidades, no sobre la «confianza»",
-            "que_hace": "Mide exactitud, error de Brier, error de calibración, errores cerca del umbral de aprobación sin persona, cuánto cambia la decisión al repetir la petición y la diferencia entre español e inglés.",
-            "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
+            "id": "F09",
+            "nombre": "Un planificador que explica cada decisión",
+            "que_hace": "Cruza el activo con el catálogo y dice qué pruebas entran, cuáles salen y por qué, con qué prioridad, con qué herramienta gratuita y qué cobertura esperar por control. Mismo activo, mismo catálogo, mismo plan.",
+            "seccion_manual": "Activos y plan · desde Sprint 004"
           },
           {
-            "id": "M3",
-            "nombre": "Tres defectos puestos a propósito",
-            "que_hace": "Entiende el inglés mejor que el español, no entiende frases negadas y favorece a los socios antiguos, para que las métricas los encuentren. Un conjunto de 26 casos con la política que decide la respuesta correcta de cada uno.",
-            "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
+            "id": "F10",
+            "nombre": "El paquete para correr afuera",
+            "que_hace": "Herramienta, versión mínima, entorno, configuración declarativa, límites y resultado esperado; nunca una carga. HackGuard no ejecuta pruebas: tú las corres con tus herramientas.",
+            "seccion_manual": "Activos y plan · desde Sprint 004"
           }
         ]
       },
       {
         "orden": 3,
-        "estrella": false,
-        "nombre": "El catálogo en pantalla",
-        "linea": "La primera pantalla: el catálogo se recorre, se filtra y se lee prueba por prueba, solo de lectura.",
+        "estrella": true,
+        "nombre": "La evidencia",
+        "linea": "Nada cuenta sin tu confirmación, y un hallazgo solo se cierra con una re-prueba.",
         "features": [
           {
-            "id": "P1",
-            "nombre": "La lista de las 38 pruebas",
-            "que_hace": "Una tabla con todas las pruebas de la instantánea oficial, con su familia, herramienta, marco, madurez y vigencia, y las cifras de arriba: vigentes, por revisar, vencidas y sin control.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F11",
+            "nombre": "Un libro de evidencia que una persona firma",
+            "que_hace": "Los resultados entran por el archivo nativo de la herramienta o a mano, y nada cuenta sin confirmación, individual o por lote con una muestra que tú revisas. El crudo nunca entra al almacén: solo su huella y un extracto.",
+            "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
-            "id": "P2",
-            "nombre": "Filtros que se suman",
-            "que_hace": "Por familia, marco, control, madurez, vigencia y revisión de contenido. El contador dice cuántas quedan, «Quitar filtros» las devuelve todas y, si ninguna cumple, la pantalla lo dice.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F12",
+            "nombre": "Hallazgos que solo cierran con re-prueba",
+            "que_hace": "Abierto, corregido, re-probado, cerrado, con plazos de 7, 30 y 90 días según severidad y vencidos visibles; que un hallazgo desaparezca de un escaneo posterior no lo cierra.",
+            "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
-            "id": "P3",
-            "nombre": "Una ficha por cada prueba",
-            "que_hace": "Qué se verifica, por qué importa, el resultado esperado, cómo se decide el veredicto y con cuántas repeticiones, con qué herramienta, cuándo aplica y a qué marco y controles responde. Avisa arriba cuando la prueba está vencida o por revisar.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F13",
+            "nombre": "Severidad que un auditor puede reproducir",
+            "que_hace": "CVSS 4.0 contra la referencia fijada de FIRST para el software; para la IA, una tabla de prioridad que mira primero el impacto, nunca una suma.",
+            "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
-            "id": "P4",
-            "nombre": "Vigencia por familia",
-            "que_hace": "Un panel donde cada familia está como su prueba más atrasada, con marca, texto y color; el color nunca va solo.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F14",
+            "nombre": "Garak y ZAP hablan tu idioma",
+            "que_hace": "Adaptadores que convierten sus reportes nativos en sobres con veredicto sugerido por la regla; cuando ZAP no puede demostrar que una regla corrió, se dice «no ejecutada», no «superada».",
+            "seccion_manual": "Carga de evidencia · desde Sprint 006"
           },
           {
-            "id": "P5",
-            "nombre": "Una fecha de consulta a la vista",
-            "que_hace": "La vigencia se calcula con la fecha de consulta que se muestra arriba, tomada de la fecha del commit publicado y nunca del reloj del navegador: la pantalla envejece al publicarse, no sola.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F15",
+            "nombre": "Un extractor para lo que pegas",
+            "que_hace": "Una skill de Claude Code propone a qué prueba del plan corresponde un texto, con citas literales que el código verifica; el veredicto lo calcula la regla y tú confirmas.",
+            "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
+          }
+        ]
+      },
+      {
+        "orden": 4,
+        "estrella": true,
+        "nombre": "La brecha",
+        "linea": "Lo esperado contra lo obtenido, control por control, y el instrumento que se prueba a sí mismo.",
+        "features": [
+          {
+            "id": "F16",
+            "nombre": "Lo esperado contra lo obtenido",
+            "que_hace": "Por prueba, familia y control: planeadas, ejecutadas, superadas, fallidas, no ejecutadas; «no detectado» nunca se disfraza de «verificado». Con alertas de catálogo vencido, marcos nuevos y evidencia vieja, y un informe imprimible.",
+            "seccion_manual": "La brecha y el informe · desde Sprint 007"
           },
           {
-            "id": "P6",
-            "nombre": "Tema e idioma que se recuerdan",
-            "que_hace": "Oscuro o claro, español o inglés, con la misma pantalla en ambos y sin saltos al recargar; en el teléfono la navegación pasa a una barra al pie.",
-            "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
+            "id": "F17",
+            "nombre": "La vista por control",
+            "que_hace": "Para cada control de ISO/IEC 42001: qué pruebas lo cubren, qué evidencia existe y de qué fecha, qué falló y la cadena hallazgo → corrección → re-prueba.",
+            "seccion_manual": "La brecha y el informe · desde Sprint 007"
+          },
+          {
+            "id": "F18",
+            "nombre": "El instrumento se prueba a sí mismo",
+            "que_hace": "Semillas inválidas que deben rechazarse, contenido que debe marcarse y cierres que deben negarse; si algo falla, ninguna instantánea ni paquete se publica.",
+            "seccion_manual": "La brecha y el informe · desde Sprint 007"
           }
         ]
       }
@@ -177,10 +179,10 @@
     {
       "clave": "funcionalidades",
       "etiqueta": "Funcionalidades",
-      "valor": 19,
+      "valor": 18,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Contadas contra docs/MANUAL-DE-USO.md, que hoy tiene tres secciones de funcionalidad: «El catálogo como dato» (10), «El clasificador demo de la familia modelo de decisión» (3) y «El catálogo en pantalla» (6). De las 32 que la visión aprueba, el resto (planificador, libro de evidencia, hallazgos, brecha, vitrina) no se ha construido."
+      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto de las 32 son del roadmap o de la vitrina para terceros y no se han construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -188,7 +190,7 @@
       "valor": 38,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm catalogo:validar` del 2026-10-11: 38 pruebas, 38 publicables, 0 pendientes de revisión. Por familia, contando los archivos de datos/pruebas/: software 10, agente 9, modelo generativo 7 y modelo de decisión 12."
+      "detalle": "Archivos de datos/pruebas/ del 2026-10-13: 38 pruebas. Por familia: software 10, agente 9, modelo generativo 7 y modelo de decisión 12. `pnpm catalogo:validar` las da por publicables."
     },
     {
       "clave": "controles_iso_42001",
@@ -196,7 +198,7 @@
       "valor": 38,
       "unidad": "controles",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm catalogo:validar` del 2026-10-11. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
+      "detalle": "Contados en datos/controles/iso42001-anexo-a.json del 2026-10-13. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
     },
     {
       "clave": "fichas_de_prueba",
@@ -204,39 +206,39 @@
       "valor": 38,
       "unidad": "fichas",
       "fuente": "medido",
-      "detalle": "Páginas HTML en out/catalogo/ tras `pnpm build` del 2026-10-11: una por prueba. El build entero genera 89 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-10-13. El build entero genera 116 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
     },
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 2431,
+      "valor": 4260,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-10-11 sobre el árbol de este export: `pnpm test` 1362 pruebas en 53 archivos, y `pnpm test:e2e` 1069 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta tres veces)."
+      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3002 pruebas, y `pnpm test:e2e` 1258 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 1362,
+      "valor": 3002,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-11 sobre el árbol de este export: 53 archivos, 1362 pasan (ocho son las del propio export)."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 150 archivos, 3002 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1069,
+      "valor": 1258,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test:e2e` del 2026-10-11 sobre el build de producción: 1069 pasan en tres navegadores. Incluyen el recorrido del catálogo en pantalla con axe, y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-10-13 (10 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 94.55,
+      "valor": 97.5,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/engine, src/lib y src/components en la corrida de `pnpm test` del 2026-10-11: 1060 de 1121 líneas; sentencias 94.63 %. Los componentes entraron a la medición en el Sprint 002, por eso baja respecto a los 99.42 % del núcleo solo."
+      "detalle": "v8 sobre src/ en la corrida de `pnpm test` del 2026-10-13: 4648 de 4767 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
@@ -252,7 +254,7 @@
       "valor": 14,
       "unidad": "marcos",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm catalogo:validar` del 2026-10-11, cada uno con su versión; hay un mapa de equivalencias entre versiones."
+      "detalle": "Archivos de datos/marcos/ del 2026-10-13, cada uno con su versión; hay un mapa de equivalencias entre versiones."
     },
     {
       "clave": "herramientas",
@@ -260,7 +262,7 @@
       "valor": 13,
       "unidad": "herramientas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm catalogo:validar` del 2026-10-11: 12 públicas con versión verificada y licencia, más la revisión documentada por una persona."
+      "detalle": "Archivos de datos/herramientas/ del 2026-10-13: 12 públicas con versión verificada y licencia, más la revisión documentada por una persona."
     },
     {
       "clave": "pruebas_de_software_sin_control",
@@ -297,20 +299,28 @@
       "papel": "el conocimiento es dato: marcos, controles, herramientas y pruebas en archivos, congelados con JSON canónico (RFC 8785) y SHA-256"
     },
     {
+      "nombre": "Núcleo determinista",
+      "papel": "catálogo, plan, evidencia, severidad y brecha son código puro: misma entrada, mismos bytes en Node y en tres navegadores"
+    },
+    {
       "nombre": "Zod",
-      "papel": "esquemas que rechazan al cargar lo que está incompleto"
+      "papel": "esquemas que rechazan al cargar lo que está incompleto y que validan todo lo que escribe un agente"
     },
     {
       "nombre": "Node (TypeScript nativo)",
-      "papel": "el CLI que valida el catálogo, toma instantáneas y corre el clasificador demo"
+      "papel": "la línea de comandos que valida el catálogo, emite el plan, importa y confirma evidencia y decide propuestas"
+    },
+    {
+      "nombre": "Claude Code (skills)",
+      "papel": "un investigador y un extractor a demanda que solo escriben en una bandeja; jamás corren en la app ni aprueban nada"
     },
     {
       "nombre": "Vitest y Playwright",
-      "papel": "las pruebas, incluida la que comprueba que Node y tres navegadores calculan la misma huella"
+      "papel": "las pruebas, incluida la que comprueba que Node y tres navegadores calculan la misma huella, y el flujo completo en inglés"
     },
     {
       "nombre": "Tailwind y axe",
-      "papel": "estilos y verificación de accesibilidad"
+      "papel": "estilos y verificación de accesibilidad en los dos temas y a 380 píxeles"
     },
     {
       "nombre": "Sentry",
@@ -324,8 +334,8 @@
   "privacidad": {
     "local_only": false,
     "red_saliente": false,
-    "usa_ia": false,
-    "detalle": "Es una web estática: sin backend, sin base de datos, sin cuentas y sin ninguna IA en tiempo de ejecución. Solo muestra contenido público por diseño (catálogo, marcos, controles y activos demo sintéticos); la evidencia de activos reales vive en una carpeta que git ignora y no viaja al repositorio. El informe de errores a Sentry está apagado mientras no se configure un DSN, y si se activa solo envía metadatos."
+    "usa_ia": true,
+    "detalle": "Es una web estática: sin backend, sin base de datos, sin cuentas y sin ninguna IA en tiempo de ejecución. La IA vive fuera de la app: dos skills de Claude Code que corres tú, a demanda, y que solo escriben propuestas en una carpeta; nada se aprueba sin una persona. Solo muestra contenido público por diseño (catálogo, marcos, controles y activos demo sintéticos); la evidencia de activos reales vive en una carpeta que git ignora y no viaja al repositorio. El informe de errores a Sentry está apagado sin DSN y, si se activa, solo envía metadatos."
   },
   "enlaces": {
     "produccion": null,

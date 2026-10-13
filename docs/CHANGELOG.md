@@ -3,6 +3,47 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 009 — «Listo para el gate» (2026-10-13)
+
+The closing sprint of milestone H-1: the debt of seven sprints paid, the architecture written down as built, the data sheet figures taken from commands, and the screens read in both languages.
+
+### Added
+
+- **`propuestas:aportar`** (RF-07.2b): a person contributes the page the researcher could not read; it is sealed like a page the agent read (`hackguard/aporte@1`, `aportes.json`), and blocked for every Claude Code session.
+- **RF-07.5 as a sealing rule:** a version notice needs the new version inside a verified quote; otherwise the proposal pauses. The planted-order filter now scans the whole page read, and a metric, a date or a version needs its value inside its quote.
+- **`datos/vistas/etiquetas.json`:** the vocabulary of the catalog, controls and frameworks screens as data, outside the snapshot's fingerprint. A test fails if any component writes a state role or symbol.
+- **Titles per page** (WCAG 2.4.2), the paging hands the focus over at the ends (2.4.3), and the buttons that open a panel say `aria-expanded`.
+- **`docs/BLUEPRINT.html`** (as built), **`decisions/README.md`** (the ADR index), **`design-system.md` 1.1.0**, the refreshed **`docs/brochure-export.json`** and **`docs/BROCHURE.html`**, with **`scripts/cifras-del-export.mjs`** taking every figure from a command.
+- **`scripts/verificar-salida-publicada.mjs --publico`:** fails if a public package carries the mockup or anything private.
+- **`tests/unit/frases-caducadas.test.ts`, `etiquetas-en-componentes.test.ts`, `campos-con-lector.test.ts`:** the transversal gates that keep the debt paid.
+
+### Changed
+
+- **Gap engine:** a failure closed by a person stays a failed row but no longer makes its control «with failures» (ADR-010); the «Failed» filter counts partials and offers not-applicable.
+- **Evidence:** counts must add up, any failing count fails a deterministic check, a corrector cannot lower the retest bar, ZAP warns outside its tested version, confirming a finding or importing a batch writes all or nothing, and private folders close to 0700 even if they existed.
+- **The intake counts only what is still proposed** and compares verdicts by id; the e2e pins its query date.
+- **Explicit test timeouts are gone** (the slowest test takes 1.0 s against the 5 s default) and a gate fails the next one that raises its own.
+
+### Not in this sprint
+
+- Pasting text in the browser, real-asset reports and the public mode (H-2); the 38 controls checked against the standard (H-4).
+
+## Sprint 008 — «Los agentes» (2026-10-12)
+
+The researcher and the extractor exist as Claude Code skills that only propose: everything arrives in `/catalogo/propuestas`, where a person decides.
+
+### Added
+
+- **Two skills with subagents** (`.claude/skills/investigar`, `.claude/skills/extraer`; `.claude/agents/`) and five hooks that only let them write under `propuestas/corridas/` (ADR-011).
+- **The inbox `/catalogo/propuestas`:** proposals with their sources checked by code (address and fingerprint pair), literal quotes, marks from the content filter, and decisions made by command (`pnpm propuestas:decidir`) into an append-only ledger.
+- **Sealing:** the code seals each run with 17 signals; the suggested verdict is computed by the test's rule, never proposed by the agent.
+- **Version notices** on the frameworks screen, from the researcher's runs, saying «none» only when a run backs it.
+- **Two real runs** (3 and 1 proposals), undecided; guide block M, manual ES/EN.
+
+### Not in this sprint
+
+- Pasting a document to the researcher (RF-07.2b, paid in Sprint 009); suggested severity.
+
 ## Sprint 007 — «La brecha» (2026-10-12)
 
 The confirmed evidence read as a gap: five screens over one calculation, so they say the same figures on every date.
