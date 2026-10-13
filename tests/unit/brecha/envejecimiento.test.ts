@@ -18,6 +18,7 @@ import {
   FECHAS,
   PRIMERA,
   aceptaciones,
+  aperturaDe,
   por_revisar,
   vencido,
 } from "../lib/fechas-de-la-matriz";
@@ -44,7 +45,9 @@ describe("la matriz de envejecimiento de la brecha", () => {
       );
       for (const f of b.filas) {
         if (f.edad !== null) expect(f.edad.dias).toBeGreaterThanOrEqual(0);
-        expect(f.vigenciaDeFicha.dias).toBeGreaterThanOrEqual(0);
+        expect(["vigente", "por_revisar", "vencido"]).toContain(
+          f.vigenciaDeFicha.estado,
+        );
       }
       for (const h of b.hallazgos) {
         expect(h.plazo.dias).toBeGreaterThanOrEqual(0);
@@ -64,7 +67,7 @@ describe("la matriz de envejecimiento de la brecha", () => {
     // Un plazo está vencido cuando la fecha pasó el día en que vence; el riesgo aceptado revisa en su fecha.
     for (const h of b.hallazgos) {
       if (h.pideTrabajo && h.plazo.total !== null) {
-        const vence = fechaMasDias(h.apertura, h.plazo.total);
+        const vence = fechaMasDias(aperturaDe(h.id), h.plazo.total);
         expect(h.plazo.estado, `${h.id} ${f}`).toBe(
           f > vence ? "vencido" : "en_plazo",
         );

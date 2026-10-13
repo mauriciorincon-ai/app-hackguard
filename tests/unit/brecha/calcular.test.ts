@@ -253,6 +253,48 @@ describe("qué mueve a la brecha", () => {
       expect(c.fallas).not.toContain("HZ-0009");
   });
 
+  it("una falla cuyo hallazgo una persona cerró por eliminación o «no reproducible» sigue siendo una fila fallida, pero ya no hace «con fallas» al control (ADR-010 §4; S7-M1)", () => {
+    const antes = armarBrecha(ENTRADA);
+    const f0 = antes.filas.find((f) => f.hallazgo === "HZ-0007")!;
+    expect(f0.veredicto).toBe("fallida");
+    for (const tipo of ["eliminacion", "no_reproducible"] as const) {
+      const hallazgos = ENTRADA.hallazgos.map((h) =>
+        h.id === "HZ-0007"
+          ? {
+              ...h,
+              eventos: [
+                ...h.eventos,
+                {
+                  tipo,
+                  fecha: "2026-10-05",
+                  por: "Ana",
+                  justificacion: {
+                    es: "decisión de la persona",
+                    en: "the person's decision",
+                  },
+                },
+              ],
+            }
+          : h,
+      );
+      const despues = armarBrecha(con({ hallazgos }));
+      expect(
+        despues.hallazgos.find((h) => h.id === "HZ-0007")!.cuentaComoFalla,
+      ).toBe(false);
+      const fila0 = fila(despues, f0.activo, f0.prueba);
+      // Lo dice el último sobre: la cobertura la cuenta como fallida. Lo que cambia es el hallazgo y el estado del control.
+      expect(fila0.veredicto).toBe("fallida");
+      expect(fila0.hallazgo).toBeNull();
+      expect(despues.resumen.fallidas).toBe(antes.resumen.fallidas);
+      for (const c of despues.controles.filter((x) =>
+        f0.controles.includes(x.id),
+      )) {
+        expect(c.fallas).not.toContain("HZ-0007");
+        if (c.fallas.length === 0) expect(c.estado).not.toBe("con_fallas");
+      }
+    }
+  });
+
   it("si todas las pruebas de un control quedan en «no ejecutada», el control queda sin evidencia", () => {
     const base = armarBrecha(ENTRADA);
     const control = base.controles.find((c) => c.id === "iso42001-A.9.4")!;

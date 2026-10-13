@@ -89,8 +89,21 @@ export function correrSemilla(
 ): ResultadoDeSemilla {
   const libro = libroSembrado(base.libro, semilla.sobres);
   const entrada = { ...base, libro };
-  const brecha = armarBrecha(entrada);
   const diferencias: string[] = [];
+  let brecha: ReturnType<typeof armarBrecha>;
+  try {
+    brecha = armarBrecha(entrada);
+  } catch (e) {
+    // Una semilla con un sobre fechado después de la consulta no se puede armar (la brecha lo rechaza): es una DIFERENCIA con su motivo,
+    // no un build que muere con una traza (S7-B2).
+    if (!(e instanceof RangeError)) throw e;
+    return {
+      id: semilla.id,
+      requisito: semilla.requisito,
+      pasa: false,
+      diferencias: [`la brecha no se pudo armar: ${e.message}`],
+    };
+  }
   const espera: Espera = semilla.espera;
 
   const evaluacion = (id: string) => {
