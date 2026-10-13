@@ -529,12 +529,14 @@ export async function sellarCorrida(
   consulta: Consulta | null,
   ctx: ContextoDeVerificacion,
   primerNumero: number,
+  /** Los documentos que una persona aportó a esta corrida (RF-07.2b); vacío si ninguno. */
+  aportes: readonly { url: string; huella_de_la_pagina: string }[] = [],
 ): Promise<ResultadoDeSellado> {
   const problemas = problemasDelBorrador(borrador, ctx);
   if (problemas.length > 0) return { ok: false, problemas };
   const propuestas: PropuestaSellada[] = [];
   // Sin consulta, ninguna fuente se leyó: cada URL citada queda como «url_no_consultada».
-  const consultadas = lecturasConsultadas(consulta?.fuentes ?? []);
+  const consultadas = lecturasConsultadas(consulta?.fuentes ?? [], aportes);
   for (const [i, p] of borrador.propuestas.entries())
     propuestas.push(
       await sellarPropuesta(

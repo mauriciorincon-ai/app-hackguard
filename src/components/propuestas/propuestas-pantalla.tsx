@@ -101,6 +101,20 @@ function Fuentes({ f }: { f: FilaDePropuesta }) {
               <span lang="en">
                 read on <Dato>{x.leida}</Dato>
               </span>
+              {x.aportada ? (
+                <>
+                  {" "}
+                  ·{" "}
+                  <span lang="es" data-aportada>
+                    aportada por <span data-neutro>{x.aportada.por}</span> el{" "}
+                    <Dato>{x.aportada.fecha}</Dato>
+                  </span>
+                  <span lang="en" data-aportada>
+                    contributed by <span data-neutro>{x.aportada.por}</span> on{" "}
+                    <Dato>{x.aportada.fecha}</Dato>
+                  </span>
+                </>
+              ) : null}
             </span>
           </p>
           {x.detalle ? (

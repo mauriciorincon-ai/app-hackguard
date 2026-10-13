@@ -67,7 +67,7 @@ const cwd = e.cwd ?? RAIZ;
 
 if (herramienta === "Bash" && ejecutaDecidir(ti.command))
   bloquear(
-    "BLOQUEADO: decidir una propuesta lo hace solo una persona, en su terminal (la IA propone, el humano aprueba). Arma el comando en la pantalla /catalogo/propuestas y pídeselo al usuario.",
+    "BLOQUEADO: decidir una propuesta o aportar un documento lo hace solo una persona, en su terminal (la IA propone, el humano aprueba). Arma el comando (en la pantalla /catalogo/propuestas, o el de aportar que te da el CLI) y pídeselo al usuario.",
   );
 
 const agente = agenteDe(e);

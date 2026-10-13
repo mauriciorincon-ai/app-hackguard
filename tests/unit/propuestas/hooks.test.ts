@@ -67,6 +67,32 @@ const bloquea = (s: Salida, motivo?: string) => {
   if (motivo !== undefined) expect(s.stderr).toContain(motivo);
 };
 
+describe("nadie aporta un documento a una corrida desde una sesión (RF-07.2b)", () => {
+  const aportes = [
+    "pnpm propuestas:aportar propuestas/entradas/doc.txt --corrida INV-2026-10-12-01 --url https://iso.org/x --por Ana --fecha 2026-10-12",
+    "pnpm run propuestas:aportar propuestas/entradas/doc.txt",
+    "node src/cli/propuestas.ts aportar propuestas/entradas/doc.txt --corrida INV-2026-10-12-01",
+    'bash -c "pnpm propuestas:aportar propuestas/entradas/doc.txt"',
+    "echo $(pnpm propuestas:aportar propuestas/entradas/doc.txt)",
+  ];
+  it("la sesión principal y los dos agentes lo tienen vedado, como decidir", () => {
+    for (const c of aportes) {
+      bloquea(bash(null, c), "lo hace solo una persona");
+      for (const a of ["investigador", "extractor"] as const)
+        bloquea(bash(a, c), "lo hace solo una persona");
+    }
+  });
+  it("mencionarlo no es ejecutarlo", () => {
+    pasa(
+      bash(
+        null,
+        'git commit -m "docs: pnpm propuestas:aportar lo corre una persona"',
+      ),
+    );
+    pasa(bash(null, "grep -rn propuestas:aportar src"));
+  });
+});
+
 describe("nadie decide una propuesta desde una sesión", () => {
   const decisiones = [
     "pnpm propuestas:decidir PROP-0033 --decision rechazar --por Ana --fecha 2026-10-12",

@@ -4,6 +4,7 @@
 // estados del catálogo y los ordena. Aprobar o rechazar NO se hace aquí: la pantalla arma el comando que registra la decisión.
 import { senalesConDecision } from "../../engine/propuestas/decisiones.ts";
 import type {
+  Aporte,
   Decision,
   MotivoDePausa,
   PropuestaSellada,
@@ -146,13 +147,22 @@ const AL_APROBAR: Record<FilaDePropuesta["tipo"], Bilingue> = {
 const motivoDe = (m: MundoDePropuestas, motivo: MotivoDePausa): Etiqueta =>
   etiquetaDePropuesta(m.etiquetas, `motivo_${motivo}`);
 
-function fuentesDe(p: PropuestaSellada, m: MundoDePropuestas): FuenteVista[] {
+function fuentesDe(
+  p: PropuestaSellada,
+  m: MundoDePropuestas,
+  aportes: readonly Aporte[],
+): FuenteVista[] {
   if (p.tipo === "sobre") return [];
   return p.fuentes.map((f, i): FuenteVista => {
     const estado = p.verificacion.fuentes[i]?.estado ?? "sin_lectura";
+    const aporte = aportes.find(
+      (a) => a.url === f.url && a.huella_de_la_pagina === f.huella_de_la_pagina,
+    );
     return {
       nombre: f.nombre,
       leida: f.leida,
+      aportada:
+        aporte === undefined ? null : { por: aporte.por, fecha: aporte.fecha },
       donde: f.donde ?? null,
       url: f.url,
       etiqueta: etiquetaDePropuesta(m.etiquetas, `fuente_${estado}`),
@@ -333,7 +343,7 @@ function filaDe(
             motivo: d.motivo ?? null,
             efecto: efectoDe(p, d, m),
           },
-    fuentes: fuentesDe(p, m),
+    fuentes: fuentesDe(p, m, corrida?.aportes ?? []),
     marcaDeContenido: p.contenido === "marcada_para_revision",
     marcaDeInstruccion: p.senales.marca_instruccion,
     marcas: {

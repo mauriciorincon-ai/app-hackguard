@@ -17,6 +17,8 @@ export const LECTORES: readonly (readonly [string, string])[] = [
   ["nodos_visitados", "src/lib/propuestas/vista.ts"],
   ["marcas_de_contenido", "src/lib/propuestas/vista.ts"],
   ["marcas_de_instruccion", "src/lib/propuestas/vista.ts"],
+  // Lo que una persona aporta a una corrida (RF-07.2b)
+  ["aportes", "src/lib/propuestas/vista.ts"],
 ];
 
 describe("cada campo del contrato tiene un lector de producción", () => {

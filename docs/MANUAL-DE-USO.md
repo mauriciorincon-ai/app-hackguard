@@ -407,7 +407,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   4. **Pedir una corrida:** en Claude Code escribe `/investigar marcos`, `/investigar <id-del-marco>` o `/extraer <ruta-del-texto>`. Solo lo pides tú: ningún agente corre solo ni al abrir la app.
 
 - **Límites:**
-  - El investigador lee solo las fuentes de la lista blanca de cada marco. Todavía no puedes pegarle un documento: si la fuente no responde, lo lees tú.
+  - El investigador lee solo las fuentes de la lista blanca de cada marco. Si una fuente no responde (403, pide sesión), nadie la rodea: la lees tú, guardas el texto en `propuestas/entradas/` y lo aportas a esa corrida con `pnpm propuestas:aportar <archivo> --corrida INV-… --url <la dirección> --por "<tu nombre>" --fecha AAAA-MM-DD`, en tu propia terminal. Solo vale para una dirección que el agente no pudo leer y que está en la lista blanca de su marco, y solo mientras la corrida no tenga decisiones. El documento se verifica como una página leída y la bandeja dice «aportada por» tu nombre.
   - Los agentes solo escriben en `propuestas/`. Los cambios al catálogo, a los planes y a los hallazgos los hace una persona con los comandos de decisión.
   - Las propuestas PROP-0031 a PROP-0037 son ejemplos sellados; la bandeja muestra también las corridas reales del repositorio.
 
@@ -823,7 +823,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   4. **Ask for a run:** in Claude Code type `/investigar marcos`, `/investigar <framework-id>` or `/extraer <text-path>`. Only you ask: no agent runs by itself or when the app opens.
 
 - **Limits:**
-  - The researcher reads only the sources on each framework's allowlist. You cannot paste a document into it yet: if a source does not answer, you read it yourself.
+  - The researcher reads only the sources on each framework's allowlist. If a source does not answer (403, asks for a login), nobody goes around it: you read it yourself, save the text in `propuestas/entradas/` and contribute it to that run with `pnpm propuestas:aportar <file> --corrida INV-… --url <the address> --por "<your name>" --fecha YYYY-MM-DD`, in your own terminal. It only works for an address the agent could not read and that is on its framework's allowlist, and only while the run has no decisions. The document is verified like a page that was read, and the inbox says «contributed by» your name.
   - The agents write only to `propuestas/`. Changes to the catalog, the plans and the findings are made by a person with the decision commands.
   - PROP-0031 to PROP-0037 are sealed examples; the inbox also shows the repository's real runs.
 

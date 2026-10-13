@@ -14,11 +14,13 @@ import { huella } from "../../engine/huella.ts";
 import { EtiquetasDePropuestas } from "../../engine/propuestas/etiquetas.ts";
 import { SemillasDeAgentes } from "../../engine/propuestas/semillas.ts";
 import {
+  Aportes,
   Borrador,
   Consulta,
   Corrida,
   Decision,
   UmbralesDePropuestas,
+  type Aporte,
 } from "../../engine/propuestas/esquemas.ts";
 import type { Lecturas } from "../../engine/propuestas/fuentes.ts";
 import type {
@@ -185,6 +187,8 @@ export interface CorridaCargada {
   carpeta: string;
   /** `demo` si vive en `propuestas/demo/`: sus efectos exigen `--aplicar-a-demo`. */
   lugar: "demo" | "real";
+  /** Los documentos que una persona aportó a esta corrida porque una fuente no se pudo leer (RF-07.2b). */
+  aportes: Aporte[];
 }
 
 export interface ProblemaDeCarga {
@@ -248,7 +252,17 @@ export async function cargarCorridas(
         });
         continue;
       }
-      corridas.push({ corrida: lectura.data, carpeta, lugar });
+      let aportes: Aporte[] = [];
+      try {
+        aportes = cargarAportes(raiz, carpeta);
+      } catch {
+        problemas.push({
+          ruta: `${carpeta}/aportes.json`,
+          detalle: "no cumple su esquema o no es un JSON válido",
+        });
+        continue;
+      }
+      corridas.push({ corrida: lectura.data, carpeta, lugar, aportes });
     }
   }
   corridas.sort((a, b) =>
@@ -262,6 +276,14 @@ export async function cargarCorridas(
 /** El borrador que escribió el modelo y la consulta que escribió el código, de una carpeta de corrida. */
 export function cargarBorrador(raiz: string, carpeta: string): Borrador {
   return Borrador.parse(leerJson(raiz, `${carpeta}/propuesta.json`));
+}
+
+/** Los documentos que una persona aportó a una corrida (RF-07.2b); vacío si no hay `aportes.json`. */
+export function cargarAportes(raiz: string, carpeta: string): Aporte[] {
+  const ruta = join(raiz, carpeta, "aportes.json");
+  return existsSync(ruta)
+    ? Aportes.parse(JSON.parse(readFileSync(ruta, "utf8")) as unknown).aportes
+    : [];
 }
 
 export function cargarConsulta(raiz: string, carpeta: string): Consulta | null {

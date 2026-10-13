@@ -293,6 +293,37 @@ describe("los campos del contrato tienen su lector en la pantalla (auditoría S8
       expect(m.campo).not.toBe("");
     }
   });
+  it("una fuente que una persona aportó lo dice, con quién y cuándo (RF-07.2b)", () => {
+    const original = base.corridas.find(
+      (c) => c.corrida.agente === "investigador",
+    )!;
+    const p = original.corrida.propuestas.find((x) => x.id === "PROP-0032")!;
+    if (p.tipo !== "version_de_marco") throw new Error();
+    const f = p.fuentes[0]!;
+    const conAporte = {
+      ...original,
+      aportes: [
+        {
+          url: f.url,
+          huella_de_la_pagina: f.huella_de_la_pagina,
+          caracteres: 10,
+          fecha: "2026-10-12",
+          por: "Ana",
+        },
+      ],
+    };
+    const w = construirVistaDePropuestas(
+      mundo({
+        corridas: base.corridas.map((c) => (c === original ? conAporte : c)),
+      }),
+    );
+    expect(fila("PROP-0032", w).fuentes[0]!.aportada).toEqual({
+      por: "Ana",
+      fecha: "2026-10-12",
+    });
+    expect(fila("PROP-0032", w).fuentes[1]!.aportada).toBeNull();
+    expect(fila("PROP-0032").fuentes[0]!.aportada).toBeNull();
+  });
   it("la corrida dice lo que costó cuando lo midió", () => {
     const conCosto = v.corridas.filter((c) => c.ejecucion !== null);
     for (const c of conCosto)

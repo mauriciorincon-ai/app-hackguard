@@ -19,6 +19,7 @@ import {
   existsSync,
   mkdirSync,
   readdirSync,
+  renameSync,
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
@@ -33,10 +34,14 @@ import {
   validarDecisiones,
 } from "../engine/propuestas/decisiones.ts";
 import {
+  Aportes,
   Decision,
+  FORMATO_DE_APORTE,
   FORMATO_DE_DECISION,
   type PropuestaSellada,
 } from "../engine/propuestas/esquemas.ts";
+import { enListaBlanca } from "../engine/propuestas/fuentes.ts";
+import { textoDeLaPagina } from "../engine/propuestas/pagina.ts";
 import { evaluarCriterios } from "../engine/propuestas/traza.ts";
 import { sellarCorrida } from "../engine/propuestas/verificar.ts";
 import { cargarActivosDelBuild } from "../lib/activos/cargar.ts";
@@ -48,6 +53,7 @@ import {
   CARPETA_DE_DEMO,
   CARPETA_DE_LECTURAS,
   LIBRO_DE_DECISIONES,
+  cargarAportes,
   cargarBorrador,
   cargarConsulta,
   cargarCorridas,
@@ -66,8 +72,8 @@ import { guardarLectura } from "../lib/propuestas/lecturas.ts";
 const CODIGOS = { ok: 0, bloqueado: 2, uso: 3 } as const;
 
 const USO = {
-  es: "uso: propuestas buscar --marco <id> | --familia <id> | --todos --fecha AAAA-MM-DD\n     propuestas leer <archivo> --activo <id> --fecha AAAA-MM-DD\n     propuestas verificar <propuestas/corridas/<corrida>> [--json] [--desde n]\n     propuestas validar [--json]\n     propuestas listar [--json]\n     propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <persona> --fecha AAAA-MM-DD [--motivo <texto>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
-  en: "usage: propuestas buscar --marco <id> | --familia <id> | --todos --fecha YYYY-MM-DD\n       propuestas leer <file> --activo <id> --fecha YYYY-MM-DD\n       propuestas verificar <propuestas/corridas/<run>> [--json]\n       propuestas validar [--json]\n       propuestas listar [--json]\n       propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <person> --fecha YYYY-MM-DD [--motivo <text>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
+  es: "uso: propuestas buscar --marco <id> | --familia <id> | --todos --fecha AAAA-MM-DD\n     propuestas leer <archivo> --activo <id> --fecha AAAA-MM-DD\n     propuestas aportar <archivo> --corrida INV-AAAA-MM-DD-NN --url <dirección> --por <persona> --fecha AAAA-MM-DD\n     propuestas verificar <propuestas/corridas/<corrida>> [--json] [--desde n]\n     propuestas validar [--json]\n     propuestas listar [--json]\n     propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <persona> --fecha AAAA-MM-DD [--motivo <texto>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
+  en: "usage: propuestas buscar --marco <id> | --familia <id> | --todos --fecha YYYY-MM-DD\n       propuestas leer <file> --activo <id> --fecha YYYY-MM-DD\n       propuestas aportar <file> --corrida INV-YYYY-MM-DD-NN --url <address> --por <person> --fecha YYYY-MM-DD\n       propuestas verificar <propuestas/corridas/<run>> [--json]\n       propuestas validar [--json]\n       propuestas listar [--json]\n       propuestas decidir <PROP-NNNN> --decision aprobar|aprobar-tras-revisar|rechazar|separar --por <person> --fecha YYYY-MM-DD [--motivo <text>] [--prueba <PR-…>] [--evaluadas n --fallidas n --alertas n] [--aplicar-a-demo]",
 };
 
 class ErrorDeUso extends Error {}
@@ -90,6 +96,8 @@ function opciones(argv: string[]) {
       evaluadas: { type: "string" },
       fallidas: { type: "string" },
       alertas: { type: "string" },
+      corrida: { type: "string" },
+      url: { type: "string" },
       "aplicar-a-demo": { type: "boolean", default: false },
       desde: { type: "string" },
     },
@@ -217,12 +225,12 @@ async function principal(argv: string[]): Promise<number> {
     );
     for (const f of noAccesibles)
       escribirTexto(
-        `  fuente_no_accesible_al_agente: ${f.nombre} (${f.motivo ?? "?"}). No se rodea: si necesitas ese documento, léelo tú y haz el cambio a mano.\n`,
+        `  fuente_no_accesible_al_agente: ${f.nombre} (${f.motivo ?? "?"}). No se rodea: si necesitas ese documento, léelo tú y aporta el texto con: pnpm propuestas:aportar propuestas/entradas/<archivo> --corrida ${corrida} --url ${f.url} --por "<tu nombre>" --fecha AAAA-MM-DD\n`,
       );
     return CODIGOS.ok;
   }
 
-  const { ctx } = await mundo(raiz);
+  const { ctx, instantanea } = await mundo(raiz);
   const cargadas = await cargarCorridas(raiz);
 
   if (o.comando === "leer") {
@@ -266,6 +274,116 @@ async function principal(argv: string[]): Promise<number> {
     return CODIGOS.ok;
   }
 
+  if (o.comando === "aportar") {
+    // Aportar un documento que el agente no pudo leer es obra de una persona (RF-07.2b, regla dura 2): misma frontera que `decidir`.
+    const frontera = puedeDecidir({
+      raiz,
+      repo: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."),
+      env: process.env,
+      tty: Boolean(process.stdin.isTTY),
+    });
+    if (!frontera.ok) {
+      escribirTexto(
+        `Aportar un documento lo hace una persona: ${frontera.motivo}.\nNo se registró nada / Nothing was recorded.\n`,
+      );
+      return CODIGOS.bloqueado;
+    }
+    const archivo = requerido(o.objetivo, "<archivo con el documento>");
+    const id = requerido(o.corrida, "--corrida INV-AAAA-MM-DD-NN");
+    if (!/^INV-\d{4}-\d{2}-\d{2}-\d{2,}$/.test(id))
+      throw new ErrorDeUso("--corrida INV-AAAA-MM-DD-NN");
+    const url = requerido(o.url, "--url <dirección>");
+    const por = requerido(o.por, "--por <persona>");
+    const fecha = requerido(o.fecha, "--fecha AAAA-MM-DD");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha))
+      throw new ErrorDeUso("--fecha AAAA-MM-DD");
+    const rechazo = (es: string, en: string) => {
+      escribirTexto(
+        `${es}\n${en}\nNo se registró nada / Nothing was recorded.\n`,
+      );
+      return CODIGOS.bloqueado;
+    };
+    const carpeta = `${CARPETA_DE_CORRIDAS}/${id}`;
+    const consulta = existsSync(path.join(raiz, carpeta))
+      ? cargarConsulta(raiz, carpeta)
+      : null;
+    if (consulta === null)
+      return rechazo(
+        `La corrida ${id} no existe o no tiene consulta.`,
+        `Run ${id} does not exist or has no query.`,
+      );
+    const fila = consulta.fuentes.find(
+      (f) => f.url === url && f.estado === "no_accesible",
+    );
+    if (fila === undefined)
+      return rechazo(
+        `«${url}» no figura como no accesible en la consulta de ${id}: solo se aporta lo que el agente no pudo leer.`,
+        `"${url}" is not listed as not accessible in the query of ${id}: only what the agent could not read is contributed.`,
+      );
+    const marco = instantanea.catalogo.marcos.find((m) => m.id === fila.marco);
+    if (
+      marco === undefined ||
+      !enListaBlanca(url, marco.lista_blanca_de_fuentes)
+    )
+      return rechazo(
+        `«${url}» no está en la lista blanca de fuentes del marco: no se acepta un documento de otra dirección.`,
+        `"${url}" is not in the framework's source allowlist: a document from another address is not accepted.`,
+      );
+    const sellada = cargadas.corridas.find((c) => c.carpeta === carpeta);
+    if (sellada !== undefined) {
+      const ids = new Set(sellada.corrida.propuestas.map((p) => p.id));
+      if (
+        cargarDecisiones(raiz).some((d) =>
+          ids.has(d.propuesta.split(".")[0] ?? ""),
+        )
+      )
+        return rechazo(
+          "Esta corrida ya tiene decisiones: no se le aporta otro documento.",
+          "This run already has decisions: no further document is contributed.",
+        );
+    }
+    const previos = cargarAportes(raiz, carpeta);
+    if (previos.some((a) => a.url === url))
+      return rechazo(
+        `Ya se aportó un documento para «${url}» en ${id}.`,
+        `A document for "${url}" was already contributed in ${id}.`,
+      );
+    const leido = leerTextoPegado(raiz, archivo);
+    if (!leido.ok) return rechazo(`${leido.motivo}.`, `${leido.motivo}.`);
+    // Una página guardada desde el navegador trae marcas HTML: se reduce a su texto como cualquier página leída.
+    const texto = /^\s*</u.test(leido.texto)
+      ? textoDeLaPagina(leido.texto)
+      : leido.texto;
+    const caracteres = texto.replace(/\s+/gu, " ").trim().length;
+    if (caracteres === 0)
+      return rechazo(
+        "El documento no tiene texto que leer.",
+        "The document has no text to read.",
+      );
+    const huellaDelDocumento = await guardarLectura(raiz, texto);
+    const aportes = Aportes.parse({
+      formato: FORMATO_DE_APORTE,
+      corrida: id,
+      aportes: [
+        ...previos,
+        {
+          url,
+          huella_de_la_pagina: huellaDelDocumento,
+          caracteres,
+          fecha,
+          por,
+        },
+      ],
+    });
+    const destino = path.join(raiz, carpeta, "aportes.json");
+    writeFileSync(`${destino}.tmp`, json(aportes));
+    renameSync(`${destino}.tmp`, destino);
+    escribirTexto(
+      `Aportado a ${id}: ${caracteres} caracteres de ${leido.ruta} para ${url} (huella ${huellaDelDocumento}).\nSi el investigador ya escribió su propuesta, vuelve a sellar: pnpm propuestas:verificar ${carpeta}\nContributed to ${id}: ${caracteres} characters for ${url}. Seal again with pnpm propuestas:verificar ${carpeta}.\n`,
+    );
+    return CODIGOS.ok;
+  }
+
   if (o.comando === "verificar") {
     const carpeta = carpetaDeCorrida(
       raiz,
@@ -287,6 +405,7 @@ async function principal(argv: string[]): Promise<number> {
       primero === undefined
         ? (entero(o.desde, "--desde") ?? mayor + 1)
         : numeroDe(primero.id),
+      cargarAportes(raiz, carpeta),
     );
     if (!r.ok) {
       for (const p of r.problemas)
@@ -370,6 +489,7 @@ async function principal(argv: string[]): Promise<number> {
           cargarConsulta(raiz, c.carpeta),
           ctx,
           primero === undefined ? 1 : numeroDe(primero.id),
+          cargarAportes(raiz, c.carpeta),
         );
         if (!r.ok)
           problemas.push(`${c.carpeta}: el borrador ya no se puede sellar`);

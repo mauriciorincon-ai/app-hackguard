@@ -301,6 +301,40 @@ describe("U2 y la lista blanca", () => {
       "instruccion_marcada",
     );
   });
+  it("RF-07.2b · una fuente que dio 403 vale si una persona aportó el documento: la misma dirección y la misma huella", async () => {
+    const b = copia(borradorDe(INV));
+    const consulta = copia(consultaDe(INV))!;
+    const p = b.propuestas.find((x) => x.ref === "lista-14-v2")!;
+    if (p.tipo !== "version_de_marco") throw new Error();
+    const f0 = p.fuentes[0]!;
+    const fila = consulta.fuentes.find((x) => x.url === f0.url)!;
+    fila.estado = "no_accesible";
+    fila.huella_de_la_pagina = null;
+    fila.http = 403;
+    fila.motivo = "http_403";
+    const estadoDeLaPrimera = async (
+      aportes: { url: string; huella_de_la_pagina: string }[],
+    ) => {
+      const r = await sellarCorrida(b, consulta, ctx, 31, aportes);
+      if (!r.ok) throw new Error(JSON.stringify(r.problemas));
+      const v = r.corrida.propuestas.find(
+        (x) => x.tipo === "version_de_marco",
+      )!;
+      return v.verificacion.fuentes[0]!.estado;
+    };
+    expect(await estadoDeLaPrimera([])).toBe("url_no_consultada");
+    expect(
+      await estadoDeLaPrimera([
+        { url: f0.url, huella_de_la_pagina: f0.huella_de_la_pagina },
+      ]),
+    ).toBe("verificada");
+    // Un documento con otra huella no respalda lo que la propuesta cita.
+    expect(
+      await estadoDeLaPrimera([
+        { url: f0.url, huella_de_la_pagina: "e".repeat(64) },
+      ]),
+    ).toBe("url_no_consultada");
+  });
   it("con un umbral de una fuente, una sola verificada basta", async () => {
     const b = copia(borradorDe(INV));
     const p = b.propuestas.find((x) => x.ref === "lista-14-v2")!;

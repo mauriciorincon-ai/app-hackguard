@@ -34,7 +34,10 @@ página está en `propuestas/.lecturas/<huella>.txt`, por líneas. **No las leas
 `propuestas/.lecturas` y el patrón que te interesa: una versión, un identificador, «deprecated») y abre con Read solo el tramo que cita.
 
 Una fuente `no_accesible` (401, 403, 429, pide sesión, sin red) **no se rodea**: no hay otra cabecera, otra ruta ni otro comando. La
-reportas al final: queda registrada como `fuente_no_accesible_al_agente` y, si la persona necesita ese documento, lo lee ella y hace el cambio a mano.
+reportas al final: queda registrada como `fuente_no_accesible_al_agente`. Si la persona necesita ese documento, lo lee ella y lo aporta con
+`pnpm propuestas:aportar propuestas/entradas/<archivo> --corrida <corrida> --url <la dirección> --por "<su nombre>" --fecha AAAA-MM-DD`
+(un comando que **tú no corres**: corre en su terminal). Al aportarlo, el documento se verifica como una página leída; tú no lo tocas ni lo lees
+hasta que ella te pida volver a buscar en esa corrida.
 
 ## 3. Escribe el borrador
 
