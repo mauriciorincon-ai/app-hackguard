@@ -22,7 +22,8 @@ export interface VigenciaVista {
   etiqueta: Etiqueta;
 }
 
-export type Revision = "limpia" | "marcada_para_revision";
+export type Revision =
+  "limpia" | "marcada_para_revision" | "revisada_y_aprobada";
 
 export interface FilaDePrueba {
   id: string;

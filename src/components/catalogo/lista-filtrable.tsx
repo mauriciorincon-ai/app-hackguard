@@ -14,6 +14,7 @@ import {
   rango,
   totalDePaginas,
 } from "@/lib/catalogo/paginacion";
+import { ETIQUETAS_DE_VISTAS as E } from "@/lib/catalogo/etiquetas";
 import type { ListaDeFiltro, OpcionDeFiltro } from "@/lib/catalogo/tipos";
 import { T } from "../texto";
 import { Filtros } from "./filtros";
@@ -81,14 +82,12 @@ export function ListaFiltrable({
         cuenta={visibles.length}
         irA={setPedida}
       />
-      <div className="hg-aviso es-neutro" hidden={visibles.length > 0}>
+      <div
+        className={`hg-aviso es-${E.filtros_sin_resultados.rol}`}
+        hidden={visibles.length > 0}
+      >
         <h2>
-          <T
-            t={{
-              es: "Ninguna prueba cumple esos filtros",
-              en: "No test matches those filters",
-            }}
-          />
+          <T t={E.filtros_sin_resultados.nombre} />
         </h2>
         <p>
           <T

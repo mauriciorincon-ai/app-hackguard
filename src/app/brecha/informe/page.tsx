@@ -2,6 +2,9 @@ import { Consola } from "@/components/consola/consola";
 import { InformePantalla } from "@/components/informe/informe-pantalla";
 import { cargarParaPaginaDeBrecha } from "@/lib/brecha/pagina";
 import { construirVistaDeInforme } from "@/lib/brecha/vista";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Informe de brecha", "Gap report");
 
 // El informe de brecha (como en la maqueta, RF-05.6): las ocho secciones del § 12, con su huella. Se imprime en papel claro.
 export default async function Informe() {

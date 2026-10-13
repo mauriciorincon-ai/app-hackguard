@@ -10,6 +10,9 @@ import { construirVistaDeMarcos } from "@/lib/catalogo/marcos";
 import { etiquetaDePropuesta } from "@/lib/propuestas/etiquetas";
 import { cargarMundoDePropuestas } from "@/lib/propuestas/pagina";
 import { resumenDePropuestas } from "@/lib/propuestas/resumen";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Marcos y versiones", "Frameworks and versions");
 
 // «Marcos y versiones» se arma en el build desde la instantánea OFICIAL, igual que la lista de pruebas: misma fecha de
 // consulta (HACKGUARD_CONSULTA, o la fecha del commit) y jamás el reloj.

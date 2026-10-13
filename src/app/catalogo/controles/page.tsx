@@ -4,6 +4,9 @@ import { cargarInstantaneaOficial } from "@/lib/catalogo/cargar-instantanea";
 import { fechaDeConsulta } from "@/lib/catalogo/consulta";
 import { fechaDelCommit } from "@/lib/catalogo/fecha-del-commit";
 import { construirVistaDeControles } from "@/lib/catalogo/controles";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Controles", "Controls");
 
 // «Controles» se arma en el build desde la instantánea OFICIAL: la capa por defecto del Anexo A y las pruebas que le dan
 // evidencia a cada control. Misma fecha de consulta que el resto de las pantallas.

@@ -7,16 +7,6 @@ import { describe, expect, it } from "vitest";
 import { ROLES } from "../../src/engine/catalogo/esquemas.ts";
 import { RAIZ } from "./propuestas/ayuda.ts";
 
-/** Las carpetas de pantallas ya limpias. Una carpeta nueva entra a la lista cuando se limpia. */
-const CARPETAS = [
-  "carga",
-  "hallazgo",
-  "brecha",
-  "control",
-  "tablero",
-  "informe",
-  "propuestas",
-];
 /** Lo que está permitido a mano y por qué. Hoy nada: cada rol y cada símbolo sale de un archivo de etiquetas. */
 const EXCEPCIONES: Record<string, string[]> = {};
 /** Un rol de color de estado escrito a mano: `es-falla`. (`es-esta` es la marca de una celda, no un rol.) */
@@ -32,8 +22,13 @@ const tsx = (d: string): string[] =>
   );
 
 describe("ningún componente de pantalla escribe un rol ni un símbolo de estado a mano (regla dura 12)", () => {
-  for (const c of CARPETAS)
-    for (const f of tsx(path.join(RAIZ, "src/components", c))) {
+  // TODOS los componentes: una pantalla nueva entra al gate sola, sin que nadie recuerde agregarla a una lista.
+  {
+    const todos = tsx(path.join(RAIZ, "src/components"));
+    it("hay componentes que mirar", () => {
+      expect(todos.length).toBeGreaterThan(25);
+    });
+    for (const f of todos) {
       const rel = path.relative(path.join(RAIZ, "src/components"), f);
       it(`${rel}`, () => {
         const texto = readFileSync(f, "utf8");
@@ -47,4 +42,5 @@ describe("ningún componente de pantalla escribe un rol ni un símbolo de estado
         expect(literales).toEqual([]);
       });
     }
+  }
 });

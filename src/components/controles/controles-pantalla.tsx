@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { pruebas } from "@/lib/catalogo/etiquetas";
-import { SIN_CONTROL, SIN_CONTROL_CORTO } from "@/lib/catalogo/etiquetas";
+import {
+  ETIQUETAS_DE_VISTAS as E,
+  SIN_CONTROL,
+  SIN_CONTROL_CORTO,
+} from "@/lib/catalogo/etiquetas";
 import type { VistaDeControles } from "@/lib/catalogo/controles";
 import { Aviso, Chip, Estado, Huella } from "../estado";
 import { Dato, T } from "../texto";
@@ -11,12 +15,8 @@ import { Dato, T } from "../texto";
  * los que el catálogo da evidencia con las pruebas que los cubren, y la deuda a la vista: pruebas sin control asignado.
  */
 
-const CON_PRUEBAS = { rol: "positivo", simbolo: "ok" } as const;
-const SIN_PRUEBAS = {
-  rol: "neutro",
-  simbolo: "vacio",
-  nombre: { es: "Sin pruebas", en: "No tests" },
-};
+const CON_PRUEBAS = E.areas_con_pruebas;
+const SIN_PRUEBAS = E.sin_pruebas;
 
 function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
   return (
@@ -34,10 +34,7 @@ function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
 
 export function ControlesVacio() {
   return (
-    <Aviso
-      etiqueta={{ rol: "neutro", simbolo: "vacio" }}
-      titulo={{ es: "No hay controles cargados", en: "No controls loaded" }}
-    >
+    <Aviso etiqueta={E.controles_vacio} titulo={E.controles_vacio.nombre}>
       <p>
         <T
           t={{
@@ -172,16 +169,7 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
             <T t={vista.capa.descripcion} />
           </p>
           <p>
-            <Chip
-              etiqueta={{
-                rol: "atencion",
-                simbolo: "aviso",
-                nombre: {
-                  es: "No contrastado con la norma",
-                  en: "Not checked against the standard",
-                },
-              }}
-            />{" "}
+            <Chip etiqueta={E.no_contrastado} />{" "}
             <span className="hg-menor" lang="es">
               {vista.capa.sinContrastar} de {vista.capa.controles} resúmenes
               todavía sin contrastar.

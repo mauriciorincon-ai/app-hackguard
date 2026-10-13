@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pruebas } from "@/lib/catalogo/etiquetas";
+import { ETIQUETAS_DE_VISTAS as E, pruebas } from "@/lib/catalogo/etiquetas";
 import {
   SE_MANTIENE,
   SIN_EQUIVALENTE,
@@ -167,10 +167,7 @@ function Mapa({ m }: { m: MapaDeEquivalencias }) {
 
 export function MarcosVacio() {
   return (
-    <Aviso
-      etiqueta={{ rol: "neutro", simbolo: "vacio" }}
-      titulo={{ es: "No hay marcos cargados", en: "No frameworks loaded" }}
-    >
+    <Aviso etiqueta={E.marcos_vacio} titulo={E.marcos_vacio.nombre}>
       <p>
         <T
           t={{
@@ -431,16 +428,7 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
             </ul>
           ) : (
             <p className="hg-menor" data-sin-avisos>
-              <Estado
-                etiqueta={{
-                  rol: "neutro",
-                  simbolo: "vacio",
-                  nombre: {
-                    es: "Sin avisos registrados",
-                    en: "No notices recorded",
-                  },
-                }}
-              />{" "}
+              <Estado etiqueta={E.sin_avisos_registrados} />{" "}
               {vista.investigacion ? (
                 <span lang="es">
                   La corrida del investigador{" "}
@@ -558,13 +546,7 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                 </td>
                 <td data-celda="estado">
                   {i.oficial ? (
-                    <Estado
-                      etiqueta={{
-                        rol: "positivo",
-                        simbolo: "ok",
-                        nombre: { es: "Oficial", en: "Official" },
-                      }}
-                    />
+                    <Estado etiqueta={E.instantanea_oficial} />
                   ) : (
                     <span className="hg-menor">
                       <T t={{ es: "Anterior", en: "Previous" }} />

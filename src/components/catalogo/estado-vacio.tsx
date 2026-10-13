@@ -1,3 +1,4 @@
+import { ETIQUETAS_DE_VISTAS as E } from "@/lib/catalogo/etiquetas";
 import { Aviso, Sello } from "../estado";
 import { Dato, T } from "../texto";
 
@@ -6,10 +7,7 @@ import { Dato, T } from "../texto";
 
 export function CatalogoVacio() {
   return (
-    <Aviso
-      etiqueta={{ rol: "neutro", simbolo: "vacio" }}
-      titulo={{ es: "El catálogo está vacío", en: "The catalog is empty" }}
-    >
+    <Aviso etiqueta={E.catalogo_vacio} titulo={E.catalogo_vacio.nombre}>
       <p>
         <T
           t={{
@@ -29,14 +27,10 @@ export function CatalogoConError({
   rechazadas: { id: string; razon: { es: string; en: string } }[];
 }) {
   return (
-    <Aviso
-      etiqueta={{ rol: "falla", simbolo: "falla" }}
-      titulo={{ es: "El catálogo no se cargó", en: "The catalog did not load" }}
-    >
+    <Aviso etiqueta={E.catalogo_con_error} titulo={E.catalogo_con_error.nombre}>
       <Sello
         etiqueta={{
-          rol: "falla",
-          simbolo: "falla",
+          ...E.catalogo_con_error,
           nombre: {
             es: `${rechazadas.length} ${rechazadas.length === 1 ? "prueba rechazada" : "pruebas rechazadas"} al cargar`,
             en: `${rechazadas.length} ${rechazadas.length === 1 ? "test" : "tests"} rejected on load`,
