@@ -12,6 +12,7 @@ import { ControlesPantalla } from "../../src/components/controles/controles-pant
 import { MarcosPantalla } from "../../src/components/marcos/marcos-pantalla";
 import { construirVistaDeControles } from "../../src/lib/catalogo/controles.ts";
 import { construirVistaDeMarcos } from "../../src/lib/catalogo/marcos.ts";
+import { propuestasSinAvisos } from "./lib/mundo-de-brecha";
 
 const RAIZ = process.cwd();
 const archivo = readdirSync(join(RAIZ, "datos", "instantaneas"))
@@ -36,7 +37,13 @@ const listadas = [
 const marcos = (fecha = snap.fecha_evaluacion) =>
   renderToStaticMarkup(
     <MarcosPantalla
-      vista={construirVistaDeMarcos(snap, NOMBRE, fecha, listadas)}
+      vista={construirVistaDeMarcos(
+        snap,
+        NOMBRE,
+        fecha,
+        listadas,
+        propuestasSinAvisos,
+      )}
     />,
   );
 const controles = () =>

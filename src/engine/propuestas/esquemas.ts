@@ -457,7 +457,8 @@ export type Decision = z.infer<typeof Decision>;
 export const UmbralesDePropuestas = z.strictObject({
   version: Nombre,
   plan: z.strictObject({ id: IdMinusculas, version: Nombre, huella: Huella }),
-  similitud_cita: z.number().min(0.8).max(1),
+  /** U1 del plan v2: la cita es literal o no vale. El dato solo admite 1; el motor lo lee en cada cita. */
+  similitud_cita: z.literal(1),
   fuentes_verificadas: z.int().min(1).max(5),
   antiguedad_marco_dias: z.int().min(30).max(365),
   origen: Texto,

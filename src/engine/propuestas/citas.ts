@@ -94,9 +94,10 @@ export function verificarCita(
   cita: string,
   valor: unknown,
   texto: string,
+  umbral: number = 1,
 ): ResultadoDeCita {
   const similitud = similitudDeCita(cita, texto);
-  if (similitud < 1) return { estado: "no_literal", similitud };
+  if (similitud < umbral) return { estado: "no_literal", similitud };
   if (
     CAMPOS_NUMERICOS.includes(campo) &&
     typeof valor === "number" &&

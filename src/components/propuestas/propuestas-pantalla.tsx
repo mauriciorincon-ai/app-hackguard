@@ -93,7 +93,14 @@ function Fuentes({ f }: { f: FilaDePropuesta }) {
                   {" "}
                   · <T t={x.donde} />
                 </>
-              ) : null}
+              ) : null}{" "}
+              ·{" "}
+              <span lang="es">
+                leída el <Dato>{x.leida}</Dato>
+              </span>
+              <span lang="en">
+                read on <Dato>{x.leida}</Dato>
+              </span>
             </span>
           </p>
           {x.detalle ? (
@@ -104,6 +111,32 @@ function Fuentes({ f }: { f: FilaDePropuesta }) {
         </div>
       ))}
     </>
+  );
+}
+
+/** Qué patrón dio cada marca y dónde lo encontró: el aviso solo dice que la hay, y la persona necesita saber por qué. */
+function PatronesDeMarca({
+  marcas,
+}: {
+  marcas: FilaDePropuesta["marcas"]["contenido"];
+}) {
+  const unicas = marcas.filter(
+    (m, i) =>
+      marcas.findIndex((x) => x.campo === m.campo && x.patron === m.patron) ===
+      i,
+  );
+  if (unicas.length === 0) return null;
+  return (
+    <p className="hg-menor" data-patrones>
+      <span lang="es">Patrón y dónde:</span>
+      <span lang="en">Pattern and where:</span>{" "}
+      {unicas.map((m, i) => (
+        <span key={`${m.campo}-${m.patron}`}>
+          {i > 0 ? " · " : ""}
+          <Dato>{m.patron}</Dato> (<span data-neutro>{m.campo}</span>)
+        </span>
+      ))}
+    </p>
   );
 }
 
@@ -146,6 +179,7 @@ function Marcas({
               }}
             />
           </p>
+          <PatronesDeMarca marcas={f.marcas.contenido} />
         </Sello>
       ) : null}
       {f.marcaDeInstruccion ? (
@@ -162,6 +196,7 @@ function Marcas({
               }}
             />
           </p>
+          <PatronesDeMarca marcas={f.marcas.instruccion} />
         </Sello>
       ) : null}
     </>
@@ -429,6 +464,44 @@ function Pie({
               </>
             ) : null}
           </p>
+          {f.decidida.efecto ? (
+            <p className="hg-menor" data-efecto>
+              {f.decidida.efecto.sobre ? (
+                <>
+                  <span lang="es">
+                    Nació el sobre <Dato>{f.decidida.efecto.sobre}</Dato>, por
+                    confirmar.{" "}
+                  </span>
+                  <span lang="en">
+                    The envelope <Dato>{f.decidida.efecto.sobre}</Dato> was
+                    created, to be confirmed.{" "}
+                  </span>
+                </>
+              ) : null}
+              {f.decidida.efecto.prueba ? (
+                <>
+                  <span lang="es">
+                    Quedó aprobada la prueba{" "}
+                    <Dato>{f.decidida.efecto.prueba}</Dato>.{" "}
+                  </span>
+                  <span lang="en">
+                    The test <Dato>{f.decidida.efecto.prueba}</Dato> was
+                    approved.{" "}
+                  </span>
+                </>
+              ) : null}
+              {f.decidida.efecto.corregido ? (
+                <>
+                  <span lang="es">Corrigió el veredicto de </span>
+                  <span lang="en">The verdict was corrected from </span>
+                  <Estado etiqueta={f.decidida.efecto.corregido.de} />{" "}
+                  <span lang="es">a</span>
+                  <span lang="en">to</span>{" "}
+                  <Estado etiqueta={f.decidida.efecto.corregido.a} />.
+                </>
+              ) : null}
+            </p>
+          ) : null}
         </div>
       </div>
     );
@@ -641,6 +714,32 @@ function Corrida({ c }: { c: CorridaVista }) {
             />
           </span>
         </Par>
+        {c.ejecucion ? (
+          <Par rotulo={{ es: "Ejecución", en: "Run cost" }}>
+            <span className="hg-menor" data-ejecucion>
+              {c.ejecucion.latenciaS !== null ? (
+                <>
+                  <Dato>{c.ejecucion.latenciaS}</Dato> s
+                </>
+              ) : null}
+              {c.ejecucion.latenciaS !== null && c.ejecucion.tokens !== null
+                ? " · "
+                : null}
+              {c.ejecucion.tokens !== null ? (
+                <>
+                  <Dato>{c.ejecucion.tokens}</Dato> tokens
+                </>
+              ) : null}
+              {" · "}
+              <T
+                t={{
+                  es: `${c.ejecucion.nodos.length} pasos`,
+                  en: `${c.ejecucion.nodos.length} steps`,
+                }}
+              />
+            </span>
+          </Par>
+        ) : null}
         <Par rotulo={{ es: "Reglas del plan", en: "Plan rules" }}>
           <span data-neutro>
             <T

@@ -128,14 +128,7 @@ export function construirVistaDeMarcos(
   nombre: string,
   consulta: string,
   listadas: readonly InstantaneaListada[],
-  propuestas: { resumen: ResumenDePropuestas; etiquetaDeAviso: Etiqueta } = {
-    resumen: SIN_PROPUESTAS,
-    etiquetaDeAviso: {
-      rol: "atencion",
-      simbolo: "aviso",
-      nombre: { es: "Versión nueva", en: "New version" },
-    },
-  },
+  propuestas: { resumen: ResumenDePropuestas; etiquetaDeAviso: Etiqueta },
 ): VistaDeMarcos {
   const c = i.catalogo;
   const s = semaforoDe(i, consulta);

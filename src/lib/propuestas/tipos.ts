@@ -12,8 +12,23 @@ export type DecisionDeBandeja =
   "aprobar" | "aprobar_tras_revisar" | "rechazar" | "separar";
 export type AsociacionDeSobre = "una" | "alternativas" | "mezcla";
 
+/** Una marca del filtro: dónde la encontró y qué patrón (del dato) la dio. */
+export interface MarcaVista {
+  campo: string;
+  patron: string;
+}
+
+/** Lo que una decisión ya provocó: el sobre por confirmar, la prueba escrita, o el veredicto que la persona corrigió (R5). */
+export interface EfectoVista {
+  sobre: string | null;
+  prueba: string | null;
+  corregido: { de: Etiqueta; a: Etiqueta } | null;
+}
+
 export interface FuenteVista {
   nombre: string;
+  /** El día en que el investigador leyó la página. */
+  leida: string;
   /** Dónde está la fuente (sitio oficial, registro…), si la propuesta lo dice. */
   donde: Bilingue | null;
   url: string;
@@ -87,10 +102,17 @@ export interface FilaDePropuesta {
   resumen: Bilingue;
   estado: EstadoDeBandeja;
   etiquetaDeEstado: Etiqueta;
-  decidida: { por: string; fecha: string; motivo: string | null } | null;
+  decidida: {
+    por: string;
+    fecha: string;
+    motivo: string | null;
+    efecto: EfectoVista | null;
+  } | null;
   fuentes: FuenteVista[];
   marcaDeContenido: boolean;
   marcaDeInstruccion: boolean;
+  /** Los patrones que dieron cada marca, para que la persona vea por qué (el aviso solo dice que la hay). */
+  marcas: { contenido: MarcaVista[]; instruccion: MarcaVista[] };
   motivos: MotivoVista[];
   sobre: SobreVista | null;
   /** Lo que una versión de marco, un retiro o una herramienta cambia: una frase con sus datos. */
@@ -118,6 +140,12 @@ export interface CorridaVista {
   noAccesibles: { nombre: string; razon: Bilingue }[];
   contradicciones: Bilingue[];
   propuestas: number;
+  /** Lo que costó la corrida (latencia, tokens y los nodos que visitó); `null` si no lo midió. */
+  ejecucion: {
+    latenciaS: number | null;
+    tokens: number | null;
+    nodos: string[];
+  } | null;
   huella: string;
   /** Las reglas del plan (C1 a C5) que esta corrida cumple, de cuántas. */
   criterios: { cumplen: number; total: number };

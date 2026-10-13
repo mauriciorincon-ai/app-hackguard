@@ -209,6 +209,7 @@ describe("lo que cambia con el libro de decisiones", () => {
       por: "Ana",
       fecha: "2026-10-12",
       motivo: "una sola fuente",
+      efecto: null,
     });
     expect(f.decisiones).toEqual([]);
     expect(f.etiquetaDeEstado.nombre.es).toBe("Rechazada");
@@ -244,6 +245,53 @@ describe("lo que cambia con el libro de decisiones", () => {
     expect(() =>
       mundo({ decisiones: [decision("PROP-9999", "aprobar")] }),
     ).toThrowError(/no cuadra con las propuestas/);
+  });
+});
+
+describe("los campos del contrato tienen su lector en la pantalla (auditoría S8)", () => {
+  it("el efecto de una decisión se ve: el sobre que nació y el veredicto que la persona corrigió", () => {
+    const w = construirVistaDePropuestas(
+      mundo({
+        decisiones: [
+          decision("PROP-0036", "aprobar", {
+            prueba: "PR-IA-PINJ-001",
+            efecto: {
+              sobre: "SOB-9001",
+              veredicto_sugerido: "superada",
+              veredicto_resultante: "fallida",
+            },
+            veredicto_corregido_por_persona: true,
+          }),
+        ],
+      }),
+    );
+    const e = fila("PROP-0036", w).decidida?.efecto;
+    expect(e?.sobre).toBe("SOB-9001");
+    expect(e?.corregido?.de.nombre.es).toBe("Superada");
+    expect(e?.corregido?.a.nombre.es).toBe("Fallida");
+  });
+  it("una decisión sin efecto ni corrección no inventa uno", () => {
+    const w = construirVistaDePropuestas(
+      mundo({
+        decisiones: [decision("PROP-0033", "rechazar", { motivo: "x" })],
+      }),
+    );
+    expect(fila("PROP-0033", w).decidida?.efecto).toBeNull();
+  });
+  it("cada fuente dice cuándo se leyó, y cada marca dice qué patrón la dio", () => {
+    for (const f of v.filas)
+      for (const x of f.fuentes) expect(x.leida).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const marcada = v.filas.find((f) => f.marcaDeContenido)!;
+    expect(marcada.marcas.contenido.length).toBeGreaterThan(0);
+    for (const m of marcada.marcas.contenido) {
+      expect(m.patron).not.toBe("");
+      expect(m.campo).not.toBe("");
+    }
+  });
+  it("la corrida dice lo que costó cuando lo midió", () => {
+    const conCosto = v.corridas.filter((c) => c.ejecucion !== null);
+    for (const c of conCosto)
+      expect(c.ejecucion!.nodos.length).toBeGreaterThan(0);
   });
 });
 

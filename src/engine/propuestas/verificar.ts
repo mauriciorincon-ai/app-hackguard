@@ -237,6 +237,7 @@ function valorDelCampo(c: CandidataDeSobre, campo: CampoCitable): unknown {
 export function citasDeCandidata(
   c: CandidataDeSobre,
   texto: string | undefined,
+  umbral: number = 1,
 ): CandidataSellada["verificacion"]["citas"] {
   return c.citas.map((cita) => {
     if (texto === undefined)
@@ -246,6 +247,7 @@ export function citasDeCandidata(
       cita.texto,
       valorDelCampo(c, cita.campo),
       texto,
+      umbral,
     );
     return { campo: cita.campo, estado: r.estado, similitud: r.similitud };
   });
@@ -258,7 +260,7 @@ function sellarCandidata(
   texto: string | undefined,
   ctx: ContextoDeVerificacion,
 ): CandidataSellada {
-  const citas = citasDeCandidata(c, texto);
+  const citas = citasDeCandidata(c, texto, ctx.umbrales.similitud_cita);
   const enElPlan = ctx.planes.get(activo)?.has(c.prueba) ?? false;
   const v = veredictoDeCandidata(
     c,

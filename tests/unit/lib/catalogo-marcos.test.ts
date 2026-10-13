@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Instantanea } from "../../../src/engine/catalogo/instantanea.ts";
 import { fechaMasDias } from "../../../src/engine/fecha.ts";
+import { propuestasSinAvisos } from "./mundo-de-brecha";
 import { listarInstantaneas } from "../../../src/lib/catalogo/cargar-instantanea.ts";
 import {
   construirVistaDeMarcos,
@@ -33,7 +34,7 @@ const listadas: InstantaneaListada[] = [
   },
 ];
 const vista = (fecha = HOY) =>
-  construirVistaDeMarcos(snap, NOMBRE, fecha, listadas);
+  construirVistaDeMarcos(snap, NOMBRE, fecha, listadas, propuestasSinAvisos);
 
 describe("la vista de marcos dice lo que la instantánea oficial dice", () => {
   it("trae un marco por cada marco de la instantánea, con su versión, su editor y sus familias", () => {
@@ -125,7 +126,13 @@ describe("la vista de marcos dice lo que la instantánea oficial dice", () => {
     const reales = listarInstantaneas(RAIZ);
     expect(reales.map((r) => r.nombre)).toContain(NOMBRE);
     expect(reales.find((r) => r.nombre === NOMBRE)!.huella).toBe(snap.huella);
-    const otra = construirVistaDeMarcos(snap, "otra", HOY, listadas);
+    const otra = construirVistaDeMarcos(
+      snap,
+      "otra",
+      HOY,
+      listadas,
+      propuestasSinAvisos,
+    );
     expect(otra.instantaneas[0]!.oficial).toBe(false);
   });
 });

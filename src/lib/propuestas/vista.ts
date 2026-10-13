@@ -2,7 +2,9 @@
 // se recalcula aquí: el estado de cada propuesta, la cuenta de «por decidir», los avisos y el veredicto de cada candidata salen del motor
 // (`bandeja`, `porDecidir`, la regla del catálogo); esta capa los nombra con `datos/propuestas/etiquetas.json` y el vocabulario de
 // estados del catálogo y los ordena. Aprobar o rechazar NO se hace aquí: la pantalla arma el comando que registra la decisión.
+import { senalesConDecision } from "../../engine/propuestas/decisiones.ts";
 import type {
+  Decision,
   MotivoDePausa,
   PropuestaSellada,
 } from "../../engine/propuestas/esquemas.ts";
@@ -16,6 +18,7 @@ import type {
   CandidataVista,
   CorridaVista,
   DecisionDeBandeja,
+  EfectoVista,
   Etiqueta,
   FilaDePropuesta,
   FuenteVista,
@@ -149,6 +152,7 @@ function fuentesDe(p: PropuestaSellada, m: MundoDePropuestas): FuenteVista[] {
     const estado = p.verificacion.fuentes[i]?.estado ?? "sin_lectura";
     return {
       nombre: f.nombre,
+      leida: f.leida,
       donde: f.donde ?? null,
       url: f.url,
       etiqueta: etiquetaDePropuesta(m.etiquetas, `fuente_${estado}`),
@@ -267,6 +271,30 @@ function decisionesDe(
   return [marcada ? "aprobar_tras_revisar" : "aprobar", "rechazar"];
 }
 
+/** Lo que la decisión ya provocó, tal como lo escribió el libro: el sobre, la prueba, o la corrección del veredicto. */
+function efectoDe(
+  p: PropuestaSellada,
+  d: Decision,
+  m: MundoDePropuestas,
+): EfectoVista | null {
+  const corregido =
+    senalesConDecision(p.senales, d).veredicto_corregido_por_persona === true;
+  const e = d.efecto;
+  if (e === undefined && !corregido) return null;
+  const c = m.instantanea.catalogo;
+  return {
+    sobre: e?.sobre ?? null,
+    prueba: e?.prueba ?? null,
+    corregido:
+      corregido && e?.veredicto_sugerido && e.veredicto_resultante
+        ? {
+            de: etiqueta(c, "veredicto", e.veredicto_sugerido),
+            a: etiqueta(c, "veredicto", e.veredicto_resultante),
+          }
+        : null,
+  };
+}
+
 function filaDe(
   fila: MundoDePropuestas["filas"][number],
   m: MundoDePropuestas,
@@ -299,10 +327,19 @@ function filaDe(
     decidida:
       d === null
         ? null
-        : { por: d.por, fecha: d.fecha, motivo: d.motivo ?? null },
+        : {
+            por: d.por,
+            fecha: d.fecha,
+            motivo: d.motivo ?? null,
+            efecto: efectoDe(p, d, m),
+          },
     fuentes: fuentesDe(p, m),
     marcaDeContenido: p.contenido === "marcada_para_revision",
     marcaDeInstruccion: p.senales.marca_instruccion,
+    marcas: {
+      contenido: p.marcas_de_contenido.map((x) => ({ ...x })),
+      instruccion: p.marcas_de_instruccion.map((x) => ({ ...x })),
+    },
     motivos: (p.pausa?.motivos ?? [])
       // Estos dos tienen su propio aviso en el panel: no se repiten como motivo.
       .filter(
@@ -324,6 +361,20 @@ function filaDe(
     pideConteoAMano:
       p.tipo === "sobre" &&
       p.candidatas.some((c) => c.veredicto_sugerido === null),
+  };
+}
+
+/** Lo que costó la corrida: las señales de ejecución son las mismas en todas sus propuestas (se miden una vez por corrida). */
+function ejecucionDe(
+  propuestas: readonly PropuestaSellada[],
+): CorridaVista["ejecucion"] {
+  const s = propuestas[0]?.senales;
+  if (s === undefined) return null;
+  if (s.latencia_total_s === null && s.tokens === null) return null;
+  return {
+    latenciaS: s.latencia_total_s,
+    tokens: s.tokens,
+    nodos: s.nodos_visitados,
   };
 }
 
@@ -350,6 +401,7 @@ function corridaDe(
     })),
     contradicciones: k.contradicciones,
     propuestas: k.propuestas.length,
+    ejecucion: ejecucionDe(k.propuestas),
     huella: k.huella,
     criterios: {
       cumplen: criterios.filter((x) => x.cumple).length,

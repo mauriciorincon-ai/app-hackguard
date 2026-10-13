@@ -12,6 +12,7 @@ import {
   MarcosVacio,
 } from "../../src/components/marcos/marcos-pantalla";
 import { construirVistaDeMarcos } from "../../src/lib/catalogo/marcos.ts";
+import { propuestasSinAvisos } from "./lib/mundo-de-brecha";
 import { conjunto, dentroDe, documentoDelProducto } from "./lib/fidelidad";
 import { RAIZ_MAQUETA, documentoDe, leerPagina } from "./lib/maqueta";
 
@@ -35,6 +36,7 @@ const vista = construirVistaDeMarcos(
       huella: snap.huella,
     },
   ],
+  propuestasSinAvisos,
 );
 
 // Lo que la maqueta dibuja y el producto no. Cada excepción lleva su razón.

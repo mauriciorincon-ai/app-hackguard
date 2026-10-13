@@ -1,6 +1,9 @@
 // @vitest-environment node
 // U1 = 1,0 (plan v2, supuesto S1): una cita vale si y solo si es subcadena LITERAL del texto tras normalizar los espacios.
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { UmbralesDePropuestas } from "../../../src/engine/propuestas/esquemas.ts";
+import { RAIZ } from "./ayuda.ts";
 import {
   cifraEnElTexto,
   citaEsLiteral,
@@ -168,5 +171,30 @@ describe("la métrica, la fecha y la versión tienen que estar en su cita (audit
         texto,
       ).estado,
     ).toBe("valor_sin_respaldo");
+  });
+});
+
+const umbrales = JSON.parse(
+  readFileSync(`${RAIZ}/datos/propuestas/umbrales.json`, "utf8"),
+);
+
+describe("el umbral de similitud lo lee el motor (auditoría S8)", () => {
+  const texto = "El escáner evaluó veinte intentos y no falló ninguno.";
+  const casiLiteral = "El escáner evaluó veinte intentos y falló ninguno.";
+  it("con el umbral del dato (1) una cita casi literal no vale", () => {
+    expect(
+      verificarCita("resultado.ejecutada", casiLiteral, true, texto).estado,
+    ).toBe("no_literal");
+  });
+  it("el umbral que recibe es el que manda, y el dato solo admite 1", () => {
+    expect(
+      verificarCita("resultado.ejecutada", casiLiteral, true, texto, 0.5)
+        .estado,
+    ).toBe("verificada");
+    expect(
+      UmbralesDePropuestas.safeParse({ ...umbrales, similitud_cita: 0.9 })
+        .success,
+    ).toBe(false);
+    expect(UmbralesDePropuestas.safeParse(umbrales).success).toBe(true);
   });
 });
