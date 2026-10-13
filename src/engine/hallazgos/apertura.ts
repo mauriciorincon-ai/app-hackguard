@@ -1,7 +1,10 @@
 // Cuándo un sobre abre un hallazgo y qué hereda. Solo un sobre CONFIRMADO por una persona y con veredicto
 // `fallida` o `parcial` abre uno; una re-prueba (un sobre que cita un hallazgo) nunca abre otro: se suma al suyo.
 // El hallazgo hereda activo, prueba, familia y controles del sobre y de la instantánea: no se vuelven a escribir.
-import { VEREDICTOS_QUE_FALLAN, type SobreEfectivo } from "../evidencia/esquemas.ts";
+import {
+  VEREDICTOS_QUE_FALLAN,
+  type SobreEfectivo,
+} from "../evidencia/esquemas.ts";
 import { evaluarHallazgo } from "./ciclo.ts";
 import {
   FORMATO_DE_HALLAZGO,

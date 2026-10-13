@@ -861,6 +861,22 @@ describe("el validador de lotes", () => {
     expect(r.lotes.map((x) => x.lote.id)).toEqual(["LOTE-0007", "LOTE-0008"]);
   });
 
+  it("un lote con un error no presta su confirmación: ni sale entre los válidos ni confirma a sus sobres (S6-B14b)", async () => {
+    const m = await mundoDeLotes();
+    const l = await loteConfirmado(m.lotes["LOTE-0007"]!);
+    const ya = await con(m.sobres["SOB-0031"]!, {
+      confirmacion: { por: "Beto", fecha: "2026-10-03", modo: "individual" },
+    });
+    const r = await validar([uno(l)], { reemplazos: [ya] });
+    expect(erroresDe(r)).toContain("lote/sobre-confirmado-dos-veces");
+    expect(r.lotes).toEqual([]);
+    const efectivo = libroEfectivo(
+      Object.values(m.sobres),
+      r.lotes.map((x) => x.lote),
+    );
+    expect(efectivo.find((s) => s.id === "SOB-0032")!.confirmacion).toBeNull();
+  });
+
   it("un lote confirmado por el motor es válido y no trae la nota", async () => {
     const m = await mundoDeLotes();
     const todos = Object.values(m.sobres);

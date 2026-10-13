@@ -73,7 +73,8 @@ export function detalleDeSeveridad(
   s: SituacionDeHallazgo["severidad"],
   idioma: Idioma,
 ): string {
-  if (s.metodo === "cvss") return `CVSS 4.0 · ${s.puntaje.toFixed(1)} · ${s.vector}`;
+  if (s.metodo === "cvss")
+    return `CVSS 4.0 · ${s.puntaje.toFixed(1)} · ${s.vector}`;
   const es = idioma === "es";
   const cuenta = s.frecuencia.deConteo
     ? `${s.frecuencia.fallidas} ${es ? "de" : "of"} ${s.frecuencia.evaluadas}`
@@ -91,7 +92,9 @@ export function informeDeHallazgos(
   idioma: Idioma,
 ): string {
   const es = idioma === "es";
-  const cuentan = filas.filter((f) => f.situacion.evaluacion.cuentaComoFalla).length;
+  const cuentan = filas.filter(
+    (f) => f.situacion.evaluacion.cuentaComoFalla,
+  ).length;
   const lineas = [
     es
       ? `Hallazgos a ${fecha}: ${filas.length} · ${cuentan} cuentan como falla de su control`

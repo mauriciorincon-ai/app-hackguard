@@ -328,3 +328,27 @@ describe("el contrato: si ZAP cambia, el adaptador lo dice y el lote no se arma"
     expect([c.fecha, c.zonaHoraria]).toEqual(["2026-10-12", null]);
   });
 });
+
+describe("la versión de ZAP fuera del rango probado avisa (S6-B6)", () => {
+  const conVersion = (version: string) =>
+    DERIVADA.replace(/"@version"\s*:\s*"[^"]*"/, `"@version": "${version}"`);
+  const avisos = (t: string) =>
+    corrida(t)
+      .advertencias.map((a) => a.es)
+      .join(" | ");
+  it("la versión probada no avisa", () => {
+    expect(avisos(DERIVADA)).not.toContain("fuera del rango probado");
+  });
+  it("una versión más nueva o más vieja avisa con su número", () => {
+    expect(avisos(conVersion("2.18.0"))).toContain(
+      "ZAP 2.18.0 está fuera del rango probado",
+    );
+  });
+  it("«Dev Build» no se puede comparar y lo dice", () => {
+    const l = ADAPTADOR_DE_ZAP.leer(OFICIAL, null);
+    if (!l.ok) throw new Error(l.motivo);
+    expect(l.corrida.advertencias.map((a) => a.es).join(" | ")).toContain(
+      "no se puede comparar con la probada",
+    );
+  });
+});

@@ -289,6 +289,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   (Sprint 6). Que un hallazgo no aparezca en un escaneo posterior **no** lo cierra.
 - **Limitaciones conocidas:**
   - Los hallazgos de tu activo real van a `datos/privado/`, nunca al repositorio ni a la web pública.
+  - En una métrica con umbral, el umbral lo escribe quien registra el sobre: ni el catálogo ni el paquete de ejecución lo fijan antes de la prueba. El validador comprueba que el veredicto sale de ese umbral, no que se haya fijado antes; por eso conviene anotarlo en el plan antes de correr la herramienta.
   - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
 
 #### Carga de evidencia · desde Sprint 006
@@ -707,6 +708,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   (Sprint 6). A finding missing from a later scan does **not** close it.
 - **Known limitations:**
   - The findings of your real asset go to `datos/privado/`, never to the repository or the public web.
+  - In a metric with a threshold, the threshold is written by whoever records the envelope: neither the catalog nor the execution package fixes it before the test. The validator checks that the verdict comes from that threshold, not that it was set beforehand; so note it in the plan before you run the tool.
   - The screen is tested in Spanish; the English test arrives at the close of the milestone.
 
 #### Evidence intake · since Sprint 006
