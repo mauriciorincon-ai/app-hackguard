@@ -356,10 +356,19 @@ async function sellarPropuesta(
     ).size;
     const sinVerificar =
       fuentes.length - fuentes.filter((f) => f.estado === "verificada").length;
-    const marcasDeInstruccion = filtrar(
-      paraElFiltro(cuerpo),
-      ctx.patronesDeInstrucciones,
-    );
+    // Las páginas que el agente leyó son datos no confiables: una orden dirigida a él en CUALQUIER parte de la página marca la propuesta
+    // (RF-07.4), no solo lo que escribió el modelo ni el pasaje que citó.
+    const marcasDeInstruccion = [
+      ...filtrar(paraElFiltro(cuerpo), ctx.patronesDeInstrucciones),
+      ...[...new Set(cuerpo.fuentes.map((f) => f.huella_de_la_pagina))].flatMap(
+        (h) => {
+          const pagina = ctx.lecturas(h);
+          return pagina === undefined
+            ? []
+            : filtrar({ pagina }, ctx.patronesDeInstrucciones);
+        },
+      ),
+    ];
     const idMarco = marcoDe(cuerpo, ctx);
     const marco = idMarco === null ? undefined : ctx.marcos.get(idMarco);
     const antiguedad =
