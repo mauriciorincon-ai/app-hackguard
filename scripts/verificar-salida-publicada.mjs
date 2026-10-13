@@ -7,6 +7,12 @@
 // una está en la otra y es idéntica byte a byte; una carpeta vacía también falla (no demuestra nada).
 // Lo invoca `scripts/build-como-proveedor.mjs` tras `vercel build`; se puede correr a mano:
 //   node scripts/verificar-salida-publicada.mjs <carpeta-publicada> [referencia=out]
+//
+// Y el gate del PAQUETE PÚBLICO (regla dura 9: nada es publicable por defecto): el despliegue privado sirve la maqueta
+// (`/diseno/`, la copia `scripts/copiar-maqueta.mjs` en cada build) para que el gate humano la abra, pero un paquete que se
+// vaya a mostrar a terceros jamás la lleva, ni nada de `privado/`. Se corre sobre el paquete que se publique, nunca sobre
+// el `out/` del despliegue privado (que SÍ lleva la maqueta):
+//   node scripts/verificar-salida-publicada.mjs --publico <carpeta-del-paquete>
 // Patrón: wiki/patterns/lo-que-el-proveedor-publica.md (planeadora, RO).
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -50,7 +56,48 @@ export function fallasDeSalida(publicada, referencia) {
   return { paginas: pub.length, fallas };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+/** Las carpetas que un paquete público jamás lleva, a cualquier profundidad. */
+export const CARPETAS_QUE_NO_VIAJAN = ["diseno", "privado"];
+
+/**
+ * Lo que falla en un paquete público: cualquier archivo bajo una carpeta que no viaja. Una carpeta vacía o inexistente también falla
+ * (no demuestra nada).
+ * @param {string} carpeta el paquete que se va a publicar
+ * @returns {{ archivos: number, fallas: string[] }}
+ */
+export function fallasDePaquetePublico(carpeta) {
+  if (!existsSync(carpeta)) return { archivos: 0, fallas: [`${carpeta}: no existe`] };
+  const todos = [];
+  const recorrer = (dir) => {
+    for (const f of readdirSync(dir)) {
+      const ruta = join(dir, f);
+      if (statSync(ruta).isDirectory()) recorrer(ruta);
+      else todos.push(relative(carpeta, ruta));
+    }
+  };
+  recorrer(carpeta);
+  const fallas = todos.length ? [] : [`${carpeta}: no tiene archivos`];
+  for (const ruta of todos) {
+    const prohibida = ruta.split(/[\\/]/).find((parte) => CARPETAS_QUE_NO_VIAJAN.includes(parte));
+    if (prohibida) fallas.push(`${ruta}: el paquete público no lleva «${prohibida}/»`);
+  }
+  return { archivos: todos.length, fallas };
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href && process.argv[2] === "--publico") {
+  const carpeta = process.argv[3];
+  if (!carpeta) {
+    console.error("uso: node scripts/verificar-salida-publicada.mjs --publico <carpeta-del-paquete>");
+    process.exit(2);
+  }
+  const r = fallasDePaquetePublico(carpeta);
+  if (r.fallas.length) {
+    console.error(`✗ paquete público: ${r.fallas.length} falla(s) en ${carpeta}`);
+    for (const f of r.fallas) console.error(`  - ${f}`);
+    process.exit(1);
+  }
+  console.log(`✓ paquete público: ${r.archivos} archivos en ${carpeta}, ninguno bajo ${CARPETAS_QUE_NO_VIAJAN.map((c) => c + "/").join(" ni ")}`);
+} else if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [publicada, referencia = "out"] = process.argv.slice(2);
   if (!publicada) {
     console.error("uso: node scripts/verificar-salida-publicada.mjs <carpeta-publicada> [referencia=out]");

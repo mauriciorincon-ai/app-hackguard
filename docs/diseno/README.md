@@ -49,7 +49,9 @@ Aprobadas con el plan de la etapa (2026-10-03):
 2. **Un solo PR vivo** hasta G-Diseño; cada ronda es un push y se mira en su preview.
 3. **Entrega de la maqueta:** copia `docs/diseno/` → `public/diseno/` en el `build` (derivado, ignorado),
    con `vercel.json` y `serve.json` equivalentes. Solo en despliegues protegidos. Que el paquete público
-   del H2 jamás la incluya es un gate a construir en el S4.
+   jamás la incluya lo vigila `node scripts/verificar-salida-publicada.mjs --publico <carpeta-del-paquete>` (falla si el
+   paquete lleva `diseno/` o `privado/`; se corre sobre el paquete que se publique, nunca sobre el `out/` del despliegue
+   privado, que sí lleva la maqueta para el gate humano).
 4. **Nombres de página:** `index` · `direccion` · `kit` · `tablero` · `catalogo` · `prueba-<id>` (una
    por prueba del catálogo) · `marcos` · `controles` · `propuestas` · `activo-<id>` y `plan-<id>` (una
    por activo demo) · `evidencia` · `hallazgo-<id>` (una por hallazgo) · `brecha` · `control` · `informe`.
@@ -242,8 +244,8 @@ su severidad y sus fechas salen iguales (`tests/unit/hallazgo-vista.test.tsx`).
 | `hallazgo` | «Misma configuración y al menos k = 20» usa la `k` del paquete (en HZ-0007 son 20), no las salidas evaluadas (116) | La regla de cierre compara `k` |
 | `hallazgo` | El nombre del control y «Lo que se esperaba» salen de la instantánea oficial (HZ-0005 enseña `iso42001-A.6.2.6`, que la maqueta dejaba sin control) | Una cuenta, un cálculo: manda el catálogo |
 | `hallazgo` | La cadena sabe decir una re-prueba confirmada que no cierra («Re-prueba que no cierra», con lo que le falta) y los cierres por eliminación o «no reproducible», que no usan re-prueba | La maqueta solo dibujaba los cuatro momentos de la demo; el motor calcula siete estados |
-| `hallazgo` | «Re-prueba por confirmar» dice «Está sin confirmar: todavía no cuenta» y no cita un lote | Los lotes llegan con la carga de evidencia |
-| `hallazgo` | Las métricas opcionales de un vector se nombran por grupo («Métrica de amenaza») sin nombre de valor; sin conteo en el sobre, la frecuencia dice «falló su única medición»; una severidad baja o informativa dice «Esta severidad no tiene plazo» | La maqueta no tenía esos casos; ninguno cambia lo que la pantalla explica |
+| `hallazgo` | «Re-prueba por confirmar» dice «Está sin confirmar: todavía no cuenta» y no cita un lote | La re-prueba por confirmar no nombra un lote: «sin confirmar» vale igual para un sobre suelto que para uno de un lote, y el lote se ve y se decide en Evidencia · Carga |
+| `hallazgo` | Las métricas opcionales de un vector se nombran por grupo («Métrica de amenaza») sin nombre de valor; sin conteo en el sobre, la frecuencia dice «falla en su única medición»; una severidad baja o informativa dice «Esta severidad no tiene plazo» | La maqueta no tenía esos casos; ninguno cambia lo que la pantalla explica |
 | `hallazgo` | El aviso de revisión pide decidir de nuevo (aceptarlo otra vez con justificación nueva, o corregirlo) y no habla de reabrir | No hay reapertura en este sprint |
 | `hallazgo` | Un riesgo aceptado ofrece también «Registrar la corrección» (y «Registrar la re-prueba» si ya está corregido), y «Aceptar el riesgo» otra vez solo cuando la revisión venció (Sprint 9) | Aceptar no cierra: la corrección habilita la re-prueba que lo cierra, y el aviso de revisión prometía acciones que la lista no ofrecía; la maqueta solo ofrecía eliminar o «no se reproduce» |
 | `barra lateral` | «Evidencia» abre el primer hallazgo del selector; «Carga» sigue marcada «pronto» (superado en el Sprint 6: «Evidencia» abre «Carga») | La carga de evidencia no tenía pantalla: un enlace roto no se dibuja |
@@ -285,7 +287,7 @@ brecha, la vista por control y el informe dicen **las mismas cifras en cada fech
 | `tablero` | «Por decidir» vale 0 y la bandeja de propuestas dice que todavía no existe (superado en el Sprint 8: vale lo que cuenta la bandeja y el pie lleva a ella) | La bandeja es del S8 (investigador y extractor); no se inventan propuestas |
 | `tablero` · `brecha` · `informe` | Los marcos con versión nueva dicen «sin registro de la fuente» en vez de listar un marco (superado en el Sprint 8: salen de las propuestas del investigador) | No hay registro de la versión que publica cada fuente (RF-05.5); decir «ninguno» sería afirmar lo que no se sabe |
 | `tablero` · `brecha` · `control` · `informe` | El plazo de un hallazgo usa el componente de la página del hallazgo: «En plazo» o «Vencido» con sus días; la maqueta dibuja un chip «Plazo vencido» | Una sola forma de decir un plazo en toda la aplicación |
-| `brecha` | La nota de lo que espera confirmación cita el lote si el sobre está en uno y dice «sugiere» con el veredicto que ya calculó la regla; no menciona al extractor (el Sprint 8 no lo cambia: un sobre del extractor se aprueba y se confirma como cualquier otro) | El extractor no existe todavía |
+| `brecha` | La nota de lo que espera confirmación cita el lote si el sobre está en uno y dice «sugiere» con el veredicto que ya calculó la regla; no menciona al extractor (el Sprint 8 no lo cambia: un sobre del extractor se aprueba y se confirma como cualquier otro) | Un sobre del extractor se aprueba y se confirma como cualquier otro: la nota no necesita distinguirlo de uno hecho a mano |
 | `control` | Los controles equivalentes dicen el marco, la referencia, la fuente (el sitio y la fecha de consulta, como texto inerte) y lo que el mapa no cubre; no traen un resumen del control equivalente | El dato trae el sitio y la fecha de consulta de la fuente, no un resumen del equivalente (regla dura 11: solo identificadores) |
 | `control` | El nombre de cada control es el del catálogo, que lo escribió con otras palabras | Es dato |
 | `control` | Una prueba que dejó un hallazgo con el riesgo aceptado dice «el plazo no corre» | El motor no corre plazo en un riesgo aceptado |

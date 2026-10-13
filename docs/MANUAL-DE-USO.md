@@ -249,7 +249,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, que lo escribe en `datos/privado/planes/` con permisos de solo tu usuario.
   Ningún activo real entra en el repositorio ni en la web pública.
 - **Limitaciones conocidas:**
-  - El plan no muestra todavía qué pruebas ya tienen evidencia confirmada: la página de cada hallazgo sí la muestra (ver la sección siguiente).
+  - El plan no muestra qué pruebas ya tienen evidencia confirmada: eso lo dicen la página de cada hallazgo, la brecha y la vista por control (secciones siguientes).
   - No hay editor de perfil ni de plan en pantalla: un cambio se hace en el archivo del activo y el plan se vuelve a emitir.
   - Si sale una instantánea oficial nueva, el plan viejo deja de construirse hasta volver a emitirlo.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
@@ -264,8 +264,9 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
      **propuesto**, que todavía no cuenta para nada. El archivo crudo solo sirve para calcular su huella: no se guarda.
   2. **Confirmar:** `pnpm evidencia:confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD`, y para la severidad,
      `--cvss <vector>` en software, o `--impacto`, `--alcance` y `--detectabilidad` en los demás. Un sobre confirmado no
-     cambia nunca. Si falló, abre su hallazgo.
-  3. **Ver la lista:** `pnpm hallazgos:listar` dice el estado, la severidad y el plazo de cada hallazgo.
+     cambia nunca. Si falló (fallida o parcial), no es una re-prueba y esa prueba no tiene ya un hallazgo vivo en ese
+     activo, abre su hallazgo; una re-prueba se suma al hallazgo que cita.
+  3. **Ver la lista:** `pnpm hallazgos:listar --fecha AAAA-MM-DD` dice el estado, la severidad y el plazo de cada hallazgo a esa fecha.
   4. **Leer un hallazgo:** en **Evidencia**, la barra lateral abre el primero. La página `/evidencia/hallazgos/<id>` tiene:
      - la **cadena de cierre**: el sobre, la corrección, la re-prueba y el cierre, con lo que falta dibujado como pendiente;
      - la **severidad**: para software, CVSS 4.0 con su vector y la referencia fijada; para los demás, la tabla de prioridad
@@ -315,7 +316,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   plan de calidad (hasta 10 % de sobres malos aceptable y un riesgo de 5 % de aceptar un lote peor), la probabilidad de que un
   lote con 10 % de sobres malos pase la muestra sin encontrar ninguno es menor de 5 %. El sistema elige la muestra con una
   semilla que sale de la huella del lote: la misma en cualquier computadora y en cualquier navegador.
-- **Qué NO hace:** no ejecuta herramientas, no lee el archivo en el navegador, no pega texto todavía (la pestaña lo dice),
+- **Qué NO hace:** no admite activos demo (`importar` los rechaza: lo real va a un activo propio de `datos/privado/activos/`; la pantalla solo lee los lotes de ejemplo de `datos/lotes/demo`), no ejecuta herramientas, no lee el archivo en el navegador, no pega texto todavía (la pestaña lo dice),
   ningún modelo decide un veredicto y no guarda el contenido del reporte ni los ataques que usó la herramienta. Con ZAP, una
   regla sin constancia de que corrió aparece como **No ejecutada**, nunca como superada.
 - **Limitaciones conocidas:**
@@ -358,8 +359,9 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   por ti y no mide el nivel de aseguramiento ni certifica cumplimiento. La vista por control es evidencia organizada para quien
   deba evaluarla.
 - **Limitaciones conocidas:**
-  - Con los datos de demo de hoy ningún control está en evidencia antigua. El estado existe y se cuenta en el tablero, pero
-    aparecerá un control cuando su evidencia cumpla el umbral.
+  - Cuántos controles caen en evidencia antigua depende de la fecha de consulta del build: a la fecha de la instantánea
+    oficial, con los datos de demo, ninguno. El estado existe y se cuenta en el tablero; un control aparece ahí cuando su
+    evidencia cumple el umbral a esa fecha.
   - Los marcos con versión nueva salen de las propuestas del investigador: se listan con su propuesta, dicen «ninguno» solo si hay una corrida del investigador que lo respalde (y cuándo fue), y «sin registro» si ninguna corrida ha leído las fuentes.
   - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
   - La cuenta de «propuestas por decidir» del tablero es la de la bandeja: baja cuando una decisión queda registrada en el libro, no cuando se marca en la pantalla.
@@ -669,7 +671,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   assets with `origen: "demo"`. Its plan is issued with `pnpm plan:emitir <id> --fecha AAAA-MM-DD`, which writes it to
   `datos/privado/planes/` with permissions for your user only. No real asset enters the repository or the public web.
 - **Known limitations:**
-  - The plan does not yet show which tests already have confirmed evidence: the page of each finding does (see the next section).
+  - The plan does not show which tests already have confirmed evidence: the page of each finding, the gap and the control view do (next sections).
   - There is no profile or plan editor on screen: a change is made in the asset's file and the plan is issued again.
   - If a new official snapshot comes out, the old plan stops being built until it is issued again.
   - The screens are tested in Spanish; the English test arrives at the close of the milestone.
@@ -684,8 +686,9 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
      which does not count for anything yet. The raw file is used only to compute its fingerprint: it is not stored.
   2. **Confirm:** `pnpm evidencia:confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD`, and for the severity,
      `--cvss <vector>` for software, or `--impacto`, `--alcance` and `--detectabilidad` for the rest. A confirmed envelope never
-     changes. If it failed, it opens its finding.
-  3. **See the list:** `pnpm hallazgos:listar` shows the status, the severity and the deadline of each finding.
+     changes. If it failed (failed or partial), is not a retest and that test has no live finding on that asset, it opens
+     its finding; a retest is added to the finding it cites.
+  3. **See the list:** `pnpm hallazgos:listar --fecha YYYY-MM-DD` shows the status, the severity and the deadline of each finding on that date.
   4. **Read a finding:** under **Evidence**, the sidebar opens the first one. The page `/evidencia/hallazgos/<id>` has:
      - the **closure chain**: the envelope, the fix, the retest and the closure, with what is missing drawn as pending;
      - the **severity**: for software, CVSS 4.0 with its vector and the pinned reference; for the rest, the action priority
@@ -733,7 +736,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   that quality plan (up to 10 % of bad envelopes acceptable, a 5 % risk of accepting a worse batch), the probability that a batch
   with 10 % bad envelopes passes the sample without finding one is under 5 %. The system chooses the sample with a seed that comes
   from the batch's fingerprint: the same on any computer and in any browser.
-- **What it does NOT do:** it does not run tools, does not read the file in the browser, does not paste text yet (the tab says so),
+- **What it does NOT do:** it does not accept demo assets (`importar` rejects them: real data goes to an own asset in `datos/privado/activos/`; the screen only reads the sample batches in `datos/lotes/demo`), it does not run tools, does not read the file in the browser, does not paste text yet (the tab says so),
   no model decides a verdict, and it does not keep the report's contents or the attacks the tool used. With ZAP, a rule with no
   proof that it ran appears as **Not run**, never as passed.
 - **Known limitations:**
@@ -774,8 +777,9 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   decides nothing for you, and it does not measure the level of assurance or certify compliance. The control view is
   organised evidence for whoever has to evaluate it.
 - **Known limitations:**
-  - With today's demo data no control is in stale evidence. The state exists and the dashboard counts it, but a control
-    will appear there once its evidence meets the threshold.
+  - How many controls fall into stale evidence depends on the build's query date: at the official snapshot's date, with the
+    demo data, none. The state exists and the dashboard counts it; a control appears there when its evidence meets the
+    threshold on that date.
   - Frameworks with a new version come from the researcher's proposals: they are listed with their proposal, say “none” only when a researcher run backs it (and when it was), and “no record” if no run has read the sources.
   - The screens are tested in Spanish; the English test arrives at the close of the milestone.
   - The dashboard's “proposals to decide” count is the inbox's: it goes down when a decision is recorded in the ledger, not when it is marked on screen.
