@@ -87,8 +87,7 @@ describe.each([
         fila.vigencia,
       );
     }
-    // Lee y analiza cada ficha: con la máquina cargada pasaba de los 5 s por defecto (2026-10-04).
-  }, 30_000);
+  });
 
   it("cada familia dice la vigencia de su prueba más atrasada, y cuántas pruebas tiene (RF-01.5)", () => {
     const catalogo = documentoDe(leerPagina(dir, "catalogo.html"));

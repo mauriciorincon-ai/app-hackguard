@@ -39,3 +39,31 @@ describe("lo que marca la opción actual de una lista de páginas (S5-9)", () =>
     expect(malos).toEqual([]);
   });
 });
+
+describe("ninguna prueba sube su propio timeout (S6-T1, S6-T2)", () => {
+  // Un timeout explícito esconde una prueba lenta o una máquina cargada; se midió (full `pnpm test` con cobertura: la más lenta,
+  // 1,0 s, contra los 5 s por omisión) y se quitó. Si una prueba necesita más, se arregla su causa y se declara aquí con su razón.
+  const EXCEPCIONES: Record<string, string> = {
+    // Genera la maqueta entera y lee todas sus páginas por cada una de las 53 fechas: la más lenta tarda 1,5 s (2026-10-13, `pnpm test`
+    // completo con cobertura) y crece con la maqueta, no es un cuelgue. Si deja de ser así, se parte la prueba y esta línea sale.
+    "tests/unit/maqueta-envejecimiento.test.ts": "recorre la maqueta por fecha",
+  };
+  const recorrer = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? recorrer(path.join(d, e.name))
+        : /\.tsx?$/.test(e.name)
+          ? [path.join(d, e.name)]
+          : [],
+    );
+  const SUBE =
+    /\btestTimeout\b|\bhookTimeout\b|\btimeout:\s*\d|^\s*\}\s*,\s*\d[\d_]{3,}\s*\)/m;
+  it("ningún archivo de tests/unit declara un timeout propio", () => {
+    const con = recorrer(path.join(RAIZ, "tests/unit"))
+      .filter((f) => !f.endsWith("arquitectura.test.ts"))
+      .filter((f) => SUBE.test(readFileSync(f, "utf8")))
+      .map((f) => path.relative(RAIZ, f))
+      .filter((f) => EXCEPCIONES[f] === undefined);
+    expect(con).toEqual([]);
+  });
+});

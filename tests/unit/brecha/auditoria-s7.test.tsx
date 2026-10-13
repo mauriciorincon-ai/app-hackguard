@@ -110,7 +110,7 @@ describe("ninguna acción cuando no hay nada que hacer (S7-B1)", () => {
     }
     expect(vistoVigente, "ninguna fecha tuvo un control vigente").toBe(true);
     expect(vistoAntigua, "ninguna fecha tuvo evidencia antigua").toBe(true);
-  }, 60_000);
+  });
 });
 
 describe("la vista por control dice quién confirmó (S7-O8)", () => {
