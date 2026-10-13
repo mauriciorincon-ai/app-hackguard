@@ -56,7 +56,14 @@ export interface BaseDeVista {
  */
 export type EstadoDeMarcos =
   | { tipo: "avisos"; etiqueta: Etiqueta; avisos: AvisoDeMarco[] }
-  | { tipo: "ninguno"; etiqueta: Etiqueta; corrida: string; fecha: string }
+  | {
+      tipo: "ninguno";
+      etiqueta: Etiqueta;
+      corrida: string;
+      fecha: string;
+      leidas: number;
+      noLeidas: number;
+    }
   | { tipo: "sin_registro"; etiqueta: Etiqueta };
 
 /** Una cifra de arriba: el valor, lo que dice y, si es un estado, su marca (símbolo, rol y color salen de datos). */

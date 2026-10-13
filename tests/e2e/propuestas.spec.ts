@@ -91,6 +91,59 @@ test.describe("/catalogo/propuestas", () => {
     ).toHaveAttribute("aria-pressed", "false");
   });
 
+  test("aprobar dice su consecuencia y arma el comando; aprobar tras revisar dice que queda registrada la revisión", async ({
+    page,
+  }) => {
+    const limpia = page
+      .locator(
+        '[data-propuesta]:has([data-controlador="decidir"][data-valor="aprobar"])',
+      )
+      .first();
+    const id = await limpia.getAttribute("data-propuesta");
+    await limpia
+      .locator('[data-controlador="decidir"][data-valor="aprobar"]')
+      .click();
+    await expect(limpia.locator('[data-si-decision="aprobar"]')).toBeVisible();
+    await expect(limpia.locator("[data-comando]")).toContainText(
+      `pnpm propuestas:decidir ${id} --decision aprobar `,
+    );
+    const marcada = page
+      .locator(
+        '[data-propuesta]:has([data-controlador="decidir"][data-valor="aprobar_tras_revisar"])',
+      )
+      .first();
+    const idMarcada = await marcada.getAttribute("data-propuesta");
+    await marcada
+      .locator(
+        '[data-controlador="decidir"][data-valor="aprobar_tras_revisar"]',
+      )
+      .click();
+    await expect(
+      marcada.locator('[data-si-decision="aprobar_tras_revisar"]'),
+    ).toContainText("la revisaste tú");
+    await expect(marcada.locator("[data-comando]")).toContainText(
+      `${idMarcada} --decision aprobar-tras-revisar`,
+    );
+  });
+
+  test("separar un texto que mezcla pruebas dice cuántas nacen y arma su comando", async ({
+    page,
+  }) => {
+    const mezcla = page
+      .locator(
+        '[data-propuesta]:has([data-controlador="decidir"][data-valor="separar"])',
+      )
+      .first();
+    const id = await mezcla.getAttribute("data-propuesta");
+    await mezcla
+      .locator('[data-controlador="decidir"][data-valor="separar"]')
+      .click();
+    await expect(mezcla.locator('[data-si-decision="separar"]')).toBeVisible();
+    await expect(mezcla.locator("[data-comando]")).toContainText(
+      `pnpm propuestas:decidir ${id} --decision separar`,
+    );
+  });
+
   test("sin desborde horizontal a 380 px", async ({ page }) => {
     await page.setViewportSize({ width: 380, height: 800 });
     await page.goto("/catalogo/propuestas");

@@ -81,6 +81,8 @@ function estadoDeMarcos(
       etiqueta: k.prop("vacio"),
       corrida: investigacion.corrida,
       fecha: investigacion.fecha,
+      leidas: investigacion.leidas,
+      noLeidas: investigacion.noLeidas,
     };
   return { tipo: "sin_registro", etiqueta: k.prop("sin_registro") };
 }

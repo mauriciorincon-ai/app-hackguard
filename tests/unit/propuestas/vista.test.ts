@@ -113,6 +113,11 @@ describe("las siete propuestas demo, como las ve la pantalla", () => {
     expect(fila("PROP-0035").cambio?.en).toContain("pyrit");
     expect(fila("PROP-0036").alAprobar.es).toContain("sobre por confirmar");
     expect(fila("PROP-0032").alAprobar.es).toContain("datos/marcos/");
+    // «Aprobar» a secas no escribe la revisión en la prueba: la firma y la fecha quedan en el libro de decisiones (auditoría S8).
+    const prueba = fila("PROP-0031").alAprobar;
+    expect(prueba.es).not.toContain("con tu firma");
+    expect(prueba.es).toContain("libro de decisiones");
+    expect(prueba.en).toContain("decision ledger");
   });
   it("un sobre trae el activo con su plan, la asociación, los veredictos que calculó la regla y la huella del texto, nunca el texto", () => {
     const s = fila("PROP-0036").sobre!;
@@ -371,9 +376,12 @@ describe("los avisos de versión como los ven las pantallas", () => {
     });
   });
   it("el mundo guarda la última corrida del investigador: sin ella, «ninguno» no se puede decir", () => {
+    // La demo consultó 10 páginas y 2 no se pudieron leer: «leyó 8 y no pudo leer 2».
     expect(base.investigacion).toEqual({
       corrida: "INV-2026-10-02-01",
       fecha: "2026-10-02",
+      leidas: 8,
+      noLeidas: 2,
     });
     expect(
       mundo({

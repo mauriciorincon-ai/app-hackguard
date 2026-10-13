@@ -32,6 +32,7 @@ import {
 import { cargarInstantaneaOficial } from "../catalogo/cargar-instantanea.ts";
 import { fechaDeConsulta } from "../catalogo/consulta.ts";
 import { fechaDelCommit } from "../catalogo/fecha-del-commit.ts";
+import type { Investigacion } from "./resumen.ts";
 import {
   cargarCorridas,
   cargarDecisiones,
@@ -61,7 +62,7 @@ export interface MundoDePropuestas {
   avisos: AvisoDeVersion[];
   criterios: CriterioEvaluado[];
   /** La corrida más reciente del investigador: sin ella nadie puede decir que un marco NO tiene versión nueva. */
-  investigacion: { corrida: string; fecha: string } | null;
+  investigacion: Investigacion | null;
 }
 
 /** La corrida más reciente del investigador (el nombre ordena por fecha y por número). */
@@ -72,9 +73,15 @@ function ultimaInvestigacion(
     .filter((c) => c.corrida.agente === "investigador")
     .map((c) => c.corrida)
     .sort((a, b) => (a.id < b.id ? 1 : a.id > b.id ? -1 : 0))[0];
-  return ultima === undefined
-    ? null
-    : { corrida: ultima.id, fecha: ultima.fecha };
+  if (ultima === undefined) return null;
+  const noLeidas = ultima.consulta.no_accesibles.length;
+  return {
+    corrida: ultima.id,
+    fecha: ultima.fecha,
+    // `consultadas` cuenta también las que dieron 403 o pidieron sesión: las leídas son las demás.
+    leidas: ultima.consulta.consultadas - noLeidas,
+    noLeidas,
+  };
 }
 
 export function armarMundoDePropuestas(e: {

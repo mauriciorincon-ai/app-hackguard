@@ -126,8 +126,8 @@ const AL_APROBAR: Record<FilaDePropuesta["tipo"], Bilingue> = {
     en: "Approved. It moves to evidence intake as an envelope to confirm: it does not count yet.",
   },
   prueba_nueva: {
-    es: "Aprobada. Queda «aprobada» en datos/pruebas/ y entra al catálogo en la próxima instantánea, con tu firma y la fecha.",
-    en: "Approved. It becomes “approved” in datos/pruebas/ and enters the catalog in the next snapshot, with your signature and the date.",
+    es: "Aprobada. Queda «aprobada» en datos/pruebas/ y entra al catálogo en la próxima instantánea; tu firma y la fecha quedan en el libro de decisiones.",
+    en: "Approved. It becomes “approved” in datos/pruebas/ and enters the catalog in the next snapshot; your signature and the date stay in the decision ledger.",
   },
   version_de_marco: {
     es: "Aprobada. Queda registrada tu decisión; el cambio de versión y su mapa de equivalencias lo haces tú en datos/marcos/.",

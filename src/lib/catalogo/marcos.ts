@@ -4,7 +4,10 @@
 // los nombres de las entradas de cada versión, la historia de instantáneas) no se inventa: se dice que no hay registro.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
 import { avisosDeMarco } from "../propuestas/avisos.ts";
-import { type ResumenDePropuestas } from "../propuestas/resumen.ts";
+import {
+  type Investigacion,
+  type ResumenDePropuestas,
+} from "../propuestas/resumen.ts";
 import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Bilingue, Etiqueta, VigenciaVista } from "./tipos.ts";
 import { etiqueta, porId, semaforoDe, vigenciaVista } from "./vista.ts";
@@ -83,7 +86,7 @@ export interface VistaDeMarcos {
   /** Los avisos de versión (RF-05.5): lo que dicen las propuestas del investigador, nunca una comparación a ciegas. */
   avisos: AvisoDeMarco[];
   /** La corrida del investigador que respalda «sin avisos», o `null` si ninguna corrió. */
-  investigacion: { corrida: string; fecha: string } | null;
+  investigacion: Investigacion | null;
   etiquetaDeAviso: Etiqueta;
   instantanea: string;
   huella: string;

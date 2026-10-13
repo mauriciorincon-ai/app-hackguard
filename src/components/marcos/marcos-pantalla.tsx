@@ -445,8 +445,19 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                 <span lang="es">
                   La corrida del investigador{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> del{" "}
-                  <Dato>{vista.investigacion.fecha}</Dato> no encontró una
-                  versión distinta de la del catálogo.
+                  <Dato>{vista.investigacion.fecha}</Dato> leyó{" "}
+                  <Dato>{vista.investigacion.leidas}</Dato> páginas
+                  {vista.investigacion.noLeidas > 0 ? (
+                    <>
+                      {" "}
+                      y no pudo leer <Dato>
+                        {vista.investigacion.noLeidas}
+                      </Dato>{" "}
+                      (esas no cuentan)
+                    </>
+                  ) : null}
+                  : en las que leyó no encontró una versión distinta de la del
+                  catálogo.
                 </span>
               ) : (
                 <T
@@ -460,8 +471,18 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                 <span lang="en">
                   The researcher&apos;s run{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> of{" "}
-                  <Dato>{vista.investigacion.fecha}</Dato> found no version
-                  different from the catalog&apos;s.
+                  <Dato>{vista.investigacion.fecha}</Dato> read{" "}
+                  <Dato>{vista.investigacion.leidas}</Dato> pages
+                  {vista.investigacion.noLeidas > 0 ? (
+                    <>
+                      {" "}
+                      and could not read{" "}
+                      <Dato>{vista.investigacion.noLeidas}</Dato> (those do not
+                      count)
+                    </>
+                  ) : null}
+                  : in the ones it read it found no version different from the
+                  catalog&apos;s.
                 </span>
               ) : null}
             </p>

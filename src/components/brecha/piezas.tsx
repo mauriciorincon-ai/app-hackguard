@@ -576,14 +576,30 @@ export function MarcosConVersionNueva({
         <Estado etiqueta={marcos.etiqueta} />{" "}
         <span lang="es">
           Marcos con versión nueva: ninguno, según la corrida del investigador{" "}
-          <Dato>{marcos.corrida}</Dato> del <Dato>{marcos.fecha}</Dato>. No es
-          una vigilancia continua: dice lo que esa corrida leyó ese día.
+          <Dato>{marcos.corrida}</Dato> del <Dato>{marcos.fecha}</Dato>, que
+          leyó <Dato>{marcos.leidas}</Dato> páginas
+          {marcos.noLeidas > 0 ? (
+            <>
+              {" "}
+              y no pudo leer <Dato>{marcos.noLeidas}</Dato> (esas no cuentan)
+            </>
+          ) : null}
+          . No es una vigilancia continua: dice lo que esa corrida leyó ese día.
         </span>
         <span lang="en">
           Frameworks with a new version: none, according to the
           researcher&apos;s run <Dato>{marcos.corrida}</Dato> of{" "}
-          <Dato>{marcos.fecha}</Dato>. It is not continuous monitoring: it says
-          what that run read that day.
+          <Dato>{marcos.fecha}</Dato>, which read <Dato>{marcos.leidas}</Dato>{" "}
+          pages
+          {marcos.noLeidas > 0 ? (
+            <>
+              {" "}
+              and could not read <Dato>{marcos.noLeidas}</Dato> (those do not
+              count)
+            </>
+          ) : null}
+          . It is not continuous monitoring: it says what that run read that
+          day.
         </span>
       </p>
     );

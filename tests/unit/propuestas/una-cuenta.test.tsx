@@ -178,15 +178,23 @@ describe("«marcos con versión nueva» es una sola cuenta", () => {
         tipo: "ninguno",
         corrida: "INV-2026-10-02-01",
         fecha: "2026-10-02",
+        leidas: 8,
+        noLeidas: 2,
       });
     expect(marcos.avisos).toEqual([]);
     expect(marcos.investigacion).toEqual({
       corrida: "INV-2026-10-02-01",
       fecha: "2026-10-02",
+      leidas: 8,
+      noLeidas: 2,
     });
     const html = renderToStaticMarkup(<BrechaPantalla v={brecha} />);
     expect(html).toContain('data-marcos="ninguno"');
     expect(html).toContain("INV-2026-10-02-01");
+    // «Ninguno» no suena a «todo revisado»: dice cuántas páginas leyó y cuántas no pudo leer.
+    expect(html).toContain("leyó");
+    expect(html).toContain("y no pudo leer");
+    expect(html).toContain("esas no cuentan");
   });
   it("sin ninguna corrida del investigador, ninguna dice «ninguno»: dicen que no hay registro", () => {
     const sin = armarMundoDePropuestas({
