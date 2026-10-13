@@ -4,10 +4,7 @@
 // los nombres de las entradas de cada versión, la historia de instantáneas) no se inventa: se dice que no hay registro.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
 import { avisosDeMarco } from "../propuestas/avisos.ts";
-import {
-  SIN_PROPUESTAS,
-  type ResumenDePropuestas,
-} from "../propuestas/resumen.ts";
+import { type ResumenDePropuestas } from "../propuestas/resumen.ts";
 import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Bilingue, Etiqueta, VigenciaVista } from "./tipos.ts";
 import { etiqueta, porId, semaforoDe, vigenciaVista } from "./vista.ts";
