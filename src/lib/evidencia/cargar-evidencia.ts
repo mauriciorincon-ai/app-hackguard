@@ -236,7 +236,8 @@ function cerrarCarpetasPrivadas(raiz: string, carpeta: string): void {
 
 /**
  * Escribe varios archivos de datos como UNO: todos a un archivo temporal y, solo si todos se escribieron, se renombran a su sitio. Si
- * uno falla, ninguno cambia (un sobre confirmado sin su hallazgo, o un lote sin sus sobres, son un libro a medias).
+ * uno falla (al escribir o al renombrar), ninguno cambia: los ya movidos vuelven a lo que eran y no queda un temporal (un sobre confirmado
+ * sin su hallazgo, o un lote sin sus sobres, son un libro a medias).
  */
 export function escribirDatosJuntos(
   raiz: string,
@@ -247,6 +248,8 @@ export function escribirDatosJuntos(
   }[],
 ): void {
   const temporales: { tmp: string; destino: string }[] = [];
+  // Lo que había antes de cada destino (o nada), para devolverlo si un renombrado falla a mitad.
+  let antes: ({ contenido: Buffer; modo: number } | null)[] = [];
   try {
     for (const a of archivos) {
       const destino = path.join(raiz, a.relativa);
@@ -261,9 +264,38 @@ export function escribirDatosJuntos(
       chmodSync(tmp, modo);
       temporales.push({ tmp, destino });
     }
+    antes = temporales.map((t) =>
+      existsSync(t.destino)
+        ? {
+            contenido: readFileSync(t.destino),
+            modo: statSync(t.destino).mode & 0o777,
+          }
+        : null,
+    );
   } catch (e) {
     for (const t of temporales) rmSync(t.tmp, { force: true });
     throw e;
   }
-  for (const t of temporales) renameSync(t.tmp, t.destino);
+  let movidos = 0;
+  try {
+    for (const t of temporales) {
+      renameSync(t.tmp, t.destino);
+      movidos += 1;
+    }
+  } catch (e) {
+    for (const [i, t] of temporales.entries()) {
+      if (i >= movidos) {
+        rmSync(t.tmp, { force: true });
+        continue;
+      }
+      const previo = antes[i];
+      if (previo === null || previo === undefined)
+        rmSync(t.destino, { force: true });
+      else {
+        writeFileSync(t.destino, previo.contenido, { mode: previo.modo });
+        chmodSync(t.destino, previo.modo);
+      }
+    }
+    throw e;
+  }
 }
