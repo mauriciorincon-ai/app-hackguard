@@ -211,18 +211,18 @@
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4369,
+      "valor": 4370,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3075 pruebas, y `pnpm test:e2e` 1294 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3076 pruebas, y `pnpm test:e2e` 1294 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3075,
+      "valor": 3076,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 153 archivos, 3075 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 153 archivos, 3076 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
