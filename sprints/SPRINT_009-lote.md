@@ -235,26 +235,26 @@ Ningún crítico. Cada fila dice su estado real: «pagado» con su commit y su t
 | S9-UI-B8 | B | `sprints/SPRINT_009-lote.md` (S7-B3) | fila contada como pagada, ya estaba en `main` | pagado d27dcd8 |
 | S9-UI-B9 | B | `serve.json`, `vercel.json` (`/conoce`) | `style-src 'unsafe-inline'` sin necesidad | pagado e5af179 · `documentos-del-hito.test` (hash del estilo) |
 | S9-E-A2 | A | `src/lib/evidencia/vista-de-carga.ts` (`comandos.confirmar`) | el comando de la pantalla lo bloquea el CLI (falta `--revisados`) | pagado 0e343f0 · `carga-vista.test` |
-| S9-E-A1 | A | `src/engine/propuestas/verificar.ts:363-374,458-462` | el filtro de órdenes sembradas se aplica a la página envuelta: una orden que cruza un salto de línea se escapa | abierta · relevo a Sonnet 5.5 |
-| S9-E-A3 | A | `scripts/cifras-del-export.mjs:183-203` | literales de cardinalidad en la prosa del export (familias, herramientas, «32», navegadores) | abierta · relevo a Sonnet 5.5 |
-| S9-E-M1 | M | `.claude/skills/investigar/SKILL.md:36-40` | la skill no consume el aporte (dice «volver a buscar», que no existe) | abierta · relevo a Sonnet 5.5 |
-| S9-E-M2 | M | `src/cli/propuestas.ts:277-385` (`aportar`) | acepta documentos de ISO/IEC 42001, cuya licencia no permite reproducir texto | abierta · **decisión del usuario** |
-| S9-E-M3 | M | `src/lib/propuestas/buscar.ts:126,134` | el tope de 5 MB solo mira `content-length` | abierta · relevo a Sonnet 5.5 |
-| S9-E-M4 | M | `src/cli/propuestas.ts:471-483` | el re-sellado se omite si falta la carpeta `.lecturas` entera | abierta · relevo a Sonnet 5.5 |
-| S9-E-M5 | M | `tests/unit/campos-con-lector.test.ts:28` | el patrón `\.frase\b` acepta un campo viejo: el gate no distingue | abierta · relevo a Sonnet 5.5 (con su demo) |
-| S9-E-M6 | M | `src/engine/propuestas/esquemas.ts:464,469` | `Aportes.corrida` no se valida contra la carpeta | abierta · relevo a Sonnet 5.5 |
-| S9-E-M7 | M | `src/lib/propuestas/vista.ts:352-363` | la señal `version_en_la_cita` se muestra como «cita sin verificar» | abierta · relevo a Sonnet 5.5 |
-| S9-E-M8 | M | `docs/brochure-export.json` | cifras de tests de antes de F3 | pagado al cierre (re-medida como último paso) |
-| S9-E-B1 | B | `src/engine/propuestas/verificar.ts` | marcas de instrucción duplicadas por página | abierta · relevo a Sonnet 5.5 |
-| S9-E-B2 | B | `tests/unit/brecha/calcular.test.ts` | aserción condicional que puede saltarse | abierta · relevo a Sonnet 5.5 |
-| S9-E-B3 | B | `src/cli/propuestas.ts:363-364` | la lectura se guarda antes de validar la fecha | abierta · relevo a Sonnet 5.5 |
-| S9-E-B4 | B | `src/lib/evidencia/cargar-evidencia.ts:270-298` | `rename` sin reversa a mitad del bucle | abierta · sin verificar la gravedad |
-| S9-E-B5 | B | `src/engine/propuestas/avisos.ts:5` | importa un valor de `verificar.ts` (arrastra el sellado) | abierta · relevo a Sonnet 5.5 |
-| S9-E-B6 | B | `src/lib/catalogo/etiquetas.ts` (`as unknown as`) | sin validación al cargar (la cubre el test) | abierta · relevo a Sonnet 5.5 |
-| S9-E-B7 | B | `tests/unit/carga-etiquetas.test.ts` | lista fija de 5 archivos; `nota.length > 20` casi vacío | abierta · relevo a Sonnet 5.5 |
-| S9-E-B8 | B | `src/engine/instrumento/cierres.ts` | `catch` de `RangeError` genérico | abierta · relevo a Sonnet 5.5 |
-| S9-E-B9 | B | `hooks.test`, `zap.test`, `ramas.test` | aserciones débiles o mal tituladas | abierta · relevo a Sonnet 5.5 |
-| S9-E-B10 | B | diff de tests | reformateo de más de 1400 líneas | sin acción (lo dice el auditor) |
-| S9-E-B11 | B | `decisions/011-…` | el formato `hackguard/aporte@1` no tiene nota de consecuencia | abierta · relevo a Sonnet 5.5 |
-| S9-E-B12 | B | `sprints/SPRINT_009-lote.md` (S8-F9) | el sitio citado no es el arreglo | abierta · relevo a Sonnet 5.5 |
-| S9-E-B13 | B | regla 15 | sin demo en rojo registrada para los gates unitarios nuevos | abierta · se registra en el cierre |
+| S9-E-A1 | A | `src/engine/propuestas/verificar.ts:363-374,458-462` | el filtro de órdenes sembradas se aplica a la página envuelta: una orden que cruza un salto de línea se escapa | pagado bd0c548 · `propuestas/verificar.test` (orden que cruza un salto de línea) · demo en rojo · corrida real re-sellada |
+| S9-E-A3 | A | `scripts/cifras-del-export.mjs:183-203` | literales de cardinalidad en la prosa del export (familias, herramientas, «32», navegadores) | pagado a48907e · `cifras-detalles.test` · demo en rojo |
+| S9-E-M1 | M | `.claude/skills/investigar/SKILL.md:36-40` | la skill no consume el aporte (dice «volver a buscar», que no existe) | pagado a48907e · `propuestas/aportar.test` (el skill cita `aportes.json`) · demo en rojo |
+| S9-E-M2 | M | `src/cli/propuestas.ts:277-385` (`aportar`) | acepta documentos de ISO/IEC 42001, cuya licencia no permite reproducir texto | abierta · **decisión del usuario** sin contestar: no se paga hasta que decida (rechazar el marco en `aportar` o anotarlo en ADR-011) |
+| S9-E-M3 | M | `src/lib/propuestas/buscar.ts:126,134` | el tope de 5 MB solo mira `content-length` | pagado 30676b3 · `propuestas/robustez.test` (tope por flujo) · demo en rojo |
+| S9-E-M4 | M | `src/cli/propuestas.ts:471-483` | el re-sellado se omite si falta la carpeta `.lecturas` entera | pagado 30676b3 · `propuestas/robustez.test` (carpeta a medias) · demo en rojo |
+| S9-E-M5 | M | `tests/unit/campos-con-lector.test.ts:28` | el patrón `\.frase\b` acepta un campo viejo: el gate no distingue | pagado 30676b3 · `campos-con-lector.test` anclado a la variable · demo en rojo |
+| S9-E-M6 | M | `src/engine/propuestas/esquemas.ts:464,469` | `Aportes.corrida` no se valida contra la carpeta | pagado 30676b3 · `propuestas/aportar.test` (otra corrida) y la bandeja muestra `caracteres` · demo en rojo |
+| S9-E-M7 | M | `src/lib/propuestas/vista.ts:352-363` | la señal `version_en_la_cita` se muestra como «cita sin verificar» | pagado 7cb97f3 · `propuestas/vista.test` · demo en rojo |
+| S9-E-M8 | M | `docs/brochure-export.json` | cifras de tests de antes de F3 | pagado al cierre (re-medida como último paso con `cifras-del-export`) |
+| S9-E-B1 | B | `src/engine/propuestas/verificar.ts` | marcas de instrucción duplicadas por página | pagado bd0c548 · `propuestas/verificar.test` (una marca por patrón) · demo en rojo |
+| S9-E-B2 | B | `tests/unit/brecha/calcular.test.ts` | aserción condicional que puede saltarse | pagado ee1a0f3 · `brecha/calcular.test` (incondicional) · demo en rojo |
+| S9-E-B3 | B | `src/cli/propuestas.ts:363-364` | la lectura se guarda antes de validar la fecha | pagado 30676b3 · `propuestas/aportar.test` (fecha inexistente) · demo en rojo |
+| S9-E-B4 | B | `src/lib/evidencia/cargar-evidencia.ts:270-298` | `rename` sin reversa a mitad del bucle | pagado 89315a8 · `lib/escritura-con-reversa.test` · demo en rojo |
+| S9-E-B5 | B | `src/engine/propuestas/avisos.ts:5` | importa un valor de `verificar.ts` (arrastra el sellado) | pagado 7cb97f3 (la señal vive en `senales.ts`) |
+| S9-E-B6 | B | `src/lib/catalogo/etiquetas.ts` (`as unknown as`) | sin validación al cargar (la cubre el test) | imposible sin romper un presupuesto: validar al cargar mete zod en el bundle del cliente (ADR-006); sitio: `tests/unit/etiquetas-de-vistas.test.ts` lo parsea con el mismo esquema en cada CI |
+| S9-E-B7 | B | `tests/unit/carga-etiquetas.test.ts` | lista fija de 5 archivos; `nota.length > 20` casi vacío | pagado ee1a0f3 · `carga-etiquetas.test` (recorre `datos/**/etiquetas*.json`) · demo en rojo |
+| S9-E-B8 | B | `src/engine/instrumento/cierres.ts` | `catch` de `RangeError` genérico | pagado ee1a0f3 · `instrumento/semillas-de-cierre.test` · demo en rojo |
+| S9-E-B9 | B | `hooks.test`, `zap.test`, `ramas.test` | aserciones débiles o mal tituladas | pagado ee1a0f3 · `hooks.test`, `zap.test` (la versión más vieja se rechaza), `ramas.test` · tres demos en rojo |
+| S9-E-B10 | B | diff de tests | reformateo de más de 1400 líneas | sin acción (lo dice el auditor: es reformateo) |
+| S9-E-B11 | B | `decisions/011-…` | el formato `hackguard/aporte@1` no tiene nota de consecuencia | pagado 5f438df |
+| S9-E-B12 | B | `sprints/SPRINT_009-lote.md` (S8-F9) | el sitio citado no es el arreglo | pagado 5f438df |
+| S9-E-B13 | B | regla 15 | sin demo en rojo registrada para los gates unitarios nuevos | pagado · demos en rojo de `titulos`, `etiquetas-en-componentes`, `arquitectura` y `campos-con-lector` ejecutadas en F3 |
