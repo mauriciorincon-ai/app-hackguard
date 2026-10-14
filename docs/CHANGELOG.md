@@ -16,6 +16,8 @@ The closing sprint of milestone H-1: the debt of seven sprints paid, the archite
 - **`docs/BLUEPRINT.html`** (as built), **`decisions/README.md`** (the ADR index), **`design-system.md` 1.1.0**, the refreshed **`docs/brochure-export.json`** and **`docs/BROCHURE.html`**, with **`scripts/cifras-del-export.mjs`** taking every figure from a command.
 - **`scripts/verificar-salida-publicada.mjs --publico`:** fails if a public package carries the mockup or anything private.
 - **`tests/unit/frases-caducadas.test.ts`, `etiquetas-en-componentes.test.ts`, `campos-con-lector.test.ts`:** the transversal gates that keep the debt paid.
+- **The main flow in English** (`tests/e2e/flujo-en.spec.ts`): catalog, a record, frameworks, controls, asset and plan, intake, finding, dashboard, gap, control, report and inbox, each with no visible Spanish outside neutral data and no serious axe violation.
+- **«Gate del H-1» opens the guide:** 29 short-gate stops grouped by screen family, numbered 1 to 29 and checked by a test, with their minutes (about 56, above the 20-minute target: the closing declares it and proposes two sessions).
 
 ### Changed
 
@@ -23,6 +25,9 @@ The closing sprint of milestone H-1: the debt of seven sprints paid, the archite
 - **Evidence:** counts must add up, any failing count fails a deterministic check, a corrector cannot lower the retest bar, ZAP warns outside its tested version, confirming a finding or importing a batch writes all or nothing, and private folders close to 0700 even if they existed.
 - **The intake counts only what is still proposed** and compares verdicts by id; the e2e pins its query date.
 - **Explicit test timeouts are gone** (the slowest test takes 1.0 s against the 5 s default) and a gate fails the next one that raises its own.
+- **Audit of the sprint, paid inside it:** the planted-order filter reads a page with its spaces normalized (an order across a wrapped line no longer slips through) and a downloaded page stops at 5 MB even without a declared length; `validar` decides resealing per run from the readings it cites; a contributed file must name its own run; a version outside a verified quote says so in its own words in the inbox.
+- **`/conoce`:** a `main` landmark, regions that exist only when a card is open, print shows every section, the language buttons say their visible text, and the policy hashes the one script and the one style (no `unsafe-inline` for styles on that route).
+- **The lot's confirm command** now carries `--revisados N`, the count the CLI asks for, and the evidence files are written all or nothing even if a rename fails halfway.
 
 ### Not in this sprint
 
