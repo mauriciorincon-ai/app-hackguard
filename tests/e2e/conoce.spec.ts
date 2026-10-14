@@ -147,7 +147,11 @@ test.describe("/conoce", () => {
       test(`sin violaciones serias de accesibilidad con el tema ${tema} en ${idioma ? "inglés" : "español"}`, async ({
         page,
       }) => {
-        await page.emulateMedia({ colorScheme: tema });
+        // Con movimiento reducido el contenido está quieto y completo. Con animación, axe puede medir una sección a medio aparecer (la opacidad
+        // parcial mezcla el color del texto con el del fondo) y en una máquina lenta da un contraste de 1,1 que la pieza no tiene: pasó en la CI del
+        // PR #23 y se reprodujo FUERA de esta suite con la CPU a x6 (4 de 5 corridas en rojo con animación, 0 de 5 con movimiento reducido). Dentro
+        // de la suite el fallo no se reproduce a voluntad, así que esta prueba no lo demuestra: lo evita midiendo siempre el estado final.
+        await page.emulateMedia({ colorScheme: tema, reducedMotion: "reduce" });
         await page.goto("/conoce");
         if (idioma) await page.getByRole("button", { name: idioma }).click();
         // todo abierto: el contraste de lo que hoy está cerrado también se mide
@@ -156,9 +160,7 @@ test.describe("/conoce", () => {
         await page.evaluate(() =>
           document.querySelectorAll("details").forEach((d) => (d.open = true)),
         );
-        const serias = (
-          await new AxeBuilder({ page }).analyze()
-        ).violations;
+        const serias = (await new AxeBuilder({ page }).analyze()).violations;
         expect(serias, JSON.stringify(serias.map((v) => v.id))).toEqual([]);
       });
 
