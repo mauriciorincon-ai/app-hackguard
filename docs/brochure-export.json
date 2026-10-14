@@ -182,7 +182,7 @@
       "valor": 18,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto de las 32 son del roadmap o de la vitrina para terceros y no se han construido."
+      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -211,34 +211,34 @@
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4260,
+      "valor": 4369,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3002 pruebas, y `pnpm test:e2e` 1258 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3075 pruebas, y `pnpm test:e2e` 1294 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3002,
+      "valor": 3075,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 150 archivos, 3002 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 153 archivos, 3075 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1258,
+      "valor": 1294,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-10-13 (10 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-10-13 (12 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 97.5,
+      "valor": 97.53,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/ en la corrida de `pnpm test` del 2026-10-13: 4648 de 4767 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-10-13: 4697 de 4816 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
@@ -262,7 +262,7 @@
       "valor": 13,
       "unidad": "herramientas",
       "fuente": "medido",
-      "detalle": "Archivos de datos/herramientas/ del 2026-10-13: 12 públicas con versión verificada y licencia, más la revisión documentada por una persona."
+      "detalle": "Archivos de datos/herramientas/ del 2026-10-13: 12 públicas con versión verificada y licencia, más 1 propia de HackGuard (la revisión documentada por una persona)."
     },
     {
       "clave": "pruebas_de_software_sin_control",
