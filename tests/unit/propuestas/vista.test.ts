@@ -325,6 +325,49 @@ describe("los campos del contrato tienen su lector en la pantalla (auditoría S8
     expect(fila("PROP-0032", w).fuentes[1]!.aportada).toBeNull();
     expect(fila("PROP-0032").fuentes[0]!.aportada).toBeNull();
   });
+  // S9-E-M7: la señal entra como `cita_no_verificada`, pero la persona lee su razón: todas las fuentes pueden estar verificadas.
+  it("la versión fuera de la cita dice su propia razón y no «una cita sin verificar»", () => {
+    const original = base.corridas.find(
+      (c) => c.corrida.agente === "investigador",
+    )!;
+    const propuestas = original.corrida.propuestas.map((x) =>
+      x.id === "PROP-0032"
+        ? {
+            ...x,
+            pausa: {
+              marca_instruccion: false,
+              veredicto_sugerido: null,
+              motivos: [
+                {
+                  motivo: "cita_no_verificada" as const,
+                  senal: "version_en_la_cita",
+                  umbral: 0,
+                },
+              ],
+            },
+          }
+        : x,
+    );
+    const w = construirVistaDePropuestas(
+      mundo({
+        corridas: base.corridas.map((c) =>
+          c === original
+            ? { ...original, corrida: { ...original.corrida, propuestas } }
+            : c,
+        ),
+      }),
+    );
+    const razones = fila("PROP-0032", w).motivos.map(
+      (m) => m.etiqueta.nombre.es,
+    );
+    expect(razones).toEqual([
+      "La versión nueva no está dentro de un pasaje verificado",
+    ]);
+    // Una cita sin verificar de verdad sigue diciendo lo suyo.
+    expect(
+      fila("PROP-0032").motivos.map((m) => m.etiqueta.nombre.es),
+    ).not.toContain("La versión nueva no está dentro de un pasaje verificado");
+  });
   it("la corrida dice lo que costó cuando lo midió", () => {
     const conCosto = v.corridas.filter((c) => c.ejecucion !== null);
     for (const c of conCosto)

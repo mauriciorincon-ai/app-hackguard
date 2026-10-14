@@ -2,6 +2,7 @@
 // se recalcula aquí: el estado de cada propuesta, la cuenta de «por decidir», los avisos y el veredicto de cada candidata salen del motor
 // (`bandeja`, `porDecidir`, la regla del catálogo); esta capa los nombra con `datos/propuestas/etiquetas.json` y el vocabulario de
 // estados del catálogo y los ordena. Aprobar o rechazar NO se hace aquí: la pantalla arma el comando que registra la decisión.
+import { SENAL_VERSION_EN_LA_CITA } from "../../engine/propuestas/senales.ts";
 import { senalesConDecision } from "../../engine/propuestas/decisiones.ts";
 import type {
   Aporte,
@@ -364,7 +365,15 @@ function filaDe(
           x.motivo !== "instruccion_marcada",
       )
       .map((x): MotivoVista => ({
-        etiqueta: motivoDe(m, x.motivo),
+        // La versión fuera de la cita entra como `cita_no_verificada` con su señal, pero dice su propia razón (todas las fuentes pueden
+        // estar verificadas y la versión nueva no estar en ningún pasaje).
+        etiqueta:
+          x.senal === SENAL_VERSION_EN_LA_CITA
+            ? etiquetaDePropuesta(
+                m.etiquetas,
+                "motivo_version_fuera_de_la_cita",
+              )
+            : motivoDe(m, x.motivo),
         umbral: x.umbral,
       })),
     sobre,

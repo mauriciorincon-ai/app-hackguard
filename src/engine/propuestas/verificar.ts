@@ -8,6 +8,7 @@ import type { PatronCompilado } from "../catalogo/filtro.ts";
 import { filtrar, type Marca } from "../catalogo/filtro.ts";
 import { huella } from "../huella.ts";
 import { antiguedadDelMarco } from "./antiguedad.ts";
+import { SENAL_VERSION_EN_LA_CITA } from "./senales.ts";
 import {
   huellaDeTexto,
   normalizarEspacios,
@@ -310,9 +311,6 @@ interface Ejecucion {
   latencia_total_s: number | null;
   tokens: number | null;
 }
-
-/** La señal con la que una `version_de_marco` queda en pausa porque su versión nueva no está en un pasaje verificado (RF-07.5). */
-export const SENAL_VERSION_EN_LA_CITA = "version_en_la_cita";
 
 async function sellarPropuesta(
   p: BorradorDePropuesta,

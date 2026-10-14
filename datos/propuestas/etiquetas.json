@@ -159,6 +159,15 @@
       }
     },
     {
+      "id": "motivo_version_fuera_de_la_cita",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "La versión nueva no está dentro de un pasaje verificado",
+        "en": "The new version is not inside a verified passage"
+      }
+    },
+    {
       "id": "motivo_marco_antiguo",
       "rol": "atencion",
       "simbolo": "aviso",

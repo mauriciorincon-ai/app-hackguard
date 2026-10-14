@@ -2,7 +2,8 @@
 // propuestas `version_de_marco`, no de una comparación a ciegas: la propuesta guarda el pasaje literal de la fuente que dice la versión
 // nueva, y el código ya comprobó que ese pasaje está en la página Y que la versión nueva está dentro del pasaje (si no, no avisa). Un aviso no cambia nada por su cuenta (regla 2).
 import type { PropuestaSellada } from "./esquemas.ts";
-import { SENAL_VERSION_EN_LA_CITA, type DatosDeMarco } from "./verificar.ts";
+import { SENAL_VERSION_EN_LA_CITA } from "./senales.ts";
+import type { DatosDeMarco } from "./verificar.ts";
 
 export interface AvisoDeVersion {
   marco: string;
