@@ -2,7 +2,7 @@
 // Las etiquetas de estado de la carga son dato (regla dura 12: símbolo + texto + color, y el color es un rol que sale de
 // `datos/evidencia/etiquetas-de-carga.json`): el esquema exige cada etiqueta una vez y su versión. Que ningún componente escriba un
 // rol de color a mano lo vigila `etiquetas-en-componentes.test.ts`, para todas las pantallas.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { ROLES, SIMBOLOS } from "../../src/engine/catalogo/esquemas.ts";
@@ -70,13 +70,17 @@ describe("el archivo de etiquetas de la carga", () => {
   });
 
   it("cada archivo de etiquetas declara su versión y su nota en los dos idiomas (la nota es su documentación, no un campo de pantalla)", () => {
-    for (const f of [
-      "datos/brecha/etiquetas.json",
-      "datos/evidencia/etiquetas-de-carga.json",
-      "datos/hallazgos/etiquetas.json",
-      "datos/planificador/etiquetas.json",
-      "datos/propuestas/etiquetas.json",
-    ]) {
+    // Se recorren los archivos que hay, no una lista: un archivo de etiquetas nuevo entra solo a esta comprobación (S9-E-B7).
+    const archivos = readdirSync(path.join(RAIZ, "datos"), { recursive: true })
+      .map((n) => `datos/${String(n)}`)
+      .filter(
+        (n) =>
+          /(^|\/)etiquetas[^/]*\.json$/.test(n) &&
+          !n.startsWith("datos/privado/"),
+      )
+      .sort();
+    expect(archivos.length).toBeGreaterThan(0);
+    for (const f of archivos) {
       const d = JSON.parse(readFileSync(path.join(RAIZ, f), "utf8")) as {
         version: string;
         nota: { es: string; en: string };
@@ -84,6 +88,8 @@ describe("el archivo de etiquetas de la carga", () => {
       expect(d.version, f).toBe("1");
       expect(d.nota.es.length, f).toBeGreaterThan(20);
       expect(d.nota.en.length, f).toBeGreaterThan(20);
+      // Redactada en cada idioma, no copiada de uno al otro.
+      expect(d.nota.en, f).not.toBe(d.nota.es);
     }
   });
 });

@@ -290,8 +290,15 @@ describe("qué mueve a la brecha", () => {
         f0.controles.includes(x.id),
       )) {
         expect(c.fallas).not.toContain("HZ-0007");
-        if (c.fallas.length === 0) expect(c.estado).not.toBe("con_fallas");
       }
+      // Incondicional (S9-E-B2): el control de esa falla, que no tiene otro hallazgo, ya no queda «con fallas». Si los datos cambian y esto
+      // deja de ser cierto, la prueba falla en voz alta en vez de saltarse la aserción.
+      expect(f0.controles).toEqual(["iso42001-A.6.2.4"]);
+      const control = despues.controles.find(
+        (x) => x.id === "iso42001-A.6.2.4",
+      )!;
+      expect(control.fallas).toEqual([]);
+      expect(control.estado).not.toBe("con_fallas");
     }
   });
 

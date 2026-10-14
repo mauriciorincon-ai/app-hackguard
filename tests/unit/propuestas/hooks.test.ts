@@ -789,7 +789,20 @@ describe("los subagentes: Sonnet, sin red, con sus hooks", () => {
         ).matchAll(/command: '(.*)'$/gm),
       ].map((m) => m[1]!),
     );
-    expect(comandos.length).toBe(4);
+    // Cuántos hay lo dice lo que cada agente DECLARA (`- type: command`), no un número escrito aquí (S9-E-B9): un hook nuevo entra solo.
+    const declarados = ["investigador", "extractor"].reduce(
+      (n, a) =>
+        n +
+        (
+          readFileSync(
+            path.join(RAIZ, ".claude", "agents", `${a}.md`),
+            "utf8",
+          ).match(/- type: command/g) ?? []
+        ).length,
+      0,
+    );
+    expect(declarados).toBeGreaterThan(0);
+    expect(comandos.length).toBe(declarados);
     for (const comando of comandos) {
       // Sin `node` en el PATH: un hook que no arranca no puede dejar pasar.
       const sinNode = spawnSync("/bin/sh", ["-c", comando], {

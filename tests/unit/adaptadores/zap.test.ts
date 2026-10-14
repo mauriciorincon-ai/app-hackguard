@@ -339,9 +339,21 @@ describe("la versión de ZAP fuera del rango probado avisa (S6-B6)", () => {
   it("la versión probada no avisa", () => {
     expect(avisos(DERIVADA)).not.toContain("fuera del rango probado");
   });
-  it("una versión más nueva o más vieja avisa con su número", () => {
+  it("una versión más nueva avisa con su número", () => {
     expect(avisos(conVersion("2.18.0"))).toContain(
       "ZAP 2.18.0 está fuera del rango probado",
+    );
+  });
+  // S9-E-B9: el título decía «más nueva o más vieja» y solo probaba la nueva. Una más vieja que la mínima del catálogo no avisa: se RECHAZA.
+  it("una versión más vieja que la mínima del catálogo se rechaza, no solo avisa", () => {
+    const l = leer(conVersion("2.16.0"), "2.17.0");
+    expect(l.ok).toBe(false);
+    if (!l.ok) expect(l.motivo).toBe("version_menor_que_la_minima");
+  });
+  it("sin mínima en el catálogo, una versión más vieja avisa con su número", () => {
+    const c = corrida(conVersion("2.16.0"), null);
+    expect(c.advertencias.map((a) => a.es).join(" | ")).toContain(
+      "ZAP 2.16.0 está fuera del rango probado",
     );
   });
   it("«Dev Build» no se puede comparar y lo dice", () => {

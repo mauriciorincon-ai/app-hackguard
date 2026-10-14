@@ -440,11 +440,10 @@ describe("las hijas de un texto que mezcla, con sus motivos propios", () => {
     );
     if (!r.ok) throw new Error(r.motivo);
     expect(r.entrada.ejecutado_por).toBe("Beto");
-    expect(
-      (r.entrada.advertencias ?? []).some((x) =>
-        x.es.includes("Quién ejecutó"),
-      ),
-    ).toBe(false);
+    const avisos = (r.entrada.advertencias ?? []).map((x) => x.es);
+    // La lista no está vacía (si lo estuviera, la ausencia de «Quién ejecutó» no diría nada): trae la de la zona horaria, y no la de quién aprobó.
+    expect(avisos.some((t) => t.includes("zona horaria"))).toBe(true);
+    expect(avisos.some((t) => t.includes("Quién ejecutó"))).toBe(false);
   });
   it("el sobre no calla lo que ninguna cita verificada respalda: siempre avisa de la zona horaria, y de la fecha y la versión si su cita no se verificó", () => {
     const sobreDe = () => {

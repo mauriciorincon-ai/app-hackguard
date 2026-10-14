@@ -1,7 +1,11 @@
 // La validación del instrumento para el libro y la brecha (C18): corre cada semilla de cierre contra el mundo demo y dice si el
 // motor respondió lo que se esperaba. Es la prueba de que HackGuard hace lo que promete: un cierre prohibido se niega con su
 // motivo, y «no detectado» no cuenta como verificado. Código puro (regla dura 1): ninguna semilla lee el reloj ni un archivo.
-import { armarBrecha, type EntradaDeBrecha } from "../brecha/calcular.ts";
+import {
+  armarBrecha,
+  ErrorDeEntradaDeBrecha,
+  type EntradaDeBrecha,
+} from "../brecha/calcular.ts";
 import type { SobreEfectivo } from "../evidencia/esquemas.ts";
 import { evaluarHallazgo } from "../hallazgos/ciclo.ts";
 import { comparar } from "../planificador/orden.ts";
@@ -96,7 +100,7 @@ export function correrSemilla(
   } catch (e) {
     // Una semilla con un sobre fechado después de la consulta no se puede armar (la brecha lo rechaza): es una DIFERENCIA con su motivo,
     // no un build que muere con una traza (S7-B2).
-    if (!(e instanceof RangeError)) throw e;
+    if (!(e instanceof ErrorDeEntradaDeBrecha)) throw e;
     return {
       id: semilla.id,
       requisito: semilla.requisito,

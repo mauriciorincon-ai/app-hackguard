@@ -225,7 +225,7 @@ export const edadDe = (
 ): EdadDeEvidencia => {
   const dias = diasEntre(fecha, consulta);
   if (dias < 0)
-    throw new RangeError(
+    throw new ErrorDeEntradaDeBrecha(
       `la evidencia (${fecha}) es posterior a la fecha de consulta (${consulta})`,
     );
   return { dias, estado: dias >= umbral ? "antigua" : "vigente" };
@@ -235,6 +235,15 @@ const porPruebaYFecha = (a: SobreEfectivo, b: SobreEfectivo) =>
   comparar(a.fecha, b.fecha) || comparar(a.id, b.id);
 
 /** La brecha sin sellar: toda la cuenta, ordenada y sin huella. */
+
+/**
+ * La entrada de la brecha no se puede armar (un sobre fechado después de la consulta, un dato que falta). Sigue siendo un `RangeError`
+ * (los consumidores que ya lo atrapan no cambian), pero se distingue de un desbordamiento de pila o de cualquier otro `RangeError` ajeno.
+ */
+export class ErrorDeEntradaDeBrecha extends RangeError {
+  override name = "ErrorDeEntradaDeBrecha";
+}
+
 export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
   const problemas: string[] = [];
   const pruebas = new Map(e.pruebas.map((p) => [p.id, p] as const));
@@ -243,7 +252,7 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
   const confirmados = e.libro.filter((s) => s.confirmacion !== null);
   for (const s of confirmados)
     if (diasEntre(s.fecha, e.consulta) < 0)
-      throw new RangeError(
+      throw new ErrorDeEntradaDeBrecha(
         `el sobre ${s.id} (${s.fecha}) es posterior a la fecha de consulta (${e.consulta})`,
       );
   const corregidos = new Set(
@@ -301,7 +310,7 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
       const ejecutada = veredicto !== null && EJECUTADOS.includes(veredicto);
       const diasDeFicha = diasEntre(prueba.fecha_verificacion, e.consulta);
       if (diasDeFicha < 0)
-        throw new RangeError(
+        throw new ErrorDeEntradaDeBrecha(
           `la ficha ${prueba.id} se verificó (${prueba.fecha_verificacion}) después de la fecha de consulta (${e.consulta})`,
         );
       const edad =
