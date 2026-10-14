@@ -16,5 +16,7 @@ docs/*.plantilla.*
 datos/instantaneas/
 # Anexo de reglas del kit: se mantiene con el formato del kit.
 docs/REGLAS-ANEXO.md
+# Contrato de la ficha técnica de CV Viva copiado de app-hoja-de-vida sin tocar un byte (tests/unit/brochure-export.test.ts lo compara).
+tests/unit/lib/ficha-tecnica.schema.json
 # Código de FIRST copiado sin tocar un byte y el módulo que lo envuelve (scripts/severidad/vendor-first.mjs): un formateador cambiaría sus huellas.
 src/engine/severidad/vendor/

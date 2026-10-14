@@ -295,16 +295,12 @@
       "papel": "exportación estática, TypeScript en modo estricto y las dos lenguas en el árbol desde el primer día"
     },
     {
-      "nombre": "JSON versionado con huella",
-      "papel": "el conocimiento es dato: marcos, controles, herramientas y pruebas en archivos, congelados con JSON canónico (RFC 8785) y SHA-256"
+      "nombre": "JSON versionado con huella y Zod",
+      "papel": "marcos, controles, herramientas y pruebas en archivos con huella (JSON canónico, SHA-256); Zod rechaza al cargar lo incompleto y valida lo que escribe un agente"
     },
     {
       "nombre": "Núcleo determinista",
       "papel": "catálogo, plan, evidencia, severidad y brecha son código puro: misma entrada, mismos bytes en Node y en tres navegadores"
-    },
-    {
-      "nombre": "Zod",
-      "papel": "esquemas que rechazan al cargar lo que está incompleto y que validan todo lo que escribe un agente"
     },
     {
       "nombre": "Node (TypeScript nativo)",
@@ -323,12 +319,8 @@
       "papel": "estilos y verificación de accesibilidad en los dos temas y a 380 píxeles"
     },
     {
-      "nombre": "Sentry",
-      "papel": "observabilidad de metadatos solo desde el cliente; inerte mientras no tenga un DSN configurado"
-    },
-    {
-      "nombre": "Vercel",
-      "papel": "hosting estático con protección en todos los despliegues"
+      "nombre": "Vercel y Sentry",
+      "papel": "hosting estático con protección en todos los despliegues; observabilidad de metadatos solo desde el cliente, inerte mientras no tenga un DSN configurado"
     }
   ],
   "privacidad": {
