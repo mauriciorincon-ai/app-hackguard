@@ -580,7 +580,7 @@ export function MarcosConVersionNueva({
         <span lang="es">
           Marcos con versión nueva: ninguno, según la corrida del investigador{" "}
           <Dato>{marcos.corrida}</Dato> del <Dato>{marcos.fecha}</Dato>, que
-          leyó <Dato>{marcos.leidas}</Dato> páginas
+          leyó <Dato>{marcos.leidas}</Dato> {marcos.leidas === 1 ? "página" : "páginas"}
           {marcos.noLeidas > 0 ? (
             <>
               {" "}
@@ -593,7 +593,7 @@ export function MarcosConVersionNueva({
           Frameworks with a new version: none, according to the
           researcher&apos;s run <Dato>{marcos.corrida}</Dato> of{" "}
           <Dato>{marcos.fecha}</Dato>, which read <Dato>{marcos.leidas}</Dato>{" "}
-          pages
+          {marcos.leidas === 1 ? "page" : "pages"}
           {marcos.noLeidas > 0 ? (
             <>
               {" "}

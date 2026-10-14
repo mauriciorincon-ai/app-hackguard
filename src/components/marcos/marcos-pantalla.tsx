@@ -426,7 +426,7 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                   La corrida del investigador{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> del{" "}
                   <Dato>{vista.investigacion.fecha}</Dato> leyó{" "}
-                  <Dato>{vista.investigacion.leidas}</Dato> páginas
+                  <Dato>{vista.investigacion.leidas}</Dato> {vista.investigacion.leidas === 1 ? "página" : "páginas"}
                   {vista.investigacion.noLeidas > 0 ? (
                     <>
                       {" "}
@@ -452,7 +452,7 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                   The researcher&apos;s run{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> of{" "}
                   <Dato>{vista.investigacion.fecha}</Dato> read{" "}
-                  <Dato>{vista.investigacion.leidas}</Dato> pages
+                  <Dato>{vista.investigacion.leidas}</Dato> {vista.investigacion.leidas === 1 ? "page" : "pages"}
                   {vista.investigacion.noLeidas > 0 ? (
                     <>
                       {" "}

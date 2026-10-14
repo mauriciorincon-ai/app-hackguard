@@ -40,8 +40,8 @@ export function Conmutadores() {
       : "Cambiar entre tema oscuro y claro";
   const etiquetaIdioma =
     idioma === "en"
-      ? "Switch the language to Spanish"
-      : "Cambiar el idioma a inglés";
+      ? "EN · Switch the language to Spanish"
+      : "ES · Cambiar el idioma a inglés";
   return (
     <div className="hg-ajustes">
       <button

@@ -34,9 +34,23 @@ export function scriptEnLinea(html) {
 export const huellaDelScript = (html) =>
   `sha256-${createHash("sha256").update(scriptEnLinea(html)).digest("base64")}`;
 
-/** La política de /conoce: solo el script cuya huella se declara; todo lo demás, como la maqueta. */
-export const cspDelBrochure = (huella) =>
-  `default-src 'self'; script-src '${huella}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'`;
+/** El contenido del único <style> del brochure. Sin él, la hoja de /conoce tendría que abrirse con 'unsafe-inline'. */
+export function estiloEnLinea(html) {
+  const sinComentarios = html.replace(/<!--[\s\S]*?-->/g, "");
+  const estilos = [...sinComentarios.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)];
+  if (estilos.length !== 1)
+    throw new Error(`el brochure debe llevar exactamente un <style>, lleva ${estilos.length}`);
+  if (/\bstyle\s*=/.test(sinComentarios.replace(/<style[\s\S]*?<\/style>/g, "")))
+    throw new Error("el brochure no puede llevar atributos style=: su hoja es el único CSS");
+  return estilos[0][2];
+}
+
+export const huellaDelEstilo = (html) =>
+  `sha256-${createHash("sha256").update(estiloEnLinea(html)).digest("base64")}`;
+
+/** La política de /conoce: solo el script y el estilo cuyas huellas se declaran; todo lo demás, como la maqueta. */
+export const cspDelBrochure = (huella, estilo) =>
+  `default-src 'self'; script-src '${huella}'; style-src '${estilo}'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'`;
 
 /** Lee la huella que declara una cabecera de /conoce, o null si no hay. */
 export function huellaDeclarada(politica) {
@@ -55,14 +69,14 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  const huella = huellaDelScript(
-    readFileSync(join(RAIZ, "docs/BROCHURE.html"), "utf8"),
-  );
+  const html = readFileSync(join(RAIZ, "docs/BROCHURE.html"), "utf8");
+  const huella = huellaDelScript(html);
+  const estilo = huellaDelEstilo(html);
   const serve = JSON.parse(readFileSync(join(RAIZ, "serve.json"), "utf8"));
   const vercel = JSON.parse(readFileSync(join(RAIZ, "vercel.json"), "utf8"));
   if (process.argv.includes("--escribir")) {
     const nueva = [
-      { key: "Content-Security-Policy", value: cspDelBrochure(huella) },
+      { key: "Content-Security-Policy", value: cspDelBrochure(huella, estilo) },
     ];
     const a = cabeceraServe(serve);
     if (a) a.headers = nueva;

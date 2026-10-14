@@ -81,7 +81,7 @@ describe("Conmutadores", () => {
   it("el botón de idioma alterna data-lang y lang, guarda la preferencia y cambia su propio nombre accesible", async () => {
     render(<Conmutadores />);
     fireEvent.click(
-      screen.getByRole("button", { name: "Cambiar el idioma a inglés" }),
+      screen.getByRole("button", { name: "ES · Cambiar el idioma a inglés" }),
     );
     expect(raiz.getAttribute("data-lang")).toBe("en");
     expect(raiz.getAttribute("lang")).toBe("en");
@@ -89,7 +89,7 @@ describe("Conmutadores", () => {
     // El nombre accesible sigue al idioma activo (lo observa un MutationObserver).
     expect(
       await screen.findByRole("button", {
-        name: "Switch the language to Spanish",
+        name: "EN · Switch the language to Spanish",
       }),
     ).toBeTruthy();
     expect(

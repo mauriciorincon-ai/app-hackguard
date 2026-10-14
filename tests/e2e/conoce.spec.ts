@@ -54,9 +54,31 @@ test.describe("/conoce", () => {
     const region = page.getByRole("region", {
       name: /Un catálogo que no miente/,
     });
-    await expect(region).toBeHidden();
+    await expect(region).toHaveCount(0);
     await page.locator(".tarjeta-boton").first().click();
-    await expect(region).toBeVisible();
+    await expect(region).toHaveCount(1);
+  });
+
+  // Al imprimir, las secciones que aún no se revelaron en pantalla también salen: ninguna queda en blanco en el papel.
+  test("al imprimir, todo el brochure sale: ninguna sección queda en blanco", async ({
+    page,
+  }) => {
+    await page.goto("/conoce");
+    // Antes de imprimir, la última sección (fuera de pantalla) debe estar oculta: si no, la hoja no se está aplicando
+    // (la CSP la bloquea si la huella no coincide) y la lectura de abajo no dice nada.
+    await expect(page.locator(".revela").last()).toHaveCSS("opacity", "0");
+    await page.emulateMedia({ media: "print" });
+    // Lectura síncrona: se quita «visto» (lo que pone el observador) y la transición, y se lee en ese mismo instante.
+    // Así la prueba no depende de si el observador llegó a revelar la sección antes de imprimir.
+    const opacidades = await page.locator(".revela").evaluateAll((els) =>
+      els.map((e) => {
+        e.style.transition = "none";
+        e.classList.remove("visto");
+        return getComputedStyle(e).opacity;
+      }),
+    );
+    expect(opacidades.length).toBeGreaterThan(0);
+    expect(opacidades.filter((o) => o !== "1")).toEqual([]);
   });
 
   test("las cuatro tarjetas llevan las funciones del export, todas", async ({
@@ -136,9 +158,7 @@ test.describe("/conoce", () => {
         );
         const serias = (
           await new AxeBuilder({ page }).analyze()
-        ).violations.filter(
-          (v) => v.impact === "critical" || v.impact === "serious",
-        );
+        ).violations;
         expect(serias, JSON.stringify(serias.map((v) => v.id))).toEqual([]);
       });
 

@@ -8,6 +8,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   cspDelBrochure,
+  huellaDelEstilo,
   huellaDeclarada,
   huellaDelScript,
   scriptEnLinea,
@@ -241,6 +242,7 @@ describe("docs/BROCHURE.html y su guion", () => {
 describe("la cabecera de /conoce lleva la huella del script que hoy tiene el brochure", () => {
   const html = leer("docs/BROCHURE.html");
   const huella = huellaDelScript(html);
+  const estilo = huellaDelEstilo(html);
   const serve = JSON.parse(leer("serve.json")) as {
     headers: { source: string; headers: { key: string; value: string }[] }[];
   };
@@ -253,15 +255,15 @@ describe("la cabecera de /conoce lleva la huella del script que hoy tiene el bro
   it("serve.json", () => {
     const p = politica(serve, "conoce{,/**}");
     expect(huellaDeclarada(p)).toBe(huella);
-    expect(p).toBe(cspDelBrochure(huella));
+    expect(p).toBe(cspDelBrochure(huella, estilo));
   });
   it("vercel.json", () => {
     const p = politica(vercel, "/conoce(/.*)?");
     expect(huellaDeclarada(p)).toBe(huella);
-    expect(p).toBe(cspDelBrochure(huella));
+    expect(p).toBe(cspDelBrochure(huella, estilo));
   });
   it("la política no abre nada de más: ni 'unsafe-inline' para scripts ni 'unsafe-eval'", () => {
-    const p = cspDelBrochure(huella);
+    const p = cspDelBrochure(huella, estilo);
     expect(p).not.toMatch(/script-src[^;]*'unsafe-(inline|eval)'/);
     expect(p).toMatch(/script-src '(sha256-[^']+)';/);
   });

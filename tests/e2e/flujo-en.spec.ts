@@ -65,6 +65,8 @@ test.describe("el flujo principal en inglés", () => {
   test("catálogo y ficha de una prueba", async ({ page }) => {
     await enIngles(page, "/catalogo");
     await enIngles(page, `/catalogo/${PRIMERA_PRUEBA}`);
+    await enIngles(page, "/catalogo/marcos");
+    await enIngles(page, "/catalogo/controles");
   });
 
   test("activo y plan", async ({ page }) => {
@@ -80,6 +82,7 @@ test.describe("el flujo principal en inglés", () => {
   test("tablero, brecha, control e informe", async ({ page }) => {
     await enIngles(page, "/tablero");
     await enIngles(page, "/brecha");
+    await enIngles(page, "/brecha/control");
     await enIngles(page, "/brecha/control/iso42001-a-6-2-4");
     await enIngles(page, "/brecha/informe");
   });

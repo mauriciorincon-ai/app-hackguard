@@ -58,4 +58,31 @@ describe("instrumentation-client", () => {
     }
     expect(sinAtender).toEqual([]);
   });
+
+  // La garantía «metadata-only» vive en beforeSend: se ejecuta de verdad, no solo se declara.
+  it("beforeSend deja solo metadatos: sin request ni breadcrumbs, el mensaje reducido al tipo, y un AbortError no se envía", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SENTRY_DSN", "https://clave@ejemplo.invalid/1");
+    const init = vi.fn();
+    vi.doMock("@sentry/nextjs", () => ({
+      init,
+      captureRouterTransitionStart: vi.fn(),
+    }));
+    await import("../../instrumentation-client.ts");
+    await esperar();
+    const beforeSend = init.mock.calls[0]![0].beforeSend;
+    const evento = {
+      request: { url: "https://ejemplo.invalid/activos/privado?token=x" },
+      breadcrumbs: [{ message: "texto pegado por la persona" }],
+      exception: {
+        values: [{ type: "TypeError", value: "ruta /activos/privado" }],
+      },
+    };
+    const salida = beforeSend(evento);
+    expect(salida.request).toBeUndefined();
+    expect(salida.breadcrumbs).toBeUndefined();
+    expect(salida.exception.values[0].value).toBe("TypeError");
+    expect(
+      beforeSend({ exception: { values: [{ type: "AbortError", value: "x" }] } }),
+    ).toBeNull();
+  });
 });
