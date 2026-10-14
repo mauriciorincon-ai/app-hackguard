@@ -1,0 +1,506 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.\\d+\\.\\d+$"
+    },
+    "actualizado": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "pieza": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "nombre": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "frente": {
+          "type": "string",
+          "enum": [
+            "apps",
+            "agentes",
+            "investigaciones",
+            "tableros"
+          ]
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "inicial",
+            "sellado"
+          ]
+        },
+        "ciclo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "sellado_en": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sprints_cerrados": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "slug",
+        "nombre",
+        "frente",
+        "estado",
+        "ciclo",
+        "version",
+        "sellado_en",
+        "sprints_cerrados"
+      ],
+      "additionalProperties": false
+    },
+    "promesa": {
+      "type": "object",
+      "properties": {
+        "tagline": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "intro": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "para_quien": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        }
+      },
+      "required": [
+        "tagline",
+        "intro",
+        "para_quien"
+      ],
+      "additionalProperties": false
+    },
+    "titular": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "stack": {
+      "minItems": 1,
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "papel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        },
+        "required": [
+          "nombre",
+          "papel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cifras": {
+      "minItems": 3,
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clave": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "valor": {
+            "type": "number"
+          },
+          "unidad": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "etiqueta": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "fuente": {
+            "type": "string",
+            "enum": [
+              "medido",
+              "calculada",
+              "declarado",
+              "estimacion"
+            ]
+          },
+          "detalle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400
+          }
+        },
+        "required": [
+          "clave",
+          "valor",
+          "etiqueta",
+          "fuente",
+          "detalle"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bloques": {
+      "minItems": 2,
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "orden": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "nombre": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "linea": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "cuenta": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "orden",
+          "nombre",
+          "linea",
+          "cuenta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "proceso": {
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "carriles": {
+          "minItems": 1,
+          "maxItems": 5,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "nombre": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            },
+            "required": [
+              "id",
+              "nombre"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "pasos": {
+          "minItems": 3,
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "tipo": {
+                "type": "string",
+                "enum": [
+                  "inicio",
+                  "tarea",
+                  "decision",
+                  "fin"
+                ]
+              },
+              "carril": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "texto": {
+                "type": "string",
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "tipo",
+              "carril",
+              "texto"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "flujos": {
+          "minItems": 2,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "de": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "a": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "etiqueta": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24
+              }
+            },
+            "required": [
+              "de",
+              "a"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "anotaciones": {
+          "default": [],
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "paso": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60,
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "texto": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 140
+              }
+            },
+            "required": [
+              "paso",
+              "texto"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "titulo",
+        "carriles",
+        "pasos",
+        "flujos",
+        "anotaciones"
+      ],
+      "additionalProperties": false
+    },
+    "procedencia_proceso": {
+      "type": "string",
+      "enum": [
+        "app",
+        "cv-viva",
+        "planeadora"
+      ]
+    },
+    "limites": {
+      "minItems": 2,
+      "maxItems": 4,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "nunca": {
+      "minItems": 2,
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "hitos": {
+      "minItems": 3,
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24
+          },
+          "etiqueta": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "valor",
+          "etiqueta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "conclusiones": {
+      "minItems": 3,
+      "maxItems": 6,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cifra": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16
+          },
+          "unidad": {
+            "type": "string",
+            "maxLength": 24
+          },
+          "titulo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "texto": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "fuente": {
+            "type": "string",
+            "enum": [
+              "medido",
+              "calculada",
+              "declarado",
+              "estimacion"
+            ]
+          }
+        },
+        "required": [
+          "cifra",
+          "titulo",
+          "texto",
+          "fuente"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "galeria": {
+      "minItems": 1,
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "archivo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^(?!\\/)(?!.*(?:^|\\/)\\.\\.(?:\\/|$))[A-Za-z0-9._/-]+\\.(png|jpg|jpeg|webp)$"
+          },
+          "pie": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "archivo",
+          "pie"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "actualizado",
+    "pieza",
+    "promesa",
+    "titular",
+    "stack",
+    "cifras",
+    "bloques",
+    "limites",
+    "nunca",
+    "hitos"
+  ],
+  "additionalProperties": false
+}

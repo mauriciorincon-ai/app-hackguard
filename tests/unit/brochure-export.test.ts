@@ -14,6 +14,10 @@ import {
 const RAIZ = process.cwd();
 const leer = (ruta: string) => readFileSync(join(RAIZ, ruta), "utf8");
 const exportado = JSON.parse(leer("docs/brochure-export.json"));
+// Contrato de la ficha técnica de CV Viva (app-hoja-de-vida): copia literal, como el esquema del export (ver el último test).
+const contratoFicha = JSON.parse(
+  leer("tests/unit/lib/ficha-tecnica.schema.json"),
+);
 const datos = brochureExportSchema.parse(exportado);
 const metrica = (clave: string) =>
   datos.metricas.find((m) => m.clave === clave)!;
@@ -146,6 +150,30 @@ describe("docs/brochure-export.json", () => {
     expect(pasados).toEqual([]);
   });
 
+  it("el stack cabe en la ficha técnica de CV Viva: piezas y textos dentro de los topes del contrato copiado", () => {
+    // Los topes salen de la copia del contrato, no se fijan aquí. La ficha admite de 1 a 8 piezas: un export con 10 no se arma,
+    // aunque cada texto quepa (S9, arreglo del H-1).
+    const { minItems, maxItems, items } = contratoFicha.properties.stack;
+    const { nombre, papel } = items.properties;
+    expect(
+      datos.stack.length,
+      `stack: ${datos.stack.length} piezas; la ficha admite de ${minItems} a ${maxItems}`,
+    ).toBeGreaterThanOrEqual(minItems);
+    expect(
+      datos.stack.length,
+      `stack: ${datos.stack.length} piezas; la ficha admite de ${minItems} a ${maxItems}`,
+    ).toBeLessThanOrEqual(maxItems);
+    const largos = datos.stack.flatMap((p) => [
+      ...(p.nombre.length > nombre.maxLength
+        ? [`nombre «${p.nombre}» (${p.nombre.length} > ${nombre.maxLength})`]
+        : []),
+      ...(p.papel.length > papel.maxLength
+        ? [`papel de «${p.nombre}» (${p.papel.length} > ${papel.maxLength})`]
+        : []),
+    ]);
+    expect(largos).toEqual([]);
+  });
+
   it("las pruebas automáticas son la suma de sus dos partes", () => {
     expect(metrica("pruebas_automaticas").valor).toBe(
       metrica("pruebas_unitarias").valor + metrica("pruebas_e2e").valor,
@@ -170,6 +198,17 @@ describe("docs/brochure-export.json", () => {
       s.replace(/^\/\/.*\n/gm, "").replace(/[\s,;()]/g, "");
     expect(cuerpo(leer("tests/unit/lib/brochure-export-schema.ts"))).toBe(
       cuerpo(readFileSync(original, "utf8")),
+    );
+  });
+
+  it("la copia del contrato de la ficha es la de app-hoja-de-vida, byte a byte (cuando está en esta máquina)", () => {
+    const original = join(
+      process.env.HOME ?? "",
+      "Code/app-hoja-de-vida/docs/contrato-ficha-tecnica/ficha-tecnica.schema.json",
+    );
+    if (!existsSync(original)) return;
+    expect(leer("tests/unit/lib/ficha-tecnica.schema.json")).toBe(
+      readFileSync(original, "utf8"),
     );
   });
 });
