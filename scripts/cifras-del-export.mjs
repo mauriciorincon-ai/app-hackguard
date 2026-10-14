@@ -96,6 +96,17 @@ export function navegadoresDeLaConfig(
   );
 }
 
+/** Las carpetas sobre las que mide cobertura `vitest.config.ts` (`coverage.include`), como «src/lib/»: la prosa no las escribe a mano. */
+export function carpetasConCobertura(
+  texto = readFileSync(join(RAIZ, "vitest.config.ts"), "utf8"),
+) {
+  const bloque =
+    /coverage:[\s\S]*?include:\s*\[([^\]]*)\]/.exec(texto)?.[1] ?? "";
+  return [...bloque.matchAll(/"([^"]+)"/g)].map((m) =>
+    m[1].replace(/\*\*.*$/, ""),
+  );
+}
+
 /** Las cifras que salen de archivos del repo. */
 export async function cifrasBaratas() {
   const pruebas = archivosJson("datos/pruebas");
@@ -210,6 +221,7 @@ export function cifrasCaras() {
       archivos_e2e: Number(m[2]),
       cobertura_lineas: cobertura.porCiento,
       lineas: `${cobertura.cubiertas} de ${cobertura.total}`,
+      carpetas_medidas: carpetasConCobertura(),
     };
   } finally {
     rmSync(tmp, { recursive: true, force: true });
@@ -243,7 +255,7 @@ export function detalles(c, caras, fecha) {
     pruebas_e2e: () =>
       `Salida de \`playwright test --list\` del ${fecha} (${caro.archivos_e2e} archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node.`,
     cobertura_lineas: () =>
-      `v8 sobre src/ en la corrida de \`pnpm test\` del ${fecha}: ${caro.lineas} líneas. El umbral de src/engine/ es 90 %.`,
+      `v8 sobre ${enumerar(caro.carpetas_medidas ?? ["src/"])} en la corrida de \`pnpm test\` del ${fecha}: ${caro.lineas} líneas. El umbral de src/engine/ es 90 %.`,
     reglas_del_validador: () =>
       `Contadas en src/engine/catalogo/reglas.ts: cada una con su severidad (error, advertencia o nota) y su nombre en español e inglés.`,
     marcos_de_referencia: () =>

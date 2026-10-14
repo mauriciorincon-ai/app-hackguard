@@ -3,6 +3,7 @@
 // familia nueva o una herramienta más no deja un export falso ni un «undefined» (auditoría S9, A3: los datos dicen N, el texto no cuenta cuatro).
 import { describe, expect, it } from "vitest";
 import {
+  carpetasConCobertura,
   detalles,
   enumerar,
   navegadoresDeLaConfig,
@@ -63,6 +64,21 @@ describe("la prosa del export cuenta lo que dicen los datos", () => {
   });
   it("no repite el total de funciones de la visión: ese número no tiene fuente en el repo", () => {
     expect(textos.funcionalidades(18)).not.toMatch(/de las \d+/);
+  });
+  // S9-E-M8: la cobertura dice sobre qué carpetas se mide, tomadas de la configuración.
+  it("la cobertura nombra las carpetas que mide vitest.config.ts, no «src/» a secas", () => {
+    expect(
+      carpetasConCobertura(
+        'test: { coverage: { include: ["a/**/*.ts", "b/c/**/*.tsx"] } }',
+      ),
+    ).toEqual(["a/", "b/c/"]);
+    expect(carpetasConCobertura()).toContain("src/engine/");
+    const t = detalles(
+      baratas,
+      { ...caras, lineas: "1 de 2", carpetas_medidas: ["a/", "b/"] },
+      "2026-10-13",
+    );
+    expect(t.cobertura_lineas()).toContain("v8 sobre a/ y b/ en la corrida");
   });
   it("enumerar escribe la lista como una persona", () => {
     expect(enumerar([])).toBe("");
