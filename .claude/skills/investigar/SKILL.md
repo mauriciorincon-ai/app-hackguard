@@ -39,6 +39,10 @@ reportas al final: queda registrada como `fuente_no_accesible_al_agente`. Si la 
 (un comando que **tú no corres**: corre en su terminal). Al aportarlo, el documento se verifica como una página leída; tú no lo
 tocas ni lo lees por tu cuenta, y solo lo citas si, cuando escribes el borrador de esa misma corrida, ya existe su `aportes.json` (paso 3).
 
+Un marco cuya licencia no deja reproducir su texto (`solo_identificadores` en `datos/propuestas/licencias.json`, como ISO/IEC 42001)
+**no se cita**: el comando rechaza aportar un documento suyo, y el sellado no acepta una propuesta de ese marco ni un pasaje de una de sus
+direcciones, porque la corrida sellada se publica con el repositorio. Su fuente se reporta como no accesible y nada más.
+
 ## 3. Escribe el borrador
 
 En `propuestas/corridas/<corrida>/propuesta.json` (la carpeta ya existe):

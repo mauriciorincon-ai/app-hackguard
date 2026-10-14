@@ -30,12 +30,14 @@ import {
   type EstadoDeFuente,
   type MotivoDePausa,
   type Pausa,
+  type PermisoDeCita,
   type PropuestaSellada,
   type Senales,
   type UmbralesDePropuestas,
   type VeredictoSugerido,
 } from "./esquemas.ts";
 import {
+  enListaBlanca,
   lecturasConsultadas,
   verificarFuente,
   type Lecturas,
@@ -64,7 +66,19 @@ export interface ContextoDeVerificacion {
   patronesDeInstrucciones: PatronCompilado[];
   /** El texto de una página o de un texto pegado, por la huella con que una propuesta lo nombra. */
   lecturas: Lecturas;
+  /** Lo que la licencia de cada marco deja llevar a una propuesta (`datos/propuestas/licencias.json`). */
+  licencias: Readonly<Record<string, PermisoDeCita>>;
 }
+
+/**
+ * Si la licencia del marco deja citar un pasaje suyo con atribución (regla dura 11). Un marco sin clasificar cuenta como «solo
+ * identificadores»: ante la duda, su texto no entra a una corrida, que se publica con el repositorio.
+ */
+export const dejaCitarSuTexto = (
+  licencias: Readonly<Record<string, PermisoDeCita>>,
+  marco: string,
+): boolean =>
+  Object.hasOwn(licencias, marco) && licencias[marco] === "cita_con_atribucion";
 
 export interface ProblemaDelBorrador {
   regla:
@@ -75,7 +89,8 @@ export interface ProblemaDelBorrador {
     | "borrador/herramienta-desconocida"
     | "borrador/prueba-desconocida"
     | "borrador/prueba-ya-existe"
-    | "borrador/activo-sin-plan";
+    | "borrador/activo-sin-plan"
+    | "borrador/licencia-sin-texto";
   ref: string | null;
   detalle: string;
 }
@@ -139,8 +154,30 @@ export function problemasDelBorrador(
       ref: null,
       detalle: `la corrida ${borrador.corrida} no es de un ${borrador.agente}`,
     });
+  // Regla dura 11 (S9-E-M2): una propuesta lleva pasajes literales y la corrida sellada se publica con el repositorio. Un marco cuya
+  // licencia no deja reproducir su texto no puede ser el de la propuesta ni el dueño de la dirección de una de sus fuentes. No se marca:
+  // marcar dejaría el pasaje dentro de la corrida.
+  const sinTexto = [...ctx.marcos.keys()].filter(
+    (id) => !dejaCitarSuTexto(ctx.licencias, id),
+  );
   const vistas = new Set<string>();
   for (const p of borrador.propuestas) {
+    if (p.tipo !== "sobre") {
+      const propio = marcoDe(p, ctx);
+      const ajeno = sinTexto.find((id) =>
+        p.fuentes.some((f) =>
+          enListaBlanca(f.url, ctx.marcos.get(id)?.lista_blanca ?? []),
+        ),
+      );
+      const marco =
+        propio !== null && sinTexto.includes(propio) ? propio : ajeno;
+      if (marco !== undefined)
+        problemas.push({
+          regla: "borrador/licencia-sin-texto",
+          ref: p.ref,
+          detalle: `la licencia de ${marco} no deja reproducir su texto: una propuesta no lleva pasajes suyos`,
+        });
+    }
     if (vistas.has(p.ref))
       problemas.push({
         regla: "borrador/ref-repetida",

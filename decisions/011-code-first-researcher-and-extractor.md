@@ -102,6 +102,10 @@ the agent got `no_accesible` (403, a login, not text). It is stored in a new fil
 `corrida@1`) are not touched. Sealing counts a contributed document as a page that was read, and the verification is the same one: the quote
 must be literal in it. Three conditions are enforced by code, not by the skill: only a person runs `pnpm propuestas:aportar` (the same
 boundary as `decidir`: not inside Claude Code, not without a terminal); only for an address that is `no_accesible` in the run's query and on
-the framework's allowlist; and only while the run has no decisions. The file must name the run of the folder it sits in. What the code
-cannot judge is whether the framework's licence lets a quote from the document be kept in the public repo: that is the open
-decision S9-E-M2 of the Sprint 9 audit, recorded in `sprints/SPRINT_009-lote.md` until the user decides it.
+the framework's allowlist; and only while the run has no decisions. The file must name the run of the folder it sits in. Whether the
+framework's licence lets a quote be kept in the public repo was decision S9-E-M2 of the Sprint 9 audit; the user decided on 2026-10-13
+to reject it. `datos/propuestas/licencias.json` (outside the official snapshot's fingerprint) classifies every framework as
+`cita_con_atribucion` or `solo_identificadores` (ISO/IEC 42001), and an unclassified framework counts as the latter. For a
+`solo_identificadores` framework `aportar` refuses the document, and sealing refuses a draft whose proposal belongs to that framework or
+quotes one of its addresses (`borrador/licencia-sin-texto`): marking would not do, because a marked proposal keeps its passage inside the
+published run. A test ties the classification to each framework's own licence entry.

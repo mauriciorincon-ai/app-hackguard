@@ -611,6 +611,7 @@
 <td><ul>
 <li><code>datos/controles/iso42001-anexo-a.json</code>: los 38 controles declaran <code>verificado_contra_norma: false</code> (ninguno en true); <code>tests/unit/catalogo/catalogo-real.test.ts</code> falla si alguno afirma lo contrario.</li>
 <li>Licencias: <code>docs/LICENCIAS-DE-MARCOS.md</code> y la regla <em>marco/sin-licencia</em> (<code>src/engine/catalogo/reglas.ts</code>).</li>
+<li>Citas en las propuestas: <code>datos/propuestas/licencias.json</code> clasifica cada marco; uno «solo_identificadores» (ISO/IEC 42001) no se aporta (<code>src/cli/propuestas.ts</code>) y el sellado rechaza una propuesta con pasajes suyos (<em>borrador/licencia-sin-texto</em> en <code>src/engine/propuestas/verificar.ts</code>); <code>tests/unit/propuestas/licencias.test.ts</code> ata la clasificación a la licencia de cada marco.</li>
 <li>Fuente no accesible: la regla <em>marco/fuente-no-accesible-sin-declarar</em> en <code>src/engine/catalogo/validar.ts</code>, el estado en <code>src/engine/catalogo/esquemas.ts</code> y el mensaje de <code>src/cli/propuestas.ts</code>, que pide aportar el documento a mano en lugar de rodear la fuente.</li>
 <li><em>Salvedad:</em> «con palabras propias» es una cualidad editorial; ningún gate detecta texto de la norma copiado. Depende de la redacción y de la revisión humana.</li>
 </ul></td>
