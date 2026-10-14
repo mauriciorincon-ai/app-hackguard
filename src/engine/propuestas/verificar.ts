@@ -5,11 +5,12 @@
 // Una propuesta que no verifica NO se descarta: llega MARCADA con su motivo (D1). Solo un borrador que no se puede sellar de forma
 // coherente (un marco que no existe, un agente con un tipo que no es suyo) devuelve problemas y no sella nada.
 import type { PatronCompilado } from "../catalogo/filtro.ts";
-import { filtrar } from "../catalogo/filtro.ts";
+import { filtrar, type Marca } from "../catalogo/filtro.ts";
 import { huella } from "../huella.ts";
 import { antiguedadDelMarco } from "./antiguedad.ts";
 import {
   huellaDeTexto,
+  normalizarEspacios,
   similitudDeCita,
   verificarCita,
   versionEnElTexto,
@@ -254,6 +255,18 @@ export function citasDeCandidata(
 }
 
 /** Verifica y sella una candidata del extractor contra el texto pegado. `texto` es `undefined` si no hay lectura. */
+
+/** Una marca por (campo, patrón): dos páginas que disparan el mismo patrón no la repiten en el sello. */
+const sinRepetir = (marcas: Marca[]): Marca[] => {
+  const vistas = new Set<string>();
+  return marcas.filter((m) => {
+    const clave = `${m.campo}\u0000${m.patron}`;
+    if (vistas.has(clave)) return false;
+    vistas.add(clave);
+    return true;
+  });
+};
+
 function sellarCandidata(
   c: CandidataDeSobre,
   activo: string,
@@ -360,17 +373,21 @@ async function sellarPropuesta(
       fuentes.length - fuentes.filter((f) => f.estado === "verificada").length;
     // Las páginas que el agente leyó son datos no confiables: una orden dirigida a él en CUALQUIER parte de la página marca la propuesta
     // (RF-07.4), no solo lo que escribió el modelo ni el pasaje que citó.
-    const marcasDeInstruccion = [
+    // La página se filtra con los espacios normalizados: en disco va envuelta a ~100 columnas y una orden puede cruzar un salto de línea.
+    const marcasDeInstruccion = sinRepetir([
       ...filtrar(paraElFiltro(cuerpo), ctx.patronesDeInstrucciones),
       ...[...new Set(cuerpo.fuentes.map((f) => f.huella_de_la_pagina))].flatMap(
         (h) => {
           const pagina = ctx.lecturas(h);
           return pagina === undefined
             ? []
-            : filtrar({ pagina }, ctx.patronesDeInstrucciones);
+            : filtrar(
+                { pagina: normalizarEspacios(pagina) },
+                ctx.patronesDeInstrucciones,
+              );
         },
       ),
-    ];
+    ]);
     const idMarco = marcoDe(cuerpo, ctx);
     const marco = idMarco === null ? undefined : ctx.marcos.get(idMarco);
     const antiguedad =
@@ -455,12 +472,15 @@ async function sellarPropuesta(
   const candidatas = cuerpo.candidatas.map((c) =>
     sellarCandidata(c, cuerpo.activo, texto, ctx),
   );
-  const marcasDeInstruccion = [
+  const marcasDeInstruccion = sinRepetir([
     ...filtrar(paraElFiltro(cuerpo), ctx.patronesDeInstrucciones),
     ...(texto === undefined
       ? []
-      : filtrar({ texto_pegado: texto }, ctx.patronesDeInstrucciones)),
-  ];
+      : filtrar(
+          { texto_pegado: normalizarEspacios(texto) },
+          ctx.patronesDeInstrucciones,
+        )),
+  ]);
   const citas = candidatas.flatMap((c) => c.verificacion.citas);
   const sinVerificar = citas.filter((c) => c.estado !== "verificada").length;
   const principal = candidatas[0];
