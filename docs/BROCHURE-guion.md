@@ -41,7 +41,7 @@
 ## Cuadre de mensajes n/n
 
 Las **18 funcionalidades** del export (`docs/brochure-export.json`, cuadradas con las 18 `[MVP · personal]` de la visión y con las
-18 entradas del manual) caben en las cuatro tarjetas de E3; ninguna se omite.
+funcionalidades del manual, cada una con su sección en `seccion_manual`) caben en las cuatro tarjetas de E3; ninguna se omite.
 `tests/unit/documentos-del-hito.test.ts` exige que cada una esté en el HTML.
 
 | Id  | Funcionalidad                                      | Sección del manual                                                         | Tarjeta                             |

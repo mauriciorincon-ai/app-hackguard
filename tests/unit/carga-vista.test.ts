@@ -73,7 +73,7 @@ describe("la vista de la carga con los dos lotes demo", () => {
     const l = v.lotes[1]!;
     expect(l.abren).toEqual(["SOB-0034"]);
     expect(l.comandos.confirmar).toBe(
-      "pnpm evidencia:confirmar-lote LOTE-0008 --por <persona> --fecha AAAA-MM-DD --separar SOB-0034",
+      "pnpm evidencia:confirmar-lote LOTE-0008 --por <persona> --fecha AAAA-MM-DD --separar SOB-0034 --revisados 3",
     );
     expect(l.comandos.unoPorUno).toBe(
       "pnpm evidencia:confirmar-lote LOTE-0008 --por <persona> --fecha AAAA-MM-DD --revisar-uno-por-uno",

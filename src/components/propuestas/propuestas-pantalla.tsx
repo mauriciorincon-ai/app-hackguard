@@ -729,7 +729,7 @@ function Corrida({ c }: { c: CorridaVista }) {
           </span>
         </Par>
         {c.ejecucion ? (
-          <Par rotulo={{ es: "Ejecución", en: "Run cost" }}>
+          <Par rotulo={{ es: "Costo de la corrida", en: "Run cost" }}>
             <span className="hg-menor" data-ejecucion>
               {c.ejecucion.latenciaS !== null ? (
                 <>
@@ -903,7 +903,7 @@ export function PropuestasPantalla({ v }: { v: VistaDePropuestas }) {
       {v.vacio ? (
         <Aviso
           etiqueta={v.etiquetaDeVacio}
-          titulo={{ es: "La bandeja está vacía", en: "The inbox is empty" }}
+          titulo={v.etiquetaDeVacio.nombre}
         >
           <p>
             <T

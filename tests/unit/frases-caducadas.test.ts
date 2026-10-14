@@ -47,6 +47,14 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
     "docs/GUIA-DE-PRUEBA.html",
     /la tabla de la matriz \(en HZ-0007\)/,
   ],
+  // Revisión de la auditoría de alcance (S9): promesas del manual y de la guía que el sprint pagó
+  [
+    "S9-M1",
+    "docs/MANUAL-DE-USO.md",
+    /llega al cierre del hito|arrives at the close of the milestone/,
+  ],
+  ["S9-M4", "docs/GUIA-DE-PRUEBA.html", /Propuestas sigue con la marca/],
+  ["S9-M5", "docs/GUIA-DE-PRUEBA.html", /«9 passed»/],
   // El código y sus comentarios
   [
     "S3-X",

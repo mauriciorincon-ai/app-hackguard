@@ -752,7 +752,7 @@ export function CargaPantalla({ v }: { v: VistaDeCarga }) {
       {v.lotes.length === 0 ? (
         <Aviso
           etiqueta={v.etiquetas.nada_por_confirmar}
-          titulo={{ es: "No hay nada por confirmar", en: "Nothing to confirm" }}
+          titulo={v.etiquetas.nada_por_confirmar.nombre}
         >
           <p>
             <T

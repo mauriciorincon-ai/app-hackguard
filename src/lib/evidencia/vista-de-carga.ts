@@ -375,7 +375,7 @@ function vistaDeLote(
       ejecutadoPor: lote.ejecutado_por,
     },
     comandos: {
-      confirmar: `${base}${abren.map((id) => ` --separar ${id}`).join("")}`,
+      confirmar: `${base}${abren.map((id) => ` --separar ${id}`).join("")} --revisados ${revision.siempre.length + revision.muestra.length}`,
       unoPorUno: `${base} --revisar-uno-por-uno`,
     },
   };

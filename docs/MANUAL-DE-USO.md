@@ -31,6 +31,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 1. Necesitas Node 22.18 o posterior (el CLI usa el TypeScript nativo de Node) y pnpm.
 2. En la carpeta del repositorio, instala lo necesario una vez: `pnpm install`.
 3. Todos los comandos de este manual se escriben en una terminal abierta en esa carpeta.
+4. Para ver la presentación de la app, abre `/conoce` en el navegador: se sirve desde `docs/BROCHURE.html`, trae las cifras de `docs/brochure-export.json` y cambia de idioma con el selector. No usa datos de ningún activo.
 
 ### Features
 
@@ -185,7 +186,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
     emite una instantánea nueva (ver «El catálogo como dato»).
   - Las cifras de arriba cuentan las 38 pruebas publicadas; las que esperan revisión aparecen en un panel aparte solo
     cuando las hay.
-  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+  - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### Marcos y controles · desde Sprint 003
 
@@ -222,7 +223,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
     catálogo lo registre, no antes.
   - Se leen desde la instantánea oficial, como el resto de la app: un cambio en `datos/` aparece cuando se emite una
     instantánea nueva.
-  - Las pantallas se prueban en español; la prueba en inglés llega al cierre del hito.
+  - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### Activos y plan · desde Sprint 004
 
@@ -252,7 +253,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   - El plan no muestra qué pruebas ya tienen evidencia confirmada: eso lo dicen la página de cada hallazgo, la brecha y la vista por control (secciones siguientes).
   - No hay editor de perfil ni de plan en pantalla: un cambio se hace en el archivo del activo y el plan se vuelve a emitir.
   - Si sale una instantánea oficial nueva, el plan viejo deja de construirse hasta volver a emitirlo.
-  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+  - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### Evidencia y hallazgos · desde Sprint 005
 
@@ -291,7 +292,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 - **Limitaciones conocidas:**
   - Los hallazgos de tu activo real van a `datos/privado/`, nunca al repositorio ni a la web pública.
   - En una métrica con umbral, el umbral lo escribe quien registra el sobre: ni el catálogo ni el paquete de ejecución lo fijan antes de la prueba. El validador comprueba que el veredicto sale de ese umbral, no que se haya fijado antes; por eso conviene anotarlo en el plan antes de correr la herramienta.
-  - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
+  - La pantalla se prueba en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### Carga de evidencia · desde Sprint 006
 
@@ -326,7 +327,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   - Las estadísticas de ZAP se leen con el formato de su documentación. Todavía no se han probado con un reporte real de una
     corrida de ZAP.
   - En la pantalla, «Texto pegado» todavía no carga nada, y «Sobre manual» muestra los pasos del CLI de arriba.
-  - La pantalla está probada en español; la prueba en inglés llega al cierre del hito.
+  - La pantalla se prueba en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### La brecha y el informe · desde Sprint 007
 
@@ -363,7 +364,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
     oficial, con los datos de demo, ninguno. El estado existe y se cuenta en el tablero; un control aparece ahí cuando su
     evidencia cumple el umbral a esa fecha.
   - Los marcos con versión nueva salen de las propuestas del investigador: se listan con su propuesta, dicen «ninguno» solo si hay una corrida del investigador que lo respalde (y cuándo fue), y «sin registro» si ninguna corrida ha leído las fuentes.
-  - Las pantallas están probadas en español; la prueba en inglés llega al cierre del hito.
+  - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
   - La cuenta de «propuestas por decidir» del tablero es la de la bandeja: baja cuando una decisión queda registrada en el libro, no cuando se marca en la pantalla.
 
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
@@ -433,7 +434,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 | 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                                                   |
 | 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco                                      |
 | 008 · 2026-10-12 | Las propuestas (la bandeja con sus decisiones por comando) · el investigador de marcos y el extractor de resultados, como skills de Claude Code · avisos de versión en Marcos |
-| 009 · 2026-10-13 | Aportar a mano la lectura de una fuente que el agente no pudo leer (`pnpm propuestas:aportar`) · la presentación pública en `/conoce`                                         |
+| 009 · 2026-10-13 | Aportar a mano la lectura de una fuente que el agente no pudo leer (`pnpm propuestas:aportar`) · la presentación de la app en `/conoce`                                         |
 
 ---
 
@@ -454,6 +455,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 1. You need Node 22.18 or later (the CLI uses Node's native TypeScript support) and pnpm.
 2. In the repository folder, install what is needed once: `pnpm install`.
 3. Every command in this manual is typed in a terminal opened in that folder.
+4. To see the app's presentation, open `/conoce` in the browser: it is served from `docs/BROCHURE.html`, carries the figures of `docs/brochure-export.json` and switches language with the selector. It uses no asset data.
 
 ### Features
 
@@ -608,7 +610,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
     is emitted (see “The catalog as data”).
   - The figures at the top count the 38 published tests; those awaiting review appear in a separate panel only when
     there are any.
-  - The screens are tested in Spanish; English testing arrives at the close of the milestone.
+  - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### Frameworks and controls · since Sprint 003
 
@@ -645,7 +647,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
     records it, not before.
   - They are read from the official snapshot, as the rest of the app is: a change in `datos/` appears when a new snapshot
     is emitted.
-  - The screens are tested in Spanish; English testing arrives at the close of the milestone.
+  - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### Assets and plan · since Sprint 004
 
@@ -675,7 +677,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   - The plan does not show which tests already have confirmed evidence: the page of each finding, the gap and the control view do (next sections).
   - There is no profile or plan editor on screen: a change is made in the asset's file and the plan is issued again.
   - If a new official snapshot comes out, the old plan stops being built until it is issued again.
-  - The screens are tested in Spanish; the English test arrives at the close of the milestone.
+  - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### Evidence and findings · since Sprint 005
 
@@ -713,7 +715,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 - **Known limitations:**
   - The findings of your real asset go to `datos/privado/`, never to the repository or the public web.
   - In a metric with a threshold, the threshold is written by whoever records the envelope: neither the catalog nor the execution package fixes it before the test. The validator checks that the verdict comes from that threshold, not that it was set beforehand; so note it in the plan before you run the tool.
-  - The screen is tested in Spanish; the English test arrives at the close of the milestone.
+  - The screen is tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### Evidence intake · since Sprint 006
 
@@ -745,7 +747,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
     so in the batch's warnings; it also checks that its counts match the summary lines of the same report.
   - ZAP's statistics are read with the format in its documentation. They have not yet been tried against a real ZAP run report.
   - On the screen, “Pasted text” does not load anything yet, and “Manual envelope” shows the CLI steps above.
-  - The screen is tested in Spanish; the English test arrives at the close of the milestone.
+  - The screen is tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### The gap and the report · since Sprint 007
 
@@ -782,7 +784,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
     demo data, none. The state exists and the dashboard counts it; a control appears there when its evidence meets the
     threshold on that date.
   - Frameworks with a new version come from the researcher's proposals: they are listed with their proposal, say “none” only when a researcher run backs it (and when it was), and “no record” if no run has read the sources.
-  - The screens are tested in Spanish; the English test arrives at the close of the milestone.
+  - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
   - The dashboard's “proposals to decide” count is the inbox's: it goes down when a decision is recorded in the ledger, not when it is marked on screen.
 
 #### The demo classifier for the “decision model” family · since Sprint 001
@@ -853,4 +855,4 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 | 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                                                        |
 | 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five                                              |
 | 008 · 2026-10-12 | Proposals (the inbox with its decisions by command) · the researcher for frameworks and the extractor for results, as Claude Code skills · version notices in Marcos |
-| 009 · 2026-10-13 | Contribute by hand the reading of a source the agent could not read (`pnpm propuestas:aportar`) · the public presentation at `/conoce`                               |
+| 009 · 2026-10-13 | Contribute by hand the reading of a source the agent could not read (`pnpm propuestas:aportar`) · the app's presentation at `/conoce`                               |

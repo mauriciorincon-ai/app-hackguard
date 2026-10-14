@@ -250,7 +250,7 @@ gate; el detalle por pantalla y su razón están en `docs/diseno/README.md` («L
 - **La paginación entrega el foco.** Al llegar a un extremo el botón pulsado se desactiva y el foco pasa al otro; no cae al `<body>`.
 - **Las pantallas son de lectura.** Una salida que escribiría (confirmar, declarar, decidir) se muestra con su consecuencia y el comando
   exacto que la hace; no hay botón que escriba. El adjunto de una herramienta se muestra como texto inerte, escapado.
-- **Los estados «cargando» y «error» solo existen en la maqueta.** En un export estático un dato que no cuadra con su huella rompe el
+- **El estado «cargando» solo existe en la maqueta; «error» existe como componente (`CatalogoConError`).** En un export estático un dato que no cuadra con su huella rompe el
   build en vez de mostrarse a medias; «vacío» sí existe y dice qué hacer.
 - **Lo que no se pudo verificar no se dice verificado.** Un marco cuya fuente el agente no puede leer lleva «Fuente no accesible» y su
   fecha dice «Revisado», no «Verificado»; lo que la instantánea no trae se dice («Sin aviso registrado»), no se simula.

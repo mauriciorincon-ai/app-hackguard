@@ -166,8 +166,8 @@
       (marcos y controles), el Sprint 004 el bloque I (activos y plan) y el Sprint 005 el bloque J (evidencia y hallazgos) y el Sprint 006 el bloque K (la carga de evidencia) y el Sprint 007 el bloque L (la brecha y el informe) y el Sprint 008 el bloque M (las propuestas y los dos agentes), y el Sprint 009 el gate del H-1, al principio. Filtra por origen para
       correr todo o solo lo que cambió. Las casillas se guardan
       solas en este navegador.</p>
-    <p class="chica"><strong>Gate corto ⭐⭐: 29 paradas declaradas, 28 efectivas · ~58 min estimados (2 min por parada).</strong> Es el que el gate del H-1 exige, y va al principio para recorrerlo de arriba abajo, agrupado por familia de pantalla. La parada 3 (la norma ISO) no corre hasta el H-4: falta el texto de ISO/IEC 42001:2023; se declara y no se cuenta como efectiva. Las 24 ⭐ de los bloques anteriores están aquí: ninguna se borra. Las 5 de S9 (tema claro, propuestas reales, aportar, la página de presentación y el inglés) van al final de su familia.</p>
-    <p class="chica"><strong>Gate mínimo ⭐: 29 pruebas · ~58 min.</strong> Son los juicios sobre el contenido del catálogo y sobre la pantalla que ninguna automatización puede tomar; es el mismo conjunto que el gate ⭐⭐. Lo demás (bloques B a F y las pruebas automáticas de G a M) lo respalda la CI y se corre en pases completos: 46 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
+    <p class="chica"><strong>Gate corto ⭐⭐: 29 paradas declaradas, 28 efectivas · ~56 min estimados (2 min por parada; la parada 3 no corre y suma 0). El gate supera el objetivo de ≈ 20 min del H-1: se declara en el cierre del sprint 009, que propone partirlo en dos sesiones.</strong> Es el que el gate del H-1 exige, y va al principio para recorrerlo de arriba abajo, agrupado por familia de pantalla. La parada 3 (la norma ISO) no corre hasta el H-4: falta el texto de ISO/IEC 42001:2023; se declara y no se cuenta como efectiva. Las 24 ⭐ de los bloques anteriores están aquí: ninguna se borra. Las 5 de S9 (tema claro, propuestas reales, aportar, la página de presentación y el inglés) van al final de su familia.</p>
+    <p class="chica"><strong>Gate mínimo ⭐: 29 pruebas · ~56 min.</strong> Son los juicios sobre el contenido del catálogo y sobre la pantalla que ninguna automatización puede tomar; es el mismo conjunto que el gate ⭐⭐. Lo demás (bloques B a F y las pruebas automáticas de G a M) lo respalda la CI y se corre en pases completos: 46 pruebas más. La excepción es E3, una lectura de redacción que ninguna prueba automática juzga; queda fuera del ⭐ porque la orden lo fija en las tres paradas.</p>
     <div class="url-caja">
       <p class="eyebrow" style="margin:0 0 6px">Dónde se prueba</p>
       <p style="margin:0">Una terminal abierta en la carpeta del repositorio (<code>~/Code/app-hackguard</code>), en
@@ -188,7 +188,7 @@
     </div>
     <div class="filtros" role="group" aria-label="Filtrar pruebas por origen">
       <button type="button" data-filtro="todo" class="activo">Todo</button>
-      <button type="button" data-filtro="cambios">Lo que cambió en S8 y S9</button>
+      <button type="button" data-filtro="cambios">Lo que cambió (nuevo o mejorado)</button>
       <button type="button" data-filtro="minimo">Gate mínimo ⭐</button>
       <button type="button" data-filtro="corto">Gate corto ⭐⭐</button>
     </div>
@@ -222,7 +222,7 @@
         <span class="origen origen-heredada">S1</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 2 de 29</span></label></li>
-      <li data-origen="heredada" data-minimo data-corto data-min="2" data-no-corre><input type="checkbox" id="a3"><label for="a3"><strong>¿Estos resúmenes del Anexo A dicen lo que dice la norma?</strong> <strong>No corre hasta el H-4:</strong> no hay texto de ISO/IEC 42001:2023 en el repo (G-Plan, decisión P1); la norma se lee antes del G-Release. Marca la casilla cuando
+      <li data-origen="heredada" data-minimo data-corto data-min="0" data-no-corre><input type="checkbox" id="a3"><label for="a3"><strong>¿Estos resúmenes del Anexo A dicen lo que dice la norma?</strong> <strong>No corre hasta el H-4:</strong> no hay texto de ISO/IEC 42001:2023 en el repo (G-Plan, decisión P1); la norma se lee antes del G-Release. Marca la casilla cuando
         hayas leído el aviso de abajo; no hay nada que juzgar todavía.
         <span class="origen origen-heredada">S1</span>
         <span class="minimo">⭐ mínimo</span>
@@ -341,7 +341,7 @@
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 21 de 29</span></label></li>
       <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t1"><label for="t1"><strong>¿El tema claro se lee igual que el oscuro?</strong> En <code>/tablero</code> y en <code>/brecha/control/iso42001-a-6-2-4</code>, cambia a claro con el botón «Claro» de la barra de arriba. Los símbolos y el texto de cada estado deben decir lo mismo que en oscuro: el color nunca va solo. <strong>Respuesta esperada: se lee igual; si un estado solo se distingue por el color, lo anotas.</strong>
-        <span class="origen origen-nuevo">S9</span>
+        <span class="origen origen-nuevo">Nuevo · S9</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 22 de 29</span></label></li>
     </ul>
@@ -362,33 +362,33 @@
         <span class="origen origen-nuevo">Nuevo · S8</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 25 de 29</span></label></li>
-      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t2"><label for="t2"><strong>¿La bandeja muestra las propuestas que dice el comando?</strong> En una terminal, en la raíz del repo, corre <code>pnpm propuestas:listar</code> y cuenta las líneas con <code>por_decidir</code>. Abre <code>/catalogo/propuestas</code> y compara ese número con «propuestas por decidir» del tablero. <strong>Respuesta esperada: el mismo número: 11 en el cierre de S9 (PROP-0031 a PROP-0041). Si no cuadra, se anota con la hora del comando.</strong>
-        <span class="origen origen-nuevo">S9</span>
+      <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t2"><label for="t2"><strong>¿La bandeja muestra las propuestas que dice el comando?</strong> En una terminal, en la raíz del repo, corre <code>pnpm propuestas:listar</code> y cuenta las líneas con <code>por_decidir</code>. Abre <code>/catalogo/propuestas</code> y compara ese número con «propuestas por decidir» del tablero. Para decidir una de las cuatro corridas reales, la bandeja te arma el comando <code>pnpm propuestas:decidir …</code>: córrelo tú en tu terminal, nunca dentro de Claude Code. <strong>Respuesta esperada: el mismo número: 11 en el cierre de S9 (PROP-0031 a PROP-0041). Si no cuadra, se anota con la hora del comando.</strong>
+        <span class="origen origen-nuevo">Nuevo · S9</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 26 de 29</span></label></li>
       <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t3"><label for="t3"><strong>¿El comando para aportar una lectura se entiende sin esta guía?</strong> En el manual, sección «Las propuestas y los dos agentes», lee el párrafo de <code>aportar</code>. <em>Ese comando lo corres tú en tu terminal, nunca la IA</em>; el manual dice cuál es, qué cuatro opciones lleva y que solo vale para una dirección que el agente no pudo leer. <strong>Respuesta esperada: el párrafo cita el comando, sus cuatro opciones y la frontera, en español y en inglés.</strong>
-        <span class="origen origen-nuevo">S9</span>
+        <span class="origen origen-nuevo">Nuevo · S9</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 27 de 29</span></label></li>
     </ul>
     <h3>La página de presentación</h3>
     <ul class="pasos">
       <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t4"><label for="t4"><strong>¿La página de presentación dice lo que el guion pide?</strong> Abre <code>/conoce</code> y, en otra pestaña, <code>docs/BROCHURE-guion.md</code>. Las escenas van en el mismo orden, y las cifras salen de <code>docs/brochure-export.json</code>. <strong>Respuesta esperada: sí; una escena que falte o una cifra que no cuadre se anota en la guía con su nombre.</strong>
-        <span class="origen origen-nuevo">S9</span>
+        <span class="origen origen-nuevo">Nuevo · S9</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 28 de 29</span></label></li>
     </ul>
     <h3>El inglés de punta a punta</h3>
     <ul class="pasos">
       <li data-origen="nuevo" data-minimo data-corto data-min="2"><input type="checkbox" id="t5"><label for="t5"><strong>¿El flujo principal se lee entero en inglés?</strong> Abre <code>/tablero</code> y pulsa «EN» en la barra de arriba. Recorre el catálogo, una ficha, el plan del asistente, la carga, el hallazgo HZ-0007, la brecha, un control y el informe. <strong>Respuesta esperada: ningún texto en español visible; las cifras y los identificadores son los mismos en los dos idiomas.</strong>
-        <span class="origen origen-nuevo">S9</span>
+        <span class="origen origen-nuevo">Nuevo · S9</span>
         <span class="minimo">⭐ mínimo</span>
         <span class="minimo">⭐⭐ Parada 29 de 29</span></label></li>
     </ul>
   </section>
 
   <section class="bloque">
-    <div class="bloque-cabeza"><span class="letra">A</span><h2>Las tres paradas del gate ⭐</h2></div>
+    <div class="bloque-cabeza"><span class="letra">A</span><h2>Las paradas del gate ⭐ (las de juicio, en el Gate del H-1)</h2></div>
     <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>docs/LICENCIAS-DE-MARCOS.md</code> · ~15 min · lo que solo una persona puede decidir sobre el contenido del catálogo</p>
     <div class="tabla-scroll"><table>
       <tr><th>Qué mirar</th><th>Valor / comportamiento correcto</th></tr>
@@ -534,18 +534,18 @@
     <ul class="pasos">
       <li data-origen="mejorado"><input type="checkbox" id="f1"><label for="f1">Corre <code>E2E_PUERTO=3217 pnpm exec playwright test tests/e2e/determinismo.spec.ts</code>. La primera
         vez puede pedir instalar los navegadores con <code>pnpm exec playwright install firefox webkit</code>, que los
-        descarga a la caché de Playwright. Tarda un par de minutos porque construye la app. <strong>«9 passed», y en
+        descarga a la caché de Playwright. Tarda un par de minutos porque construye la app. <strong>todas pasan, y en
         las líneas de la instantánea «determinismo · chromium / firefox / webkit · instantánea 2026-10-16 ·
         1a1fa98de1b89d8d27da6d615095af8e680921dc8b3987432a64b72fb8776008», la misma huella que en Node.</strong> El
         spec fecha 11 días después de la última verificación del catálogo, que hoy es el 2026-10-05.
         <span class="origen origen-mejorado">Mejorado en S2</span></label></li>
     </ul>
-    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un navegador con otra huella, o menos de 9 pruebas en verde.</p></div>
+    <div class="reportame"><p><strong>Repórtame sí o sí:</strong> un navegador con otra huella, o alguna prueba que no pase.</p></div>
   </section>
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">G</span><h2>El catálogo navegable</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo</code> (o el preview del PR) · ~25 min · tres paradas ⭐ de juicio y cuatro comprobaciones que ya corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo</code> (o el preview del PR) · ~25 min · paradas ⭐ de juicio, ahora en el Gate del H-1 de arriba y cuatro comprobaciones que ya corre la CI</p>
     <ul class="pasos">
       <li data-origen="mejorado"><input type="checkbox" id="g4"><label for="g4">Filtros: pulsa una familia, elige una opción en «Madurez» y pulsa «Quitar filtros».
         <strong>Cada filtro reduce las filas, se suman, el contador dice cuántas quedan y «Quitar filtros» devuelve la lista completa. La lista muestra 20 pruebas por página: «Siguiente» muestra las demás. Un filtro sin resultados dice «Ninguna prueba cumple esos filtros».</strong>
@@ -565,10 +565,10 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">H</span><h2>Marcos y controles</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/marcos</code> y <code>/catalogo/controles</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito y cinco comprobaciones que ya corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/marcos</code> y <code>/catalogo/controles</code> (o el preview del PR) · ~20 min · paradas ⭐ de juicio, ahora en el Gate del H-1 de arriba y cinco comprobaciones que ya corre la CI</p>
     <ul class="pasos">
       <li data-origen="heredada"><input type="checkbox" id="h4"><label for="h4">Desde Catálogo, la barra lateral lleva a Marcos y a Controles.
-        <strong>Cada enlace abre su página; Propuestas sigue con la marca «pronto» y no es un enlace.</strong>
+        <strong>Cada enlace abre su página; en la subnavegación de Catálogo están Pruebas, Marcos, Controles y Propuestas, las cuatro con enlace.</strong>
         <span class="origen origen-heredada">S3</span></label></li>
       <li data-origen="heredada"><input type="checkbox" id="h5"><label for="h5">Mapa de equivalencias: en Marcos, sigue una entrada de OWASP LLM 2025 hacia 2026 y pulsa un identificador de la columna «La citan».
         <strong>Abre la ficha de esa prueba, con el mismo identificador arriba.</strong>
@@ -588,7 +588,7 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">I</span><h2>Activos y plan</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/activos/act-demo-asistente</code> y <code>/activos/act-demo-asistente/plan</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/activos/act-demo-asistente</code> y <code>/activos/act-demo-asistente/plan</code> (o el preview del PR) · ~20 min · paradas ⭐ de juicio, ahora en el Gate del H-1 de arriba; lo automático lo corre la CI</p>
     <ul class="pasos">
       <li data-origen="heredada"><input type="checkbox" id="i4"><label for="i4">En la página de un activo, el selector arriba lista los tres activos demo. Pulsa el del clasificador.
         <strong>Se abre su página; si estabas en la pestaña «Plan», sigues en «Plan» del nuevo activo.</strong>
@@ -614,7 +614,7 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">J</span><h2>Evidencia y hallazgos</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/hallazgos/HZ-0007</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/hallazgos/HZ-0007</code> (o el preview del PR) · ~20 min · paradas ⭐ de juicio, ahora en el Gate del H-1 de arriba; lo automático lo corre la CI</p>
     <ul class="pasos">
       <li data-origen="heredada"><input type="checkbox" id="j4"><label for="j4"><strong>¿El plazo vencido avisa sin asustar?</strong> Abre <code>/evidencia/hallazgos/HZ-0007</code> y lee el aviso de arriba y el plazo en «Propiedades».
         <strong>Respuesta esperada: «Plazo vencido» con la severidad, los días y lo que se puede hacer (corregir y re-probar, o un cierre alternativo con su justificación).</strong>
@@ -640,7 +640,7 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">K</span><h2>La carga de evidencia</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/carga</code> (o el preview del PR) · ~20 min · tres paradas ⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/evidencia/carga</code> (o el preview del PR) · ~20 min · paradas ⭐ de juicio, ahora en el Gate del H-1 de arriba; lo automático lo corre la CI</p>
     <ul class="pasos">
       <li data-origen="heredada"><input type="checkbox" id="k4"><label for="k4"><strong>¿Se llega desde el plan?</strong> Abre <code>/activos/act-demo-asistente/plan</code>, baja al pie y pulsa «Ir a la carga de evidencia».
         <strong>Respuesta esperada: se abre <code>/evidencia/carga</code> con los dos lotes del demo.</strong>
@@ -657,7 +657,7 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">L</span><h2>La brecha y el informe</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/tablero</code> (o el preview del PR) · ~25 min · tres paradas ⭐⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/tablero</code> (o el preview del PR) · ~25 min · paradas ⭐⭐ de juicio, ahora en el Gate del H-1 de arriba; lo automático lo corre la CI</p>
     <ul class="pasos">
       <li data-origen="heredada"><input type="checkbox" id="l4"><label for="l4"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/brecha/control/iso42001-a-6-2-4</code> y desplázate.
         <strong>Respuesta esperada: ninguna página se sale de la pantalla; la tabla de «Controles equivalentes» parte sus líneas en vez de empujar la página entera.</strong>
@@ -671,7 +671,7 @@
 
   <section class="bloque">
     <div class="bloque-cabeza"><span class="letra">M</span><h2>Las propuestas y los dos agentes</h2></div>
-    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/propuestas</code> (o el preview del PR) · ~25 min · tres paradas ⭐⭐ de juicio para el gate del hito; lo automático lo corre la CI</p>
+    <p class="meta-bloque chica suave"><strong>Empieza en:</strong> <code>pnpm build &amp;&amp; pnpm start</code> y abre <code>http://localhost:3000/catalogo/propuestas</code> (o el preview del PR) · ~25 min · paradas ⭐⭐ de juicio, ahora en el Gate del H-1 de arriba; lo automático lo corre la CI</p>
     <ul class="pasos">
       <li data-origen="nuevo"><input type="checkbox" id="m4"><label for="m4"><strong>¿Cabe en el teléfono?</strong> Con el navegador a 380 px de ancho, abre <code>/catalogo/propuestas</code> y desplázate por una propuesta.
         <strong>Respuesta esperada: ninguna página se sale de la pantalla; el comando de decisión parte sus líneas en vez de empujar la página entera. «Cabe», o lo que cambiarías.</strong>
@@ -720,6 +720,7 @@
           casillas cambia a <code>hackguard-s6:</code>: las casillas marcadas antes no se conservan. Ninguna eliminada.</li>
         <li><strong>S7 · 2026-10-12:</strong> las 6 pruebas del bloque K pasan a «S6» (regresión), y J7 pasa a «S6» (regresión). Nace el bloque L, la brecha y el informe: 5 pruebas, 3 de ellas ⭐⭐ de juicio para el gate del hito (fidelidad del tablero con la maqueta, la cadena de cierre que se lee, el informe impreso en papel). El NS de las casillas cambia a <code>hackguard-s7:</code>: las casillas marcadas antes no se conservan. Se numeran las 21 paradas ⭐⭐ en orden de documento: H a K no tenían su «Parada N de M». Ninguna eliminada.</li>
         <li><strong>S8 · 2026-10-12:</strong> las 5 pruebas del bloque L pasan a «S7» (regresión). Nace el bloque M, las propuestas y los dos agentes: 5 pruebas, 3 de ellas ⭐⭐ de juicio para el gate del hito (fidelidad de la bandeja con la maqueta, lo que se entiende de quién propone y qué decides, y las dos corridas reales). El NS de las casillas cambia a <code>hackguard-s8:</code>: las casillas marcadas antes no se conservan. Se numeran las 24 paradas ⭐⭐ en orden de documento; las 22 a 24 son de M. Ninguna eliminada.</li>
+        <li><strong>S9 · 2026-10-13:</strong> nace el bloque H1, «Gate del H-1 · ⭐⭐», al principio: 29 paradas agrupadas por familia. Las 24 ⭐⭐ antiguas se mueven ahí con sus casillas, ninguna se borra, y se añaden 5: tema claro, propuestas reales, aportar, la página de presentación y el inglés. El guardado pasa a <code>hackguard-s9</code>. La parada 3 no corre hasta el H-4.</li>
       </ul>
     </details>
   </footer>
