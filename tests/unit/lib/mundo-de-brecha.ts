@@ -21,7 +21,11 @@ import {
   armarMundoDePropuestas,
   cargarMundoDePropuestas,
 } from "../../../src/lib/propuestas/pagina.ts";
-import { resumenDePropuestas } from "../../../src/lib/propuestas/resumen.ts";
+import { etiquetaDePropuesta } from "../../../src/lib/propuestas/etiquetas.ts";
+import {
+  resumenDePropuestas,
+  SIN_PROPUESTAS,
+} from "../../../src/lib/propuestas/resumen.ts";
 
 export { activos, instantanea, mundoDeHallazgos };
 export const umbralesDeBrecha = cargarUmbralesDeBrecha(process.cwd());
@@ -51,6 +55,15 @@ export const propuestasDelRepo = await cargarMundoDePropuestas(
   },
   process.cwd(),
 );
+
+/** Las propuestas de una pantalla de Marcos de prueba: SIN avisos, y con la etiqueta del aviso leída del dato (no escrita en el código). */
+export const propuestasSinAvisos = {
+  resumen: SIN_PROPUESTAS,
+  etiquetaDeAviso: etiquetaDePropuesta(
+    propuestasDelRepo.etiquetas,
+    "aviso_de_version",
+  ),
+};
 
 /**
  * Solo las corridas demo (`propuestas/demo/`): las cifras que las pruebas fijan. El repositorio versiona corridas reales que cambian

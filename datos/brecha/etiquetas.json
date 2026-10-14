@@ -140,5 +140,43 @@
         "en": "There is evidence awaiting your confirmation"
       }
     }
-  ]
+  ],
+  "textos": {
+    "cifra_sin_cerrar": {
+      "es": "hallazgos sin cerrar",
+      "en": "open findings"
+    },
+    "cifra_vencidos": {
+      "es": "fuera de plazo",
+      "en": "past their deadline"
+    },
+    "cifra_por_confirmar": {
+      "es": "sobres por confirmar",
+      "en": "envelopes to confirm"
+    },
+    "cifra_por_decidir": {
+      "es": "propuestas por decidir",
+      "en": "proposals to decide"
+    },
+    "cifra_graves": {
+      "es": "críticos o altos sin cerrar",
+      "en": "critical or high still open"
+    },
+    "cifra_sin_evidencia": {
+      "es": "controles sin evidencia",
+      "en": "controls with no evidence"
+    },
+    "cifra_ejecutadas": {
+      "es": "pruebas ejecutadas",
+      "en": "tests run"
+    },
+    "comprobacion_cierres_prohibidos": {
+      "es": "Cierres prohibidos",
+      "en": "Forbidden closures"
+    },
+    "comprobacion_no_detectado": {
+      "es": "«No detectado» no es verificado",
+      "en": "“Not detected” is not verified"
+    }
+  }
 }

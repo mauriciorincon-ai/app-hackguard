@@ -8,6 +8,7 @@ import {
   idsDeHallazgos,
 } from "@/lib/evidencia/pagina";
 import { construirVistaDeHallazgo } from "@/lib/evidencia/vista";
+import { titulo } from "@/lib/titulo";
 
 // Una página por hallazgo (como en la maqueta). Los sobres y los hallazgos demo se leen del disco en el build y se comprueban
 // contra su libro y la instantánea oficial; lo que no cuadra rompe el build en vez de mostrarse. Lo propio, ignorado por git,
@@ -16,6 +17,15 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   return (await idsDeHallazgos()).map((id) => ({ id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return titulo("Hallazgo", "Finding", id);
 }
 
 export default async function Hallazgo({

@@ -69,16 +69,10 @@ describe("la vista de controles dice lo que la instantánea oficial dice", () =>
     expect(vista.areas.filter((a) => a.pruebas > 0)).not.toHaveLength(0);
   });
 
-  it("las pruebas sin control son las que no citan ninguno, y cada una dice si su control está pendiente", () => {
+  it("las pruebas sin control son las que no citan ninguno", () => {
     const sin = snap.catalogo.pruebas.filter((p) => p.controles.length === 0);
     expect(vista.sinControl.map((p) => p.id)).toEqual(sin.map((p) => p.id));
     expect(vista.sinControl).toHaveLength(10);
-    for (const p of vista.sinControl) {
-      expect(p.pendiente).toBe(
-        snap.catalogo.pruebas.find((x) => x.id === p.id)!.control_pendiente ===
-          true,
-      );
-    }
   });
 
   it("los equivalentes de otro marco traen su referencia y el estado «mapa incompleto» del vocabulario", () => {

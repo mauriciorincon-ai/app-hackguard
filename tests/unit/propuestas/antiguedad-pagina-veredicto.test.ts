@@ -141,4 +141,22 @@ describe("el veredicto lo calcula la regla, solo sobre campos verificados", () =
       resultadoVerificado(candidata(), [verificada("fecha")] as never),
     ).toBeNull();
   });
+
+  // S8-CIT2: «ejecutada» no se toma del booleano que propuso el agente si su cita no se verificó.
+  it("«ejecutada» solo vale lo que propuso el agente si su cita se verificó; sin ella, la dice un conteo verificado", () => {
+    const dice = (propuesta: boolean, citas: string[]) =>
+      resultadoVerificado(
+        candidata({ ejecutada: propuesta }),
+        citas.map(verificada) as never,
+      )?.resultado.ejecutada;
+    // el agente dice que NO corrió, pero hay un conteo verificado: un conteo prueba que corrió
+    expect(dice(false, ["resultado.fallidas"])).toBe(true);
+    // el agente dice que SÍ corrió y no hay cita de «ejecutada» ni conteo: no hay resultado que creer
+    expect(
+      resultadoVerificado(candidata({ ejecutada: true }), [] as never),
+    ).toBeNull();
+    // con la cita de «ejecutada» verificada, vale lo que dice el agente, sea lo que sea
+    expect(dice(false, ["resultado.ejecutada"])).toBe(false);
+    expect(dice(true, ["resultado.ejecutada"])).toBe(true);
+  });
 });

@@ -113,6 +113,11 @@ describe("las siete propuestas demo, como las ve la pantalla", () => {
     expect(fila("PROP-0035").cambio?.en).toContain("pyrit");
     expect(fila("PROP-0036").alAprobar.es).toContain("sobre por confirmar");
     expect(fila("PROP-0032").alAprobar.es).toContain("datos/marcos/");
+    // «Aprobar» a secas no escribe la revisión en la prueba: la firma y la fecha quedan en el libro de decisiones (auditoría S8).
+    const prueba = fila("PROP-0031").alAprobar;
+    expect(prueba.es).not.toContain("con tu firma");
+    expect(prueba.es).toContain("libro de decisiones");
+    expect(prueba.en).toContain("decision ledger");
   });
   it("un sobre trae el activo con su plan, la asociación, los veredictos que calculó la regla y la huella del texto, nunca el texto", () => {
     const s = fila("PROP-0036").sobre!;
@@ -209,6 +214,7 @@ describe("lo que cambia con el libro de decisiones", () => {
       por: "Ana",
       fecha: "2026-10-12",
       motivo: "una sola fuente",
+      efecto: null,
     });
     expect(f.decisiones).toEqual([]);
     expect(f.etiquetaDeEstado.nombre.es).toBe("Rechazada");
@@ -244,6 +250,128 @@ describe("lo que cambia con el libro de decisiones", () => {
     expect(() =>
       mundo({ decisiones: [decision("PROP-9999", "aprobar")] }),
     ).toThrowError(/no cuadra con las propuestas/);
+  });
+});
+
+describe("los campos del contrato tienen su lector en la pantalla (auditoría S8)", () => {
+  it("el efecto de una decisión se ve: el sobre que nació y el veredicto que la persona corrigió", () => {
+    const w = construirVistaDePropuestas(
+      mundo({
+        decisiones: [
+          decision("PROP-0036", "aprobar", {
+            prueba: "PR-IA-PINJ-001",
+            efecto: {
+              sobre: "SOB-9001",
+              veredicto_sugerido: "superada",
+              veredicto_resultante: "fallida",
+            },
+            veredicto_corregido_por_persona: true,
+          }),
+        ],
+      }),
+    );
+    const e = fila("PROP-0036", w).decidida?.efecto;
+    expect(e?.sobre).toBe("SOB-9001");
+    expect(e?.corregido?.de.nombre.es).toBe("Superada");
+    expect(e?.corregido?.a.nombre.es).toBe("Fallida");
+  });
+  it("una decisión sin efecto ni corrección no inventa uno", () => {
+    const w = construirVistaDePropuestas(
+      mundo({
+        decisiones: [decision("PROP-0033", "rechazar", { motivo: "x" })],
+      }),
+    );
+    expect(fila("PROP-0033", w).decidida?.efecto).toBeNull();
+  });
+  it("cada fuente dice cuándo se leyó, y cada marca dice qué patrón la dio", () => {
+    for (const f of v.filas)
+      for (const x of f.fuentes) expect(x.leida).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const marcada = v.filas.find((f) => f.marcaDeContenido)!;
+    expect(marcada.marcas.contenido.length).toBeGreaterThan(0);
+    for (const m of marcada.marcas.contenido) {
+      expect(m.patron).not.toBe("");
+      expect(m.campo).not.toBe("");
+    }
+  });
+  it("una fuente que una persona aportó lo dice, con quién y cuándo (RF-07.2b)", () => {
+    const original = base.corridas.find(
+      (c) => c.corrida.agente === "investigador",
+    )!;
+    const p = original.corrida.propuestas.find((x) => x.id === "PROP-0032")!;
+    if (p.tipo !== "version_de_marco") throw new Error();
+    const f = p.fuentes[0]!;
+    const conAporte = {
+      ...original,
+      aportes: [
+        {
+          url: f.url,
+          huella_de_la_pagina: f.huella_de_la_pagina,
+          caracteres: 10,
+          fecha: "2026-10-12",
+          por: "Ana",
+        },
+      ],
+    };
+    const w = construirVistaDePropuestas(
+      mundo({
+        corridas: base.corridas.map((c) => (c === original ? conAporte : c)),
+      }),
+    );
+    expect(fila("PROP-0032", w).fuentes[0]!.aportada).toEqual({
+      por: "Ana",
+      fecha: "2026-10-12",
+      caracteres: 10,
+    });
+    expect(fila("PROP-0032", w).fuentes[1]!.aportada).toBeNull();
+    expect(fila("PROP-0032").fuentes[0]!.aportada).toBeNull();
+  });
+  // S9-E-M7: la señal entra como `cita_no_verificada`, pero la persona lee su razón: todas las fuentes pueden estar verificadas.
+  it("la versión fuera de la cita dice su propia razón y no «una cita sin verificar»", () => {
+    const original = base.corridas.find(
+      (c) => c.corrida.agente === "investigador",
+    )!;
+    const propuestas = original.corrida.propuestas.map((x) =>
+      x.id === "PROP-0032"
+        ? {
+            ...x,
+            pausa: {
+              marca_instruccion: false,
+              veredicto_sugerido: null,
+              motivos: [
+                {
+                  motivo: "cita_no_verificada" as const,
+                  senal: "version_en_la_cita",
+                  umbral: 0,
+                },
+              ],
+            },
+          }
+        : x,
+    );
+    const w = construirVistaDePropuestas(
+      mundo({
+        corridas: base.corridas.map((c) =>
+          c === original
+            ? { ...original, corrida: { ...original.corrida, propuestas } }
+            : c,
+        ),
+      }),
+    );
+    const razones = fila("PROP-0032", w).motivos.map(
+      (m) => m.etiqueta.nombre.es,
+    );
+    expect(razones).toEqual([
+      "La versión nueva no está dentro de un pasaje verificado",
+    ]);
+    // Una cita sin verificar de verdad sigue diciendo lo suyo.
+    expect(
+      fila("PROP-0032").motivos.map((m) => m.etiqueta.nombre.es),
+    ).not.toContain("La versión nueva no está dentro de un pasaje verificado");
+  });
+  it("la corrida dice lo que costó cuando lo midió", () => {
+    const conCosto = v.corridas.filter((c) => c.ejecucion !== null);
+    for (const c of conCosto)
+      expect(c.ejecucion!.nodos.length).toBeGreaterThan(0);
   });
 });
 
@@ -323,9 +451,12 @@ describe("los avisos de versión como los ven las pantallas", () => {
     });
   });
   it("el mundo guarda la última corrida del investigador: sin ella, «ninguno» no se puede decir", () => {
+    // La demo consultó 10 páginas y 2 no se pudieron leer: «leyó 8 y no pudo leer 2».
     expect(base.investigacion).toEqual({
       corrida: "INV-2026-10-02-01",
       fecha: "2026-10-02",
+      leidas: 8,
+      noLeidas: 2,
     });
     expect(
       mundo({

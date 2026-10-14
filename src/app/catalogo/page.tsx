@@ -4,6 +4,9 @@ import { cargarInstantaneaOficial } from "@/lib/catalogo/cargar-instantanea";
 import { fechaDeConsulta } from "@/lib/catalogo/consulta";
 import { fechaDelCommit } from "@/lib/catalogo/fecha-del-commit";
 import { construirVista } from "@/lib/catalogo/vista";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Catálogo de pruebas", "Test catalog");
 
 // La lista del catálogo se arma en el build desde la instantánea OFICIAL (la que tiene huella). Si la instantánea no es lo
 // que dice ser, el build falla: una pantalla que muestra un catálogo que nadie firmó es peor que ninguna. La fecha de

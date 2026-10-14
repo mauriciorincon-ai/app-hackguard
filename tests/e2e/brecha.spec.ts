@@ -191,10 +191,13 @@ test.describe("«no detectado» no cuenta", () => {
       await expect(e).toHaveAttribute("data-pasa", "true");
     }
     // Las comprobaciones van dentro de «Ver las comprobaciones», cerrado por defecto: se abre como lo haría una persona.
+    await expect(
+      page.getByText("«No detectado» no es verificado"),
+    ).toBeHidden();
     await page.getByRole("button", { name: "Ver las comprobaciones" }).click();
     await expect(
       page.getByRole("button", { name: "Ver las comprobaciones" }),
-    ).toHaveAttribute("aria-pressed", "true");
+    ).toHaveAttribute("aria-expanded", "true");
     await expect(
       page.getByText("«No detectado» no es verificado"),
     ).toBeVisible();

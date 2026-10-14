@@ -12,11 +12,14 @@ function git(clave) {
   }
 }
 
+/** Sin mayúsculas ni acentos: «Rincón» y «rincon» son el mismo identificador (NFD y fuera las marcas). */
+export const plegar = (texto) => String(texto ?? "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+
 /** Los identificadores en minúsculas y de al menos 4 caracteres (uno más corto daría falsos positivos en cualquier texto). */
 export function identificadores() {
   const email = git("user.email");
   const nombre = git("user.name");
   const extra = (process.env.HACKGUARD_IDENTIFICADORES ?? "").split(",");
   const todos = [email, email.split("@")[0], nombre, ...nombre.split(/\s+/), userInfo().username, hostname().split(".")[0], basename(homedir()), ...extra];
-  return [...new Set(todos.map((x) => (x ?? "").trim().toLowerCase()).filter((x) => x.length >= 4))];
+  return [...new Set(todos.map((x) => plegar((x ?? "").trim())).filter((x) => x.length >= 4))];
 }

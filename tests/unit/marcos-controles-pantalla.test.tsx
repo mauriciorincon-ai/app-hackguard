@@ -1,4 +1,4 @@
-// @vitest-environment node
+// @vitest-environment jsdom
 // Las pantallas `/catalogo/marcos` y `/catalogo/controles` tal como las ve quien las abre: lo que dicen es lo que la
 // instantánea oficial dice, cada estado lleva símbolo + texto + color en los dos idiomas, cada enlace lleva a una ficha
 // que existe, y lo que la instantánea no sabe se dice así en vez de simularse.
@@ -12,6 +12,8 @@ import { ControlesPantalla } from "../../src/components/controles/controles-pant
 import { MarcosPantalla } from "../../src/components/marcos/marcos-pantalla";
 import { construirVistaDeControles } from "../../src/lib/catalogo/controles.ts";
 import { construirVistaDeMarcos } from "../../src/lib/catalogo/marcos.ts";
+import { documentoDelProducto } from "./lib/fidelidad";
+import { propuestasSinAvisos } from "./lib/mundo-de-brecha";
 
 const RAIZ = process.cwd();
 const archivo = readdirSync(join(RAIZ, "datos", "instantaneas"))
@@ -36,7 +38,13 @@ const listadas = [
 const marcos = (fecha = snap.fecha_evaluacion) =>
   renderToStaticMarkup(
     <MarcosPantalla
-      vista={construirVistaDeMarcos(snap, NOMBRE, fecha, listadas)}
+      vista={construirVistaDeMarcos(
+        snap,
+        NOMBRE,
+        fecha,
+        listadas,
+        propuestasSinAvisos,
+      )}
     />,
   );
 const controles = () =>
@@ -56,7 +64,10 @@ describe("/catalogo/marcos", () => {
     expect(cuantas(html, /data-marco="/g)).toBe(14);
     expect(html).toContain(NOMBRE);
     expect(html).toContain(snap.fecha_evaluacion);
-    expect(html).toContain("OWASP Top 10 for LLM Applications".slice(0, 5));
+    // Cada marco aparece con su nombre completo (S3-B3: antes solo se buscaban los 5 primeros caracteres de uno).
+    const texto = (t: string) => renderToStaticMarkup(<>{t}</>);
+    for (const m of snap.catalogo.marcos)
+      expect(html, m.id).toContain(texto(m.nombre));
   });
 
   it("dice «sin avisos registrados» y «sin aviso registrado» en vez de simular una comparación con la fuente", () => {
@@ -75,6 +86,28 @@ describe("/catalogo/marcos", () => {
       /hg-chip es-atencion"><svg[^>]*aria-hidden="true"[^>]*>.*?<\/svg><span><span lang="es">Fuente no accesible al agente<\/span><span lang="en">Source not reachable by the agent<\/span>/,
     );
     expect(cuantas(html, /Fuente no accesible al agente/g)).toBe(1);
+  });
+
+  it("un marco cuya fuente no se pudo leer no dice «Verificado hace N días»: dice «Revisado» (S3-B5)", () => {
+    const doc = documentoDelProducto(marcos());
+    const filas = [...doc.querySelectorAll("tr[data-marco]")];
+    const sinFuente = filas.filter((tr) =>
+      tr.textContent?.includes("Fuente no accesible al agente"),
+    );
+    expect(sinFuente.length).toBeGreaterThan(0);
+    for (const tr of sinFuente) {
+      const fechado = tr.querySelector('[data-fechado="vigencia"]')!;
+      expect(fechado.textContent, tr.getAttribute("data-marco")!).toContain(
+        "Revisado",
+      );
+      expect(fechado.textContent).not.toContain("Verificado");
+    }
+    const conFuente = filas.filter((tr) => !sinFuente.includes(tr));
+    expect(conFuente.length).toBeGreaterThan(0);
+    for (const tr of conFuente)
+      expect(
+        tr.querySelector('[data-fechado="vigencia"]')!.textContent,
+      ).toContain("Verificado");
   });
 
   it("el mapa de equivalencias lista cada par y enlaza solo a fichas que existen", () => {
@@ -125,6 +158,13 @@ describe("/catalogo/controles", () => {
     const html = controles();
     for (const id of enlaces(html)) expect(IDS.has(id), id).toBe(true);
     expect(html).toContain("Solo identificadores y resúmenes propios");
+  });
+
+  it("la vista por control existe y la pantalla lo dice con un enlace, no con «todavía no existe» (S3-X)", () => {
+    const html = controles();
+    expect(html).not.toContain("todavía no existe");
+    expect(html).not.toContain("does not exist as a screen yet");
+    expect(html).toContain('href="/brecha/control"');
   });
 
   it("las pruebas sin control llevan el chip «Sin control» del catálogo y no se confunden con un error", () => {

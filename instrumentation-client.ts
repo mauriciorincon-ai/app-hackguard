@@ -10,33 +10,41 @@
 
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
+// Si el SDK no carga (red caída, bloqueador de contenido, un chunk viejo tras un despliegue), la app sigue igual: el seguimiento
+// de errores nunca rompe una página ni deja una promesa rechazada sin atender.
+const sinSentry = () => {};
+
 if (dsn) {
-  void import("@sentry/nextjs").then((Sentry) => {
-    Sentry.init({
-      dsn,
-      environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? "local",
-      // Sin tracing ni replay: error tracking puro (presupuesto y privacidad).
-      tracesSampleRate: 0,
-      // Privacidad (metadata-only): nunca enviar requests ni breadcrumbs que puedan
-      // arrastrar contenido del usuario. Reportar errores vía src/lib/observability.ts.
-      beforeSend(event) {
-        delete event.request;
-        event.breadcrumbs = undefined;
-        if (event.exception?.values?.[0]?.type === "AbortError") return null;
-        // Metadata-only de verdad (kit v1.33.0, Big-D S1 B-10): el MENSAJE de una excepción puede arrastrar
-        // contenido del usuario (una ruta, un nombre, un texto pegado). Queda solo el tipo.
-        for (const v of event.exception?.values ?? []) v.value = v.type;
-        return event;
-      },
-    });
-  });
+  void import("@sentry/nextjs")
+    .then((Sentry) => {
+      Sentry.init({
+        dsn,
+        environment: process.env.NEXT_PUBLIC_VERCEL_ENV ?? "local",
+        // Sin tracing ni replay: error tracking puro (presupuesto y privacidad).
+        tracesSampleRate: 0,
+        // Privacidad (metadata-only): nunca enviar requests ni breadcrumbs que puedan
+        // arrastrar contenido del usuario. Reportar errores vía src/lib/observability.ts.
+        beforeSend(event) {
+          delete event.request;
+          event.breadcrumbs = undefined;
+          if (event.exception?.values?.[0]?.type === "AbortError") return null;
+          // Metadata-only de verdad (kit v1.33.0, Big-D S1 B-10): el MENSAJE de una excepción puede arrastrar
+          // contenido del usuario (una ruta, un nombre, un texto pegado). Queda solo el tipo.
+          for (const v of event.exception?.values ?? []) v.value = v.type;
+          return event;
+        },
+      });
+    })
+    .catch(sinSentry);
 }
 
 // Hook opcional de Next para transiciones de router (no-op sin DSN).
 export const onRouterTransitionStart = dsn
   ? (href: string, navigationType: "push" | "replace" | "traverse") => {
-      void import("@sentry/nextjs").then((Sentry) =>
-        Sentry.captureRouterTransitionStart(href, navigationType),
-      );
+      void import("@sentry/nextjs")
+        .then((Sentry) =>
+          Sentry.captureRouterTransitionStart(href, navigationType),
+        )
+        .catch(sinSentry);
     }
   : () => {};

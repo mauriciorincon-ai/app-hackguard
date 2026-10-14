@@ -42,9 +42,13 @@ export function calcularVeredicto(
     case "revision_de_diseno":
       return { tipo: "declarado" };
     case "comprobacion_determinista": {
-      const n = resultado.alertas ?? resultado.fallidas;
-      if (n === null) return { tipo: "error", motivo: "faltan_conteos" };
-      return calculado(n > 0 ? "fallida" : "superada");
+      // Cualquiera de los dos conteos que diga «falló» manda: con alertas = 0 y fallidas = 3, la prueba falló.
+      const conteos = [resultado.alertas, resultado.fallidas].filter(
+        (x): x is number => x !== null,
+      );
+      if (conteos.length === 0)
+        return { tipo: "error", motivo: "faltan_conteos" };
+      return calculado(Math.max(...conteos) > 0 ? "fallida" : "superada");
     }
     case "asimetrica_k": {
       if (k === null) return { tipo: "error", motivo: "falta_k" };

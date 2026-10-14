@@ -4,6 +4,9 @@ import { SubnavDeEvidencia } from "@/components/hallazgo/piezas";
 import { PRIMER_HALLAZGO } from "@/lib/evidencia/etiquetas";
 import { cargarParaPaginaDeHallazgo } from "@/lib/evidencia/pagina";
 import { construirVistaDeCarga } from "@/lib/evidencia/vista-de-carga";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Carga de evidencia", "Evidence intake");
 
 // La carga de evidencia (como en la maqueta): los lotes demo y sus sobres se leen del disco en el build y se comprueban contra
 // su libro, sus planes y la instantánea oficial; lo que no cuadra rompe el build en vez de mostrarse. Lo propio, ignorado por

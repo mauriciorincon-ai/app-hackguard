@@ -100,6 +100,8 @@ export function motivosDeRechazo(
   origen: SobreEfectivo,
   correccion: Correccion | null,
   s: SobreEfectivo,
+  /** El sobre que se confirmó primero. Si otro lo corrigió, `origen` es el corrector; las repeticiones piden las del MAYOR de los dos. */
+  original: SobreEfectivo = origen,
 ): MotivoDeRechazo[] {
   const m: MotivoDeRechazo[] = [];
   if (correccion === null) m.push("sin_correccion");
@@ -116,7 +118,9 @@ export function motivosDeRechazo(
     m.push("otra_version");
   if (canonicalizar(s.selector) !== canonicalizar(origen.selector))
     m.push("otro_selector");
-  if (origen.k !== null && (s.k === null || s.k < origen.k)) m.push("k_menor");
+  // Un corrector no baja el listón: la re-prueba repite al menos tantas veces como la más exigente de las dos fallas (regla dura 6).
+  const kMinimo = Math.max(origen.k ?? 0, original.k ?? 0);
+  if (kMinimo > 0 && (s.k === null || s.k < kMinimo)) m.push("k_menor");
   return m;
 }
 
@@ -154,7 +158,7 @@ export function evaluarHallazgo(
     .filter((s) => s.confirmacion !== null)
     .map((sobre) => ({
       sobre,
-      motivos: motivosDeRechazo(origen, correccion, sobre),
+      motivos: motivosDeRechazo(origen, correccion, sobre, original),
     }));
   const porConfirmar = citan.filter((s) => s.confirmacion === null);
   const valida = candidatas.find((c) => c.motivos.length === 0) ?? null;

@@ -9,6 +9,8 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  renameSync,
+  rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -209,9 +211,91 @@ export function escribirDato(
     recursive: true,
     mode: privado ? 0o700 : 0o755,
   });
+  // `mkdir` no corrige una carpeta que ya existía con otro modo: lo privado nunca queda en una carpeta más abierta que su archivo
+  // (regla 17-bis), también si la carpeta la creó otra cosa antes.
+  if (privado) cerrarCarpetasPrivadas(raiz, path.dirname(ruta));
   const modo = privado ? 0o600 : 0o644;
   if (!existsSync(ruta) || readFileSync(ruta, "utf8") !== contenido)
     writeFileSync(ruta, contenido, { mode: modo });
   chmodSync(ruta, modo);
   return relativa;
+}
+
+/** Deja en 0700 `datos/privado` y cada carpeta que cuelga de ella hasta la del archivo. */
+function cerrarCarpetasPrivadas(raiz: string, carpeta: string): void {
+  const base = path.join(raiz, "datos", "privado");
+  const relativa = path.relative(base, carpeta);
+  if (relativa.startsWith("..") || path.isAbsolute(relativa)) return;
+  let actual = base;
+  chmodSync(actual, 0o700);
+  for (const parte of relativa.split(path.sep).filter((p) => p !== "")) {
+    actual = path.join(actual, parte);
+    chmodSync(actual, 0o700);
+  }
+}
+
+/**
+ * Escribe varios archivos de datos como UNO: todos a un archivo temporal y, solo si todos se escribieron, se renombran a su sitio. Si
+ * uno falla (al escribir o al renombrar), ninguno cambia: los ya movidos vuelven a lo que eran y no queda un temporal (un sobre confirmado
+ * sin su hallazgo, o un lote sin sus sobres, son un libro a medias).
+ */
+export function escribirDatosJuntos(
+  raiz: string,
+  archivos: readonly {
+    relativa: string;
+    contenido: string;
+    privado: boolean;
+  }[],
+): void {
+  const temporales: { tmp: string; destino: string }[] = [];
+  // Lo que había antes de cada destino (o nada), para devolverlo si un renombrado falla a mitad.
+  let antes: ({ contenido: Buffer; modo: number } | null)[] = [];
+  try {
+    for (const a of archivos) {
+      const destino = path.join(raiz, a.relativa);
+      mkdirSync(path.dirname(destino), {
+        recursive: true,
+        mode: a.privado ? 0o700 : 0o755,
+      });
+      if (a.privado) cerrarCarpetasPrivadas(raiz, path.dirname(destino));
+      const modo = a.privado ? 0o600 : 0o644;
+      const tmp = `${destino}.tmp`;
+      writeFileSync(tmp, a.contenido, { mode: modo });
+      chmodSync(tmp, modo);
+      temporales.push({ tmp, destino });
+    }
+    antes = temporales.map((t) =>
+      existsSync(t.destino)
+        ? {
+            contenido: readFileSync(t.destino),
+            modo: statSync(t.destino).mode & 0o777,
+          }
+        : null,
+    );
+  } catch (e) {
+    for (const t of temporales) rmSync(t.tmp, { force: true });
+    throw e;
+  }
+  let movidos = 0;
+  try {
+    for (const t of temporales) {
+      renameSync(t.tmp, t.destino);
+      movidos += 1;
+    }
+  } catch (e) {
+    for (const [i, t] of temporales.entries()) {
+      if (i >= movidos) {
+        rmSync(t.tmp, { force: true });
+        continue;
+      }
+      const previo = antes[i];
+      if (previo === null || previo === undefined)
+        rmSync(t.destino, { force: true });
+      else {
+        writeFileSync(t.destino, previo.contenido, { mode: previo.modo });
+        chmodSync(t.destino, previo.modo);
+      }
+    }
+    throw e;
+  }
 }

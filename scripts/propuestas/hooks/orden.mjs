@@ -145,18 +145,18 @@ function lanzador(palabras) {
   return { i, nombre: (palabras[i] ?? "").split("/").pop() };
 }
 
-/** ¿Alguno de los tramos EJECUTA el CLI de decisiones? Mencionarlo en un grep, un commit o un echo no cuenta. */
+/** ¿Alguno de los tramos EJECUTA el CLI de decisiones o el de aportes (`decidir`, `aportar`)? Mencionarlo en un grep, un commit o un echo no cuenta. */
 export function ejecutaDecidir(crudo, profundidad = 0) {
   if (typeof crudo !== "string" || profundidad > 4) return false;
-  if (!/decidir/.test(crudo.replace(/["'\\]/g, ""))) return false;
+  if (!/decidir|aportar/.test(crudo.replace(/["'\\]/g, ""))) return false;
   return tramosDe(crudo).some((tramo) => {
     const palabras = palabrasDe(tramo);
     const { i, nombre } = lanzador(palabras);
     if (SHELLS.has(nombre)) return palabras.slice(i + 1).some((p) => ejecutaDecidir(p, profundidad + 1));
     if (!INTERPRETES.has(nombre)) return false;
     const resto = palabras.slice(i + 1);
-    if (resto.some((p) => /^propuestas:decidir$/.test(p))) return true;
+    if (resto.some((p) => /^propuestas:(?:decidir|aportar)$/.test(p))) return true;
     const k = resto.findIndex((p) => /(?:^|\/)propuestas\.ts$/.test(p));
-    return k !== -1 && resto.slice(k + 1).includes("decidir");
+    return k !== -1 && resto.slice(k + 1).some((p) => p === "decidir" || p === "aportar");
   });
 }

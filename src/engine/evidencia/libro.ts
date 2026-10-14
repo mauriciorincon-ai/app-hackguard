@@ -5,7 +5,6 @@
 // - un sobre SIN confirmar no cuenta: ni abre un hallazgo ni cierra uno ni entra a ninguna cuenta (regla dura 6).
 import { huella } from "../huella.ts";
 import { comparar } from "../planificador/orden.ts";
-import type { Lote } from "../lotes/esquemas.ts";
 import type { Sobre } from "./esquemas.ts";
 import { resellar } from "./huellas.ts";
 
@@ -79,7 +78,8 @@ export async function confirmar(
  */
 export function huellaDelLibro(
   libro: readonly Sobre[],
-  lotes: readonly Lote[] = [],
+  /** Lo único que el libro necesita de un lote: su identificador y la huella de su registro (así `evidencia` no importa de `lotes`). */
+  lotes: readonly { id: string; huellas: { registro: string } }[] = [],
 ): Promise<string> {
   const sobres = enOrden(libro).map((s) => [s.id, s.huellas.sobre]);
   if (lotes.length === 0) return huella(sobres);

@@ -7,6 +7,7 @@ import { calcularVeredicto } from "../evidencia/veredicto.ts";
 import type { Resultado, Veredicto } from "../evidencia/esquemas.ts";
 import type { EntradaDeRegistro } from "../evidencia/registro.ts";
 import type {
+  CampoCitable,
   CandidataSellada,
   Decision,
   MotivoDePausa,
@@ -324,6 +325,25 @@ export function sobreDeUnaAprobacion(
       es: "Quién ejecutó la herramienta no consta en el texto: se registra a quien aprobó la propuesta.",
       en: "Who ran the tool is not in the text: the person who approved the proposal is recorded.",
     });
+  // Lo que ninguna cita verificada respalda no entra al sobre en silencio: la persona que lo confirma lo ve (R5).
+  const citaVerificada = (campo: CampoCitable) =>
+    candidata.verificacion.citas.some(
+      (c) => c.campo === campo && c.estado === "verificada",
+    );
+  if (!citaVerificada("fecha"))
+    advertencias.push({
+      es: "La fecha de la ejecución no tiene una cita verificada en el texto: confírmala antes de confirmar el sobre.",
+      en: "The run date has no verified quote in the text: check it before confirming the envelope.",
+    });
+  if (!citaVerificada("herramienta.version"))
+    advertencias.push({
+      es: "La versión de la herramienta no tiene una cita verificada en el texto: confírmala antes de confirmar el sobre.",
+      en: "The tool version has no verified quote in the text: check it before confirming the envelope.",
+    });
+  advertencias.push({
+    es: "La zona horaria no se cita del texto: la propuso el extractor; confírmala antes de confirmar el sobre.",
+    en: "The time zone is not quoted from the text: the extractor proposed it; check it before confirming the envelope.",
+  });
   if (hayCorreccion)
     advertencias.push({
       es: "La persona que aprobó corrigió a mano los conteos que propuso el extractor.",

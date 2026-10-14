@@ -938,7 +938,7 @@ a.hg-boton {
 }
 
 .hg-opcion[aria-pressed="true"],
-.hg-opcion[aria-current="true"] {
+.hg-opcion[aria-current="page"] {
   border-color: var(--acento);
   box-shadow: inset 0 -2px 0 var(--acento);
   color: var(--tinta);
@@ -1052,12 +1052,13 @@ a.hg-boton {
   }
 }
 
-/* Revelado: contenido que abre el botón que lo precede. */
+/* Revelado: contenido que abre el botón que lo precede. Un botón que despliega algo dice `aria-expanded`, no `aria-pressed`
+   (`aria-pressed` es para un interruptor que queda elegido, como los botones de filtro). */
 .hg-revelado {
   display: none;
 }
 
-[data-controlador="alternar"][aria-pressed="true"] + .hg-revelado {
+[data-controlador="alternar"][aria-expanded="true"] + .hg-revelado {
   display: block;
 }
 

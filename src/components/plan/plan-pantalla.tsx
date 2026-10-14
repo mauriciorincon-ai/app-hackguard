@@ -3,6 +3,7 @@ import { pruebas } from "@/lib/catalogo/etiquetas";
 import type { Bilingue, FilaPlaneada, VistaDePlan } from "@/lib/activos/tipos";
 import { LineaDeCabecera, Par, SelectorDeActivos } from "../activos/piezas";
 import { Chip, Estado, Fechado, Huella, Sello } from "../estado";
+import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
 
 /**
@@ -36,20 +37,6 @@ const COLUMNAS_COBERTURA = [
   { es: "Cobertura", en: "Coverage" },
   { es: "Pruebas del plan", en: "Tests in the plan" },
 ];
-
-function Cabeceras({ columnas }: { columnas: Bilingue[] }) {
-  return (
-    <thead>
-      <tr>
-        {columnas.map((c) => (
-          <th key={c.es} scope="col">
-            <T t={c} />
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
 
 const enLista = (partes: string[], y: string) =>
   partes.length > 1

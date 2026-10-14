@@ -238,6 +238,23 @@ describe("armar un lote desde el reporte de ZAP", () => {
     expect(lote.herramienta).toEqual({ id: "zap", version: "2.17.0" });
   });
 
+  it("el lote demo LOTE-0008 es un recorte declarado de lo que arma `importar` sobre la misma fixture (S6-B5, ADR-009)", async () => {
+    const m = await mundoDeLotes();
+    const demo = m.lotes["LOTE-0008"]!;
+    const c = corridaDe(ADAPTADOR_DE_ZAP, ZAP_PLUS, "2.17.0");
+    const { sobres } = await armadoOk(await entradaDe(ADAPTADOR_DE_ZAP, c));
+    const real = Object.fromEntries(sobres.map((s) => [s.prueba, s.veredicto]));
+    // Lo que el demo enseña son tres de las seis pruebas, con el veredicto que calcula la regla sobre el mismo reporte.
+    for (const ref of demo.sobres) {
+      const s = m.sobres[ref.id]!;
+      expect(real[s.prueba], `${s.prueba} de ${ref.id}`).toBe(s.veredicto);
+    }
+    // Y lo que difiere queda dicho: menos sobres, y una advertencia redactada a mano que ningún adaptador emite.
+    expect(demo.sobres.length).toBeLessThan(sobres.length);
+    const delAdaptador = new Set(c.advertencias.map((a) => a.es));
+    expect(demo.advertencias.some((a) => !delAdaptador.has(a.es))).toBe(true);
+  });
+
   it("ningún texto del ataque, de la evidencia ni de los cuerpos llega a un sobre ni al lote", async () => {
     const c = corridaDe(ADAPTADOR_DE_ZAP, ZAP_PLUS, "2.17.0");
     const { lote, sobres } = await armadoOk(
@@ -859,6 +876,22 @@ describe("el validador de lotes", () => {
     expect(erroresDe(r)).toEqual([]);
     expect(reglasDe(r)).toEqual(["lote/sin-confirmar"]);
     expect(r.lotes.map((x) => x.lote.id)).toEqual(["LOTE-0007", "LOTE-0008"]);
+  });
+
+  it("un lote con un error no presta su confirmación: ni sale entre los válidos ni confirma a sus sobres (S6-B14b)", async () => {
+    const m = await mundoDeLotes();
+    const l = await loteConfirmado(m.lotes["LOTE-0007"]!);
+    const ya = await con(m.sobres["SOB-0031"]!, {
+      confirmacion: { por: "Beto", fecha: "2026-10-03", modo: "individual" },
+    });
+    const r = await validar([uno(l)], { reemplazos: [ya] });
+    expect(erroresDe(r)).toContain("lote/sobre-confirmado-dos-veces");
+    expect(r.lotes).toEqual([]);
+    const efectivo = libroEfectivo(
+      Object.values(m.sobres),
+      r.lotes.map((x) => x.lote),
+    );
+    expect(efectivo.find((s) => s.id === "SOB-0032")!.confirmacion).toBeNull();
   });
 
   it("un lote confirmado por el motor es válido y no trae la nota", async () => {

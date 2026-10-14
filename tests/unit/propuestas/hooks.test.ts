@@ -12,10 +12,14 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { RAIZ } from "./ayuda.ts";
 
 const HOOKS = path.join(RAIZ, "scripts/propuestas/hooks");
+// El tipo de `process.env` de Next exige `NODE_ENV`; un entorno de prueba mínimo no lo lleva.
+const entorno = (e: Record<string, string>) =>
+  e as unknown as NodeJS.ProcessEnv;
 const IDENTIFICADOR = "zorrillo99";
 const OTRO_IDENTIFICADOR = "ana.ejemplo@example.test";
 
@@ -62,6 +66,32 @@ const bloquea = (s: Salida, motivo?: string) => {
   expect(s.codigo, s.stderr).toBe(2);
   if (motivo !== undefined) expect(s.stderr).toContain(motivo);
 };
+
+describe("nadie aporta un documento a una corrida desde una sesión (RF-07.2b)", () => {
+  const aportes = [
+    "pnpm propuestas:aportar propuestas/entradas/doc.txt --corrida INV-2026-10-12-01 --url https://iso.org/x --por Ana --fecha 2026-10-12",
+    "pnpm run propuestas:aportar propuestas/entradas/doc.txt",
+    "node src/cli/propuestas.ts aportar propuestas/entradas/doc.txt --corrida INV-2026-10-12-01",
+    'bash -c "pnpm propuestas:aportar propuestas/entradas/doc.txt"',
+    "echo $(pnpm propuestas:aportar propuestas/entradas/doc.txt)",
+  ];
+  it("la sesión principal y los dos agentes lo tienen vedado, como decidir", () => {
+    for (const c of aportes) {
+      bloquea(bash(null, c), "lo hace solo una persona");
+      for (const a of ["investigador", "extractor"] as const)
+        bloquea(bash(a, c), "lo hace solo una persona");
+    }
+  });
+  it("mencionarlo no es ejecutarlo", () => {
+    pasa(
+      bash(
+        null,
+        'git commit -m "docs: pnpm propuestas:aportar lo corre una persona"',
+      ),
+    );
+    pasa(bash(null, "grep -rn propuestas:aportar src"));
+  });
+});
 
 describe("nadie decide una propuesta desde una sesión", () => {
   const decisiones = [
@@ -750,9 +780,87 @@ describe("los subagentes: Sonnet, sin red, con sus hooks", () => {
       expect(s.cuerpo).toContain("$ARGUMENTS");
     });
   }
-  it("los agentes nunca corren un hook roto como si nada: el filtro por nombre existe en la entrada común", () => {
-    const entrada = readFileSync(path.join(HOOKS, "entrada.mjs"), "utf8");
-    expect(entrada).toContain("process.exit(2)");
-    expect(entrada).toContain("uncaughtException");
+  it("un hook roto del agente BLOQUEA (sale con 2): sin `node` y con un script que no carga", () => {
+    const comandos = ["investigador", "extractor"].flatMap((a) =>
+      [
+        ...readFileSync(
+          path.join(RAIZ, ".claude", "agents", `${a}.md`),
+          "utf8",
+        ).matchAll(/command: '(.*)'$/gm),
+      ].map((m) => m[1]!),
+    );
+    // Cuántos hay lo dice lo que cada agente DECLARA (`- type: command`), no un número escrito aquí (S9-E-B9): un hook nuevo entra solo.
+    const declarados = ["investigador", "extractor"].reduce(
+      (n, a) =>
+        n +
+        (
+          readFileSync(
+            path.join(RAIZ, ".claude", "agents", `${a}.md`),
+            "utf8",
+          ).match(/- type: command/g) ?? []
+        ).length,
+      0,
+    );
+    expect(declarados).toBeGreaterThan(0);
+    expect(comandos.length).toBe(declarados);
+    for (const comando of comandos) {
+      // Sin `node` en el PATH: un hook que no arranca no puede dejar pasar.
+      const sinNode = spawnSync("/bin/sh", ["-c", comando], {
+        env: entorno({ PATH: "/nonexistent", CLAUDE_PROJECT_DIR: RAIZ }),
+        input: "{}",
+        encoding: "utf8",
+      });
+      expect(sinNode.status, comando).toBe(2);
+      // Con `node`, pero con el script ausente (node sale con 1): también bloquea.
+      const sinScript = spawnSync("/bin/sh", ["-c", comando], {
+        env: entorno({
+          PATH: process.env.PATH ?? "",
+          CLAUDE_PROJECT_DIR: "/nonexistent",
+        }),
+        input: "{}",
+        encoding: "utf8",
+      });
+      expect(sinScript.status, comando).toBe(2);
+    }
+  });
+  it("y un hook sano sigue dejando pasar lo que le toca: el comando de verdad sale con 0", () => {
+    const comando = readFileSync(
+      path.join(RAIZ, ".claude", "agents", "investigador.md"),
+      "utf8",
+    ).match(/command: '(.*candado.*)'$/m)![1]!;
+    const r = spawnSync("/bin/sh", ["-c", comando], {
+      env: entorno({ PATH: process.env.PATH ?? "", CLAUDE_PROJECT_DIR: RAIZ }),
+      input: JSON.stringify({
+        tool_name: "Read",
+        tool_input: {
+          file_path: path.join(
+            RAIZ,
+            "propuestas",
+            "demo",
+            "INV-2026-10-02-01",
+            "corrida.json",
+          ),
+        },
+        cwd: RAIZ,
+      }),
+      encoding: "utf8",
+    });
+    expect(r.status, r.stderr).toBe(0);
+  });
+  it("un script de hook que LANZA con la marca de un agente sale con 2; sin la marca, no (la sesión principal no queda sin herramientas)", () => {
+    const carpeta = mkdtempSync(path.join(tmpdir(), "hook-roto-"));
+    const roto = path.join(carpeta, "roto.mjs");
+    writeFileSync(
+      roto,
+      `import ${JSON.stringify(pathToFileURL(path.join(HOOKS, "entrada.mjs")).href)};\nthrow new Error("boom");\n`,
+    );
+    const conMarca = spawnSync(process.execPath, [roto, "--investigador"], {
+      encoding: "utf8",
+    });
+    expect(conMarca.status).toBe(2);
+    expect(conMarca.stderr).toContain("BLOQUEADO");
+    const sinMarca = spawnSync(process.execPath, [roto], { encoding: "utf8" });
+    expect(sinMarca.status).not.toBe(2);
+    rmSync(carpeta, { recursive: true, force: true });
   });
 });

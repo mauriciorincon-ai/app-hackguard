@@ -38,7 +38,7 @@ describe("el activo sin autorización (el portal)", () => {
   });
   it("ofrece la plantilla para activos propios, cerrada hasta que se pulsa", () => {
     const boton = d.querySelector('[data-controlador="alternar"]');
-    expect(boton?.getAttribute("aria-pressed")).toBe("false");
+    expect(boton?.getAttribute("aria-expanded")).toBe("false");
     expect(boton?.nextElementSibling?.className).toBe("hg-revelado");
   });
 });
@@ -52,11 +52,11 @@ describe("el botón de la plantilla", () => {
       />,
     );
     const boton = screen.getByRole("button");
-    expect(boton.getAttribute("aria-pressed")).toBe("false");
+    expect(boton.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(boton);
-    expect(boton.getAttribute("aria-pressed")).toBe("true");
+    expect(boton.getAttribute("aria-expanded")).toBe("true");
     fireEvent.click(boton);
-    expect(boton.getAttribute("aria-pressed")).toBe("false");
+    expect(boton.getAttribute("aria-expanded")).toBe("false");
   });
 });
 
@@ -164,7 +164,7 @@ describe("el selector y las dos páginas del activo", () => {
       mundo.activos.length,
     );
     expect(
-      s.querySelector('a[aria-current="true"]')?.getAttribute("href"),
+      s.querySelector('a[aria-current="page"]')?.getAttribute("href"),
     ).toBe(`/activos/${ASISTENTE}/plan`);
     const n = doc(<SubnavDelActivo id={ASISTENTE} abierta="plan" />);
     expect(

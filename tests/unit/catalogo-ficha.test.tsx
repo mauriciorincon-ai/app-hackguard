@@ -107,7 +107,7 @@ describe("las 38 fichas", () => {
         expect(html).not.toMatch(/NaN|undefined|\[object/);
       }
     }
-  }, 30_000); // 38 fichas × 5 fechas: bajo carga de la máquina pasa de los 5 s por defecto
+  });
 
   it("el día del primer umbral toda ficha dice «Toca revisarla» y el umbral, no los días", () => {
     const html = ficha(ids[0]!, fechaMasDias(MAS_ANTIGUA, por_revisar));

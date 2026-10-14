@@ -6,6 +6,10 @@ import { defineConfig, devices } from "@playwright/test";
 // otra app ocupa el 3000 en la máquina local — sin reuso de servidor, un puerto ocupado aborta la suite
 // en vez de probar contra el árbol de otro (regla 17-bis b).
 const PUERTO = Number(process.env.E2E_PUERTO ?? 3000);
+// La fecha de consulta del build del e2e. Sin ella, el build usa la fecha del commit y los plazos «envejecen» con el calendario:
+// una aserción sobre «en plazo» o «vencido» caduca sola (la de HZ-0009 habría roto el 2026-12-05). Es la fecha de evaluación de la
+// instantánea oficial, la misma con que los tests unitarios fijan la vista (regla 23: la fecha es una entrada, nunca el reloj).
+const CONSULTA_DEL_E2E = "2026-10-05";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -51,7 +55,7 @@ export default defineConfig({
     // `eval()` de React dev. En una app con CSP estricta o gate de red eso produce rojos sobre
     // un árbol limpio — 5 en Velo S1 — y un suite que grita cuando no pasa nada acaba ignorado.
     // Cuesta el tiempo del build; compra que el e2e local afirme lo mismo que el de CI.
-    command: `pnpm build && PORT=${PUERTO} pnpm start`,
+    command: `HACKGUARD_CONSULTA=${CONSULTA_DEL_E2E} pnpm build && PORT=${PUERTO} pnpm start`,
     url: `http://localhost:${PUERTO}`,
     // Sin reuso: un `pnpm dev` olvidado en :3000 secuestraría el suite entero en silencio.
     reuseExistingServer: false,

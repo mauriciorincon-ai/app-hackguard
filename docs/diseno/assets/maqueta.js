@@ -127,7 +127,9 @@
   });
 
   registrar("alternar", function (control) {
-    control.setAttribute("aria-pressed", String(control.getAttribute("aria-pressed") !== "true"));
+    // Un botón que despliega algo lleva aria-expanded; uno que queda elegido, aria-pressed.
+    var atributo = control.hasAttribute("aria-expanded") ? "aria-expanded" : "aria-pressed";
+    control.setAttribute(atributo, String(control.getAttribute(atributo) !== "true"));
   });
 
   // Estado de la pantalla. Lo cambia la botonera de sala, y también un botón de la propia pantalla

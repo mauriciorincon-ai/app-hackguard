@@ -1,6 +1,6 @@
 # HackGuard · bundle del design system
 
-> GENERADO por `pnpm design-sync:bundle` (`scripts/design-sync/generar.mjs`) desde `design-system.md` 1.0.0 y la
+> GENERADO por `pnpm design-sync:bundle` (`scripts/design-sync/generar.mjs`) desde `design-system.md` 1.1.0 y la
 > maqueta de `docs/diseno/`. No se edita a mano: `tests/unit/design-sync.test.ts` exige los mismos bytes.
 
 Espejo publicable del design system de HackGuard para Claude Design (regla 16 de la constitución). La jerarquía es

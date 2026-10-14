@@ -244,7 +244,12 @@
       "fecha": "2026-10-12",
       "contenido": "limpia",
       "marcas_de_contenido": [],
-      "marcas_de_instruccion": [],
+      "marcas_de_instruccion": [
+        {
+          "campo": "pagina",
+          "patron": "indice-para-agentes"
+        }
+      ],
       "verificacion": {
         "fuentes": [
           {
@@ -262,26 +267,37 @@
         "fuentes_verificadas": 2,
         "antiguedad_marco_dias": 10,
         "citas_sin_verificar": 0,
-        "marca_instruccion": false,
+        "marca_instruccion": true,
         "similitud_cita": 1,
         "veredicto_por_regla": true,
         "prueba_nueva": true,
         "control_asociado": true,
         "hallazgo_cerrado": false,
         "reprueba_hecha": false,
-        "pausa_humana": false,
+        "pausa_humana": true,
         "nodos_visitados": [
           "enrutador",
           "investigador",
           "verificador_fuentes",
-          "catalogo_borrador"
+          "catalogo_borrador",
+          "pausa_humana"
         ],
         "latencia_total_s": null,
         "tokens": null,
         "error_proveedor": false,
         "veredicto_corregido_por_persona": null
       },
-      "pausa": null
+      "pausa": {
+        "motivos": [
+          {
+            "motivo": "instruccion_marcada",
+            "senal": "marca_instruccion",
+            "umbral": null
+          }
+        ],
+        "marca_instruccion": true,
+        "veredicto_sugerido": null
+      }
     },
     {
       "tipo": "prueba_nueva",
@@ -421,7 +437,12 @@
       "fecha": "2026-10-12",
       "contenido": "limpia",
       "marcas_de_contenido": [],
-      "marcas_de_instruccion": [],
+      "marcas_de_instruccion": [
+        {
+          "campo": "pagina",
+          "patron": "indice-para-agentes"
+        }
+      ],
       "verificacion": {
         "fuentes": [
           {
@@ -443,26 +464,37 @@
         "fuentes_verificadas": 3,
         "antiguedad_marco_dias": 10,
         "citas_sin_verificar": 0,
-        "marca_instruccion": false,
+        "marca_instruccion": true,
         "similitud_cita": 1,
         "veredicto_por_regla": true,
         "prueba_nueva": true,
         "control_asociado": true,
         "hallazgo_cerrado": false,
         "reprueba_hecha": false,
-        "pausa_humana": false,
+        "pausa_humana": true,
         "nodos_visitados": [
           "enrutador",
           "investigador",
           "verificador_fuentes",
-          "catalogo_borrador"
+          "catalogo_borrador",
+          "pausa_humana"
         ],
         "latencia_total_s": null,
         "tokens": null,
         "error_proveedor": false,
         "veredicto_corregido_por_persona": null
       },
-      "pausa": null
+      "pausa": {
+        "motivos": [
+          {
+            "motivo": "instruccion_marcada",
+            "senal": "marca_instruccion",
+            "umbral": null
+          }
+        ],
+        "marca_instruccion": true,
+        "veredicto_sugerido": null
+      }
     },
     {
       "tipo": "prueba_nueva",
@@ -585,7 +617,12 @@
       "fecha": "2026-10-12",
       "contenido": "limpia",
       "marcas_de_contenido": [],
-      "marcas_de_instruccion": [],
+      "marcas_de_instruccion": [
+        {
+          "campo": "pagina",
+          "patron": "indice-para-agentes"
+        }
+      ],
       "verificacion": {
         "fuentes": [
           {
@@ -603,27 +640,38 @@
         "fuentes_verificadas": 2,
         "antiguedad_marco_dias": 10,
         "citas_sin_verificar": 0,
-        "marca_instruccion": false,
+        "marca_instruccion": true,
         "similitud_cita": 1,
         "veredicto_por_regla": true,
         "prueba_nueva": true,
         "control_asociado": true,
         "hallazgo_cerrado": false,
         "reprueba_hecha": false,
-        "pausa_humana": false,
+        "pausa_humana": true,
         "nodos_visitados": [
           "enrutador",
           "investigador",
           "verificador_fuentes",
-          "catalogo_borrador"
+          "catalogo_borrador",
+          "pausa_humana"
         ],
         "latencia_total_s": null,
         "tokens": null,
         "error_proveedor": false,
         "veredicto_corregido_por_persona": null
       },
-      "pausa": null
+      "pausa": {
+        "motivos": [
+          {
+            "motivo": "instruccion_marcada",
+            "senal": "marca_instruccion",
+            "umbral": null
+          }
+        ],
+        "marca_instruccion": true,
+        "veredicto_sugerido": null
+      }
     }
   ],
-  "huella": "8c90dcbfe1c205deb2865ab79b33483ae00e7dd207e46c136a83e236ba530481"
+  "huella": "9331fd9e6e791e762ad32445fb5b4cb317cbd26f2430f5f23a095435c7d40ab5"
 }

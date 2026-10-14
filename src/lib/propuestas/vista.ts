@@ -2,7 +2,11 @@
 // se recalcula aquí: el estado de cada propuesta, la cuenta de «por decidir», los avisos y el veredicto de cada candidata salen del motor
 // (`bandeja`, `porDecidir`, la regla del catálogo); esta capa los nombra con `datos/propuestas/etiquetas.json` y el vocabulario de
 // estados del catálogo y los ordena. Aprobar o rechazar NO se hace aquí: la pantalla arma el comando que registra la decisión.
+import { SENAL_VERSION_EN_LA_CITA } from "../../engine/propuestas/senales.ts";
+import { senalesConDecision } from "../../engine/propuestas/decisiones.ts";
 import type {
+  Aporte,
+  Decision,
   MotivoDePausa,
   PropuestaSellada,
 } from "../../engine/propuestas/esquemas.ts";
@@ -16,6 +20,7 @@ import type {
   CandidataVista,
   CorridaVista,
   DecisionDeBandeja,
+  EfectoVista,
   Etiqueta,
   FilaDePropuesta,
   FuenteVista,
@@ -123,8 +128,8 @@ const AL_APROBAR: Record<FilaDePropuesta["tipo"], Bilingue> = {
     en: "Approved. It moves to evidence intake as an envelope to confirm: it does not count yet.",
   },
   prueba_nueva: {
-    es: "Aprobada. Queda «aprobada» en datos/pruebas/ y entra al catálogo en la próxima instantánea, con tu firma y la fecha.",
-    en: "Approved. It becomes “approved” in datos/pruebas/ and enters the catalog in the next snapshot, with your signature and the date.",
+    es: "Aprobada. Queda «aprobada» en datos/pruebas/ y entra al catálogo en la próxima instantánea; tu firma y la fecha quedan en el libro de decisiones.",
+    en: "Approved. It becomes “approved” in datos/pruebas/ and enters the catalog in the next snapshot; your signature and the date stay in the decision ledger.",
   },
   version_de_marco: {
     es: "Aprobada. Queda registrada tu decisión; el cambio de versión y su mapa de equivalencias lo haces tú en datos/marcos/.",
@@ -143,12 +148,28 @@ const AL_APROBAR: Record<FilaDePropuesta["tipo"], Bilingue> = {
 const motivoDe = (m: MundoDePropuestas, motivo: MotivoDePausa): Etiqueta =>
   etiquetaDePropuesta(m.etiquetas, `motivo_${motivo}`);
 
-function fuentesDe(p: PropuestaSellada, m: MundoDePropuestas): FuenteVista[] {
+function fuentesDe(
+  p: PropuestaSellada,
+  m: MundoDePropuestas,
+  aportes: readonly Aporte[],
+): FuenteVista[] {
   if (p.tipo === "sobre") return [];
   return p.fuentes.map((f, i): FuenteVista => {
     const estado = p.verificacion.fuentes[i]?.estado ?? "sin_lectura";
+    const aporte = aportes.find(
+      (a) => a.url === f.url && a.huella_de_la_pagina === f.huella_de_la_pagina,
+    );
     return {
       nombre: f.nombre,
+      leida: f.leida,
+      aportada:
+        aporte === undefined
+          ? null
+          : {
+              por: aporte.por,
+              fecha: aporte.fecha,
+              caracteres: aporte.caracteres,
+            },
       donde: f.donde ?? null,
       url: f.url,
       etiqueta: etiquetaDePropuesta(m.etiquetas, `fuente_${estado}`),
@@ -267,6 +288,30 @@ function decisionesDe(
   return [marcada ? "aprobar_tras_revisar" : "aprobar", "rechazar"];
 }
 
+/** Lo que la decisión ya provocó, tal como lo escribió el libro: el sobre, la prueba, o la corrección del veredicto. */
+function efectoDe(
+  p: PropuestaSellada,
+  d: Decision,
+  m: MundoDePropuestas,
+): EfectoVista | null {
+  const corregido =
+    senalesConDecision(p.senales, d).veredicto_corregido_por_persona === true;
+  const e = d.efecto;
+  if (e === undefined && !corregido) return null;
+  const c = m.instantanea.catalogo;
+  return {
+    sobre: e?.sobre ?? null,
+    prueba: e?.prueba ?? null,
+    corregido:
+      corregido && e?.veredicto_sugerido && e.veredicto_resultante
+        ? {
+            de: etiqueta(c, "veredicto", e.veredicto_sugerido),
+            a: etiqueta(c, "veredicto", e.veredicto_resultante),
+          }
+        : null,
+  };
+}
+
 function filaDe(
   fila: MundoDePropuestas["filas"][number],
   m: MundoDePropuestas,
@@ -299,10 +344,19 @@ function filaDe(
     decidida:
       d === null
         ? null
-        : { por: d.por, fecha: d.fecha, motivo: d.motivo ?? null },
-    fuentes: fuentesDe(p, m),
+        : {
+            por: d.por,
+            fecha: d.fecha,
+            motivo: d.motivo ?? null,
+            efecto: efectoDe(p, d, m),
+          },
+    fuentes: fuentesDe(p, m, corrida?.aportes ?? []),
     marcaDeContenido: p.contenido === "marcada_para_revision",
     marcaDeInstruccion: p.senales.marca_instruccion,
+    marcas: {
+      contenido: p.marcas_de_contenido.map((x) => ({ ...x })),
+      instruccion: p.marcas_de_instruccion.map((x) => ({ ...x })),
+    },
     motivos: (p.pausa?.motivos ?? [])
       // Estos dos tienen su propio aviso en el panel: no se repiten como motivo.
       .filter(
@@ -311,7 +365,15 @@ function filaDe(
           x.motivo !== "instruccion_marcada",
       )
       .map((x): MotivoVista => ({
-        etiqueta: motivoDe(m, x.motivo),
+        // La versión fuera de la cita entra como `cita_no_verificada` con su señal, pero dice su propia razón (todas las fuentes pueden
+        // estar verificadas y la versión nueva no estar en ningún pasaje).
+        etiqueta:
+          x.senal === SENAL_VERSION_EN_LA_CITA
+            ? etiquetaDePropuesta(
+                m.etiquetas,
+                "motivo_version_fuera_de_la_cita",
+              )
+            : motivoDe(m, x.motivo),
         umbral: x.umbral,
       })),
     sobre,
@@ -324,6 +386,20 @@ function filaDe(
     pideConteoAMano:
       p.tipo === "sobre" &&
       p.candidatas.some((c) => c.veredicto_sugerido === null),
+  };
+}
+
+/** Lo que costó la corrida: las señales de ejecución son las mismas en todas sus propuestas (se miden una vez por corrida). */
+function ejecucionDe(
+  propuestas: readonly PropuestaSellada[],
+): CorridaVista["ejecucion"] {
+  const s = propuestas[0]?.senales;
+  if (s === undefined) return null;
+  if (s.latencia_total_s === null && s.tokens === null) return null;
+  return {
+    latenciaS: s.latencia_total_s,
+    tokens: s.tokens,
+    nodos: s.nodos_visitados,
   };
 }
 
@@ -350,6 +426,7 @@ function corridaDe(
     })),
     contradicciones: k.contradicciones,
     propuestas: k.propuestas.length,
+    ejecucion: ejecucionDe(k.propuestas),
     huella: k.huella,
     criterios: {
       cumplen: criterios.filter((x) => x.cumple).length,
@@ -406,5 +483,6 @@ export function construirVistaDePropuestas(
       etiqueta: etiquetaDePropuesta(m.etiquetas, "propuesta_ilegible"),
     })),
     vacio: filas.length === 0,
+    etiquetaDeVacio: etiquetaDePropuesta(m.etiquetas, "bandeja_vacia"),
   };
 }

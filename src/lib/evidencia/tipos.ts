@@ -18,7 +18,7 @@ export type LineaDeEslabon =
   | { tipo: "texto"; menor: boolean; texto: Bilingue }
   | { tipo: "sobre"; id: string; nota?: Bilingue }
   | { tipo: "huella"; hex: string }
-  | { tipo: "firma"; fecha: string }
+  | { tipo: "firma"; fecha: string; etiqueta: Etiqueta }
   | { tipo: "motivos"; motivos: Bilingue[] };
 
 export interface EslabonDeCadena {
@@ -73,6 +73,10 @@ export interface DetalleDeCvss {
     nombreDelValor: Bilingue | null;
   }[];
   referencia: string;
+  /** La referencia partida en el repositorio y el commit que la fijan (`repo@commit`), y el vector en sus partes. */
+  repositorio: string;
+  commit: string;
+  partesDelVector: string[];
 }
 
 export interface AccionDeHallazgo {
@@ -113,6 +117,8 @@ export interface VistaDeRevision {
   dias: number;
   total: number;
   fecha: string;
+  /** «hace 3 días» / «dentro de 3 días»: la frase la calcula la vista, no el componente. */
+  frase: Bilingue;
 }
 
 export interface VistaDeHallazgo {

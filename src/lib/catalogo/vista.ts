@@ -129,10 +129,7 @@ function fila(
     vigencia: vigenciaVista(c, v),
     madurez: p.madurez,
     madurezNombre: MADUREZ[p.madurez]!,
-    revision:
-      p.revision_contenido === "marcada_para_revision"
-        ? "marcada_para_revision"
-        : "limpia",
+    revision: p.revision_contenido,
   };
 }
 

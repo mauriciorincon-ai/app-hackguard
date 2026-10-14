@@ -97,7 +97,7 @@ describe("los filtros de «esperado contra obtenido»", () => {
       container.querySelector<HTMLSelectElement>("#filtro-veredicto")!;
     for (const o of v.filtros.veredictos) {
       fireEvent.change(select, { target: { value: o.id } });
-      const esperadas = v.filas.filter((f) => f.veredictoId === o.id).length;
+      const esperadas = v.filas.filter((f) => f.filtroId === o.id).length;
       expect(filasVisibles(container)).toHaveLength(esperadas);
       for (const f of filasVisibles(container))
         expect(f.getAttribute("data-veredicto")).toBe(o.id);
@@ -150,13 +150,13 @@ describe("«Ver las comprobaciones» del tablero", () => {
       </Revelador>,
     );
     const boton = container.querySelector("button")!;
-    expect(boton.getAttribute("aria-pressed")).toBe("false");
+    expect(boton.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(boton);
-    expect(boton.getAttribute("aria-pressed")).toBe("true");
-    // La hoja del sistema muestra lo que sigue al botón con aria-pressed="true": el contenido está justo después.
+    expect(boton.getAttribute("aria-expanded")).toBe("true");
+    // La hoja del sistema muestra lo que sigue al botón con aria-expanded="true": el contenido está justo después.
     expect(boton.nextElementSibling?.className).toBe("hg-revelado");
     fireEvent.click(boton);
-    expect(boton.getAttribute("aria-pressed")).toBe("false");
+    expect(boton.getAttribute("aria-expanded")).toBe("false");
   });
 });
 

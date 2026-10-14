@@ -1,0 +1,219 @@
+{
+  "version": "1",
+  "nota": {
+    "es": "Vocabulario de las pantallas del catálogo, los controles y los marcos: los nombres de la madurez, de la revisión de contenido y de la agregación de un selector, y las etiquetas de estado que no están en estados.json. El rol de color y el símbolo salen de aquí, nunca del componente (regla dura 12). Vive fuera de la huella de la instantánea.",
+    "en": "Vocabulary of the catalog, controls and frameworks screens: the names of maturity, of content review and of a selector's aggregation, and the state labels that are not in estados.json. The colour role and the symbol come from here, never from the component (hard rule 12). It lives outside the snapshot's fingerprint."
+  },
+  "nombres": {
+    "madurez": {
+      "estandar": {
+        "es": "Estándar",
+        "en": "Standard"
+      },
+      "emergente": {
+        "es": "Emergente",
+        "en": "Emerging"
+      },
+      "propia": {
+        "es": "Propia",
+        "en": "In-house"
+      }
+    },
+    "revision": {
+      "limpia": {
+        "es": "Limpia",
+        "en": "Clean"
+      },
+      "marcada_para_revision": {
+        "es": "Marcada para revisión",
+        "en": "Flagged for review"
+      },
+      "revisada_y_aprobada": {
+        "es": "Revisada y aprobada",
+        "en": "Reviewed and approved"
+      }
+    },
+    "agregacion": {
+      "cualquier_detector": {
+        "es": "Basta con que un detector marque.",
+        "en": "One detector flagging is enough."
+      },
+      "todos_los_detectores": {
+        "es": "Tienen que marcar todos los detectores.",
+        "en": "Every detector has to flag."
+      },
+      "cualquier_regla": {
+        "es": "Basta con que una regla marque.",
+        "en": "One rule flagging is enough."
+      },
+      "todas_las_reglas": {
+        "es": "Tienen que marcar todas las reglas.",
+        "en": "Every rule has to flag."
+      }
+    }
+  },
+  "etiquetas": [
+    {
+      "id": "catalogo_vacio",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "El catálogo está vacío",
+        "en": "The catalog is empty"
+      }
+    },
+    {
+      "id": "catalogo_con_error",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "El catálogo no se cargó",
+        "en": "The catalog did not load"
+      }
+    },
+    {
+      "id": "filtros_sin_resultados",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Ninguna prueba cumple esos filtros",
+        "en": "No test matches those filters"
+      }
+    },
+    {
+      "id": "verificacion_vencida",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Verificación vencida",
+        "en": "Verification overdue"
+      }
+    },
+    {
+      "id": "toca_revisarla",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Toca revisarla",
+        "en": "Review is due"
+      }
+    },
+    {
+      "id": "marcada_para_revision_de_contenido",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcada para revisión de contenido",
+        "en": "Flagged for content review"
+      }
+    },
+    {
+      "id": "aprobacion_confirmada",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Confirmada",
+        "en": "Confirmed"
+      }
+    },
+    {
+      "id": "sin_control",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Sin control asignado",
+        "en": "No control assigned"
+      }
+    },
+    {
+      "id": "sin_control_corto",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Sin control",
+        "en": "No control"
+      }
+    },
+    {
+      "id": "marcada",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcada",
+        "en": "Flagged"
+      }
+    },
+    {
+      "id": "marcada_para_revision",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Marcada para revisión",
+        "en": "Flagged for review"
+      }
+    },
+    {
+      "id": "controles_vacio",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "No hay controles cargados",
+        "en": "No controls loaded"
+      }
+    },
+    {
+      "id": "areas_con_pruebas",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "áreas con pruebas",
+        "en": "areas with tests"
+      }
+    },
+    {
+      "id": "sin_pruebas",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin pruebas",
+        "en": "No tests"
+      }
+    },
+    {
+      "id": "no_contrastado",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "No contrastado con la norma",
+        "en": "Not checked against the standard"
+      }
+    },
+    {
+      "id": "marcos_vacio",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "No hay marcos cargados",
+        "en": "No frameworks loaded"
+      }
+    },
+    {
+      "id": "sin_avisos_registrados",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin avisos registrados",
+        "en": "No notices recorded"
+      }
+    },
+    {
+      "id": "instantanea_oficial",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Oficial",
+        "en": "Official"
+      }
+    }
+  ]
+}

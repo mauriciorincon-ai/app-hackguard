@@ -440,7 +440,38 @@ describe("las hijas de un texto que mezcla, con sus motivos propios", () => {
     );
     if (!r.ok) throw new Error(r.motivo);
     expect(r.entrada.ejecutado_por).toBe("Beto");
-    expect(r.entrada.advertencias).toHaveLength(1);
+    const avisos = (r.entrada.advertencias ?? []).map((x) => x.es);
+    // La lista no está vacía (si lo estuviera, la ausencia de «Quién ejecutó» no diría nada): trae la de la zona horaria, y no la de quién aprobó.
+    expect(avisos.some((t) => t.includes("zona horaria"))).toBe(true);
+    expect(avisos.some((t) => t.includes("Quién ejecutó"))).toBe(false);
+  });
+  it("el sobre no calla lo que ninguna cita verificada respalda: siempre avisa de la zona horaria, y de la fecha y la versión si su cita no se verificó", () => {
+    const sobreDe = () => {
+      const p = copia(deId("PROP-0036"));
+      if (p.tipo !== "sobre") throw new Error();
+      return p;
+    };
+    const aprobar = (p: ReturnType<typeof sobreDe>) => {
+      const r = sobreDeUnaAprobacion(
+        p,
+        { por: "Ana", prueba: "PR-IA-PINJ-001" },
+        {},
+        ctx.pruebas,
+      );
+      if (!r.ok) throw new Error(r.motivo);
+      return (r.entrada.advertencias ?? []).map((x) => x.es);
+    };
+    const limpia = aprobar(sobreDe());
+    expect(limpia.some((t) => t.includes("zona horaria"))).toBe(true);
+    expect(limpia.some((t) => t.includes("La fecha"))).toBe(false);
+    expect(limpia.some((t) => t.includes("La versión"))).toBe(false);
+    const p = sobreDe();
+    for (const c of p.candidatas[0]!.verificacion.citas)
+      if (c.campo === "fecha" || c.campo === "herramienta.version")
+        c.estado = "valor_sin_respaldo";
+    const sin = aprobar(p);
+    expect(sin.some((t) => t.includes("La fecha"))).toBe(true);
+    expect(sin.some((t) => t.includes("La versión"))).toBe(true);
   });
 });
 

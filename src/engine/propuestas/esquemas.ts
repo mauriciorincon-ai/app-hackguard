@@ -22,6 +22,7 @@ export const FORMATO_DE_BORRADOR = "hackguard/borrador@1";
 export const FORMATO_DE_CONSULTA = "hackguard/consulta@1";
 export const FORMATO_DE_CORRIDA = "hackguard/corrida@1";
 export const FORMATO_DE_DECISION = "hackguard/decision@1";
+export const FORMATO_DE_APORTE = "hackguard/aporte@1";
 
 export const AGENTES = ["investigador", "extractor"] as const;
 export type Agente = (typeof AGENTES)[number];
@@ -451,13 +452,37 @@ export const Decision = z.strictObject({
 });
 export type Decision = z.infer<typeof Decision>;
 
+// ── Lo que una persona aporta: un documento que el agente no pudo leer (RF-07.2b) ──────────────────
+
+/**
+ * Los documentos que una persona leyó y aportó a una corrida del investigador porque la fuente respondió 403, pidió sesión o no era
+ * texto. Archivo APARTE (`aportes.json` junto a la consulta): la consulta que escribió el código y la corrida sellada no cambian. El
+ * documento pasa por la misma verificación que una página leída (dirección en la lista blanca, huella, fragmento literal).
+ */
+export const Aportes = z.strictObject({
+  formato: z.literal(FORMATO_DE_APORTE),
+  corrida: IdCorrida,
+  aportes: z.array(
+    z.strictObject({
+      url: Url,
+      huella_de_la_pagina: Huella,
+      caracteres: z.int().min(1),
+      fecha: Fecha,
+      por: Nombre,
+    }),
+  ),
+});
+export type Aportes = z.infer<typeof Aportes>;
+export type Aporte = Aportes["aportes"][number];
+
 // ── Datos: umbrales y semillas ────────────────────────────────────────────────────────────────────
 
 /** Los umbrales del plan v2 como dato (regla dura 10): U1, U2 y U3. */
 export const UmbralesDePropuestas = z.strictObject({
   version: Nombre,
   plan: z.strictObject({ id: IdMinusculas, version: Nombre, huella: Huella }),
-  similitud_cita: z.number().min(0.8).max(1),
+  /** U1 del plan v2: la cita es literal o no vale. El dato solo admite 1; el motor lo lee en cada cita. */
+  similitud_cita: z.literal(1),
   fuentes_verificadas: z.int().min(1).max(5),
   antiguedad_marco_dias: z.int().min(30).max(365),
   origen: Texto,

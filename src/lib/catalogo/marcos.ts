@@ -5,12 +5,12 @@
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
 import { avisosDeMarco } from "../propuestas/avisos.ts";
 import {
-  SIN_PROPUESTAS,
+  type Investigacion,
   type ResumenDePropuestas,
 } from "../propuestas/resumen.ts";
 import type { AvisoDeMarco } from "../propuestas/tipos.ts";
 import type { Bilingue, Etiqueta, VigenciaVista } from "./tipos.ts";
-import { etiqueta, porId, semaforoDe, vigenciaVista } from "./vista.ts";
+import { porId, semaforoDe, vigenciaVista } from "./vista.ts";
 
 /** Los tres cambios que el mapa de equivalencias registra entre una versión y la siguiente. */
 export const CAMBIOS: Record<string, Bilingue> = {
@@ -86,7 +86,7 @@ export interface VistaDeMarcos {
   /** Los avisos de versión (RF-05.5): lo que dicen las propuestas del investigador, nunca una comparación a ciegas. */
   avisos: AvisoDeMarco[];
   /** La corrida del investigador que respalda «sin avisos», o `null` si ninguna corrió. */
-  investigacion: { corrida: string; fecha: string } | null;
+  investigacion: Investigacion | null;
   etiquetaDeAviso: Etiqueta;
   instantanea: string;
   huella: string;
@@ -128,14 +128,7 @@ export function construirVistaDeMarcos(
   nombre: string,
   consulta: string,
   listadas: readonly InstantaneaListada[],
-  propuestas: { resumen: ResumenDePropuestas; etiquetaDeAviso: Etiqueta } = {
-    resumen: SIN_PROPUESTAS,
-    etiquetaDeAviso: {
-      rol: "atencion",
-      simbolo: "aviso",
-      nombre: { es: "Versión nueva", en: "New version" },
-    },
-  },
+  propuestas: { resumen: ResumenDePropuestas; etiquetaDeAviso: Etiqueta },
 ): VistaDeMarcos {
   const c = i.catalogo;
   const s = semaforoDe(i, consulta);
@@ -158,10 +151,7 @@ export function construirVistaDeMarcos(
       version: m.version_vigente,
       fechaVersion: m.fecha_version ?? null,
       fechaPorVerificar: m.por_verificar.includes("fecha_version"),
-      vigencia: vigenciaVista(
-        c,
-        s.marcos.find((v) => v.id === m.id)!,
-      ),
+      vigencia: vigenciaVista(c, porId(s.marcos, m.id)),
       citan: c.pruebas.filter((p) => p.marco_id === m.id).length,
       fuente: m.estado === "verificado" ? null : { ...FUENTE_NO_ACCESIBLE },
       aviso: avisos.find((a) => a.marco === m.id) ?? null,
@@ -174,6 +164,3 @@ export function construirVistaDeMarcos(
     })),
   };
 }
-
-// `etiqueta` se reexporta para que la pantalla de marcos pida los estados del vocabulario por el mismo camino que el catálogo.
-export { etiqueta };

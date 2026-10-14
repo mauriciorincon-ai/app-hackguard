@@ -1,7 +1,8 @@
 // El aviso de versiones (RF-07.5): un marco cuya fuente oficial publica una versión distinta de la que tiene el catálogo. Sale de las
 // propuestas `version_de_marco`, no de una comparación a ciegas: la propuesta guarda el pasaje literal de la fuente que dice la versión
-// nueva, y el código ya comprobó (o no) que ese pasaje está en la página. Un aviso no cambia nada por su cuenta (regla 2).
+// nueva, y el código ya comprobó que ese pasaje está en la página Y que la versión nueva está dentro del pasaje (si no, no avisa). Un aviso no cambia nada por su cuenta (regla 2).
 import type { PropuestaSellada } from "./esquemas.ts";
+import { SENAL_VERSION_EN_LA_CITA } from "./senales.ts";
 import type { DatosDeMarco } from "./verificar.ts";
 
 export interface AvisoDeVersion {
@@ -28,6 +29,12 @@ export function avisosDeVersion(
   const avisos: AvisoDeVersion[] = [];
   for (const p of propuestas) {
     if (p.tipo !== "version_de_marco" || rechazadas.has(p.id)) continue;
+    // RF-07.5: sin la versión dentro de un pasaje verificado no hay aviso; la propuesta sigue en la bandeja, en pausa.
+    if (
+      p.pausa?.motivos.some((m) => m.senal === SENAL_VERSION_EN_LA_CITA) ??
+      false
+    )
+      continue;
     const vigente = marcos.get(p.marco_id)?.version_vigente;
     if (vigente === undefined || vigente === p.version_nueva) continue;
     avisos.push({

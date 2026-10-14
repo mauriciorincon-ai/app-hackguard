@@ -1,42 +1,34 @@
-// Textos de la pantalla del catálogo que no son un estado del vocabulario `datos/estados.json`: los nombres de las
-// madureces y de la revisión de contenido, las dos etiquetas de «sin control» y la de «marcada», y las frases de días
-// y de cuenta. Son los de la maqueta aprobada (scripts/maqueta/paginas/catalogo.mjs y datos/catalogo.mjs); el gate
+// Textos de las pantallas del catálogo que no son un estado del vocabulario `datos/estados.json`: los nombres de las madureces, de la
+// revisión de contenido y de la agregación, las etiquetas de estado de las pantallas (todo en `datos/vistas/etiquetas.json`) y las
+// frases de días y de cuenta. Son los de la maqueta aprobada (scripts/maqueta/paginas/catalogo.mjs y datos/catalogo.mjs); el gate
 // tests/unit/fidelidad-catalogo.test.ts vigila que sigan siendo los mismos.
+import crudo from "../../../datos/vistas/etiquetas.json";
+import type {
+  EtiquetasDeVistas,
+  IdDeEtiquetaDeVista,
+} from "../../engine/catalogo/etiquetas-de-vistas.ts";
 import type { Bilingue, Etiqueta, EstadoDeVigencia } from "./tipos.ts";
 
-export const MADUREZ: Record<string, Bilingue> = {
-  estandar: { es: "Estándar", en: "Standard" },
-  emergente: { es: "Emergente", en: "Emerging" },
-  propia: { es: "Propia", en: "In-house" },
-};
+// Los nombres y las etiquetas de estado son DATO (`datos/vistas/etiquetas.json`, regla dura 10): se importan tal cual y los valida
+// `tests/unit/etiquetas-de-vistas.test.ts` contra su esquema. El color y la marca salen de ahí, nunca de un componente (regla dura 12).
+const DATOS = crudo as unknown as EtiquetasDeVistas;
 
-export const REVISION: Record<string, Bilingue> = {
-  limpia: { es: "Limpia", en: "Clean" },
-  marcada_para_revision: {
-    es: "Marcada para revisión",
-    en: "Flagged for review",
-  },
-};
+export const MADUREZ: Record<string, Bilingue> = DATOS.nombres.madurez;
+export const REVISION: Record<string, Bilingue> = DATOS.nombres.revision;
+export const AGREGACION: Record<string, Bilingue> = DATOS.nombres.agregacion;
 
-// Deuda del lote del hito: estas tres etiquetas nacieron locales en la maqueta y no están en el vocabulario de estados.
-export const SIN_CONTROL: Etiqueta = {
-  rol: "atencion",
-  simbolo: "aviso",
-  nombre: { es: "Sin control asignado", en: "No control assigned" },
-};
-export const SIN_CONTROL_CORTO: Etiqueta = {
-  ...SIN_CONTROL,
-  nombre: { es: "Sin control", en: "No control" },
-};
-export const MARCADA: Etiqueta = {
-  rol: "atencion",
-  simbolo: "aviso",
-  nombre: { es: "Marcada", en: "Flagged" },
-};
-export const MARCADA_PARA_REVISION: Etiqueta = {
-  ...MARCADA,
-  nombre: { es: "Marcada para revisión", en: "Flagged for review" },
-};
+/** Todas las etiquetas de estado de las pantallas del catálogo, por identificador. */
+export const ETIQUETAS_DE_VISTAS = Object.fromEntries(
+  DATOS.etiquetas.map((e) => [
+    e.id,
+    { rol: e.rol, simbolo: e.simbolo, nombre: e.nombre },
+  ]),
+) as Record<IdDeEtiquetaDeVista, Etiqueta>;
+
+export const SIN_CONTROL = ETIQUETAS_DE_VISTAS.sin_control;
+export const SIN_CONTROL_CORTO = ETIQUETAS_DE_VISTAS.sin_control_corto;
+export const MARCADA = ETIQUETAS_DE_VISTAS.marcada;
+export const MARCADA_PARA_REVISION = ETIQUETAS_DE_VISTAS.marcada_para_revision;
 
 export const frasePorDias = (n: number): Bilingue =>
   n === 0

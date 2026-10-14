@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Botones, filtros y campos · HackGuard 1.0.0</title>
+<title>Botones, filtros y campos · HackGuard 1.1.0</title>
 <style>
 /* GENERADO por scripts/paleta/generar-tokens.mjs desde scripts/paleta/tokens.mjs — no editar a mano
    (tests/unit/paleta.test.ts compara byte a byte). Tema por defecto: oscuro. */
@@ -1001,7 +1001,7 @@ a.hg-boton {
 }
 
 .hg-opcion[aria-pressed="true"],
-.hg-opcion[aria-current="true"] {
+.hg-opcion[aria-current="page"] {
   border-color: var(--acento);
   box-shadow: inset 0 -2px 0 var(--acento);
   color: var(--tinta);
@@ -1115,12 +1115,13 @@ a.hg-boton {
   }
 }
 
-/* Revelado: contenido que abre el botón que lo precede. */
+/* Revelado: contenido que abre el botón que lo precede. Un botón que despliega algo dice `aria-expanded`, no `aria-pressed`
+   (`aria-pressed` es para un interruptor que queda elegido, como los botones de filtro). */
 .hg-revelado {
   display: none;
 }
 
-[data-controlador="alternar"][aria-pressed="true"] + .hg-revelado {
+[data-controlador="alternar"][aria-expanded="true"] + .hg-revelado {
   display: block;
 }
 

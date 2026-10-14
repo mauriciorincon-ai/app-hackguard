@@ -123,11 +123,12 @@ export const IDS_DE_ETIQUETAS_DE_CARGA = [
   "lote_sin_confirmar",
   "lote_confirmado",
   "lote_a_revision_individual",
+  "nada_por_confirmar",
 ] as const;
 export type IdDeEtiquetaDeCarga = (typeof IDS_DE_ETIQUETAS_DE_CARGA)[number];
 
 export const EtiquetasDeCarga = z.strictObject({
-  version: Nombre,
+  version: z.literal("1"),
   nota: Texto,
   etiquetas: z
     .array(

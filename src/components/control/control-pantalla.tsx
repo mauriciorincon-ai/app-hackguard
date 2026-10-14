@@ -95,6 +95,17 @@ function Accion({ a }: { a: AccionDeControl }) {
           })}
         </>
       );
+    case "ninguna":
+      return (
+        <p>
+          <T
+            t={{
+              es: "Nada pendiente: sus pruebas tienen evidencia vigente y ninguna falla.",
+              en: "Nothing pending: its tests have current evidence and no failures.",
+            }}
+          />
+        </p>
+      );
     case "carga":
       return (
         <>
@@ -215,7 +226,7 @@ export function ControlPantalla({ v }: { v: VistaDeControl }) {
                 <tbody>
                   {v.pruebas.map((f) => (
                     <tr
-                      key={f.prueba.id}
+                      key={`${f.activoId}-${f.prueba.id}`}
                       data-de-control={v.id}
                       data-veredicto={f.veredictoId}
                     >
@@ -313,6 +324,10 @@ export function ControlPantalla({ v }: { v: VistaDeControl }) {
                                   ·{" "}
                                   <span data-neutro>
                                     {f.sobre.confirmadaEl}
+                                  </span>{" "}
+                                  <T t={{ es: "por", en: "by" }} />{" "}
+                                  <span data-neutro>
+                                    {f.sobre.confirmadaPor}
                                   </span>
                                 </span>
                               </span>

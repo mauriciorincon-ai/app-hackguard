@@ -253,6 +253,55 @@ describe("qué mueve a la brecha", () => {
       expect(c.fallas).not.toContain("HZ-0009");
   });
 
+  it("una falla cuyo hallazgo una persona cerró por eliminación o «no reproducible» sigue siendo una fila fallida, pero ya no hace «con fallas» al control (ADR-010 §4; S7-M1)", () => {
+    const antes = armarBrecha(ENTRADA);
+    const f0 = antes.filas.find((f) => f.hallazgo === "HZ-0007")!;
+    expect(f0.veredicto).toBe("fallida");
+    for (const tipo of ["eliminacion", "no_reproducible"] as const) {
+      const hallazgos = ENTRADA.hallazgos.map((h) =>
+        h.id === "HZ-0007"
+          ? {
+              ...h,
+              eventos: [
+                ...h.eventos,
+                {
+                  tipo,
+                  fecha: "2026-10-05",
+                  por: "Ana",
+                  justificacion: {
+                    es: "decisión de la persona",
+                    en: "the person's decision",
+                  },
+                },
+              ],
+            }
+          : h,
+      );
+      const despues = armarBrecha(con({ hallazgos }));
+      expect(
+        despues.hallazgos.find((h) => h.id === "HZ-0007")!.cuentaComoFalla,
+      ).toBe(false);
+      const fila0 = fila(despues, f0.activo, f0.prueba);
+      // Lo dice el último sobre: la cobertura la cuenta como fallida. Lo que cambia es el hallazgo y el estado del control.
+      expect(fila0.veredicto).toBe("fallida");
+      expect(fila0.hallazgo).toBeNull();
+      expect(despues.resumen.fallidas).toBe(antes.resumen.fallidas);
+      for (const c of despues.controles.filter((x) =>
+        f0.controles.includes(x.id),
+      )) {
+        expect(c.fallas).not.toContain("HZ-0007");
+      }
+      // Incondicional (S9-E-B2): el control de esa falla, que no tiene otro hallazgo, ya no queda «con fallas». Si los datos cambian y esto
+      // deja de ser cierto, la prueba falla en voz alta en vez de saltarse la aserción.
+      expect(f0.controles).toEqual(["iso42001-A.6.2.4"]);
+      const control = despues.controles.find(
+        (x) => x.id === "iso42001-A.6.2.4",
+      )!;
+      expect(control.fallas).toEqual([]);
+      expect(control.estado).not.toBe("con_fallas");
+    }
+  });
+
   it("si todas las pruebas de un control quedan en «no ejecutada», el control queda sin evidencia", () => {
     const base = armarBrecha(ENTRADA);
     const control = base.controles.find((c) => c.id === "iso42001-A.9.4")!;

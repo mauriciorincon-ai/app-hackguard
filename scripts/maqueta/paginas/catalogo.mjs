@@ -118,6 +118,7 @@ export function catalogo({ consulta, umbrales, existentes }) {
     lista("revision", { es: "Revisión de contenido", en: "Content review" }, [
       { valor: "limpia", texto: { es: "Limpia", en: "Clean" } },
       { valor: "marcada_para_revision", texto: { es: "Marcada para revisión", en: "Flagged for review" } },
+      { valor: "revisada_y_aprobada", texto: { es: "Revisada y aprobada", en: "Reviewed and approved" } },
     ]),
   ].join("");
 

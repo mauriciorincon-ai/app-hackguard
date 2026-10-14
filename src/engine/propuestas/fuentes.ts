@@ -48,12 +48,15 @@ export function lecturasConsultadas(
     huella_de_la_pagina: string | null;
     estado: string;
   }[],
+  /** Los documentos que una persona aportó (RF-07.2b): cuentan como leídos con la misma clave. */
+  aportes: readonly { url: string; huella_de_la_pagina: string }[] = [],
 ): ReadonlySet<string> {
-  return new Set(
-    fuentes
+  return new Set([
+    ...fuentes
       .filter((f) => f.estado === "leida" && f.huella_de_la_pagina !== null)
       .map((f) => claveDeLectura(f.url, f.huella_de_la_pagina!)),
-  );
+    ...aportes.map((a) => claveDeLectura(a.url, a.huella_de_la_pagina)),
+  ]);
 }
 
 export async function verificarFuente(

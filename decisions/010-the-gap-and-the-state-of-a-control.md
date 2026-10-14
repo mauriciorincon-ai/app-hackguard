@@ -55,3 +55,6 @@ decision, not an implementation detail, and the count is **one** function: `arma
   vocabulary, not to a screen.
 - The report of real assets (H-2) will be a local command over the same function; real evidence never enters the build.
 - Sprint 7 also pays B2 from the Sprint 6 audit: a retest of a finding is always reviewed in a batch (ADR-009 §3, amended).
+- A failure whose finding a person closed by elimination or marked non-reproducible (ADR-008) stays a failed row in the coverage, because that
+  is what its latest envelope says, but no longer makes the control `con_fallas`: only a finding that still counts does (§4). Decided in
+  Sprint 9 (M1 of the Sprint 7 audit) and pinned by `tests/unit/brecha/calcular.test.ts`.

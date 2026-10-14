@@ -12,9 +12,33 @@ const OFICIAL = readdirSync(CARPETA)
   .filter((n) => n.endsWith(".json"))
   .sort()
   .at(-1)!;
-const IDS: string[] = JSON.parse(
-  readFileSync(join(CARPETA, OFICIAL), "utf8"),
-).catalogo.pruebas.map((p: { id: string }) => p.id);
+const CATALOGO = JSON.parse(readFileSync(join(CARPETA, OFICIAL), "utf8"))
+  .catalogo as {
+  familias: { id: string; nombre: { es: string } }[];
+  pruebas: {
+    id: string;
+    familia: string;
+    madurez: string;
+    revision_contenido: string;
+  }[];
+};
+const IDS: string[] = CATALOGO.pruebas.map((p) => p.id);
+// Lo que se afirma de los filtros sale de la instantánea, no de lo que hoy tiene: si mañana hay una prueba marcada, el test sigue
+// diciendo la verdad (S2-M8b).
+const MARCADAS = CATALOGO.pruebas.filter(
+  (p) => p.revision_contenido === "marcada_para_revision",
+).length;
+/** Un par familia + madurez sin ninguna prueba en la instantánea: la combinación que deja la lista vacía. */
+const PAR_VACIO = CATALOGO.familias
+  .flatMap((f) =>
+    ["estandar", "emergente", "propia"].map((m) => ({
+      familia: f.nombre.es,
+      madurez: m,
+      n: CATALOGO.pruebas.filter((p) => p.familia === f.id && p.madurez === m)
+        .length,
+    })),
+  )
+  .find((x) => x.n === 0);
 
 // Las filas filtradas o de otra página siguen en el DOM, ocultas: se cuentan las que se ven. La lista muestra 20 por página.
 const POR_PAGINA = 20;
@@ -53,9 +77,12 @@ test.describe("/catalogo", () => {
     await expect(
       page.getByRole("button", { name: /Siguiente/ }),
     ).toBeDisabled();
+    // WCAG 2.4.3: en el extremo el botón pulsado se desactiva y el foco pasa al otro, no cae al <body>.
+    await expect(page.getByRole("button", { name: /Anterior/ })).toBeFocused();
     await page.getByRole("button", { name: /Anterior/ }).click();
     expect(await idsVisibles(page)).toEqual(primera);
     await expect(page.getByRole("button", { name: /Anterior/ })).toBeDisabled();
+    await expect(page.getByRole("button", { name: /Siguiente/ })).toBeFocused();
   });
 
   test("un filtro devuelve a la página 1 y el filtro «herramienta» reduce la lista", async ({
@@ -94,12 +121,30 @@ test.describe("/catalogo", () => {
     );
   });
 
-  test("una combinación sin pruebas dice «Ninguna prueba cumple esos filtros» y se sale de ella", async ({
+  test("el filtro «marcada para revisión» deja exactamente las pruebas marcadas de la instantánea", async ({
     page,
   }) => {
     await page
       .locator("#filtro-revision")
       .selectOption("marcada_para_revision");
+    if (MARCADAS === 0)
+      await expect(
+        page.getByRole("heading", {
+          name: "Ninguna prueba cumple esos filtros",
+        }),
+      ).toBeVisible();
+    await expect(filas(page)).toHaveCount(Math.min(MARCADAS, POR_PAGINA));
+  });
+
+  test("una combinación sin pruebas dice «Ninguna prueba cumple esos filtros» y se sale de ella", async ({
+    page,
+  }) => {
+    expect(
+      PAR_VACIO,
+      "la instantánea no tiene ningún par familia + madurez vacío",
+    ).toBeDefined();
+    await page.getByRole("button", { name: PAR_VACIO!.familia }).click();
+    await page.locator("#filtro-madurez").selectOption(PAR_VACIO!.madurez);
     await expect(
       page.getByRole("heading", { name: "Ninguna prueba cumple esos filtros" }),
     ).toBeVisible();

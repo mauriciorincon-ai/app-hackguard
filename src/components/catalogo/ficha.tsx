@@ -1,4 +1,9 @@
-import { MARCADA_PARA_REVISION, SIN_CONTROL } from "@/lib/catalogo/etiquetas";
+import {
+  AGREGACION,
+  ETIQUETAS_DE_VISTAS as E,
+  MARCADA_PARA_REVISION,
+  SIN_CONTROL,
+} from "@/lib/catalogo/etiquetas";
 import Link from "next/link";
 import type { Bilingue, FichaDePrueba } from "@/lib/catalogo/tipos";
 import { Chip, Fechado, Sello } from "../estado";
@@ -29,25 +34,6 @@ function Par({
   );
 }
 
-const AGREGACION: Record<string, Bilingue> = {
-  cualquier_detector: {
-    es: "Basta con que un detector marque.",
-    en: "One detector flagging is enough.",
-  },
-  todos_los_detectores: {
-    es: "Tienen que marcar todos los detectores.",
-    en: "Every detector has to flag.",
-  },
-  cualquier_regla: {
-    es: "Basta con que una regla marque.",
-    en: "One rule flagging is enough.",
-  },
-  todas_las_reglas: {
-    es: "Tienen que marcar todas las reglas.",
-    en: "Every rule has to flag.",
-  },
-};
-
 // Los avisos dicen el UMBRAL, no los días transcurridos: la cifra que envejece vive en un solo lugar (la vigencia de la
 // cabecera), que es la que vigila la matriz de envejecimiento.
 function Avisos({ f }: { f: FichaDePrueba }) {
@@ -56,11 +42,7 @@ function Avisos({ f }: { f: FichaDePrueba }) {
     <>
       {f.vigencia.estado === "vencido" ? (
         <Sello
-          etiqueta={{
-            rol: "falla",
-            simbolo: "falla",
-            nombre: { es: "Verificación vencida", en: "Verification overdue" },
-          }}
+          etiqueta={E.verificacion_vencida}
           atributos={{ "data-aviso-de-vigencia": "vencido" }}
         >
           <p>
@@ -75,11 +57,7 @@ function Avisos({ f }: { f: FichaDePrueba }) {
       ) : null}
       {f.vigencia.estado === "por_revisar" ? (
         <Sello
-          etiqueta={{
-            rol: "atencion",
-            simbolo: "aviso",
-            nombre: { es: "Toca revisarla", en: "Review is due" },
-          }}
+          etiqueta={E.toca_revisarla}
           atributos={{ "data-aviso-de-vigencia": "por_revisar" }}
         >
           <p>
@@ -94,14 +72,7 @@ function Avisos({ f }: { f: FichaDePrueba }) {
       ) : null}
       {f.marcada ? (
         <Sello
-          etiqueta={{
-            rol: "atencion",
-            simbolo: "aviso",
-            nombre: {
-              es: "Marcada para revisión de contenido",
-              en: "Flagged for content review",
-            },
-          }}
+          etiqueta={E.marcada_para_revision_de_contenido}
           atributos={{ "data-aviso-de-contenido": true }}
         >
           <p>
@@ -364,10 +335,10 @@ export function Ficha({ f }: { f: FichaDePrueba }) {
                 </span>
               </Par>
               <Par rotulo={{ es: "Aprobación", en: "Approval" }}>
-                <span className="hg-firma es-acento">
-                  <Simbolo nombre="firma" />
+                <span className={`hg-firma es-${E.aprobacion_confirmada.rol}`}>
+                  <Simbolo nombre={E.aprobacion_confirmada.simbolo} />
                   <span>
-                    <T t={{ es: "Confirmada", en: "Confirmed" }} /> ·{" "}
+                    <T t={E.aprobacion_confirmada.nombre} /> ·{" "}
                     <span data-neutro>{f.aprobadaEl}</span>
                   </span>
                 </span>

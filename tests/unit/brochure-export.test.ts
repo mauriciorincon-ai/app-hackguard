@@ -64,6 +64,38 @@ describe("docs/brochure-export.json", () => {
     expect(metrica("funcionalidades").valor).toBe(datos.funcionalidades.total);
   });
 
+  it("el total de funcionalidades es el de sus grupos, y entre todas cubren cada sección del manual", () => {
+    const features = datos.funcionalidades.grupos.flatMap((g) => g.features);
+    expect(datos.funcionalidades.total).toBe(features.length);
+    const secciones = new Set(features.map((f) => f.seccion_manual));
+    const delManual = [
+      ...leer("docs/MANUAL-DE-USO.md").matchAll(
+        /^#### (.+ · desde Sprint \d{3})$/gm,
+      ),
+    ].map((m) => m[1]);
+    // El manual en inglés repite las secciones con otro título: las del español son las que el export cita.
+    const delEspanol = delManual.filter((t) => !t.includes("since"));
+    for (const s of delEspanol) expect(secciones.has(s!), s).toBe(true);
+  });
+
+  it("las cifras destacadas del complemento de la vitrina son claves del export (cuando la planeadora está en esta máquina)", () => {
+    const complemento = join(
+      process.env.HOME ?? "",
+      "Code/hr01-develop-ai-apps/vitrina/apps/hackguard.complemento.yaml",
+    );
+    if (!existsSync(complemento)) return;
+    const m = /^cifras_destacadas: \[(.+)\]$/m.exec(
+      readFileSync(complemento, "utf8"),
+    );
+    expect(m, "el complemento no declara cifras_destacadas").not.toBeNull();
+    const claves = m![1]!.split(",").map((c) => c.trim());
+    for (const c of claves)
+      expect(
+        datos.metricas.map((x) => x.clave),
+        c,
+      ).toContain(c);
+  });
+
   it("las cifras que el repo permite re-derivar coinciden con el repo", () => {
     const pruebas = archivos("datos/pruebas");
     expect(metrica("pruebas_en_el_catalogo").valor).toBe(pruebas.length);

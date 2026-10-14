@@ -50,6 +50,29 @@ export function numeroEnElTexto(valor: number, texto: string): boolean {
   return new RegExp(`(?<![\\d])${valor}(?![\\d])`, "u").test(texto);
 }
 
+/**
+ * ¿La versión aparece en el texto como una palabra propia? `v2` no está dentro de `v20` ni de `rev2`, y `2` no está dentro de `2.0`:
+ * ni una letra o un dígito pegados delante (salvo una `v` propia: `v0.17.0` respalda `0.17.0`), ni una letra, un dígito o `.dígito`
+ * pegados detrás (RF-07.5: el aviso de versión solo vale si la versión nueva está dentro del pasaje que el código verificó).
+ */
+export function versionEnElTexto(version: string, texto: string): boolean {
+  const v = version.trim();
+  if (v.length === 0) return false;
+  const escapada = v.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  return new RegExp(
+    `(?<![\\p{L}\\p{N}])[vV]?${escapada}(?![\\p{L}\\p{N}]|\\.\\p{N})`,
+    "u",
+  ).test(normalizarEspacios(texto));
+}
+
+/** ¿El número (entero o decimal, con punto o con coma) aparece en el texto como número propio? */
+export function cifraEnElTexto(valor: number, texto: string): boolean {
+  if (Number.isInteger(valor)) return numeroEnElTexto(valor, texto);
+  if (!Number.isFinite(valor)) return false;
+  const cifra = String(valor).replace(/[.]/gu, "[.,]");
+  return new RegExp(`(?<![\\d])${cifra}(?![\\d])`, "u").test(texto);
+}
+
 /** Los campos cuyo valor es un número entero que la cita tiene que contener. */
 const CAMPOS_NUMERICOS: readonly CampoCitable[] = [
   "resultado.evaluadas",
@@ -71,13 +94,35 @@ export function verificarCita(
   cita: string,
   valor: unknown,
   texto: string,
+  umbral: number = 1,
 ): ResultadoDeCita {
   const similitud = similitudDeCita(cita, texto);
-  if (similitud < 1) return { estado: "no_literal", similitud };
+  if (similitud < umbral) return { estado: "no_literal", similitud };
   if (
     CAMPOS_NUMERICOS.includes(campo) &&
     typeof valor === "number" &&
     !numeroEnElTexto(valor, cita)
+  )
+    return { estado: "valor_sin_respaldo", similitud };
+  // El valor y el umbral de una métrica tienen que estar en su cita: una cita real que no los contiene no los respalda.
+  if (
+    campo === "resultado.metrica" &&
+    typeof valor === "object" &&
+    valor !== null &&
+    "valor" in valor &&
+    "umbral" in valor &&
+    typeof valor.valor === "number" &&
+    typeof valor.umbral === "number" &&
+    !(cifraEnElTexto(valor.valor, cita) && cifraEnElTexto(valor.umbral, cita))
+  )
+    return { estado: "valor_sin_respaldo", similitud };
+  // La fecha propuesta (AAAA-MM-DD) y la versión de la herramienta tienen que estar en su cita.
+  if (campo === "fecha" && typeof valor === "string" && !cita.includes(valor))
+    return { estado: "valor_sin_respaldo", similitud };
+  if (
+    campo === "herramienta.version" &&
+    typeof valor === "string" &&
+    !versionEnElTexto(valor, cita)
   )
     return { estado: "valor_sin_respaldo", similitud };
   return { estado: "verificada", similitud };

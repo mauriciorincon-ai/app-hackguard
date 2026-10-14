@@ -18,3 +18,38 @@ test("la app arranca, la raíz lleva al tablero y no tiene violaciones serias de
   );
   expect(serias, JSON.stringify(serias.map((v) => v.id))).toEqual([]);
 });
+
+// Cada página lleva su propio título (WCAG 2.4.2): el de la raíz no sirve a quien tiene varias pestañas abiertas.
+test("cada página tiene un título propio, con el nombre de la app al final", async ({
+  page,
+}) => {
+  const titulos = new Map<string, string>();
+  for (const [ruta, esperado] of [
+    ["/tablero", /^Tablero \/ Dashboard · HackGuard$/],
+    ["/catalogo", /^Catálogo de pruebas \/ Test catalog · HackGuard$/],
+    ["/catalogo/controles", /^Controles \/ Controls · HackGuard$/],
+    [
+      "/catalogo/marcos",
+      /^Marcos y versiones \/ Frameworks and versions · HackGuard$/,
+    ],
+    [
+      "/catalogo/propuestas",
+      /^Bandeja de propuestas \/ Proposal inbox · HackGuard$/,
+    ],
+    ["/brecha", /^Brecha \/ Gap · HackGuard$/],
+    ["/brecha/informe", /^Informe de brecha \/ Gap report · HackGuard$/],
+    ["/evidencia/carga", /^Carga de evidencia \/ Evidence intake · HackGuard$/],
+    [
+      "/evidencia/hallazgos/HZ-0007",
+      /^HZ-0007 · Hallazgo \/ Finding · HackGuard$/,
+    ],
+  ] as const) {
+    await page.goto(ruta);
+    await expect(page, ruta).toHaveTitle(esperado);
+    titulos.set(ruta, await page.title());
+  }
+  expect(
+    new Set(titulos.values()).size,
+    "dos páginas con el mismo título",
+  ).toBe(titulos.size);
+});

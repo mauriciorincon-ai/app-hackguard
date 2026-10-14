@@ -154,6 +154,23 @@ function leer(texto: string, minima: string | null): LecturaDeAdaptador {
         "The report has no “created”: the run date must be given when importing.",
       ),
     );
+  const rango = ADAPTADOR_DE_ZAP.rangoProbado;
+  const desde = compararVersiones(version, rango.desde);
+  const hasta = compararVersiones(version, rango.hasta);
+  if (desde === null || hasta === null)
+    advertencias.push(
+      advertencia(
+        `La versión «${version}» de ZAP no se puede comparar con la probada (${rango.desde}).`,
+        `ZAP version “${version}” cannot be compared with the tested one (${rango.desde}).`,
+      ),
+    );
+  else if (desde < 0 || hasta > 0)
+    advertencias.push(
+      advertencia(
+        `ZAP ${version} está fuera del rango probado (${rango.desde}).`,
+        `ZAP ${version} is outside the tested range (${rango.desde}).`,
+      ),
+    );
   const corrida: Corrida = {
     herramienta: { id: "zap", version },
     fecha: m?.[1] ?? null,

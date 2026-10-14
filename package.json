@@ -23,6 +23,7 @@
     "hallazgos:declarar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-declarar",
     "propuestas:buscar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts buscar",
     "propuestas:leer": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts leer",
+    "propuestas:aportar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts aportar",
     "propuestas:verificar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts verificar",
     "propuestas:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts validar",
     "propuestas:listar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts listar",

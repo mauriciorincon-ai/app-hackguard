@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HackGuard — Blueprint de infraestructura (as-built)</title>
+<style>
+  :root {
+    --fondo: #fafaf9; --tinta: #1c1917; --tinta-suave: #57534e;
+    --borde: #d6d3d1; --tarjeta: #ffffff; --acento: #1d4ed8;
+    --acento-suave: #dbeafe; --ok: #15803d; --alerta: #b45309;
+    --futuro: #9333ea; --caja-svg: #ffffff; --bd-svg: #eff6ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #1c1917; --tinta: #fafaf9; --tinta-suave: #a8a29e;
+      --borde: #44403c; --tarjeta: #292524; --acento: #60a5fa;
+      --acento-suave: #1e3a5f; --ok: #4ade80; --alerta: #fbbf24;
+      --futuro: #c084fc; --caja-svg: #292524; --bd-svg: #1e3a5f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem 4rem; background: var(--fondo); color: var(--tinta);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.55;
+  }
+  main { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+  h2 { font-size: 1.15rem; margin: 2.2rem 0 .8rem; border-bottom: 2px solid var(--borde); padding-bottom: .35rem; }
+  .badge {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em;
+    background: var(--acento-suave); color: var(--acento); border-radius: 999px;
+    padding: .15rem .6rem; vertical-align: middle; text-transform: uppercase;
+  }
+  .meta { color: var(--tinta-suave); font-size: .9rem; margin: .2rem 0 1rem; }
+  .nota {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-left: 4px solid var(--acento);
+    border-radius: 8px; padding: .8rem 1rem; font-size: .88rem; color: var(--tinta-suave);
+  }
+  .diagrama { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 1rem; overflow-x: auto; }
+  .diagrama svg { display: block; min-width: 720px; width: 100%; height: auto; }
+  .caja { fill: var(--caja-svg); stroke: var(--borde); stroke-width: 1.5; rx: 10; }
+  .caja-principal { stroke: var(--acento); stroke-width: 2; }
+  .caja-bd { fill: var(--bd-svg); stroke: var(--acento); stroke-width: 1.5; }
+  .caja-futuro { fill: none; stroke: var(--futuro); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .titulo-caja { font: 700 13px system-ui, sans-serif; fill: var(--tinta); }
+  .detalle-caja { font: 400 11px system-ui, sans-serif; fill: var(--tinta-suave); }
+  .detalle-futuro { fill: var(--futuro); }
+  .flecha { stroke: var(--tinta-suave); stroke-width: 1.5; fill: none; marker-end: url(#punta); }
+  .flecha-futura { stroke: var(--futuro); stroke-dasharray: 6 5; }
+  .etiqueta-flecha { font: 600 10.5px system-ui, sans-serif; fill: var(--tinta-suave); }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; background: var(--tarjeta); border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: .55rem .7rem; border: 1px solid var(--borde); vertical-align: top; }
+  th { background: var(--acento-suave); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+  tr.critica td { font-weight: 700; }
+  .tabla-scroll { overflow-x: auto; }
+  details { margin: 1rem 0; font-size: .85rem; color: var(--tinta-suave); }
+  details summary { cursor: pointer; font-weight: 600; }
+  .nota-ok { color: var(--ok); }
+  .brecha { color: var(--alerta); font-weight: 700; }
+  ul { margin: .3rem 0; padding-left: 1.2rem; }
+  td ul { margin: 0; }
+  footer { margin-top: 3rem; font-size: .8rem; color: var(--tinta-suave); border-top: 1px solid var(--borde); padding-top: .8rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>HackGuard — Blueprint de infraestructura <span class="badge">as-built</span></h1>
+  <p class="meta">Ciclo: <strong>H-1 · Vitrina funcional</strong> · Cerrado: <strong>2026-10-13</strong> · Sprints del ciclo: <strong>S1–S9</strong> · Última actualización: <strong>2026-10-13</strong></p>
+  <p class="nota"><strong>Entregable del cierre del hito.</strong> El mapa real de lo que soporta esta app: dónde vive el código, dónde se publica, qué la sostiene y cómo se hace cumplir cada regla. Está escrito con lo <strong>construido</strong>, no con lo planeado: cada sección cita los archivos que la sostienen y <code>tests/unit/documentos-del-hito.test.ts</code> exige que existan. Es vivo y acumulativo: el hito siguiente lo actualiza y declara sus cambios en el historial. HTML autocontenido, diagrama SVG embebido, sin CDNs.</p>
+
+  <h2>Diagrama</h2>
+  <div class="diagrama">
+  <svg viewBox="0 0 960 470" role="img" aria-label="Diagrama de infraestructura de HackGuard: la persona, su máquina con la línea de comandos y los datos, Claude Code con las dos skills, GitHub con la integración continua, Vercel con el export estático, Sentry solo en el cliente y la ficha de CV Viva como pieza futura">
+    <defs>
+      <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" opacity="0.65"/>
+      </marker>
+    </defs>
+    <!-- Persona -->
+    <rect class="caja" x="20" y="180" width="170" height="76" rx="10"/>
+    <text class="titulo-caja" x="105" y="210" text-anchor="middle">Una persona</text>
+    <text class="detalle-caja" x="105" y="228" text-anchor="middle">el autor, en su máquina</text>
+    <text class="detalle-caja" x="105" y="244" text-anchor="middle">y en el navegador</text>
+    <!-- Su máquina -->
+    <rect class="caja caja-principal" x="290" y="20" width="250" height="120" rx="10"/>
+    <text class="titulo-caja" x="415" y="48" text-anchor="middle">Su máquina</text>
+    <text class="detalle-caja" x="415" y="68" text-anchor="middle">CLI en Node (TypeScript nativo)</text>
+    <text class="detalle-caja" x="415" y="85" text-anchor="middle">datos/ (JSON versionado con huella)</text>
+    <text class="detalle-caja" x="415" y="102" text-anchor="middle">datos/privado/ (ignorado por git)</text>
+    <text class="detalle-caja" x="415" y="119" text-anchor="middle">propuestas/ (lo que escriben las skills)</text>
+    <!-- Claude Code -->
+    <rect class="caja" x="650" y="20" width="290" height="120" rx="10"/>
+    <text class="titulo-caja" x="795" y="48" text-anchor="middle">Claude Code (suscripción existente)</text>
+    <text class="detalle-caja" x="795" y="68" text-anchor="middle">/investigar y /extraer, a demanda</text>
+    <text class="detalle-caja" x="795" y="85" text-anchor="middle">hooks: solo escriben en propuestas/</text>
+    <text class="detalle-caja" x="795" y="102" text-anchor="middle">jamás aprueban ni corren en la app</text>
+    <text class="detalle-caja" x="795" y="119" text-anchor="middle">costo marginal US$0</text>
+    <!-- Vercel -->
+    <rect class="caja caja-principal" x="290" y="180" width="250" height="110" rx="10"/>
+    <text class="titulo-caja" x="415" y="208" text-anchor="middle">Vercel (plan gratuito)</text>
+    <text class="detalle-caja" x="415" y="228" text-anchor="middle">export estático (out/), sin servidor</text>
+    <text class="detalle-caja" x="415" y="245" text-anchor="middle">protección en todos los despliegues</text>
+    <text class="detalle-caja" x="415" y="262" text-anchor="middle">cabeceras y CSP: vercel.json</text>
+    <!-- Sentry -->
+    <rect class="caja" x="650" y="180" width="290" height="86" rx="10"/>
+    <text class="titulo-caja" x="795" y="208" text-anchor="middle">Sentry (solo cliente)</text>
+    <text class="detalle-caja" x="795" y="228" text-anchor="middle">solo metadatos; inerte sin DSN</text>
+    <text class="detalle-caja" x="795" y="245" text-anchor="middle">instrumentation-client.ts</text>
+    <!-- GitHub -->
+    <rect class="caja" x="290" y="340" width="250" height="100" rx="10"/>
+    <text class="titulo-caja" x="415" y="368" text-anchor="middle">GitHub (repo público)</text>
+    <text class="detalle-caja" x="415" y="388" text-anchor="middle">ruleset main-protegida</text>
+    <text class="detalle-caja" x="415" y="405" text-anchor="middle">quality · e2e · lighthouse · un-pr-vivo</text>
+    <text class="detalle-caja" x="415" y="422" text-anchor="middle">gitleaks al commit; la CI lo prueba</text>
+    <!-- Sin BD -->
+    <rect class="caja caja-bd" x="20" y="340" width="190" height="100" rx="10"/>
+    <text class="titulo-caja" x="115" y="368" text-anchor="middle">Sin BD, sin backend</text>
+    <text class="detalle-caja" x="115" y="388" text-anchor="middle">sin auth, sin IA en la app</text>
+    <text class="detalle-caja" x="115" y="405" text-anchor="middle">el conocimiento es dato</text>
+    <text class="detalle-caja" x="115" y="422" text-anchor="middle">versionado en el repo</text>
+    <!-- Futuro -->
+    <rect class="caja-futuro" x="650" y="330" width="290" height="110" rx="10"/>
+    <text class="titulo-caja detalle-futuro" x="795" y="360" text-anchor="middle">(futuro) ficha en CV Viva</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="380" text-anchor="middle">export + complemento, después del merge</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="397" text-anchor="middle">paquete público: H-2, no antes</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="414" text-anchor="middle">scripts/verificar-salida-publicada.mjs --publico</text>
+    <!-- Flechas -->
+    <path class="flecha" d="M 190 205 L 285 220"/>
+    <text class="etiqueta-flecha" x="235" y="200" text-anchor="middle">HTTPS</text>
+    <path class="flecha" d="M 190 190 L 285 100"/>
+    <text class="etiqueta-flecha" x="222" y="132" text-anchor="middle">pnpm …</text>
+    <path class="flecha" d="M 650 80 L 545 80"/>
+    <text class="etiqueta-flecha" x="598" y="72" text-anchor="middle">escribe propuestas</text>
+    <path class="flecha" d="M 540 235 L 645 225"/>
+    <text class="etiqueta-flecha" x="592" y="216" text-anchor="middle">errores (metadatos)</text>
+    <path class="flecha" d="M 415 340 L 415 295"/>
+    <text class="etiqueta-flecha" x="425" y="322">CI/CD → deploy</text>
+    <path class="flecha flecha-futura" d="M 545 390 L 645 385"/>
+  </svg>
+</div>
+
+  <h2>Tabla por pieza</h2>
+  <div class="tabla-scroll">
+<table>
+  <thead><tr><th>Pieza</th><th>Servicio + plan</th><th>Detalle operativo</th></tr></thead>
+  <tbody>
+    <tr><td>Código / versionamiento</td><td>GitHub <code>mauriciorincon-ai/app-hackguard</code> (público)</td><td>Ruleset <code>main-protegida</code>: jamás push directo a <code>main</code>; checks requeridos <code>quality</code>, <code>e2e</code>, <code>lighthouse</code> y <code>un-pr-vivo</code>; merge squash que hace la persona.</td></tr>
+    <tr><td>CI/CD</td><td>GitHub Actions (gratuito en repos públicos)</td><td><code>.github/workflows/ci.yml</code> y <code>.github/workflows/un-pr-vivo.yml</code>; qué gatea cada job: ver «Integración continua».</td></tr>
+    <tr><td>Hosting / publicación</td><td>Vercel, plan gratuito</td><td>Export estático (<code>output: "export"</code>), protección en <strong>todos</strong> los despliegues: la app privada no se muestra a nadie. Sin enlace de producción en ningún archivo ni campo de GitHub (<code>scripts/cero-enlaces.mjs</code>). La superficie pública, cuando exista (H-2), es un paquete estático dentro de hoja-de-vida.</td></tr>
+    <tr><td>Base de datos</td><td><strong>Sin BD</strong> — el conocimiento es dato</td><td>Marcos, controles, herramientas, pruebas, plan y libro de evidencia son JSON versionados con huella (JCS RFC 8785 + SHA-256); la evidencia real vive en <code>datos/privado/</code>, ignorado por git.</td></tr>
+    <tr><td>Auth</td><td>No aplica</td><td>No hay cuentas; la protección es la del despliegue.</td></tr>
+    <tr><td>Almacenamiento de archivos</td><td>No aplica</td><td>Ningún archivo sube a la app. El crudo de una herramienta nunca entra al almacén: solo su huella y un extracto redactado.</td></tr>
+    <tr><td>Email / notificaciones</td><td>No aplica</td><td>—</td></tr>
+    <tr><td>IA embebida</td><td><strong>NINGUNA</strong> en tiempo de ejecución</td><td>Dos skills de Claude Code a demanda (<code>.claude/skills/investigar</code>, <code>.claude/skills/extraer</code>) que solo proponen, en <code>propuestas/</code>; ADR «código primero»: <code>decisions/011-code-first-researcher-and-extractor.md</code>.</td></tr>
+    <tr><td>Observabilidad</td><td>Sentry, solo cliente</td><td>Metadatos únicamente, inerte sin <code>NEXT_PUBLIC_SENTRY_DSN</code> (<code>instrumentation-client.ts</code>, <code>src/lib/observability.ts</code>); el SDK carga en su propio chunk y, si no carga, la página no se rompe.</td></tr>
+    <tr><td>Crons / keep-alives</td><td>Ninguno</td><td>No hay servidor ni base que mantener despierta.</td></tr>
+    <tr><td>Secretos</td><td><code>.env.local</code> y variables del proveedor</td><td>Jamás el repo: gitleaks en el hook de Claude Code y en <code>githooks/pre-commit</code>; la CI instala la misma versión y prueba que el hook bloquea una carnada. El único valor opcional es la DSN de Sentry.</td></tr>
+    <tr><td>Dominio</td><td>Subdominio del hosting, protegido</td><td>No se publica ni se enlaza (regla 17 del kit).</td></tr>
+    <tr class="critica"><td>Costo real / mes</td><td>US$0</td><td>Hosting estático gratuito, repo público con Actions gratuitas, sin servicios de pago en tiempo de ejecución; la construcción corre con una suscripción de Claude Code que ya existe (costo marginal cero). Ningún free tier se acerca a su límite: es una web estática de 116 páginas, la cuenta de <code>out/</code>.</td></tr>
+    <tr class="critica"><td>Punto único de falla</td><td>La cuenta de la persona (GitHub y Vercel) y su máquina</td><td>Todo el código y el catálogo están en el repo público; lo único que no está es <code>datos/privado/</code> (evidencia real), cuyo respaldo es un repo privado solo de datos. Mitigación: autenticación en dos pasos en ambas cuentas.</td></tr>
+  </tbody>
+</table>
+</div>
+
+  <h2>Motores (src/engine)</h2>
+<p><code>src/engine</code> es el núcleo determinista: código puro que recibe textos y fechas como entradas, no lee el reloj, no usa azar y no toca el disco. Ningún archivo de <code>src/engine</code> importa de <code>node:fs</code>, <code>node:path</code>, <code>src/lib</code> ni <code>src/components</code>; quien lee archivos es <code>src/cli</code> o <code>src/lib</code>, y le pasa los textos al motor. Hay una sola dirección de dependencia entre carpetas que un test fija: <code>src/engine/lotes</code> se apoya en <code>src/engine/evidencia</code>, nunca al revés (<code>tests/unit/arquitectura.test.ts</code>). El umbral de cobertura de <code>src/engine</code> es 90 % en <code>vitest.config.ts</code>.</p>
+<div class="tabla-scroll"><table>
+<thead><tr><th>Carpeta/archivo</th><th>Qué hace en una frase</th><th>Archivos clave</th><th>Pruebas que lo vigilan</th></tr></thead>
+<tbody>
+<tr><td><code>src/engine/activos</code></td><td>Valida el activo (qué es, de quién es, quién lo provee, cómo es y qué se autorizó probar) contra su esquema y contra el catálogo; sin alcance ni reglas el activo es válido pero no está autorizado y no recibe plan.</td><td><code>src/engine/activos/esquemas.ts</code>, <code>src/engine/activos/normalizar.ts</code>, <code>src/engine/activos/validar.ts</code></td><td><code>tests/unit/activos/validar.test.ts</code>, <code>tests/unit/lib/activos-cargar.test.ts</code></td></tr>
+<tr><td><code>src/engine/adaptadores</code></td><td>Traduce el archivo de una herramienta externa (Garak, ZAP) a lo que midió, por selector; no calcula veredicto (lo calcula la regla de la prueba) y, sin constancia de ejecución, un resultado de ZAP queda <code>no_ejecutada</code>, nunca <code>superada</code>.</td><td><code>src/engine/adaptadores/interfaz.ts</code>, <code>src/engine/adaptadores/index.ts</code>, <code>src/engine/adaptadores/garak.ts</code>, <code>src/engine/adaptadores/zap.ts</code></td><td><code>tests/unit/adaptadores</code> (con archivos reales de herramienta en <code>tests/fixtures/adaptadores</code>)</td></tr>
+<tr><td><code>src/engine/brecha</code></td><td>Calcula la brecha: lo esperado contra lo obtenido, prueba por prueba y control por control, en una sola cuenta de la que leen el tablero, la brecha, la vista por control y el informe.</td><td><code>src/engine/brecha/calcular.ts</code>, <code>src/engine/brecha/esquemas.ts</code></td><td><code>tests/unit/brecha/calcular.test.ts</code>, <code>tests/unit/brecha/envejecimiento.test.ts</code>, <code>tests/e2e/brecha.spec.ts</code></td></tr>
+<tr><td><code>src/engine/catalogo</code></td><td>Valida los archivos de <code>datos/</code> con reglas nombradas y con severidad, marca (sin rechazar) el contenido que el filtro señala, calcula el semáforo de vigencia, resuelve referencias de marcos con versión y emite la instantánea con huella; con el catálogo inválido no emite nada.</td><td><code>src/engine/catalogo/validar.ts</code>, <code>src/engine/catalogo/reglas.ts</code>, <code>src/engine/catalogo/filtro.ts</code>, <code>src/engine/catalogo/semaforo.ts</code>, <code>src/engine/catalogo/equivalencias.ts</code>, <code>src/engine/catalogo/instantanea.ts</code></td><td><code>tests/unit/catalogo</code>, <code>tests/unit/etiquetas-de-vistas.test.ts</code></td></tr>
+<tr><td><code>src/engine/demo</code></td><td>Clasificador determinista propio para la familia <code>modelo_decision</code> que imita el contrato de respuesta de un servicio real sin serlo, y el conjunto de referencia con el que se mide.</td><td><code>src/engine/demo/clasificador.ts</code>, <code>src/engine/demo/conjunto.ts</code></td><td><code>tests/unit/demo</code></td></tr>
+<tr><td><code>src/engine/evidencia</code></td><td>Define el sobre de evidencia con sus tres huellas (crudo, sobre canónico, resultado), el libro que solo agrega, el registro manual de un resultado y el veredicto que sale de la regla de la prueba; el sobre nace sin confirmar.</td><td><code>src/engine/evidencia/esquemas.ts</code>, <code>src/engine/evidencia/huellas.ts</code>, <code>src/engine/evidencia/libro.ts</code>, <code>src/engine/evidencia/registro.ts</code>, <code>src/engine/evidencia/veredicto.ts</code>, <code>src/engine/evidencia/validar.ts</code></td><td><code>tests/unit/evidencia</code></td></tr>
+<tr><td><code>src/engine/hallazgos</code></td><td>Abre un hallazgo solo desde un sobre confirmado con veredicto fallido o parcial y calcula su estado (abierto, corregido, re-probado, cerrado, más los cierres alternativos y el riesgo aceptado), su severidad y su plazo desde el libro y los eventos.</td><td><code>src/engine/hallazgos/apertura.ts</code>, <code>src/engine/hallazgos/ciclo.ts</code>, <code>src/engine/hallazgos/plazo.ts</code>, <code>src/engine/hallazgos/situacion.ts</code>, <code>src/engine/hallazgos/validar.ts</code></td><td><code>tests/unit/hallazgos</code>, <code>tests/e2e/hallazgos.spec.ts</code></td></tr>
+<tr><td><code>src/engine/instrumento</code></td><td>Valida el instrumento: corre las semillas de cierre sobre el mundo demo y comprueba que el motor niega los cierres prohibidos con su motivo y que «no detectado» no cuenta como verificado.</td><td><code>src/engine/instrumento/cierres.ts</code>, <code>src/engine/instrumento/esquemas.ts</code></td><td><code>tests/unit/instrumento</code>, <code>tests/unit/brecha/instrumento-bloquea.test.ts</code></td></tr>
+<tr><td><code>src/engine/lotes</code></td><td>Arma el lote de sobres por confirmar a partir de lo que leyó un adaptador, calcula qué debe revisar una persona (todas las fallidas y parciales, toda re-prueba y una muestra del resto sembrada con la huella del lote) y hace que la confirmación del lote cuente sin editar el archivo del sobre.</td><td><code>src/engine/lotes/armar.ts</code>, <code>src/engine/lotes/revision.ts</code>, <code>src/engine/lotes/muestra.ts</code>, <code>src/engine/lotes/confirmar.ts</code>, <code>src/engine/lotes/efectivo.ts</code>, <code>src/engine/lotes/validar.ts</code></td><td><code>tests/unit/lotes</code>, <code>tests/unit/arquitectura.test.ts</code></td></tr>
+<tr><td><code>src/engine/modelo-decision</code></td><td>Métricas puras sobre las probabilidades de la respuesta de un modelo de decisión tipado (nunca sobre el campo <code>confidence</code>), válidas igual para el clasificador demo que para un modelo real.</td><td><code>src/engine/modelo-decision/metricas.ts</code></td><td><code>tests/unit/modelo-decision/metricas.test.ts</code></td></tr>
+<tr><td><code>src/engine/planificador</code></td><td>De un activo autorizado y la instantánea del catálogo emite el plan y su paquete de ejecución declarativo (aplicabilidad, alcance, herramienta y entorno, prioridad con fórmula en datos, cobertura por control), sin cargas ni procedimientos.</td><td><code>src/engine/planificador/planificar.ts</code>, <code>src/engine/planificador/aplicabilidad.ts</code>, <code>src/engine/planificador/alcance.ts</code>, <code>src/engine/planificador/prioridad.ts</code>, <code>src/engine/planificador/cobertura.ts</code>, <code>src/engine/planificador/paquete.ts</code></td><td><code>tests/unit/planificador</code>, <code>tests/e2e/activos-plan.spec.ts</code></td></tr>
+<tr><td><code>src/engine/propuestas</code></td><td>Es el lado de código de las dos skills de IA: verifica cada fuente (lista blanca, pasaje literal) y cada cita (subcadena literal), sella la corrida con sus señales de traza, calcula el veredicto sugerido con la regla de la prueba y lleva el libro de decisiones, que solo agrega.</td><td><code>src/engine/propuestas/verificar.ts</code>, <code>src/engine/propuestas/fuentes.ts</code>, <code>src/engine/propuestas/citas.ts</code>, <code>src/engine/propuestas/veredicto.ts</code>, <code>src/engine/propuestas/decisiones.ts</code>, <code>src/engine/propuestas/avisos.ts</code>, <code>src/engine/propuestas/traza.ts</code></td><td><code>tests/unit/propuestas</code>, <code>tests/e2e/propuestas.spec.ts</code></td></tr>
+<tr><td><code>src/engine/severidad</code></td><td>Calcula el nivel de un hallazgo: en software, CVSS 4.0 con un validador estricto de vectores antes de la calculadora de referencia (código del estándar fijado por commit en <code>src/engine/severidad/vendor</code>, sin modificar); en las otras familias, una tabla de prioridad de acción en datos con el impacto primero y la frecuencia observada.</td><td><code>src/engine/severidad/cvss.ts</code>, <code>src/engine/severidad/validar-vector.ts</code>, <code>src/engine/severidad/escala-ia.ts</code>, <code>src/engine/severidad/severidad.ts</code></td><td><code>tests/unit/severidad</code>, <code>tests/fixtures/cvss</code></td></tr>
+<tr><td><code>src/engine/fecha.ts</code></td><td>Fechas civiles AAAA-MM-DD con aritmética entera (días desde la época), sin <code>Date</code> ni zona horaria: la fecha de evaluación siempre es una entrada.</td><td><code>src/engine/fecha.ts</code></td><td><code>tests/unit/catalogo/fecha.test.ts</code></td></tr>
+<tr><td><code>src/engine/huella.ts</code></td><td>Huella canónica: JSON Canonicalization Scheme (RFC 8785) más SHA-256 con <code>crypto.subtle</code>, para que la misma entrada dé los mismos bytes en Node y en el navegador.</td><td><code>src/engine/huella.ts</code></td><td><code>tests/unit/catalogo/huella.test.ts</code>, <code>tests/unit/catalogo/rfc8785</code>, <code>tests/e2e/determinismo.spec.ts</code></td></tr>
+</tbody></table></div>
+<h3>Capas alrededor del motor</h3>
+<ul>
+<li><code>src/lib/activos</code>: lógica de entrada/salida y vistas; lee activos y planes del disco durante el build, comprueba sus huellas y arma la vista de Activo y Plan; el motor no importa de aquí.</li>
+<li><code>src/lib/brecha</code>: lógica de entrada/salida y vistas; arma la entrada de la brecha desde lo ya cargado y las cinco vistas (tablero, brecha, lista de controles, un control, informe) a partir de un solo objeto; el motor no importa de aquí.</li>
+<li><code>src/lib/catalogo</code>: lógica de entrada/salida y vistas; carga la instantánea oficial, resuelve la fecha de consulta (variable de build o fecha del commit, nunca el reloj) y arma el catálogo, la ficha, los controles y los marcos; el motor no importa de aquí.</li>
+<li><code>src/lib/evidencia</code>: lógica de entrada/salida y vistas; lee sobres, hallazgos y lotes (los demo versionados y los propios de <code>datos/privado</code>), los valida con el motor y arma la vista del hallazgo y de la carga de evidencia; el motor no importa de aquí.</li>
+<li><code>src/lib/propuestas</code>: lógica de entrada/salida y vistas; contiene la búsqueda del investigador, que es la única pieza de las propuestas que usa la red; guarda lo leído en <code>propuestas/.lecturas</code>, aplica una aprobación y arma la bandeja; el motor no importa de aquí.</li>
+<li>Sueltos en <code>src/lib</code>: <code>src/lib/observability.ts</code> (reporte de errores sin contenido, solo tipos y metadatos), <code>src/lib/preferencias.ts</code> (tema e idioma antes del primer pintado) y <code>src/lib/titulo.ts</code> (título de cada página).</li>
+<li><code>src/components</code>: interfaz sin lógica de negocio; pinta vistas ya calculadas por <code>src/lib</code> con los componentes canon de estado (símbolo, texto y color, siempre los tres); el motor no importa de aquí y hoy ningún componente importa de <code>src/engine</code>.</li>
+</ul>
+
+<h2>Datos (datos/)</h2>
+<p>El conocimiento es dato: marcos, controles, herramientas, pruebas, umbrales, escalas y vocabularios viven en archivos JSON versionados. La instantánea oficial (<code>datos/instantaneas</code>) es el derivado del catálogo: su huella cubre el catálogo aprobado (familias, reglas de veredicto, rasgos, filtro, marcos con equivalencias, controles, herramientas, umbrales, estados y solo las pruebas publicables), el semáforo de la fecha de evaluación, las pruebas pendientes de revisión y las advertencias. Las pantallas leen esa instantánea, nunca los archivos sueltos. La lista de carpetas que el catálogo no lee a propósito está en <code>NO_SON_CATALOGO</code> de <code>src/cli/cargar.ts</code>; el CLI avisa de los archivos de <code>datos/</code> fuera de esas carpetas que el catálogo no lee.</p>
+<div class="tabla-scroll"><table>
+<thead><tr><th>Carpeta</th><th>Qué contiene</th><th>Entra en la huella de la instantánea oficial</th><th>Quién lo lee</th></tr></thead>
+<tbody>
+<tr><td><code>datos/familias.json</code>, <code>datos/reglas-de-veredicto.json</code>, <code>datos/rasgos-de-perfil.json</code>, <code>datos/umbrales.json</code>, <code>datos/estados.json</code></td><td>Las cuatro familias, las reglas de veredicto, los rasgos del perfil del activo, los umbrales de vigencia y el vocabulario de estados (símbolo, nombre en dos idiomas y rol de color).</td><td>Sí</td><td><code>src/cli/cargar.ts</code> hacia <code>src/engine/catalogo/validar.ts</code>; <code>datos/estados.json</code> también lo leen las vistas de <code>src/lib</code></td></tr>
+<tr><td><code>datos/marcos</code> (con <code>datos/marcos/equivalencias</code>)</td><td>Marcos con versión y el mapa de equivalencias entre versiones.</td><td>Sí</td><td><code>src/cli/cargar.ts</code>; <code>src/engine/catalogo/equivalencias.ts</code></td></tr>
+<tr><td><code>datos/controles</code></td><td>Controles del Anexo A de ISO/IEC 42001, solo identificadores y resúmenes con palabras propias.</td><td>Sí</td><td><code>src/cli/cargar.ts</code>; <code>src/lib/catalogo/controles.ts</code> desde la instantánea</td></tr>
+<tr><td><code>datos/herramientas</code></td><td>Una ficha por herramienta que las pruebas recomiendan, con su editor, su licencia y las familias que cubre.</td><td>Sí</td><td><code>src/cli/cargar.ts</code>; <code>src/engine/catalogo/semaforo.ts</code></td></tr>
+<tr><td><code>datos/pruebas</code></td><td>Una prueba por archivo, en una subcarpeta por familia (software, agente, modelo generativo, modelo de decisión).</td><td>Sí, pero solo las publicables (aprobadas, sin pendiente de revisión y sin errores)</td><td><code>src/cli/cargar.ts</code>; el filtro de contenido las marca, no las rechaza</td></tr>
+<tr><td><code>datos/filtro</code></td><td>Patrones de forma del filtro de contenido.</td><td>Sí</td><td><code>src/engine/catalogo/filtro.ts</code>; <code>src/lib/activos/cargar-activos.ts</code> para los textos del activo</td></tr>
+<tr><td><code>datos/instantaneas</code></td><td>La instantánea oficial: un archivo cuyo nombre lleva la fecha de evaluación y 12 caracteres de su huella.</td><td>No (es el derivado y lleva la huella)</td><td><code>src/lib/catalogo/cargar-instantanea.ts</code> (toma la de fecha más reciente)</td></tr>
+<tr><td><code>datos/vistas</code></td><td>El vocabulario de las pantallas del catálogo, los controles y los marcos, en <code>datos/vistas/etiquetas.json</code>: nombres de madurez, de revisión de contenido y de agregación, y etiquetas de estado.</td><td>No: cambiar un rótulo no cambia el catálogo</td><td><code>src/lib/catalogo/etiquetas.ts</code>; esquema en <code>src/engine/catalogo/etiquetas-de-vistas.ts</code></td></tr>
+<tr><td><code>datos/activos</code></td><td>Activos demo sintéticos (<code>datos/activos/demo</code>).</td><td>No</td><td><code>src/lib/activos/cargar-activos.ts</code></td></tr>
+<tr><td><code>datos/planes</code></td><td>Planes y paquetes de ejecución ya emitidos de los activos demo; cada plan cita la huella de la instantánea.</td><td>No</td><td><code>src/lib/activos/cargar.ts</code> (comprueba sus huellas en el build); <code>src/lib/evidencia/cargar-evidencia.ts</code></td></tr>
+<tr><td><code>datos/planificador</code></td><td>Fórmula de prioridad, entornos, motivos de exclusión, etiquetas y la plantilla por defecto para declarar alcance y reglas de un activo propio.</td><td>No</td><td><code>src/lib/activos/cargar-activos.ts</code>; <code>src/lib/activos/vista.ts</code></td></tr>
+<tr><td><code>datos/evidencia</code></td><td>Sobres demo (<code>datos/evidencia/demo</code>), el plan de muestreo de la confirmación por lote y las etiquetas de la pantalla de carga.</td><td>No</td><td><code>src/lib/evidencia/cargar-evidencia.ts</code></td></tr>
+<tr><td><code>datos/hallazgos</code></td><td>Hallazgos demo (<code>datos/hallazgos/demo</code>), plazos por severidad y etiquetas.</td><td>No</td><td><code>src/lib/evidencia/cargar-evidencia.ts</code>; <code>src/lib/brecha/vista.ts</code></td></tr>
+<tr><td><code>datos/lotes</code></td><td>Lotes demo (<code>datos/lotes/demo</code>) con su confirmación.</td><td>No</td><td><code>src/lib/evidencia/cargar-evidencia.ts</code></td></tr>
+<tr><td><code>datos/severidad</code></td><td>La tabla de prioridad de acción para las familias que no son software y los nombres de las métricas CVSS.</td><td>No</td><td><code>src/lib/evidencia/cargar-evidencia.ts</code> hacia <code>src/engine/severidad/escala-ia.ts</code></td></tr>
+<tr><td><code>datos/brecha</code></td><td>Umbrales de antigüedad de la evidencia y etiquetas de la brecha, aparte de los umbrales de vigencia para no mover la huella del catálogo.</td><td>No</td><td><code>src/lib/brecha/cargar.ts</code></td></tr>
+<tr><td><code>datos/propuestas</code></td><td>Umbrales, patrones de instrucciones y etiquetas de la bandeja de propuestas; aquí se agrega el libro de decisiones.</td><td>No</td><td><code>src/lib/propuestas/cargar.ts</code></td></tr>
+<tr><td><code>datos/privado</code></td><td>Evidencia de activos reales: alcances, reglas de enfrentamiento, sobres, hallazgos, lotes y planes propios. Git la ignora; solo viaja su README, y <code>tests/unit/datos-privados.test.ts</code> falla si algo más queda versionado.</td><td>No</td><td>El CLI la lee con <code>src/lib/evidencia/cargar-libro.ts</code> y <code>src/lib/activos/cargar-activos.ts</code>; las pantallas del build solo leen lo demo</td></tr>
+</tbody></table></div>
+
+<h2>Línea de comandos</h2>
+<p><strong>HackGuard no ejecuta pruebas.</strong> Los comandos planean, validan, registran lo que una persona trae de una herramienta externa y miden la brecha; ninguno lanza una herramienta de seguridad ni toca un activo. El crudo de la herramienta se lee solo para sacarle una huella y se descarta. Los comandos de <code>src/cli</code> solo leen y escriben archivos; lo demás lo hace el motor. Corren con el TypeScript nativo de Node (<code>engines</code> de <code>package.json</code> pide Node 22.18 o superior). Lo de un activo propio se escribe en <code>datos/privado</code> con archivos 0600 y carpetas 0700.</p>
+<div class="tabla-scroll"><table>
+<thead><tr><th>Comando pnpm</th><th>Qué hace</th><th>Escribe dónde</th></tr></thead>
+<tbody>
+<tr><td><code>pnpm catalogo:validar</code></td><td>Valida el catálogo completo y dice qué regla encontró cada problema; salida: 0 sin problemas, 1 con advertencias, 2 inválido, 3 error de uso o de lectura.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm catalogo:instantanea</code></td><td>Emite la instantánea del catálogo para una fecha de evaluación que se pasa con <code>--fecha</code> (nunca el reloj); si el catálogo es inválido no emite nada.</td><td><code>datos/instantaneas</code> o la carpeta de <code>--salida</code>; con <code>--agregar</code> exige <code>--salida</code> fuera de <code>datos</code> y escribe con permiso 0600</td></tr>
+<tr><td><code>pnpm activo:validar</code></td><td>Valida uno o todos los activos contra su esquema y contra el catálogo.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm plan:emitir</code></td><td>Emite el plan y el paquete de ejecución de un activo autorizado para una fecha; sin alcance autorizado ni reglas de enfrentamiento se bloquea y no escribe nada.</td><td><code>datos/planes</code> (activo demo) o, para un activo propio, la subcarpeta de planes de <code>datos/privado</code>, de la que no puede salir</td></tr>
+<tr><td><code>pnpm evidencia:validar</code></td><td>Valida sobres, hallazgos y lotes contra el plan, el paquete y la regla de veredicto, y recalcula sus huellas.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm evidencia:registrar</code></td><td>Registra a mano un resultado (los conteos que midió la herramienta); el sobre nace sin confirmar y no cuenta.</td><td><code>datos/evidencia/demo</code> (activo demo) o la subcarpeta de evidencia de <code>datos/privado</code> (activo propio)</td></tr>
+<tr><td><code>pnpm evidencia:confirmar</code></td><td>Una persona confirma un sobre; si es fallida o parcial y no hay ya un hallazgo vivo para esa prueba y ese activo, abre el hallazgo, con la severidad que la persona aporta como entrada.</td><td>El archivo del sobre y, junto con él, el hallazgo en <code>datos/hallazgos/demo</code> o en la subcarpeta de hallazgos de <code>datos/privado</code></td></tr>
+<tr><td><code>pnpm evidencia:importar</code></td><td>Lee el archivo de Garak o de ZAP con el adaptador y arma un lote de sobres por confirmar; rechaza activos demo.</td><td>Las subcarpetas de lotes y de evidencia de <code>datos/privado</code></td></tr>
+<tr><td><code>pnpm evidencia:confirmar-lote</code></td><td>Una persona confirma un lote (con <code>--revisados</code> igual a lo que debía revisar), separa sobres o lo manda a revisión uno por uno.</td><td>El archivo del lote, en <code>datos/lotes/demo</code> o en la subcarpeta de lotes de <code>datos/privado</code></td></tr>
+<tr><td><code>pnpm hallazgos:listar</code></td><td>Lista los hallazgos con estado, severidad y plazo en una fecha dada.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm hallazgos:declarar</code></td><td>Una persona declara un hallazgo corregido, aceptado, eliminado o no reproducible, con su justificación en los dos idiomas.</td><td>El archivo del hallazgo, en <code>datos/hallazgos/demo</code> o en la subcarpeta de hallazgos de <code>datos/privado</code></td></tr>
+<tr><td><code>pnpm propuestas:buscar</code></td><td>Lee las fuentes oficiales de un marco o de una familia para el investigador del catálogo; es la única pieza de las propuestas que usa la red.</td><td><code>propuestas/corridas</code> (una carpeta por corrida) y el texto leído en <code>propuestas/.lecturas</code> (ignorada por git)</td></tr>
+<tr><td><code>pnpm propuestas:leer</code></td><td>Lee un texto pegado para el extractor de resultados y da su huella.</td><td><code>propuestas/corridas</code> y <code>propuestas/.lecturas</code></td></tr>
+<tr><td><code>pnpm propuestas:aportar</code></td><td>Una persona aporta el texto de un documento que el agente no pudo leer.</td><td>La carpeta de la corrida en <code>propuestas/corridas</code> y <code>propuestas/.lecturas</code></td></tr>
+<tr><td><code>pnpm propuestas:verificar</code></td><td>Sella una corrida: verifica fuentes y citas por código, sin red, y calcula el veredicto sugerido con la regla de la prueba.</td><td>La carpeta de la corrida en <code>propuestas/corridas</code></td></tr>
+<tr><td><code>pnpm propuestas:validar</code></td><td>Valida las corridas selladas y el libro de decisiones.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm propuestas:listar</code></td><td>Muestra la bandeja de propuestas por decidir.</td><td>En ningún archivo (imprime)</td></tr>
+<tr><td><code>pnpm propuestas:decidir</code></td><td>Una persona aprueba, aprueba tras revisar, rechaza o separa una propuesta; se niega dentro de una sesión de Claude Code o sin terminal. Aprobar un sobre crea uno por confirmar, no lo confirma.</td><td>El libro de decisiones (solo agrega) en <code>datos/propuestas</code>; con aprobación, un sobre por confirmar o una prueba en <code>datos/pruebas</code></td></tr>
+<tr><td><code>pnpm clasificador:demo</code></td><td>Corre el conjunto de referencia por el clasificador demo y muestra sus medidas.</td><td>En ningún archivo; lee <code>docs/kit-de-prueba/modelo-decision/conjunto-de-referencia.json</code></td></tr>
+<tr><td><code>pnpm severidad:vendor</code></td><td>Envuelve sin tocar un byte el código de la calculadora de referencia de CVSS 4.0; con <code>--verificar</code> solo comprueba que lo versionado es lo que saldría.</td><td><code>src/engine/severidad/vendor</code></td></tr>
+<tr><td><code>pnpm maqueta</code></td><td>Genera la maqueta aprobada; un test exige que lo versionado sea exactamente lo generado.</td><td><code>docs/diseno</code> (con la variable <code>MAQUETA_SALIDA</code> solo a un directorio temporal)</td></tr>
+<tr><td><code>pnpm capturas:maqueta</code></td><td>Captura la maqueta por página, tema, idioma y ancho y activa cada control para comprobar que algo cambia.</td><td>La carpeta de <code>--salida</code>, obligatoria y fuera del repo</td></tr>
+<tr><td><code>pnpm tokens</code></td><td>Genera los tokens de color de la maqueta desde la paleta.</td><td><code>docs/diseno/assets/tokens.css</code> y <code>docs/diseno/assets/tokens.json</code></td></tr>
+<tr><td><code>pnpm design-sync:bundle</code></td><td>Genera el paquete publicable del sistema de diseño a partir de la maqueta.</td><td><code>design-sync</code></td></tr>
+</tbody></table></div>
+
+
+  <h2>Agentes de Claude Code: skills, subagentes y hooks</h2>
+
+<p>HackGuard tiene exactamente dos piezas con IA, y ambas son herramientas de desarrollo que una persona lanza a demanda desde Claude Code: la skill <strong>/investigar</strong> (propone cambios al catálogo) y la skill <strong>/extraer</strong> (propone los campos de un sobre de evidencia a partir de un texto pegado). Ninguna corre en la aplicación publicada, que no tiene IA en tiempo de ejecución. Cada skill se ejecuta en su propio contexto (<code>context: fork</code>) y delega en un subagente; los hooks son el cerco de código que limita lo que ese subagente puede leer, escribir y ejecutar.</p>
+
+<h3>Piezas y límites</h3>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>Pieza</th><th>Qué hace</th><th>Dónde está</th><th>Qué le prohíbe el código</th></tr></thead>
+<tbody>
+<tr>
+<td>Skill <strong>/investigar</strong></td>
+<td>Con un marco, una familia o <em>marcos</em> como argumento, manda al código a bajar las páginas (<code>pnpm propuestas:buscar</code>), lee lo que quedó guardado, escribe el borrador de propuestas (prueba nueva, versión de marco con su mapa de equivalencias, retiro o cambio de herramienta, cada una con al menos dos fuentes y un pasaje literal) y pide al código que lo verifique (<code>pnpm propuestas:verificar</code>).</td>
+<td><code>.claude/skills/investigar/SKILL.md</code></td>
+<td><code>disable-model-invocation: true</code>: solo una persona la invoca. No rodea una fuente que respondió 401, 403 o 429: queda registrada como no accesible y la persona aporta el documento con un comando que el agente no puede correr.</td>
+</tr>
+<tr>
+<td>Skill <strong>/extraer</strong></td>
+<td>Recibe un <code>.txt</code> con la salida de una herramienta de pruebas, hace que el código lo lea y le calcule la huella (<code>pnpm propuestas:leer</code>), asocia el texto a una prueba del plan de un activo demo y propone los campos del sobre con una cita literal por campo; luego pide la verificación.</td>
+<td><code>.claude/skills/extraer/SKILL.md</code></td>
+<td>También <code>disable-model-invocation: true</code>. El texto es dato, no órdenes: una instrucción sembrada en él se reporta en <code>contradicciones</code>. El borrador no tiene dónde escribir un veredicto, y un valor sin cita queda en <code>null</code>, nunca calculado ni deducido.</td>
+</tr>
+<tr>
+<td>Subagente <code>investigador</code></td>
+<td>Ejecuta la skill <strong>/investigar</strong> con el modelo <code>sonnet</code> y las herramientas <code>Read</code>, <code>Glob</code>, <code>Grep</code>, <code>Write</code> y <code>Bash</code>. Declara en su propio encabezado los hooks <strong>candado</strong> y <strong>sin-identificadores</strong> con la marca <code>--investigador</code>.</td>
+<td><code>.claude/agents/investigador.md</code></td>
+<td>No tiene <code>WebFetch</code> ni <code>WebSearch</code>: no hay red (las páginas las baja el script). Lee solo lo de su oficio y escribe solo su <em>propuesta.json</em> (detalle en la fila del candado). Su borrador no admite veredicto, severidad ni identificadores: el esquema los rechaza.</td>
+</tr>
+<tr>
+<td>Subagente <code>extractor</code></td>
+<td>Ejecuta la skill <strong>/extraer</strong> con las mismas herramientas, el mismo modelo y los mismos dos hooks con la marca <code>--extractor</code>.</td>
+<td><code>.claude/agents/extractor.md</code></td>
+<td>Sin red y sin acceso al texto original: solo la copia que guardó el código. Solo propone sobre las pruebas del plan de un activo demo; hasta tres candidatas cuando duda y <em>mezcla</em> si el texto trae varias pruebas. No emite ni insinúa el veredicto, no confirma nada.</td>
+</tr>
+<tr>
+<td>Hook <strong>candado</strong></td>
+<td>Es el cerco principal. Registrado en la sesión y en cada agente; filtra por <code>agent_type</code> dentro del script. Sale con código 2 para bloquear y 0 para dejar pasar.</td>
+<td><code>scripts/propuestas/hooks/candado.mjs</code></td>
+<td>
+<ul>
+<li><strong>A todos, sesión principal incluida:</strong> ejecutar <code>propuestas:decidir</code> o <code>propuestas:aportar</code>. Decidir y aportar son de una persona en su terminal.</li>
+<li><strong>Escribir</strong> (<code>Write</code>, <code>Edit</code>, <code>MultiEdit</code>, <code>NotebookEdit</code>): solo el archivo <em>propuesta.json</em> de una corrida propia: <em>propuestas/corridas/INV-AAAA-MM-DD-NN</em> para el investigador y la misma forma con prefijo <em>EXT-</em> para el extractor. Nada más, ni siquiera lo que escribe el código en la misma carpeta (consulta, corrida sellada).</li>
+<li><strong>Leer</strong> (<code>Read</code>, <code>Glob</code>, <code>Grep</code>): <code>datos</code> (pidiendo una subcarpeta; la raíz sola no), <code>propuestas</code>, <code>src/engine/propuestas/esquemas.ts</code> y su propia skill. Nunca <code>datos/privado</code>, <code>.git</code>, archivos <code>.env</code> ni <code>node_modules</code>; la comparación va en minúsculas y los patrones de <code>Glob</code> y <code>Grep</code> con <code>..</code>, con una barra o una tilde al inicio, o que nombran lo privado, se bloquean.</li>
+<li><strong>Bash:</strong> solo comandos exactos, sin encadenar y sin variables de entorno delante. Investigador: <code>pnpm propuestas:buscar</code> con <code>--marco</code>, <code>--familia</code> o <code>--todos</code> y <code>--fecha</code>, y <code>pnpm propuestas:verificar</code> sobre una corrida <code>INV-</code>. Extractor: <code>pnpm propuestas:leer</code> sobre un <code>.txt</code> de <code>docs/kit-de-prueba</code> o de una carpeta de entradas bajo <code>propuestas</code>, y <code>pnpm propuestas:verificar</code> sobre una corrida <code>EXT-</code>.</li>
+<li>Cualquier otra herramienta (red, subagentes, cuadernos) queda bloqueada.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>Hook <strong>entrada</strong> y analizador <strong>orden</strong></td>
+<td>El módulo de entrada lee el JSON de stdin, decide qué agente llama (por <code>agent_type</code> o por la marca <code>--investigador</code> / <code>--extractor</code>) y define bloquear y pasar. El analizador de comandos lee un comando de Bash como lo leería la terminal (comillas partidas, <code>$(...)</code>, comillas invertidas, <code>sh -c</code>, envoltorios como <code>env</code>, <code>xargs</code> o <code>nohup</code>) para detectar si <em>ejecuta</em> decidir o aportar.</td>
+<td><code>scripts/propuestas/hooks/entrada.mjs</code>, <code>scripts/propuestas/hooks/orden.mjs</code></td>
+<td>Con la marca de un agente, un hook que se rompe bloquea (un hook roto que deja pasar sería un candado abierto); registrado en la sesión principal, un hook roto deja pasar para no dejarla sin herramientas. Mencionar decidir en un <code>grep</code>, un commit, un <code>echo</code> o el cuerpo de un heredoc no cuenta como ejecutarlo.</td>
+</tr>
+<tr>
+<td>Hook <strong>sin-identificadores</strong></td>
+<td>Revisa lo que un agente envía por Bash o escribe con <code>Write</code>, <code>Edit</code> o <code>MultiEdit</code> (comando, contenido, texto nuevo y viejo, ediciones en lote). Los identificadores salen de <code>scripts/propuestas/comun.mjs</code>.</td>
+<td><code>scripts/propuestas/hooks/sin-identificadores.mjs</code>, <code>scripts/propuestas/comun.mjs</code></td>
+<td>Bloquea todo texto que lleve un identificador de quien corre la skill: correo y nombre de git (y sus partes), usuario y nombre del equipo, carpeta personal y los de la variable <code>HACKGUARD_IDENTIFICADORES</code>. Compara sin acentos ni mayúsculas, con mínimo de 4 caracteres, y el mensaje no repite el identificador. La ruta absoluta de la escritura no cuenta, solo su contenido. Motivo: lo que el agente escribe viaja al repositorio público.</td>
+</tr>
+<tr>
+<td>Hook <strong>sin-lanzar</strong></td>
+<td>Registrado para las herramientas <code>Agent</code> y <code>Task</code>.</td>
+<td><code>scripts/propuestas/hooks/sin-lanzar.mjs</code></td>
+<td>Impide que un agente lance al <code>investigador</code> o al <code>extractor</code> con la herramienta de subagentes: <code>disable-model-invocation</code> frena la skill, pero no esta vía. Solo una persona los lanza escribiendo <strong>/investigar</strong> o <strong>/extraer</strong>.</td>
+</tr>
+<tr>
+<td>Registro de los hooks</td>
+<td>Tres entradas <code>PreToolUse</code> para esta familia: <code>candado</code> (Bash, Write, Edit, MultiEdit, NotebookEdit, Read, Glob, Grep), <code>sin-lanzar</code> (Agent, Task) y <code>sin-identificadores</code> (Bash, Write, Edit, MultiEdit). La prueba <code>tests/unit/propuestas/hooks.test.ts</code> comprueba que están registrados y que el comando registrado bloquea y deja pasar lo que debe.</td>
+<td><code>.claude/settings.json</code></td>
+<td>La sesión principal pasa por los tres hooks, pero solo el bloqueo de decidir y aportar y el de lanzar a los agentes la alcanzan; el resto se filtra por <code>agent_type</code>.</td>
+</tr>
+<tr>
+<td>Frontera dentro del CLI</td>
+<td>La función <code>puedeDecidir</code> que usan <code>decidir</code> y <code>aportar</code>. Es la frontera real, porque un hook se puede rodear con una variable o un envoltorio y el CLI no depende de cómo se escriba el comando.</td>
+<td><code>src/lib/propuestas/frontera.ts</code>, <code>src/cli/propuestas.ts</code></td>
+<td>Sobre el repositorio real, el comando se niega dentro de una sesión de Claude Code (basta la variable <code>CLAUDECODE</code> o cualquiera que empiece por <code>CLAUDE_CODE_</code>) y sin terminal interactiva. Sobre una raíz temporal (pruebas) no aplica, para poder probar el CLI.</td>
+</tr>
+</tbody>
+</table></div>
+
+<h3>El flujo «la IA propone, el humano aprueba»</h3>
+
+<p>El agente solo propone: escribe un borrador <em>propuesta.json</em> en <code>propuestas/corridas</code> y no tiene dónde poner un veredicto, una severidad, un identificador ni el resultado de una verificación. El código sella: <code>sellarCorrida</code> (en <code>src/engine/propuestas/verificar.ts</code>, motor puro sin red ni lectura de archivos) comprueba cada fuente y cada cita contra la página o el texto que el código guardó, calcula el veredicto sugerido con la regla de la prueba del catálogo, marca instrucciones y contenido, asigna los identificadores y calcula la huella; el CLI (<code>pnpm propuestas:verificar</code>) escribe el resultado como <em>corrida.json</em> junto al borrador. Una propuesta que no verifica no se descarta: llega marcada con su motivo; solo un borrador incoherente (un marco que no existe, un tipo que no es del agente) no se sella. La única pieza con red es el script de búsqueda (<code>src/lib/propuestas/buscar.ts</code>): solo https, solo direcciones de la lista blanca del marco, una cabecera fija sin identificadores y nada de reintentos con otras cabeceras ante un 401, 403 o 429. Las páginas leídas quedan en <code>propuestas/.lecturas</code>, que git ignora; al repositorio viajan la huella y el pasaje citado.</p>
+
+<p>Una persona decide, en su propia terminal, con <code>pnpm propuestas:decidir</code> (decisiones <code>aprobar</code>, <code>aprobar-tras-revisar</code>, <code>rechazar</code> o <code>separar</code>, con <code>--por</code> y <code>--fecha</code>); la pantalla <code>src/app/catalogo/propuestas/page.tsx</code> le muestra el comando armado. Cada decisión se añade como una línea JSON al libro <em>decisiones.jsonl</em>, dentro de <code>datos/propuestas</code> (el CLI lo abre con <code>appendFileSync</code>: solo añadir; el archivo se crea con la primera decisión y hoy el repositorio no trae ninguna). Aprobar un sobre crea un sobre <em>por confirmar</em>, no lo confirma: confirmarlo es una segunda decisión humana. Una propuesta de demostración no escribe en el catálogo ni en el libro de evidencia sin <code>--aplicar-a-demo</code>. <code>pnpm propuestas:validar</code> revisa todas las corridas selladas y el libro.</p>
+
+<h2>Integración continua y protección de la rama</h2>
+
+<p>La CI vive en dos flujos de GitHub Actions. <code>.github/workflows/ci.yml</code> corre en cada pull request y en cada push a <code>main</code>, con tres jobs: <code>quality</code> y, solo si este termina bien, <code>e2e</code> y <code>lighthouse</code> (ambos declaran <code>needs: quality</code>). <code>.github/workflows/un-pr-vivo.yml</code> corre al abrir, reabrir, editar o sincronizar un pull request.</p>
+
+<h3>Jobs y gates</h3>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>Job</th><th>Qué gatea</th><th>Comando o script</th></tr></thead>
+<tbody>
+<tr><td><code>quality</code></td><td>Instalación reproducible y pares de dependencias satisfechos.</td><td><code>pnpm install --frozen-lockfile</code> y <code>pnpm peers check</code></td></tr>
+<tr><td><code>quality</code></td><td>Regla 18 del kit, solo en pull request: ningún paquete del lockfile queda por debajo de la versión de <code>main</code>. Una excepción debe declararse con nombre, versiones y razón en <code>scripts/degradaciones-permitidas.json</code> (hoy vacío), y una excepción que ya no aplica también falla.</td><td><code>node scripts/verificar-dependencias.mjs origin/main</code> (<code>scripts/verificar-dependencias.mjs</code>)</td></tr>
+<tr><td><code>quality</code></td><td>Tipos y estilo.</td><td><code>pnpm typecheck</code> (<code>next typegen</code> y <code>tsc --noEmit</code>) y <code>pnpm lint</code> (ESLint)</td></tr>
+<tr><td><code>quality</code></td><td>Instala gitleaks 8.30.1 en el runner, verificando su descarga contra el archivo de sumas del lanzamiento. No escanea el árbol: existe para que la prueba del hook de secretos corra de verdad en lugar de saltarse.</td><td>Paso <em>gitleaks</em> de <code>.github/workflows/ci.yml</code>; la prueba es <code>tests/unit/hook-secretos.test.ts</code></td></tr>
+<tr><td><code>quality</code></td><td>Pruebas unitarias con cobertura. Umbrales en <code>vitest.config.ts</code>: 70 % global, 90 % en <code>src/engine</code>, 80 % en <code>src/lib</code>, 50 % en <code>src/components</code>.</td><td><code>pnpm test</code> (<code>vitest run --coverage</code>)</td></tr>
+<tr><td><code>quality</code></td><td>El catálogo de <code>datos</code> es válido: la salida 0 (ok) o 1 (con advertencias) pasa; 2 (inválido) o 3 (error de uso o lectura) dejan la CI en rojo.</td><td><code>pnpm catalogo:validar</code> (<code>src/cli/catalogo.ts</code>)</td></tr>
+<tr><td><code>quality</code></td><td>El build compila.</td><td><code>pnpm build</code> (<code>package.json</code>)</td></tr>
+<tr><td><code>quality</code></td><td>Construye como el proveedor: hace <code>vercel build</code> sin sesión, con un CLI fijado en el script, y exige que cada página publicada sea idéntica byte a byte a la de <code>out</code>, sin sobrantes ni faltantes.</td><td><code>node scripts/build-como-proveedor.mjs</code>, que usa <code>scripts/verificar-salida-publicada.mjs</code></td></tr>
+<tr><td><code>quality</code></td><td>Auditoría de dependencias: falla con vulnerabilidades de nivel alto.</td><td><code>pnpm audit --audit-level high</code></td></tr>
+<tr><td><code>quality</code></td><td>Regla 17, cero enlaces: ningún archivo versionado ni el campo <em>homepage</em> del repositorio en GitHub nombra un dominio de hosting de producción o de preview. Los dominios se leen de <code>cero-enlaces.json</code>; la prueba que demuestra el rojo es <code>tests/unit/cero-enlaces.test.ts</code>.</td><td><code>node scripts/cero-enlaces.mjs --homepage</code> con el valor que entrega <code>gh api</code> (<code>scripts/cero-enlaces.mjs</code>)</td></tr>
+<tr><td><code>e2e</code></td><td>Pruebas de extremo a extremo contra el build servido (nunca contra el servidor de desarrollo), con escaneos de accesibilidad de axe. Corre en Chromium móvil y de escritorio; Firefox y WebKit ejecutan solo <code>tests/e2e/determinismo.spec.ts</code> (la misma huella en los tres motores). Si falla, sube <code>test-results</code> como artefacto con retención de 7 días.</td><td><code>pnpm exec playwright install --with-deps chromium firefox webkit</code> y <code>pnpm test:e2e</code> (<code>playwright.config.ts</code>)</td></tr>
+<tr><td><code>lighthouse</code></td><td>Presupuestos de rendimiento por ruta y las cuatro categorías (rendimiento, accesibilidad, buenas prácticas, SEO) con mínimo de 0,9. Una corrida por URL, con una medición previa de calentamiento sobre <em>/catalogo</em> que se descarta. Las URLs medidas están en <code>lighthouse-urls.json</code>.</td><td><code>lhci collect --numberOfRuns=1</code>, <code>lhci assert --budgetsFile=./perf-budget.json</code> y <code>lhci assert --config=./lighthouse-categorias.json</code></td></tr>
+<tr><td><code>lighthouse</code></td><td>Avisa (sin fallar) cuando un valor medido queda a menos del 10 % de su presupuesto, y falla si una URL medida no cae bajo ningún <code>path</code> de <code>perf-budget.json</code>.</td><td><code>node scripts/lighthouse-margen.mjs</code> (<code>scripts/lighthouse-margen.mjs</code>)</td></tr>
+<tr><td><code>un-pr-vivo</code> (workflow aparte)</td><td>Regla dura 18: un solo pull request vivo por app, Dependabot incluido. Falla si hay más de uno abierto y la primera línea del cuerpo de este no empieza con <code>complementa #N:</code> seguido de la razón. Solo necesita permiso de lectura de pull requests.</td><td><code>gh pr list --state open</code> dentro del workflow <code>.github/workflows/un-pr-vivo.yml</code></td></tr>
+</tbody>
+</table></div>
+
+<h3>Protección de la rama <code>main</code></h3>
+
+<p>El ruleset <code>main-protegida</code> se consultó con <code>gh api</code> el 2026-10-13, y esto es lo que devolvió. Está activo (<code>enforcement: active</code>), apunta a la rama por defecto y no tiene actores con permiso de saltárselo. Sus reglas:</p>
+<ul>
+<li><strong>pull_request:</strong> todo cambio entra por pull request; no exige aprobaciones (cero revisores requeridos) y permite los métodos merge, squash y rebase. La constitución pide squash y que el merge lo haga el usuario.</li>
+<li><strong>required_status_checks:</strong> exige que pasen <code>quality</code>, <code>e2e</code>, <code>lighthouse</code> y <code>un-pr-vivo</code>; la política estricta (rama al día con <code>main</code>) está desactivada.</li>
+<li><strong>deletion</strong> y <strong>non_fast_forward:</strong> la rama no se puede borrar ni reescribir con un push forzado.</li>
+</ul>
+
+<h3>Otras barreras que no son jobs</h3>
+<ul>
+<li><strong>Hooks de Claude Code</strong> en <code>.claude/settings.json</code>: uno de <code>PreToolUse</code> sobre Bash bloquea (código 2) un comando que contenga <code>git push</code> seguido de <code>main</code> o <code>master</code> como palabra separada y manda a trabajar en una rama <em>sprint-NNN/tema</em> con pull request. Es una ayuda para el agente; la barrera que no depende de cómo se escriba el comando es el ruleset. Otro, sobre <code>Write</code> y <code>Edit</code>, escanea con gitleaks el contenido que se va a escribir y lo ya preparado en el índice, y falla cerrado si faltan <code>gitleaks</code> o <code>jq</code> (salvo <code>KIT_SIN_GITLEAKS=1</code>, a sabiendas). Además hay un formateo con prettier tras editar y un recordatorio al terminar si quedan cambios sin commit.</li>
+<li><strong>Commit local:</strong> <code>githooks/pre-commit</code> ejecuta <code>gitleaks protect --staged</code> y bloquea el commit si encuentra un secreto; si gitleaks no está instalado también bloquea, salvo <code>KIT_SIN_GITLEAKS=1</code>. Se activa con el script <code>prepare</code> de <code>package.json</code> (<code>git config core.hooksPath githooks</code>).</li>
+<li><strong>Dependabot:</strong> <code>.github/dependabot.yml</code> agrupa las actualizaciones menores y de parche de npm en un solo pull request (límite de uno, cadencia semanal; los mayores llegan sueltos) y las de GitHub Actions cada mes. La prueba <code>tests/unit/dependabot-config.test.ts</code> vigila esa invariante.</li>
+<li><strong>Datos reales:</strong> <code>.gitignore</code> excluye <code>datos/privado</code> (solo viaja su README), y <code>tests/unit/datos-privados.test.ts</code> lo vigila.</li>
+</ul>
+
+<h2>Despliegue y cabeceras</h2>
+
+<h3>Qué publica el build</h3>
+<ul>
+<li><strong>Exportación estática:</strong> <code>next.config.ts</code> declara <code>output: "export"</code> e <code>images.unoptimized</code>; el build deja un HTML por ruta en <code>out</code>. No hay servidor, base de datos ni autenticación.</li>
+<li><strong>Script de build:</strong> <code>pnpm build</code> es <code>node scripts/copiar-maqueta.mjs && next build</code>. <code>pnpm start</code> sirve <code>out</code> con <code>serve</code> (versión exacta fijada en <code>package.json</code>) y la configuración de <code>serve.json</code>, porque <code>next start</code> no funciona con exportación.</li>
+<li><strong>La maqueta en el despliegue privado:</strong> <code>scripts/copiar-maqueta.mjs</code> borra y recrea <code>public/diseno</code> copiando <code>docs/diseno</code> (solo HTML, CSS, JS, fuentes, SVG, texto y JSON; los archivos Markdown no) y aborta si la maqueta no existe. Así el despliegue privado la sirve en <em>/diseno</em> para el gate humano. La copia ocurre en todo build: el script no consulta el entorno. Esa misma copia lleva <code>docs/BROCHURE.html</code> a <code>public/conoce/index.html</code> (derivado, ignorado por git). Lo que impide que llegue a terceros es otro gate: <code>node scripts/verificar-salida-publicada.mjs --publico</code> sobre la carpeta del paquete que se vaya a mostrar falla si encuentra cualquier archivo bajo una carpeta <code>diseno</code> o <code>privado</code>, o si la carpeta está vacía. Ese comando no aparece en <code>.github/workflows/ci.yml</code>: se corre sobre el paquete a publicar, no sobre el <code>out</code> del despliegue privado. Según la constitución, la superficie pública del hito 2 es ese paquete estático dentro de hoja-de-vida.</li>
+<li><strong>Protección en el proveedor:</strong> según la constitución del repo, el despliegue privado va con la protección «All Deployments» activada en el proveedor, de modo que la aplicación privada no se muestra a nadie. Es un ajuste del proveedor que el repositorio no contiene, así que no se puede comprobar desde el código.</li>
+</ul>
+
+<h3>Cabeceras de seguridad</h3>
+<p>Dos archivos declaran las mismas cabeceras: <code>serve.json</code> las aplica en <code>pnpm start</code> (desarrollo local, e2e y Lighthouse de la CI) y <code>vercel.json</code> en el proveedor. Ambos redirigen la raíz del sitio a <em>/tablero</em> (temporal) y <em>/diseno</em> y <em>/diseno/</em> a <em>/diseno/index.html</em>; <code>serve.json</code> activa URLs limpias salvo bajo <em>/diseno</em>, y <code>vercel.json</code> reescribe <em>/diseno/:pagina.html</em> a <em>/diseno/:pagina</em>.</p>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>Cabecera</th><th>Valor</th><th>Alcance</th></tr></thead>
+<tbody>
+<tr><td><code>X-Content-Type-Options</code></td><td><code>nosniff</code></td><td>Todas las rutas</td></tr>
+<tr><td><code>X-Frame-Options</code></td><td><code>DENY</code></td><td>Todas las rutas</td></tr>
+<tr><td><code>Referrer-Policy</code></td><td><code>strict-origin-when-cross-origin</code></td><td>Todas las rutas</td></tr>
+<tr><td><code>Permissions-Policy</code></td><td>Cámara, micrófono, geolocalización, pagos y USB desactivados (lista vacía)</td><td>Todas las rutas</td></tr>
+<tr><td><code>Content-Security-Policy</code></td><td><code>default-src 'self'</code>; <code>script-src 'self'</code>; <code>style-src 'self' 'unsafe-inline'</code>; <code>img-src 'self' data:</code>; <code>font-src 'self'</code>; <code>object-src 'none'</code>; <code>base-uri 'self'</code>; <code>form-action 'self'</code></td><td>La maqueta bajo <em>/diseno</em></td></tr>
+<tr><td><code>Content-Security-Policy</code> (<em>/conoce</em>)</td><td><code>script-src 'self' 'sha256-…'</code>: un único script, el del brochure, permitido por su huella (la fija <code>scripts/csp-del-brochure.mjs</code>); el resto igual</td><td>Solo <em>/conoce</em></td></tr>
+</tbody>
+</table></div>
+
+<p>En estos dos archivos la política de contenido se declara para la maqueta (<em>/diseno</em>) y para <em>/conoce</em>, que permite un único script por su huella. El resto de las rutas no declara política de contenido en <code>serve.json</code>, <code>vercel.json</code> ni en el código de <code>src</code>. Las pruebas de extremo a extremo de la maqueta servida están en <code>tests/e2e/maqueta-servida.spec.ts</code>; las de <em>/conoce</em>, en <code>tests/e2e/conoce.spec.ts</code>.</p>
+
+<h3>Observabilidad: Sentry solo en el cliente y solo con metadatos</h3>
+<p><code>instrumentation-client.ts</code> lee <code>NEXT_PUBLIC_SENTRY_DSN</code>. Sin DSN no inicializa nada y el SDK ni siquiera viaja al navegador, porque se importa de forma dinámica dentro de la rama con DSN. Con DSN inicializa Sentry con rastreo en cero (solo captura de errores, sin tracing ni replay) y un filtro <code>beforeSend</code> que elimina la petición del evento, descarta los breadcrumbs, ignora los <code>AbortError</code> y reemplaza el mensaje de cada excepción por su tipo, para que no arrastre contenido del usuario. Si el SDK no carga, la página sigue funcionando. No hay Sentry del lado del servidor (no hay archivo de instrumentación del servidor) porque la aplicación no tiene servidor. Los errores se reportan mediante <code>src/lib/observability.ts</code>.</p>
+
+
+  <h2>Decisiones de arquitectura (ADR 001–011)</h2>
+
+<p>Las decisiones irreversibles viven en <code>decisions/</code>, una por archivo y redactadas en inglés (regla de idioma del proyecto). Son once ADR numerados del 001 al 011. El estado de la tabla es el que declara el encabezado de cada archivo, contrastado con lo que el repositorio tiene hoy. Diez siguen aceptados y uno (el 006) quedó superado; de los aceptados, el 002 conserva un compromiso que no se cumplió.</p>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>ADR</th><th>Título</th><th>Qué se decidió</th><th>Estado</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>001</strong> <code>decisions/001-audit-exception-braces-ghsa.md</code></td>
+<td>Excepción temporal de auditoría para un aviso de <em>braces</em></td>
+<td>Ignorar por identificador un único aviso (GHSA-vfj7-8cjw-p6xm, dependencia transitiva solo de desarrollo y sin versión parcheada) mediante <code>auditConfig.ignoreGhsas</code>, dejando el nivel de auditoría en «high» para todo lo demás.</td>
+<td>Aceptado, con vencimiento: caduca cuando se publique una versión de <em>braces</em> posterior a 3.0.3. La entrada sigue en <code>pnpm-workspace.yaml</code>.</td>
+</tr>
+<tr>
+<td><strong>002</strong> <code>decisions/002-catalog-data-format-and-canonical-fingerprint.md</code></td>
+<td>Formato de datos del catálogo y huella canónica</td>
+<td>JSON como único formato, esquemas Zod que validan sin transformar, huella SHA-256 sobre la forma canónica JCS (RFC 8785) en <code>src/engine/huella.ts</code>, motor puro vigilado por ESLint, instantáneas versionadas con formato <em>hackguard/instantanea@1</em> y CLI sobre el TypeScript nativo de Node.</td>
+<td>Aceptado. Salvedad verificada: su punto 6 (mover cada selector de herramienta a <code>src/engine/adaptadores/</code> y armar la unión desde el registro) no se ejecutó; ver la brecha de la regla 10.</td>
+</tr>
+<tr>
+<td><strong>003</strong> <code>decisions/003-state-vocabulary-as-data.md</code></td>
+<td>El vocabulario de estados es dato</td>
+<td>Símbolo, nombre bilingüe y rol de color de cada estado viven en <code>datos/estados.json</code>; el motor declara los estados que calcula y el validador rechaza un catálogo con alguno sin etiqueta; los umbrales de vigencia (30 y 60 días) también son datos.</td>
+<td>Aceptado.</td>
+</tr>
+<tr>
+<td><strong>004</strong> <code>decisions/004-decision-model-family-and-demo-asset.md</code></td>
+<td>Familia «modelo de decisión» y activo demo</td>
+<td>La cuarta familia se ancla en marcos de referencia con versión; el activo demo es un clasificador determinista propio (<code>src/engine/demo/clasificador.ts</code>) que imita el contrato de respuesta de Jev sin llamar a ningún modelo, con tres fallas sembradas a propósito; las métricas se miden sobre probabilidades, nunca sobre <em>confidence</em>.</td>
+<td>Aceptado.</td>
+</tr>
+<tr>
+<td><strong>005</strong> <code>decisions/005-compression-override-for-serve.md</code></td>
+<td>Sobrescritura de <em>compression</em> bajo <em>serve</em></td>
+<td>Fijar <code>serve&gt;compression</code> en 1.8.2 con un override, porque el aviso GHSA-vc2v-76pw-4v95 sí tiene parche y <em>serve</em> trae la versión vulnerable fija; un aviso con parche nunca se ignora.</td>
+<td>Aceptado. El override sigue en <code>pnpm-workspace.yaml</code>; se retira cuando <em>serve</em> dependa de <em>compression</em> 1.8.2 o mayor.</td>
+</tr>
+<tr>
+<td><strong>006</strong> <code>decisions/006-catalog-list-performance-budget.md</code></td>
+<td>Presupuesto de rendimiento propio para la lista del catálogo</td>
+<td>Declaró un presupuesto Lighthouse más holgado solo para la página del catálogo. Su actualización del Sprint 3 mostró que la tabla no era la causa: lo eran el SDK de Sentry importado de forma estática y la primera medición en frío; se corrigieron y se volvió a los presupuestos por defecto.</td>
+<td>Superado (Sprint 003, 2026-10-11). <code>perf-budget.json</code> y <code>lighthouse-categorias.json</code> tienen hoy solo los valores por defecto.</td>
+</tr>
+<tr>
+<td><strong>007</strong> <code>decisions/007-plan-and-execution-package-format.md</code></td>
+<td>Plan de pruebas y paquete de ejecución: formato y contrato</td>
+<td>Dos archivos por activo con huella propia (<em>hackguard/plan@1</em> y <em>hackguard/paquete@1</em>); el plan cita todo lo que lo produjo y recibe la fecha de emisión como entrada; sin alcance y reglas de enfrentamiento no hay plan; la prioridad es una fórmula en datos; el paquete es declarativo y rechaza campos desconocidos; los activos reales solo existen en <code>datos/privado/</code>.</td>
+<td>Aceptado. Formato congelado en el Sprint 9.</td>
+</tr>
+<tr>
+<td><strong>008</strong> <code>decisions/008-evidence-envelope-ledger-and-finding-format.md</code></td>
+<td>Sobre de evidencia, libro y hallazgo: formato y contrato</td>
+<td>El sobre (<em>hackguard/sobre@1</em>) guarda tres huellas y un extracto redactado, nunca el crudo; el veredicto lo da la regla de la prueba; el libro solo añade; el hallazgo (<em>hackguard/hallazgo@1</em>) guarda lo que una persona declara y su estado se calcula; solo una re-prueba válida lo cierra, nunca la ausencia en un escaneo posterior.</td>
+<td>Aceptado. Con una precisión de Sprint 9: una re-prueba repite al menos tantas veces como el más exigente entre el sobre que falló y el que lo corrige.</td>
+</tr>
+<tr>
+<td><strong>009</strong> <code>decisions/009-evidence-batches-and-tool-adapters.md</code></td>
+<td>Lotes de evidencia, libro efectivo y adaptadores de Garak y ZAP</td>
+<td>La confirmación por lote vive en el lote (<em>hackguard/lote@1</em>) y el motor calcula un libro efectivo sin cambiar <code>sobre@1</code>; se revisan todas las fallas más una muestra determinista cuyo tamaño sale de un plan en datos; los adaptadores solo traducen y el veredicto sigue saliendo de la regla de la prueba.</td>
+<td>Aceptado. Enmienda el punto 4 del ADR-008 y fue ampliado en el Sprint 7 (toda re-prueba de un hallazgo se revisa siempre).</td>
+</tr>
+<tr>
+<td><strong>010</strong> <code>decisions/010-the-gap-and-the-state-of-a-control.md</code></td>
+<td>La brecha y el estado de un control</td>
+<td>Una sola función, <code>armarBrecha</code> en <code>src/engine/brecha/calcular.ts</code>, alimenta tablero, brecha, vista por control e informe; solo cuenta evidencia ejecutada y confirmada; define cuatro estados de control con orden de precedencia; el umbral de 180 días está en datos y el instrumento se valida a sí mismo con semillas.</td>
+<td>Aceptado. Con una precisión de Sprint 9 fijada en <code>tests/unit/brecha/calcular.test.ts</code>.</td>
+</tr>
+<tr>
+<td><strong>011</strong> <code>decisions/011-code-first-researcher-and-extractor.md</code></td>
+<td>El investigador y el extractor (IA generativa): por qué el código no alcanza</td>
+<td>Autoriza las dos únicas piezas con IA, como skills a demanda que solo proponen: el código busca, verifica citas y calcula el veredicto; el modelo solo redacta el texto de pruebas nuevas, propone la prueba candidata y extrae conteos y citas de texto libre; salida validada por esquema estricto y decisión siempre humana.</td>
+<td>Aceptado. Es el ADR «código primero» que la regla dura 2 exige antes de construir ambas skills.</td>
+</tr>
+</tbody>
+</table></div>
+
+<p>Aparte, <code>decisions/PLANTILLA-ADR-codigo-primero.md</code> no es un ADR: es la plantilla del kit (v1.27.0) que obliga, antes de activar cualquier función con un modelo de lenguaje, a documentar qué se intentó primero con código. El ADR 011 sigue su estructura.</p>
+
+<h2>Reglas duras y dónde se cumplen</h2>
+
+<p>Esta sección audita las doce reglas duras de <code>CLAUDE.md</code> contra el repositorio. Cada mecanismo citado se comprobó con <code>ls</code> o <code>grep</code>. Criterio del estado: se marca <strong>brecha</strong> cuando una cláusula de la regla se podría comprobar por código y hoy no se comprueba. Los límites que ningún código puede cerrar, o que hoy no tienen superficie, se anotan como <em>salvedad</em> y no cuentan como brecha. Resultado: diez reglas se cumplen y dos tienen brecha (9 y 10).</p>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>Regla</th><th>Qué exige</th><th>Dónde se hace cumplir</th><th>Estado</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>1</strong> Núcleo determinista</td>
+<td>El motor es código puro y jamás invoca un modelo de lenguaje; la fecha es una entrada, sin azar ni reloj; la misma entrada da los mismos bytes en Node, Chromium, Firefox y WebKit.</td>
+<td><ul>
+<li><code>eslint.config.mjs</code>: bloque para <code>src/engine/</code> que prohíbe <code>Date</code>, <code>Math.random</code>, <code>process</code>, <code>fetch</code>, <code>Intl</code>, <code>localeCompare</code>, módulos de Node, <code>import()</code> dinámico y todo <code>globalThis</code> salvo <code>crypto.subtle</code>.</li>
+<li><code>tests/e2e/determinismo.spec.ts</code>: misma huella en los cuatro motores para instantánea, plan, libro, hallazgos, brecha y muestra de lotes; <code>playwright.config.ts</code> corre Firefox y WebKit solo con esa spec.</li>
+<li><code>src/engine/huella.ts</code> (JCS más SHA-256) y <code>src/engine/lotes/muestra.ts</code> (la muestra se siembra con la huella del lote).</li>
+<li><em>Salvedad:</em> <code>tests/unit/arquitectura.test.ts</code> solo vigila que las carpetas del motor no se importen en círculo, no el determinismo. El lint solo cubre <code>src/engine/</code>; el único <code>Date</code> fuera es <code>src/lib/catalogo/fecha-del-commit.ts</code>, que convierte la fecha del último commit, no el reloj. «Sin modelo» se deduce de que el lint veta red y módulos de Node y de que <code>package.json</code> no lista ningún SDK de modelos; ninguna prueba lo afirma de forma directa.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>2</strong> La IA propone, el humano aprueba</td>
+<td>Solo dos skills a demanda, que escriben únicamente en <code>propuestas/</code> con salida validada por esquema; hooks bloquean escrituras fuera; nunca aprueban ni confirman; ninguna fuente se muestra sin verificación por código; el veredicto lo calcula la regla del catálogo.</td>
+<td><ul>
+<li>Hooks: <code>scripts/propuestas/hooks/candado.mjs</code> (cada subagente escribe solo el archivo de propuesta de una corrida suya dentro de <code>propuestas/corridas</code>, lee solo lo de su oficio y corre solo sus dos comandos; nadie corre <code>propuestas:decidir</code>), <code>scripts/propuestas/hooks/sin-lanzar.mjs</code> y <code>scripts/propuestas/hooks/sin-identificadores.mjs</code>, cableados en <code>.claude/settings.json</code>.</li>
+<li>Subagentes sin red ni herramienta de lanzamiento: <code>.claude/agents/investigador.md</code> y <code>.claude/agents/extractor.md</code>.</li>
+<li>Esquema: <code>src/engine/propuestas/esquemas.ts</code> (<code>strictObject</code>; el borrador no tiene campo para veredicto, severidad ni identificador).</li>
+<li>Verificación y veredicto por código: <code>src/engine/propuestas/citas.ts</code>, <code>src/engine/propuestas/verificar.ts</code>, <code>src/engine/propuestas/veredicto.ts</code>; segunda defensa en <code>src/lib/propuestas/frontera.ts</code>.</li>
+<li>Pruebas: <code>tests/unit/propuestas/hooks.test.ts</code>, <code>tests/unit/propuestas/semillas.test.ts</code>. ADR exigido: <code>decisions/011-code-first-researcher-and-extractor.md</code>.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>3</strong> Frontera de contenido</td>
+<td>Cada prueba dice qué se verifica, por qué importa, con qué herramienta y qué se espera; el repo no contiene cargas ni procedimientos; el filtro marca y la persona decide.</td>
+<td><ul>
+<li><code>datos/filtro/patrones.json</code>: patrones de forma, cada uno con carnadas y contraejemplos; <code>src/engine/catalogo/filtro.ts</code> comprueba que marcan las primeras y ninguno de los segundos.</li>
+<li>La regla <em>filtro/marcada</em> de <code>src/engine/catalogo/reglas.ts</code> es una advertencia, nunca un error: la prueba marcada queda pendiente de revisión humana.</li>
+<li>Paquete de ejecución declarativo y estricto: <code>src/engine/planificador/esquemas.ts</code> y <code>src/engine/planificador/paquete.ts</code>. Un segundo conjunto de patrones, <code>datos/propuestas/instrucciones.json</code>, marca instrucciones plantadas en un texto pegado.</li>
+<li>Pruebas: <code>tests/unit/catalogo/filtro.test.ts</code>, <code>tests/unit/adaptadores/fixtures.test.ts</code> (ninguna carga de ataque en las fixtures) y las semillas <code>docs/kit-de-prueba/semillas</code>.</li>
+<li><em>Salvedad:</em> un patrón de forma no reconoce toda redacción; ADR 011 lo declara como red, no como muro.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>4</strong> El crudo nunca entra al almacén</td>
+<td>Solo huella más extracto redactado por esquema; todo adjunto se muestra como texto inerte.</td>
+<td><ul>
+<li><code>src/engine/evidencia/esquemas.ts</code>: el sobre es <code>strictObject</code>, un campo <code>crudo</code> o <code>raw</code> no cabe; el extracto redactado tiene tope de 1500 caracteres.</li>
+<li><code>src/cli/evidencia.ts</code> lee la salida de la herramienta, conserva su SHA-256 y la descarta; <code>src/engine/evidencia/validar.ts</code> verifica las huellas del sobre.</li>
+<li>Pruebas: <code>tests/unit/evidencia/validar.test.ts</code> (un campo crudo se rechaza, un extracto largo se rechaza) y <code>tests/unit/adaptadores/fixtures.test.ts</code>. Lo que los agentes leen no viaja: <code>.gitignore</code> ignora <code>propuestas/.lecturas/</code> y la carpeta de entradas del extractor.</li>
+<li><em>Salvedad:</em> hoy ningún componente imprime el extracto del sobre, y el único <code>dangerouslySetInnerHTML</code> de <code>src</code> es el script constante de preferencias en <code>src/app/layout.tsx</code>. Eso se comprobó por búsqueda; ninguna prueba lo fija si mañana se muestra un adjunto.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>5</strong> Autorización antes que plan</td>
+<td>Sin alcance autorizado y reglas de enfrentamiento no hay plan; dueño y proveedor separados; se cita la política del proveedor; nada contra infraestructura de terceros.</td>
+<td><ul>
+<li><code>src/engine/activos/validar.ts</code>: reglas <em>activo/dueno-igual-proveedor</em>, <em>activo/proveedor-sin-politica</em>, <em>activo/regla-cita-politica-sin-leer</em> y <em>activo/autorizacion-incompleta</em>.</li>
+<li><code>src/engine/planificador/planificar.ts</code> devuelve <code>sin_autorizacion</code> y no emite; <code>src/cli/plan.ts</code> sale con código 2 y no escribe nada; <code>src/engine/planificador/alcance.ts</code> excluye lo que está fuera del alcance.</li>
+<li>Pruebas: <code>tests/unit/planificador/planificar.test.ts</code> (bloque «sin alcance y reglas no hay plan»), <code>tests/unit/planificador/cli.test.ts</code>, <code>tests/unit/activos/validar.test.ts</code>.</li>
+<li><em>Salvedad:</em> la infraestructura de terceros se excluye porque el dueño la declara en <code>alcance.fuera</code> (ejemplo: la base de datos de <code>datos/activos/demo/act-demo-asistente.json</code>); el motor no la detecta por sí solo.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>6</strong> Evidencia que aguanta una auditoría</td>
+<td>Ningún sobre cuenta sin confirmación humana; en familias estocásticas, <code>k</code> y regla asimétrica con la cota visible; la re-prueba repite configuración y al menos el mismo <code>k</code>; la ausencia en un escaneo posterior no cierra; lo confirmado es inmutable.</td>
+<td><ul>
+<li>Confirmación: <code>src/engine/lotes/efectivo.ts</code> (libro efectivo) y <code>src/engine/lotes/confirmar.ts</code>; plan de calidad límite en <code>datos/evidencia/muestreo.json</code>, que <code>src/engine/lotes/muestra.ts</code> se niega a cargar si un tramo no cumple su riesgo (aritmética entera exacta). Pruebas: <code>tests/unit/lotes/muestra.test.ts</code>, <code>tests/unit/lotes/lotes.test.ts</code>.</li>
+<li>Regla asimétrica y cota: <code>src/engine/evidencia/veredicto.ts</code> (<code>asimetrica_k</code>, <code>cotaDeFalla</code>); la cota se escribe en pantalla desde <code>src/lib/evidencia/vista.ts</code>. Prueba: <code>tests/unit/evidencia/veredicto.test.ts</code>.</li>
+<li>Re-prueba y cierre: <code>src/engine/hallazgos/ciclo.ts</code>, con <code>tests/unit/hallazgos/ciclo.test.ts</code> (escaneo sin el hallazgo no cierra, <code>no_ejecutada</code> no cierra, un sobre sin confirmar no cierra, aceptar un riesgo no cierra).</li>
+<li>Inmutabilidad: <code>src/engine/evidencia/validar.ts</code> (<em>sobre/huella-no-cuadra</em> rompe cualquier edición) y <code>src/engine/evidencia/libro.ts</code> (el libro solo añade).</li>
+<li><em>Salvedad declarada en ADR 008:</em> el umbral de una prueba de métrica lo escribe quien registra el sobre; el validador no puede comprobar que se fijó antes de la prueba.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>7</strong> Severidad</td>
+<td>CVSS 4.0 contra la referencia de FIRST fijada por commit, con validador estricto aparte; la escala de IA es una tabla de prioridad en datos, con el impacto primero, nunca una suma.</td>
+<td><ul>
+<li>Código de FIRST sin tocar: <code>src/engine/severidad/vendor/first-c5b0d40</code>, regenerable con <code>scripts/severidad/vendor-first.mjs</code>; el gate de deriva byte a byte es <code>tests/unit/severidad/vendor.test.ts</code>.</li>
+<li>Validador estricto de vectores: <code>src/engine/severidad/validar-vector.ts</code> con <code>tests/unit/severidad/cvss.test.ts</code>; corpus completo manual en <code>scripts/severidad/corpus-completo.mjs</code>.</li>
+<li>Escala de IA: <code>src/engine/severidad/escala-ia.ts</code>, datos en <code>datos/severidad/escala-ia.json</code>, prueba <code>tests/unit/severidad/escala-ia.test.ts</code> (la tabla que viola su piso o su techo no se carga).</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>8</strong> La evidencia real no viaja al repo público</td>
+<td>Alcances, reglas, sobres y hallazgos de activos reales viven en <code>datos/privado/</code>, ignorado por git; en lo público solo hay datos sintéticos.</td>
+<td><ul>
+<li><code>.gitignore</code> ignora <code>datos/privado/</code> salvo su README; <code>tests/unit/datos-privados.test.ts</code> falla si algo más se versiona.</li>
+<li>La carpeta decide el origen: reglas <em>activo/origen-no-demo-en-datos-publicos</em> en <code>src/engine/activos/validar.ts</code>, <em>sobre/origen-no-demo-en-datos-publicos</em> en <code>src/engine/evidencia/validar.ts</code>, y sus gemelas en <code>src/engine/hallazgos/validar.ts</code> y <code>src/engine/lotes/validar.ts</code>.</li>
+<li>Lo que la app escribe también es privado: <code>tests/unit/lib/escritura-de-datos.test.ts</code> (archivos 0600, carpetas 0700); <code>src/cli/plan.ts</code> rechaza escribir el plan de un activo propio en una carpeta versionada.</li>
+<li>Los agentes no leen lo privado: <code>scripts/propuestas/hooks/candado.mjs</code>. El respaldo en un repo privado de datos está fuera de este repositorio y no se puede comprobar desde aquí.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>9</strong> Vitrina por lista blanca</td>
+<td>Nada es publicable por defecto; paquetes de ejecución y alcances nunca; la validación del instrumento corre antes de publicar y bloquea si falla; ninguna instantánea ni paquete sale con el catálogo inválido.</td>
+<td><ul>
+<li>Cumplido: una prueba solo es publicable si está aprobada, sin pendiente y sin errores (<code>src/engine/catalogo/validar.ts</code>, <code>src/engine/catalogo/instantanea.ts</code>); un catálogo inválido no emite instantánea (<code>tests/unit/catalogo/instantanea.test.ts</code>); el instrumento bloquea el build (<code>exigirInstrumentoVerde</code> en <code>src/lib/brecha/mundo.ts</code>, <code>tests/unit/brecha/instrumento-bloquea.test.ts</code>, semillas en <code>docs/kit-de-prueba/semillas-de-cierre</code>); el job de CI valida el catálogo en <code>.github/workflows/ci.yml</code>.</li>
+<li><strong>Brecha:</strong> no existe en este repo una lista blanca de lo que viaja al paquete público. El único gate, <code>scripts/verificar-salida-publicada.mjs</code> en modo <code>--publico</code> (probado en <code>tests/unit/salida-publicada.test.ts</code>), es una lista negra de dos carpetas (<code>diseno</code> y <code>privado</code>), y ni <code>package.json</code> ni <code>.github/workflows/ci.yml</code> lo invocan. Nada impide hoy que un paquete de ejecución o un alcance viaje en un paquete. Falta: una lista de rutas permitidas y que el gate corra en CI o en el armado del paquete. Según <code>CLAUDE.md</code>, la superficie pública se arma en otro repositorio (hoja-de-vida), así que lo que allí ocurre no se pudo verificar.</li>
+</ul></td>
+<td>brecha</td>
+</tr>
+<tr>
+<td><strong>10</strong> El conocimiento es dato</td>
+<td>Marcos, controles, herramientas, pruebas, escalas, estados y plantillas son archivos versionados; agregar una familia, un marco o un adaptador no toca el núcleo; una referencia sin versión se rechaza; umbrales y fecha de consulta son datos.</td>
+<td><ul>
+<li>Cumplido para familias, marcos y umbrales: <code>datos/familias.json</code>, <code>datos/marcos</code>, <code>datos/umbrales.json</code>, <code>datos/estados.json</code>, <code>datos/brecha/umbrales.json</code>, <code>datos/planificador/formula.json</code>, <code>datos/hallazgos/plazos.json</code>. La regla <em>referencia/sin-version</em> está en <code>src/engine/catalogo/reglas.ts</code> y se aplica en <code>src/engine/catalogo/validar.ts</code> (prueba en <code>tests/unit/catalogo/validar.test.ts</code>, semilla <code>docs/kit-de-prueba/semillas/SEMILLA-SIN-VERSION.json</code>). La fecha de consulta es una entrada: <code>tests/unit/catalogo/envejecimiento.test.ts</code>.</li>
+<li><strong>Brecha en adaptadores:</strong> el registro <code>src/engine/adaptadores/index.ts</code> permite sumar un adaptador sin tocar el motor del sobre, pero <code>TIPOS_DE_SELECTOR</code> sigue declarado dentro de <code>src/engine/catalogo/esquemas.ts</code> (cuatro formas cableadas). Una herramienta con un selector nuevo obliga a editar el esquema del núcleo. El ADR 002 prometió mover cada selector a <code>src/engine/adaptadores/</code> y construir la unión desde el registro; el comentario del código aún dice «en el S3» y lo declara aplazado <code>sprints/SPRINT_009-lote.md</code> (S9-R10), con su sitio: el sprint del quinto adaptador. Falta ese traslado.</li>
+</ul></td>
+<td>brecha</td>
+</tr>
+<tr>
+<td><strong>11</strong> Normas y marcos</td>
+<td>De ISO/IEC solo identificadores y resúmenes propios; <code>verificado_contra_norma: false</code> hasta validar; atribución según la licencia; una fuente que da 403 se registra como no accesible, nunca se elude.</td>
+<td><ul>
+<li><code>datos/controles/iso42001-anexo-a.json</code>: los 38 controles declaran <code>verificado_contra_norma: false</code> (ninguno en true); <code>tests/unit/catalogo/catalogo-real.test.ts</code> falla si alguno afirma lo contrario.</li>
+<li>Licencias: <code>docs/LICENCIAS-DE-MARCOS.md</code> y la regla <em>marco/sin-licencia</em> (<code>src/engine/catalogo/reglas.ts</code>).</li>
+<li>Fuente no accesible: la regla <em>marco/fuente-no-accesible-sin-declarar</em> en <code>src/engine/catalogo/validar.ts</code>, el estado en <code>src/engine/catalogo/esquemas.ts</code> y el mensaje de <code>src/cli/propuestas.ts</code>, que pide aportar el documento a mano en lugar de rodear la fuente.</li>
+<li><em>Salvedad:</em> «con palabras propias» es una cualidad editorial; ningún gate detecta texto de la norma copiado. Depende de la redacción y de la revisión humana.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+<tr>
+<td><strong>12</strong> El color nunca solo</td>
+<td>Semáforo, veredictos y estados llevan símbolo (trazo SVG) más texto más color, desde el vocabulario de datos; ningún componente lleva un color de estado escrito.</td>
+<td><ul>
+<li>Vocabulario: <code>datos/estados.json</code>; componentes <code>src/components/simbolo.tsx</code> (trazos SVG) y <code>src/components/estado.tsx</code> (símbolo, texto y color siempre juntos).</li>
+<li>Pruebas: <code>tests/unit/simbolo.test.tsx</code> (se dibuja exactamente lo que el esquema acepta), <code>tests/unit/etiquetas-en-componentes.test.ts</code> (ningún componente escribe un rol de color), <code>tests/unit/tintas-vetadas.test.ts</code> (colores sueltos y tintas vetadas), <code>tests/unit/paleta.test.ts</code> (contraste y separación bajo daltonismo).</li>
+<li>Estados del motor sin etiqueta invalidan el catálogo: <code>src/engine/catalogo/semaforo.ts</code> (<code>ESTADOS_QUE_CALCULA_EL_MOTOR</code>) y <code>tests/unit/catalogo/envejecimiento.test.ts</code>.</li>
+</ul></td>
+<td>se cumple</td>
+</tr>
+</tbody>
+</table></div>
+
+<h3>Reglas del kit que más pesan</h3>
+
+<p>Entre las 29 reglas del kit que resume <code>CLAUDE.md</code>, estas ocho son las que más protegen el trabajo diario porque un gate automático las vigila.</p>
+
+<div class="tabla-scroll"><table>
+<thead><tr><th>Regla del kit</th><th>Mecanismo</th></tr></thead>
+<tbody>
+<tr><td><strong>2</strong> Tests de lo que cambia</td><td><code>vitest.config.ts</code> fija umbrales de cobertura (70 % global, 90 % en <code>src/engine/</code>, 80 % en <code>src/lib/</code>, 50 % en <code>src/components/</code>); el script <code>test</code> de <code>package.json</code> corre <code>vitest run --coverage</code> y lo ejecuta el job <code>quality</code> de <code>.github/workflows/ci.yml</code>.</td></tr>
+<tr><td><strong>5</strong> Accesibilidad y tintas vetadas</td><td><code>tests/unit/tintas-vetadas.test.ts</code> falla ante un color suelto o una tinta de línea usada como texto; los escaneos con axe-core para Playwright corren en <code>tests/e2e/catalogo.spec.ts</code> y otras specs; Lighthouse exige 0.9 en las cuatro categorías vía <code>lighthouse-categorias.json</code>.</td></tr>
+<tr><td><strong>6</strong> Nada de push directo a main</td><td>El hook de Bash de <code>.claude/settings.json</code> bloquea <code>git push</code> hacia main o master. El ruleset de la rama y sus checks requeridos viven en GitHub y no se pueden comprobar desde el repo.</td></tr>
+<tr><td><strong>7</strong> Secretos solo en variables de entorno</td><td>Doble cinturón con gitleaks: el hook PreToolUse de <code>.claude/settings.json</code> y <code>githooks/pre-commit</code> (ambos fallan cerrados si falta la herramienta; <code>git config core.hooksPath</code> apunta a <code>githooks</code> en este clon); <code>tests/unit/hook-secretos.test.ts</code> prueba el hook con la carnada canónica y el job <code>quality</code> instala gitleaks para que esa prueba no se salte.</td></tr>
+<tr><td><strong>17</strong> Cero enlaces</td><td><code>scripts/cero-enlaces.mjs</code> barre el árbol versionado y el campo homepage del repo; los dominios vetados están en <code>cero-enlaces.json</code>; la demo en rojo es <code>tests/unit/cero-enlaces.test.ts</code>; corre como paso del job <code>quality</code>.</td></tr>
+<tr><td><strong>18</strong> Un solo PR vivo</td><td>El job <code>.github/workflows/un-pr-vivo.yml</code> falla un segundo PR que no empiece con «complementa #N»; <code>.github/dependabot.yml</code> agrupa las dependencias con límite de un PR y <code>tests/unit/dependabot-config.test.ts</code> vigila esa invariante; <code>scripts/verificar-dependencias.mjs</code> (con <code>tests/unit/verificar-dependencias.test.ts</code>) impide paquetes por debajo de main.</td></tr>
+<tr><td><strong>20</strong> Bilingüe ES/EN</td><td>El esquema <code>Texto</code> de <code>src/engine/catalogo/esquemas.ts</code> exige las claves <code>es</code> y <code>en</code> no vacías en todo dato de producto; <code>tests/unit/maqueta-bilingue.test.ts</code> exige que todo texto visible de la maqueta exista en los dos idiomas; las etiquetas de pantalla tienen sus propias pruebas, por ejemplo <code>tests/unit/etiquetas-de-vistas.test.ts</code>.</td></tr>
+<tr><td><strong>23</strong> Matriz de envejecimiento</td><td>Se construye la instantánea y la maqueta en cada fecha en que algo cambia de estado, con la fecha de consulta como perilla: <code>tests/unit/catalogo/envejecimiento.test.ts</code>, <code>tests/unit/maqueta-envejecimiento.test.ts</code>, <code>tests/unit/envejecimiento-activos.test.tsx</code> y <code>tests/unit/envejecimiento-hallazgos.test.tsx</code>.</td></tr>
+</tbody>
+</table></div>
+
+
+  <h2>Brechas conocidas de este corte</h2>
+<p>Lo que la auditoría de la constitución encontró sin cumplir o sin comprobar, dicho aquí en vez de escondido. Cada una tiene su sitio.</p>
+<div class="tabla-scroll"><table>
+<thead><tr><th>Qué</th><th>Por qué sigue así</th><th>Dónde se paga</th></tr></thead>
+<tbody>
+<tr><td><strong>Regla 9 · lista blanca.</strong> No existe una lista blanca de lo que viaja a un paquete público; <code>scripts/verificar-salida-publicada.mjs --publico</code> es una lista negra de <code>diseno/</code> y <code>privado/</code>, y la CI no la invoca.</td><td>No hay paquete público todavía: el modo público es del H-2 y el alcance de este sprint lo excluye. La lista negra es el piso.</td><td>El sprint que construya el paquete público (H-2): lista blanca y job de CI.</td></tr>
+<tr><td><strong>Regla 10 · selectores.</strong> <code>TIPOS_DE_SELECTOR</code> sigue declarada en <code>src/engine/catalogo/esquemas.ts</code> con cuatro formas; ADR-002 (decisión 6) prometía armarla desde un registro por adaptador en el Sprint 3.</td><td>Sacar el selector de cada adaptador exige extraer las primitivas de <code>esquemas.ts</code> (hoy un adaptador que las importa y un esquema que lo importa serían un ciclo) y, sin un quinto adaptador, el registro sería una abstracción de un solo uso.</td><td>El sprint del quinto adaptador (roadmap: promptfoo, PyRIT, Inspect).</td></tr>
+<tr><td><strong>Regla 11 · la norma.</strong> Los 38 resúmenes de los controles de ISO/IEC 42001 no están contrastados con el texto de la norma (<code>verificado_contra_norma: false</code>); ningún gate detecta texto de la norma copiado.</td><td>Hace falta el texto licenciado (la fuente responde 403 al agente); la deuda está declarada en <code>docs/LICENCIAS-DE-MARCOS.md</code>.</td><td>Antes del G-Release (H-4).</td></tr>
+<tr><td><strong>Umbral de una métrica.</strong> Lo escribe quien registra el sobre; ninguna fuente lo fija antes de la prueba.</td><td>Fijarlo antes exige reabrir el formato del sobre (ADR-007/008, congelado); está declarado en ADR-008 y en el manual.</td><td>El sprint que reabra el formato (H-3).</td></tr>
+</tbody></table></div>
+
+  <h2>Historial del blueprint</h2>
+<div class="tabla-scroll">
+<table>
+  <thead><tr><th>Fecha</th><th>Ciclo</th><th>Cambios</th></tr></thead>
+  <tbody>
+    <tr><td>2026-10-13</td><td>H-1 · Vitrina funcional (Sprints 1 a 9)</td><td>Versión inicial, escrita desde el código tal como quedó al cierre del hito: motores, datos, línea de comandos, skills y hooks, integración continua, despliegue, ADR 001–011 y la auditoría de las doce reglas duras.</td></tr>
+  </tbody>
+</table>
+</div>
+
+  <footer>Blueprint as-built de HackGuard · pipeline AI-APPs · se actualiza en cada cierre de hito. Archivo del repo — sin CDNs ni dependencias externas.</footer>
+</main>
+</body>
+</html>

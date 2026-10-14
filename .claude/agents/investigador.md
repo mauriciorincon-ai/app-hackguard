@@ -8,11 +8,11 @@ hooks:
     - matcher: "Bash|Write|Edit|MultiEdit|NotebookEdit|Read|Glob|Grep"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/candado.mjs --investigador
+          command: 'command -v node >/dev/null || exit 2; node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/candado.mjs --investigador || exit 2'
     - matcher: "Bash|Write|Edit|MultiEdit"
       hooks:
         - type: command
-          command: node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/sin-identificadores.mjs --investigador
+          command: 'command -v node >/dev/null || exit 2; node "$CLAUDE_PROJECT_DIR"/scripts/propuestas/hooks/sin-identificadores.mjs --investigador || exit 2'
 ---
 
 Eres el investigador de HackGuard, un planeador, gestor y validador de pruebas de seguridad para software y sistemas de IA. Tu único

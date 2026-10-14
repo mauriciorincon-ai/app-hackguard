@@ -8,7 +8,7 @@ const urlDe = (f: string | { src: string }) =>
   typeof f === "string" ? f : f.src;
 
 export const metadata: Metadata = {
-  title: "HackGuard",
+  title: { default: "HackGuard", template: "%s · HackGuard" },
   description:
     "Planeador, gestor y validador de pruebas de seguridad para software y sistemas de IA / Planner, manager and validator of security tests for software and AI systems",
 };

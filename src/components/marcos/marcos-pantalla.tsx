@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pruebas } from "@/lib/catalogo/etiquetas";
+import { ETIQUETAS_DE_VISTAS as E, pruebas } from "@/lib/catalogo/etiquetas";
 import {
   SE_MANTIENE,
   SIN_EQUIVALENTE,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/catalogo/marcos";
 import { Chip, Estado, Fechado, Huella } from "../estado";
 import { Aviso } from "../estado";
+import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
 
 /**
@@ -23,20 +24,6 @@ const COLUMNAS_MARCOS = [
   { es: "Frente a la fuente", en: "Against the source" },
   { es: "Vigencia", en: "Freshness" },
 ];
-
-function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
-  return (
-    <thead>
-      <tr>
-        {columnas.map((c) => (
-          <th key={c.es} scope="col">
-            <T t={c} />
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
 
 function Mapa({ m }: { m: MapaDeEquivalencias }) {
   return (
@@ -167,10 +154,7 @@ function Mapa({ m }: { m: MapaDeEquivalencias }) {
 
 export function MarcosVacio() {
   return (
-    <Aviso
-      etiqueta={{ rol: "neutro", simbolo: "vacio" }}
-      titulo={{ es: "No hay marcos cargados", en: "No frameworks loaded" }}
-    >
+    <Aviso etiqueta={E.marcos_vacio} titulo={E.marcos_vacio.nombre}>
       <p>
         <T
           t={{
@@ -367,9 +351,14 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                   )}
                 </td>
                 <td>
+                  {/* Un marco cuya fuente no se pudo leer no está «verificado»: lo que se fecha es la última revisión (S3-B5). */}
                   <Fechado
                     vigencia={m.vigencia}
-                    rotulo={{ es: "Verificado", en: "Verified" }}
+                    rotulo={
+                      m.fuente
+                        ? { es: "Revisado", en: "Reviewed" }
+                        : { es: "Verificado", en: "Verified" }
+                    }
                   />
                   <p className="hg-menor">
                     <span lang="es">
@@ -431,22 +420,24 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
             </ul>
           ) : (
             <p className="hg-menor" data-sin-avisos>
-              <Estado
-                etiqueta={{
-                  rol: "neutro",
-                  simbolo: "vacio",
-                  nombre: {
-                    es: "Sin avisos registrados",
-                    en: "No notices recorded",
-                  },
-                }}
-              />{" "}
+              <Estado etiqueta={E.sin_avisos_registrados} />{" "}
               {vista.investigacion ? (
                 <span lang="es">
                   La corrida del investigador{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> del{" "}
-                  <Dato>{vista.investigacion.fecha}</Dato> no encontró una
-                  versión distinta de la del catálogo.
+                  <Dato>{vista.investigacion.fecha}</Dato> leyó{" "}
+                  <Dato>{vista.investigacion.leidas}</Dato> {vista.investigacion.leidas === 1 ? "página" : "páginas"}
+                  {vista.investigacion.noLeidas > 0 ? (
+                    <>
+                      {" "}
+                      y no pudo leer <Dato>
+                        {vista.investigacion.noLeidas}
+                      </Dato>{" "}
+                      (esas no cuentan)
+                    </>
+                  ) : null}
+                  : en las que leyó no encontró una versión distinta de la del
+                  catálogo.
                 </span>
               ) : (
                 <T
@@ -460,8 +451,18 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                 <span lang="en">
                   The researcher&apos;s run{" "}
                   <Dato>{vista.investigacion.corrida}</Dato> of{" "}
-                  <Dato>{vista.investigacion.fecha}</Dato> found no version
-                  different from the catalog&apos;s.
+                  <Dato>{vista.investigacion.fecha}</Dato> read{" "}
+                  <Dato>{vista.investigacion.leidas}</Dato> {vista.investigacion.leidas === 1 ? "page" : "pages"}
+                  {vista.investigacion.noLeidas > 0 ? (
+                    <>
+                      {" "}
+                      and could not read{" "}
+                      <Dato>{vista.investigacion.noLeidas}</Dato> (those do not
+                      count)
+                    </>
+                  ) : null}
+                  : in the ones it read it found no version different from the
+                  catalog&apos;s.
                 </span>
               ) : null}
             </p>
@@ -537,13 +538,7 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
                 </td>
                 <td data-celda="estado">
                   {i.oficial ? (
-                    <Estado
-                      etiqueta={{
-                        rol: "positivo",
-                        simbolo: "ok",
-                        nombre: { es: "Oficial", en: "Official" },
-                      }}
-                    />
+                    <Estado etiqueta={E.instantanea_oficial} />
                   ) : (
                     <span className="hg-menor">
                       <T t={{ es: "Anterior", en: "Previous" }} />

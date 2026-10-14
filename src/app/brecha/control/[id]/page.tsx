@@ -4,6 +4,7 @@ import { ControlPantalla } from "@/components/control/control-pantalla";
 import { controlDeSlug, slugDeControl } from "@/lib/brecha/etiquetas";
 import { cargarParaPaginaDeBrecha } from "@/lib/brecha/pagina";
 import { construirVistaDeControl, idsDeControles } from "@/lib/brecha/vista";
+import { titulo } from "@/lib/titulo";
 
 // Una página por control aplicable (como en la maqueta). El segmento de la ruta no lleva puntos: `iso42001-a-6-2-4`.
 export const dynamicParams = false;
@@ -12,6 +13,15 @@ export async function generateStaticParams() {
   return idsDeControles(await cargarParaPaginaDeBrecha()).map((id) => ({
     id: slugDeControl(id),
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return titulo("Vista por control", "Control view", id);
 }
 
 export default async function Control({

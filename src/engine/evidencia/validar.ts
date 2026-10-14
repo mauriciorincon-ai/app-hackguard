@@ -113,6 +113,11 @@ export const REGLAS_DE_SOBRE = {
     "Faltan los conteos o la métrica que la regla de veredicto necesita",
     "The counts or the metric the verdict rule needs are missing",
   ),
+  "sobre/conteos-incoherentes": r(
+    "error",
+    "Los conteos del sobre no cuadran: hay más fallidas que evaluadas, o conteos de una prueba que no corrió",
+    "The envelope's counts do not add up: more failures than evaluated items, or counts for a test that did not run",
+  ),
   "sobre/veredicto-no-es-el-de-la-regla": r(
     "error",
     "El veredicto del sobre no es el que sale de aplicar la regla a lo medido",
@@ -350,7 +355,9 @@ export async function validarEvidencia(
       }
       if (s.fecha < emitido.plan.fecha_emision)
         agregar(
-          s.origen === "demo" ? "sobre/demo-anterior-al-plan" : "sobre/anterior-al-plan",
+          s.origen === "demo"
+            ? "sobre/demo-anterior-al-plan"
+            : "sobre/anterior-al-plan",
           ruta,
           "fecha",
         );
@@ -363,6 +370,14 @@ export async function validarEvidencia(
         "regla",
         comillas(delCatalogo.regla),
       );
+
+    // Los conteos tienen que cuadrar entre sí antes de que una regla los lea: 9 fallidas de 5 evaluadas da «fallida» por una cuenta imposible.
+    const { ejecutada, evaluadas, fallidas } = s.resultado;
+    if (
+      (evaluadas !== null && fallidas !== null && fallidas > evaluadas) ||
+      (!ejecutada && ((evaluadas ?? 0) > 0 || (fallidas ?? 0) > 0))
+    )
+      agregar("sobre/conteos-incoherentes", ruta, "resultado");
 
     // El veredicto sale de la regla, nunca de quien registra el sobre.
     const calculo = calcularVeredicto(s.regla, s.resultado, s.k);

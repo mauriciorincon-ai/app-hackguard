@@ -5,10 +5,17 @@
 // Una propuesta que no verifica NO se descarta: llega MARCADA con su motivo (D1). Solo un borrador que no se puede sellar de forma
 // coherente (un marco que no existe, un agente con un tipo que no es suyo) devuelve problemas y no sella nada.
 import type { PatronCompilado } from "../catalogo/filtro.ts";
-import { filtrar } from "../catalogo/filtro.ts";
+import { filtrar, type Marca } from "../catalogo/filtro.ts";
 import { huella } from "../huella.ts";
 import { antiguedadDelMarco } from "./antiguedad.ts";
-import { huellaDeTexto, similitudDeCita, verificarCita } from "./citas.ts";
+import { SENAL_VERSION_EN_LA_CITA } from "./senales.ts";
+import {
+  huellaDeTexto,
+  normalizarEspacios,
+  similitudDeCita,
+  verificarCita,
+  versionEnElTexto,
+} from "./citas.ts";
 import {
   FORMATO_DE_CORRIDA,
   type Agente,
@@ -20,6 +27,7 @@ import {
   type Consulta,
   type Corrida,
   type CuerpoDePropuesta,
+  type EstadoDeFuente,
   type MotivoDePausa,
   type Pausa,
   type PropuestaSellada,
@@ -231,6 +239,7 @@ function valorDelCampo(c: CandidataDeSobre, campo: CampoCitable): unknown {
 export function citasDeCandidata(
   c: CandidataDeSobre,
   texto: string | undefined,
+  umbral: number = 1,
 ): CandidataSellada["verificacion"]["citas"] {
   return c.citas.map((cita) => {
     if (texto === undefined)
@@ -240,19 +249,32 @@ export function citasDeCandidata(
       cita.texto,
       valorDelCampo(c, cita.campo),
       texto,
+      umbral,
     );
     return { campo: cita.campo, estado: r.estado, similitud: r.similitud };
   });
 }
 
 /** Verifica y sella una candidata del extractor contra el texto pegado. `texto` es `undefined` si no hay lectura. */
+
+/** Una marca por (campo, patrón): dos páginas que disparan el mismo patrón no la repiten en el sello. */
+const sinRepetir = (marcas: Marca[]): Marca[] => {
+  const vistas = new Set<string>();
+  return marcas.filter((m) => {
+    const clave = `${m.campo}\u0000${m.patron}`;
+    if (vistas.has(clave)) return false;
+    vistas.add(clave);
+    return true;
+  });
+};
+
 function sellarCandidata(
   c: CandidataDeSobre,
   activo: string,
   texto: string | undefined,
   ctx: ContextoDeVerificacion,
 ): CandidataSellada {
-  const citas = citasDeCandidata(c, texto);
+  const citas = citasDeCandidata(c, texto, ctx.umbrales.similitud_cita);
   const enElPlan = ctx.planes.get(activo)?.has(c.prueba) ?? false;
   const v = veredictoDeCandidata(
     c,
@@ -331,7 +353,7 @@ async function sellarPropuesta(
   if (cuerpo.tipo !== "sobre") {
     // ── Investigador: fuentes (U2), citas (U1) y antigüedad del marco (U3) ──
     const lista = listaBlancaDe(cuerpo, ctx);
-    const fuentes = [];
+    const fuentes: { url: string; estado: EstadoDeFuente }[] = [];
     const similitudes: number[] = [];
     for (const f of cuerpo.fuentes) {
       const estado = await verificarFuente(f, lista, ctx.lecturas, consultadas);
@@ -347,10 +369,23 @@ async function sellarPropuesta(
     ).size;
     const sinVerificar =
       fuentes.length - fuentes.filter((f) => f.estado === "verificada").length;
-    const marcasDeInstruccion = filtrar(
-      paraElFiltro(cuerpo),
-      ctx.patronesDeInstrucciones,
-    );
+    // Las páginas que el agente leyó son datos no confiables: una orden dirigida a él en CUALQUIER parte de la página marca la propuesta
+    // (RF-07.4), no solo lo que escribió el modelo ni el pasaje que citó.
+    // La página se filtra con los espacios normalizados: en disco va envuelta a ~100 columnas y una orden puede cruzar un salto de línea.
+    const marcasDeInstruccion = sinRepetir([
+      ...filtrar(paraElFiltro(cuerpo), ctx.patronesDeInstrucciones),
+      ...[...new Set(cuerpo.fuentes.map((f) => f.huella_de_la_pagina))].flatMap(
+        (h) => {
+          const pagina = ctx.lecturas(h);
+          return pagina === undefined
+            ? []
+            : filtrar(
+                { pagina: normalizarEspacios(pagina) },
+                ctx.patronesDeInstrucciones,
+              );
+        },
+      ),
+    ]);
     const idMarco = marcoDe(cuerpo, ctx);
     const marco = idMarco === null ? undefined : ctx.marcos.get(idMarco);
     const antiguedad =
@@ -365,6 +400,17 @@ async function sellarPropuesta(
       );
     if (sinVerificar > 0)
       agregar("cita_no_verificada", "citas_sin_verificar", 0);
+    // RF-07.5: un aviso de versión solo vale si la versión nueva está dentro de un pasaje que el código verificó. Sin eso la
+    // propuesta llega a la bandeja con su pausa, pero no avisa (`avisosDeVersion`).
+    if (
+      cuerpo.tipo === "version_de_marco" &&
+      !cuerpo.fuentes.some(
+        (f, i) =>
+          fuentes[i]?.estado === "verificada" &&
+          versionEnElTexto(cuerpo.version_nueva, f.fragmento),
+      )
+    )
+      agregar("cita_no_verificada", SENAL_VERSION_EN_LA_CITA, 0);
     if (marco !== undefined && marco.fecha_version === null)
       agregar(
         "marco_sin_fecha",
@@ -424,12 +470,15 @@ async function sellarPropuesta(
   const candidatas = cuerpo.candidatas.map((c) =>
     sellarCandidata(c, cuerpo.activo, texto, ctx),
   );
-  const marcasDeInstruccion = [
+  const marcasDeInstruccion = sinRepetir([
     ...filtrar(paraElFiltro(cuerpo), ctx.patronesDeInstrucciones),
     ...(texto === undefined
       ? []
-      : filtrar({ texto_pegado: texto }, ctx.patronesDeInstrucciones)),
-  ];
+      : filtrar(
+          { texto_pegado: normalizarEspacios(texto) },
+          ctx.patronesDeInstrucciones,
+        )),
+  ]);
   const citas = candidatas.flatMap((c) => c.verificacion.citas);
   const sinVerificar = citas.filter((c) => c.estado !== "verificada").length;
   const principal = candidatas[0];
@@ -498,12 +547,14 @@ export async function sellarCorrida(
   consulta: Consulta | null,
   ctx: ContextoDeVerificacion,
   primerNumero: number,
+  /** Los documentos que una persona aportó a esta corrida (RF-07.2b); vacío si ninguno. */
+  aportes: readonly { url: string; huella_de_la_pagina: string }[] = [],
 ): Promise<ResultadoDeSellado> {
   const problemas = problemasDelBorrador(borrador, ctx);
   if (problemas.length > 0) return { ok: false, problemas };
   const propuestas: PropuestaSellada[] = [];
   // Sin consulta, ninguna fuente se leyó: cada URL citada queda como «url_no_consultada».
-  const consultadas = lecturasConsultadas(consulta?.fuentes ?? []);
+  const consultadas = lecturasConsultadas(consulta?.fuentes ?? [], aportes);
   for (const [i, p] of borrador.propuestas.entries())
     propuestas.push(
       await sellarPropuesta(

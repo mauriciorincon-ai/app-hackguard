@@ -86,3 +86,7 @@ depend on it), so the confirmation of a batch needs a place that is not the enve
   its documentation and the "plus" fixture that exercises them is **derived, not produced by a ZAP run** (no Docker on the
   build machine), so the format of the real statistics is unverified until someone imports a real report; pasted text
   and reading the file in the browser are not built (the screen is read-only and says so).
+- **The demo batches are illustrations, declared.** `LOTE-0008` carries three of the six envelopes that `importar` builds from the
+  same "plus" fixture (same tests, same verdicts) and one warning sentence written by hand that no adapter emits; it exists to
+  show the batch flow. The test `tests/unit/lotes/lotes.test.ts` pins both the subset and the difference, so a regeneration or
+  a drift is noticed (Sprint 9, S6-B5).

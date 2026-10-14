@@ -23,7 +23,8 @@ Comandos reutilizables que Claude Code puede invocar en cualquier app del pipeli
 Las dos piezas con IA del producto son skills de Claude Code que **solo una persona** invoca (`disable-model-invocation`), corren en su
 propio contexto con un subagente de herramientas mínimas y **solo proponen** (ADR-011). Escriben únicamente
 `propuestas/corridas/<corrida>/propuesta.json`; los hooks de `scripts/propuestas/hooks/` lo impiden fuera. Lo que proponen lo decide una
-persona en `/catalogo/propuestas` (con `pnpm propuestas:decidir`, que corre en su propia terminal).
+persona en `/catalogo/propuestas` (con `pnpm propuestas:decidir`, que corre en su propia terminal; igual `pnpm propuestas:aportar`, con el que la persona
+aporta un documento que el investigador no pudo leer).
 
 | Skill | Qué hace |
 |---|---|

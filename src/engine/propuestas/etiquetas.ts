@@ -27,6 +27,7 @@ export const IDS_DE_ETIQUETAS_DE_PROPUESTAS = [
   // Por qué una propuesta llega marcada (los motivos de la pausa)
   "motivo_fuentes_insuficientes",
   "motivo_cita_no_verificada",
+  "motivo_version_fuera_de_la_cita",
   "motivo_marco_antiguo",
   "motivo_marco_sin_fecha",
   "motivo_instruccion_marcada",
@@ -41,6 +42,7 @@ export const IDS_DE_ETIQUETAS_DE_PROPUESTAS = [
   // Avisos de versión y errores
   "aviso_de_version",
   "sin_avisos",
+  "bandeja_vacia",
   "propuesta_ilegible",
 ] as const;
 export type IdDeEtiquetaDePropuestas =

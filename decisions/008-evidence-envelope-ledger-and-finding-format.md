@@ -71,3 +71,10 @@ Sprint 7 count its envelopes and findings. A format that changes silently would 
   on these shapes. The determinism e2e proves in Node, Chromium, Firefox and WebKit that the ledger and the evaluated
   findings give the same fingerprints with their lists in another order.
 - A person who disagrees with a verdict can never edit it away: the correction stays visible next to the original.
+- A retest repeats at least as many times as the more demanding of the failing envelope and the envelope that corrects it: a
+  corrector cannot lower the bar (hard rule 6). Tool version and selector are those of the envelope that stands. Decided in
+  Sprint 9 (S5-6 of the Sprint 5 audit) and pinned by `tests/unit/hallazgos/ciclo.test.ts`.
+- `metrica.umbral` is written by whoever records the envelope; no source fixes it before the test (neither the catalog nor the
+  execution package of ADR-007 carries it), so the validator checks the verdict against it but cannot check it was set
+  beforehand. Declared here and in the manual until the package format can carry the threshold (Sprint 9, S5-7b; the
+  format of ADR-007 is frozen in that sprint).

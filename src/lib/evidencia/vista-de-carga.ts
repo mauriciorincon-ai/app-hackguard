@@ -229,6 +229,7 @@ function vistaDeLote(
       id: s.id,
       prueba: { id: prueba.id, nombre: prueba.nombre },
       veredicto: etiqueta(c, "veredicto", s.veredicto),
+      veredictoId: s.veredicto,
       revision: revisa,
       revisionCorta: et(
         revisa === "siempre"
@@ -276,9 +277,7 @@ function vistaDeLote(
   )
     .map((v) => ({
       veredicto: etiqueta(c, "veredicto", v),
-      n: sobres.filter(
-        (s) => s.veredicto.nombre === etiqueta(c, "veredicto", v).nombre,
-      ).length,
+      n: sobres.filter((s) => s.veredictoId === v).length,
     }))
     .filter((x) => x.n > 0);
   const cuentanPorElLote = sobres.filter(
@@ -376,7 +375,7 @@ function vistaDeLote(
       ejecutadoPor: lote.ejecutado_por,
     },
     comandos: {
-      confirmar: `${base}${abren.map((id) => ` --separar ${id}`).join("")}`,
+      confirmar: `${base}${abren.map((id) => ` --separar ${id}`).join("")} --revisados ${revision.siempre.length + revision.muestra.length}`,
       unoPorUno: `${base} --revisar-uno-por-uno`,
     },
   };
@@ -411,11 +410,17 @@ export function construirVistaDeCarga(
     return vistaDeLote(l, mundo, i, herramienta.nombre);
   });
   const ids = [...new Set(mundo.lotes.map((l) => l.activo))];
-  const todos = lotes.flatMap((l) => l.sobres);
+  // «Sobres propuestos» son los que nadie ha confirmado todavía (la propuesta, o el separado que espera a una persona): los que ya
+  // cuentan por el lote o por una persona están en el libro, no en la bandeja de la carga.
+  const propuestos = lotes
+    .flatMap((l) => l.sobres)
+    .filter(
+      (s) =>
+        s.confirmacion.tipo === "propuesta" ||
+        s.confirmacion.tipo === "separado",
+    );
   const cuenta = (v: string) =>
-    todos.filter(
-      (s) => s.veredicto.nombre === etiqueta(c, "veredicto", v).nombre,
-    ).length;
+    propuestos.filter((s) => s.veredictoId === v).length;
   const m = mundo.muestreo;
   const nombreDe = (id: string): Bilingue => {
     const a = activos.activos.find((x) => x.activo.id === id);
@@ -443,7 +448,7 @@ export function construirVistaDeCarga(
     resumen: {
       lotesPorConfirmar: lotes.filter((l) => l.decision === "por_confirmar")
         .length,
-      sobres: todos.length,
+      sobres: propuestos.length,
       fallidas: {
         ...etiqueta(c, "veredicto", "fallida"),
         nombre: { es: "fallidas", en: "failed" },
@@ -458,6 +463,7 @@ export function construirVistaDeCarga(
     lotes,
     muestreo: {
       filas: filasDeMuestreo(m.tramos),
+      nota: m.nota,
       procedimiento: m.procedimiento,
       calidadLimite: m.calidad_limite_por_ciento,
       riesgoDelConsumidor: m.riesgo_del_consumidor_por_ciento,

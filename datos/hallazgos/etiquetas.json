@@ -69,6 +69,15 @@
       }
     },
     {
+      "id": "firma_confirmada",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Confirmada",
+        "en": "Confirmed"
+      }
+    },
+    {
       "id": "vector_valido",
       "rol": "positivo",
       "simbolo": "ok",

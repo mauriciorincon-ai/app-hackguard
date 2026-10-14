@@ -2,6 +2,9 @@ import { Consola } from "@/components/consola/consola";
 import { PropuestasPantalla } from "@/components/propuestas/propuestas-pantalla";
 import { cargarMundoDePropuestas } from "@/lib/propuestas/pagina";
 import { construirVistaDePropuestas } from "@/lib/propuestas/vista";
+import { titulo } from "@/lib/titulo";
+
+export const metadata = titulo("Bandeja de propuestas", "Proposal inbox");
 
 // La bandeja de propuestas (como en la maqueta): lo que proponen el investigador y el extractor, con lo que el código verificó de
 // cada una. Las corridas selladas y el libro de decisiones se leen en el build; una propuesta que no se puede leer no se muestra para

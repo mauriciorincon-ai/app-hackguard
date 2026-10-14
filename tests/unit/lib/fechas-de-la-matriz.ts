@@ -2,6 +2,7 @@
 // estado. Las usan la matriz y el gate que compara las cifras de las cinco pantallas en cada una de ellas.
 import { armarBrecha } from "../../../src/engine/brecha/calcular.ts";
 import { fechaMasDias } from "../../../src/engine/fecha.ts";
+import { evaluarHallazgo } from "../../../src/engine/hallazgos/ciclo.ts";
 import { entradaDemo, instantanea, umbralesDeBrecha } from "./mundo-de-brecha";
 
 export const BASE = entradaDemo();
@@ -16,7 +17,18 @@ export const aceptaciones = BASE.hallazgos.flatMap((h) =>
       : [],
   ),
 );
-export const aperturas = armarBrecha(BASE).hallazgos;
+/** El día en que se abrió un hallazgo: lo da el ciclo de vida del hallazgo (ADR-008), no la brecha, que no lo necesita. */
+export const aperturaDe = (id: string): string => {
+  const h = BASE.hallazgos.find((x) => x.id === id);
+  if (h === undefined) throw new Error(`no hay hallazgo ${id}`);
+  const r = evaluarHallazgo(h, BASE.libro);
+  if (!r.ok) throw new Error(`${id}: ${r.motivo}`);
+  return r.evaluacion.apertura;
+};
+export const aperturas = armarBrecha(BASE).hallazgos.map((h) => ({
+  ...h,
+  apertura: aperturaDe(h.id),
+}));
 export const verificaciones = BASE.pruebas.map((p) => p.fecha_verificacion);
 
 /** La primera fecha en la que la brecha se puede calcular: ninguna cuenta mira hacia atrás de la última cosa que pasó. */

@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HackGuard — Conócelo / Get to know it</title>
+<meta name="description" content="Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla. / A finding is not a vulnerability: it is proof that a control fails.">
+<!--
+  BROCHURE VIVO de HackGuard (molde v2 del kit). Guion: docs/BROCHURE-guion.md. Autocontenido: cero CDNs, cero fetch, un solo
+  script en línea (su sha256 va en las cabeceras de /conoce, serve.json y vercel.json; tests/unit/documentos-del-hito.test.ts lo recalcula).
+  Bilingüe (regla 20): cada frase tiene su par lang="es"/lang="en"; html[data-lang] decide cuál se ve. El tema sigue solo el del
+  sistema (la pieza vive fuera del almacenamiento de la app). Las cifras (data-cifra) salen de docs/brochure-export.json por
+  scripts/cifras-del-export.mjs. MOTION_INTENSITY 2: entrada con stagger corto, apertura de tarjetas y un trazo que se dibuja.
+-->
+<style>
+  :root {
+    --fondo: #f6f3eb; --superficie: #fefcf9; --superficie-2: #ede9e0; --linea: #d4d1c8; --linea-fuerte: #7e7a71;
+    --tinta: #1f1c18; --tinta-2: #544f48; --acento: #1b419f; --acento-tinte: #dae7fe; --atencion: #a77b0f; --falla: #a9170a;
+    --radio: 14px; --asentar: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #12100e; --superficie: #1b1916; --superficie-2: #25221f; --linea: #3a3833; --linea-fuerte: #78746e;
+      --tinta: #ece9e4; --tinta-2: #bbb7af; --acento: #89b1fa; --acento-tinte: #1c2a43; --atencion: #efc558; --falla: #f7755a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  /* Un idioma a la vez: cada frase tiene su par; el que no es del idioma activo sale del árbol. */
+  html[data-lang="es"] body [lang="en"], html[data-lang="en"] body [lang="es"] { display: none; }
+  .lienzo { max-width: 720px; margin: 0 auto; padding: 0 20px 90px; }
+  h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; text-wrap: balance; margin: 0; }
+  p { margin: 0.55em 0; }
+  a { color: var(--acento); }
+  .suave { color: var(--tinta-2); }
+  .chica { font-size: 0.88rem; }
+  .eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tinta-2); }
+  .barra { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 0; }
+  .idioma { font: inherit; font-size: 0.82rem; font-family: ui-monospace, Menlo, monospace; color: var(--tinta); background: var(--superficie);
+    border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+  .idioma:focus-visible, .tarjeta-boton:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+
+  /* E1 · Portada */
+  .portada { min-height: 78svh; display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 36px 0 20px; }
+  .portada h1 { font-size: clamp(2rem, 7vw, 3.1rem); line-height: 1.12; margin: 14px 0 18px; }
+  .portada .promesa { font-size: clamp(1.02rem, 3.2vw, 1.2rem); color: var(--tinta-2); max-width: 36ch; margin: 0 auto; }
+  .baja { margin-top: auto; padding-top: 34px; color: var(--tinta-2); font-size: 0.85rem; }
+  .baja .flecha { display: block; font-size: 1.3rem; margin-top: 6px; }
+
+  /* E2 · El hilo */
+  .seccion { padding-top: 52px; }
+  .seccion > h2 { font-size: 1.65rem; margin-bottom: 6px; }
+  .hilo { position: relative; margin-top: 20px; background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); padding: 14px; }
+  .hilo svg { display: block; width: 100%; height: auto; }
+  .hilo .caja { fill: var(--superficie-2); stroke: var(--linea-fuerte); stroke-width: 1.5; }
+  .hilo .nodo { font: 600 12px system-ui, sans-serif; fill: var(--tinta); }
+  .hilo .traza { fill: none; stroke: var(--acento); stroke-width: 2.5; stroke-linecap: round; }
+  .hilo text[lang] { text-anchor: middle; }
+  /* El hilo en una pantalla estrecha es una lista vertical (el SVG no se lee a 380 px); en una ancha, la lista queda solo para el lector de pantalla. */
+  .hilo-lista { list-style: none; margin: 0; padding: 0; }
+  .hilo-lista li { position: relative; margin: 0 0 16px; padding: 10px 14px; text-align: center; font-weight: 600; font-size: 0.95rem;
+    background: var(--superficie-2); border: 1px solid var(--linea-fuerte); border-radius: 10px; }
+  .hilo-lista li:last-child { margin-bottom: 0; }
+  .hilo-lista li + li::before { content: ""; position: absolute; left: 50%; top: -17px; height: 16px; border-left: 2px solid var(--acento); }
+  .hilo svg { display: none; }
+  @media (min-width: 600px) {
+    .hilo svg { display: block; }
+    .hilo-lista { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  }
+
+  /* E3 · Tarjetas (G2) */
+  .tarjetas { display: grid; gap: 12px; margin-top: 22px; }
+  .tarjeta { background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); overflow: hidden; }
+  .tarjeta[data-estrella] { border-color: var(--linea-fuerte); }
+  .tarjeta-cabeza { margin: 0; font-size: inherit; font-weight: inherit; }
+  .tarjeta-boton { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px; font: inherit; text-align: left; color: inherit;
+    background: none; border: 0; cursor: pointer; }
+  .icono { flex: none; width: 48px; height: 48px; display: grid; place-items: center; background: var(--acento-tinte); color: var(--acento); border-radius: 12px; }
+  .icono svg { width: 26px; height: 26px; }
+  .tarjeta-titulos { flex: 1; min-width: 0; }
+  .tarjeta-titulos .titulo { display: block; font-family: Georgia, serif; font-size: 1.14rem; line-height: 1.3; }
+  .tarjeta-titulos .linea { display: block; margin-top: 2px; font-size: 0.9rem; color: var(--tinta-2); }
+  .chevron { flex: none; color: var(--tinta-2); transition: transform 0.35s var(--asentar); }
+  .tarjeta[data-abierta] .chevron { transform: rotate(180deg); }
+  /* Excepción declarada 2: grid-template-rows en la apertura, con visibility en la transición (lo cerrado sale del árbol de accesibilidad). */
+  .detalle { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--asentar); }
+  .tarjeta[data-abierta] .detalle { grid-template-rows: 1fr; }
+  .detalle-interior { overflow: hidden; visibility: hidden; transition: visibility 0.45s; }
+  .tarjeta[data-abierta] .detalle-interior { visibility: visible; }
+  .detalle-cuerpo { padding: 2px 16px 18px; border-top: 1px solid var(--linea); opacity: 0; transform: translateY(6px);
+    transition: opacity 0.4s ease 0.12s, transform 0.4s var(--asentar) 0.12s; }
+  .tarjeta[data-abierta] .detalle-cuerpo { opacity: 1; transform: none; }
+  .feature { padding: 12px 0; border-top: 1px solid var(--linea); }
+  .feature:first-child { border-top: 0; }
+  .feature h4 { margin: 0; font-size: 1rem; }
+  .feature .como { margin: 4px 0 0; font-size: 0.92rem; color: var(--tinta-2); }
+
+  /* E4 · Clímax: lo que HackGuard se niega a hacer. Texto visible, jamás en un acordeón. */
+  .climax { margin-top: 64px; padding: 34px 22px; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); }
+  .climax h2 { font-size: clamp(1.6rem, 5.4vw, 2.2rem); line-height: 1.15; }
+  .niega { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 14px; }
+  .niega li { padding-left: 16px; border-left: 3px solid var(--acento); }
+  .niega strong { display: block; font-family: Georgia, serif; font-weight: 400; font-size: 1.2rem; line-height: 1.3; }
+  .niega span.porque { color: var(--tinta-2); font-size: 0.93rem; }
+
+  /* E5 · Lo fino */
+  details.fino { background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); padding: 0 16px; margin-top: 10px; }
+  details.fino summary { padding: 14px 0; cursor: pointer; font-weight: 600; list-style-position: inside; }
+  details.fino[open] summary { border-bottom: 1px solid var(--linea); }
+  details.fino .cuerpo { padding: 10px 0 14px; }
+  details.fino ul { margin: 0; padding-left: 1.1em; }
+  details.fino li { margin: 6px 0; }
+  footer { margin-top: 46px; padding-top: 16px; border-top: 1px solid var(--linea); }
+
+  /* G3 · entrada: solo transform y opacidad. El h1 sube sin desvanecerse (es el candidato LCP: opacidad siempre 1). */
+  @media (prefers-reduced-motion: no-preference) {
+    .revela { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s var(--asentar); }
+    .revela.visto { opacity: 1; transform: none; }
+    .tarjetas .revela:nth-child(2) { transition-delay: 0.07s; }
+    .tarjetas .revela:nth-child(3) { transition-delay: 0.14s; }
+    .tarjetas .revela:nth-child(4) { transition-delay: 0.21s; }
+    .niega.revela li:first-child { transition-delay: 0s; }
+    .portada h1 { animation: alzar-pintado 0.9s var(--asentar) both; }
+    .portada .promesa { animation: alzar 0.9s var(--asentar) 0.25s both; }
+    @keyframes alzar-pintado { from { transform: translateY(20px); } }
+    @keyframes alzar { from { opacity: 0; transform: translateY(20px); } }
+    /* Excepción declarada 1: el hilo se dibuja una vez (stroke-dashoffset sobre un SVG decorativo). */
+    .hilo.visto .traza { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dibujar 1.4s var(--asentar) 0.2s forwards; }
+    @keyframes dibujar { to { stroke-dashoffset: 0; } }
+  }
+  /* Movimiento reducido: la misma pieza, quieta y completa (un e2e lo verifica activamente). */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .revela { opacity: 1; transform: none; }
+    .detalle, .detalle-interior, .detalle-cuerpo, .chevron { transition: none; }
+  }
+  @media print { .revela { opacity: 1; transform: none; transition: none; } .barra, .baja { display: none; } .detalle { grid-template-rows: 1fr; } .detalle-interior { visibility: visible; } .detalle-cuerpo { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<main class="lienzo">
+
+  <div class="barra">
+    <span class="eyebrow">HackGuard</span>
+    <button class="idioma" type="button" id="idioma" aria-label="ES · Cambiar el idioma a inglés">
+      <span lang="es">ES</span><span lang="en">EN</span>
+    </button>
+  </div>
+
+  <!-- E1 · Portada -->
+  <header class="portada">
+    <h1><span lang="es">Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.</span><span lang="en">A finding is not a vulnerability: it is proof that a control fails.</span></h1>
+    <p class="promesa" lang="es">Un cuaderno de pruebas de seguridad para tus apps con IA: qué probaste, qué esperabas, qué obtuviste y qué te falta. Tú corres las pruebas; HackGuard guarda la evidencia y mide la brecha.</p><p class="promesa" lang="en">A security test notebook for your AI apps: what you tested, what you expected, what you got and what is missing. You run the tests; HackGuard keeps the evidence and measures the gap.</p>
+    <p class="baja"><span lang="es">Recórrelo capa por capa — cada tarjeta se abre solo si tú quieres</span><span lang="en">Go through it layer by layer — each card opens only if you want it to</span><span class="flecha" aria-hidden="true">↓</span></p>
+  </header>
+
+  <!-- E2 · El hilo -->
+  <section class="seccion" aria-labelledby="t-hilo">
+    <h2 id="t-hilo" class="revela"><span lang="es">Todo queda atado</span><span lang="en">Everything stays tied together</span></h2>
+    <p class="suave revela" lang="es">Cada prueba trae su marco y su versión, y —cuando se puede— el control de ISO/IEC 42001 al que le da evidencia. Lo que se confirma lleva huella; lo que falla abre un hallazgo; solo una re-prueba lo cierra.</p><p class="suave revela" lang="en">Every test carries its framework and version and — when possible — the ISO/IEC 42001 control it gives evidence to. What is confirmed carries a fingerprint; what fails opens a finding; only a re-test closes it.</p>
+    <div class="hilo revela" id="hilo">
+      <svg viewBox="0 0 700 120" aria-hidden="true" focusable="false">
+        <g>
+          <path class="traza" pathLength="1" d="M70 60 H630"/>
+          <g class="caja-grupo">
+            <rect class="caja" x="10" y="34" width="120" height="52" rx="10"/><rect class="caja" x="150" y="34" width="120" height="52" rx="10"/><rect class="caja" x="290" y="34" width="120" height="52" rx="10"/>
+            <rect class="caja" x="430" y="34" width="120" height="52" rx="10"/><rect class="caja" x="570" y="34" width="120" height="52" rx="10"/>
+          </g>
+          <text class="nodo" lang="es" x="70" y="64">Prueba</text><text class="nodo" lang="en" x="70" y="64">Test</text>
+          <text class="nodo" lang="es" x="210" y="58">Marco</text><text class="nodo" lang="es" x="210" y="74">con versión</text>
+          <text class="nodo" lang="en" x="210" y="58">Framework</text><text class="nodo" lang="en" x="210" y="74">+ version</text>
+          <text class="nodo" lang="es" x="350" y="58">Control</text><text class="nodo" lang="es" x="350" y="74">ISO/IEC 42001</text>
+          <text class="nodo" lang="en" x="350" y="58">Control</text><text class="nodo" lang="en" x="350" y="74">ISO/IEC 42001</text>
+          <text class="nodo" lang="es" x="490" y="58">Evidencia</text><text class="nodo" lang="es" x="490" y="74">con huella</text>
+          <text class="nodo" lang="en" x="490" y="58">Fingerprinted</text><text class="nodo" lang="en" x="490" y="74">evidence</text>
+          <text class="nodo" lang="es" x="630" y="58">Cierre por</text><text class="nodo" lang="es" x="630" y="74">re-prueba</text>
+          <text class="nodo" lang="en" x="630" y="58">Closed by</text><text class="nodo" lang="en" x="630" y="74">re-test</text>
+        </g>
+      </svg>
+      <ol class="hilo-lista">
+        <li><span lang="es">Prueba</span><span lang="en">Test</span></li>
+        <li><span lang="es">Marco con versión</span><span lang="en">Framework + version</span></li>
+        <li><span lang="es">Control de ISO/IEC 42001</span><span lang="en">ISO/IEC 42001 control</span></li>
+        <li><span lang="es">Evidencia con huella</span><span lang="en">Fingerprinted evidence</span></li>
+        <li><span lang="es">Cierre por re-prueba</span><span lang="en">Closed by re-test</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- E3 · Qué hace -->
+  <section class="seccion" aria-labelledby="t-quehace">
+    <h2 id="t-quehace" class="revela"><span lang="es">Qué hace</span><span lang="en">What it does</span></h2>
+    <p class="suave revela"><strong><span lang="es" data-cifra="funcionalidades">18</span><span lang="en" data-cifra="funcionalidades">18</span></strong> <span lang="es">funciones en cuatro tarjetas; cada una se explica al abrirla.</span><span lang="en">functions in four cards; each one is explained when you open it.</span></p>
+    <div class="tarjetas">
+      <article class="tarjeta revela" data-estrella="">
+        <h3 class="tarjeta-cabeza">
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="d1">
+            <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h4" /></svg></span>
+            <span class="tarjeta-titulos"><span class="titulo" id="ti1"><span lang="es">Un catálogo que no miente</span><span lang="en">A catalog that does not lie</span></span><span class="linea"><span lang="es">Lo que HackGuard sabe vive como dato con versión y con huella.</span><span lang="en">What HackGuard knows lives as data with a version and a fingerprint.</span></span></span>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="detalle" id="d1">
+          <div class="detalle-interior" role="region" aria-labelledby="ti1"><div class="detalle-cuerpo"><div class="feature" data-feature="F01"><h4><span lang="es">Pruebas que no entran a medias</span><span lang="en">Tests that do not get in half-done</span></h4><p class="como" lang="es">Cada prueba llega con su marco y versión, su resultado esperado, su regla de veredicto y cuándo aplica; si es sobre un sistema que varía entre corridas, con cuántas repeticiones. Lo incompleto se rechaza al cargar, con 61 reglas con nombre y severidad.</p><p class="como" lang="en">Every test arrives with its framework and version, its expected result, its verdict rule and when it applies; if it targets a system that varies between runs, with how many repetitions. Anything incomplete is rejected on load, by 61 named rules.</p></div><div class="feature" data-feature="F02"><h4><span lang="es">Un filtro que marca, nunca censura</span><span lang="en">A filter that flags, never censors</span></h4><p class="como" lang="es">Si el texto de una prueba parece describir cómo atacar en vez de qué verificar, queda marcado para que una persona decida. Nombrar una técnica o un módulo de una herramienta nunca es motivo de marca.</p><p class="como" lang="en">If a test&#x27;s text looks like it describes how to attack instead of what to verify, it is flagged for a person to decide. Naming a technique or a tool module is never a reason to flag.</p></div><div class="feature" data-feature="F03"><h4><span lang="es">Semáforo de vigencia que se lee sin color</span><span lang="en">A freshness light you can read without colour</span></h4><p class="como" lang="es">Cada prueba, marco, familia y herramienta muestra cuánto lleva sin revisarse, con símbolo, texto y color; la fecha de consulta es una entrada del build, nunca el reloj.</p><p class="como" lang="en">Every test, framework, family and tool shows how long it has gone without review, with symbol, text and colour; the query date is an input of the build, never the clock.</p></div><div class="feature" data-feature="F04"><h4><span lang="es">Memoria entre versiones de un marco</span><span lang="en">Memory across framework versions</span></h4><p class="como" lang="es">Cuando un marco se renumera, los hallazgos viejos siguen apuntando a la entrada correcta mediante un mapa de equivalencias; una referencia sin versión no se acepta y cada versión del catálogo queda congelada con huella.</p><p class="como" lang="en">When a framework is renumbered, old findings keep pointing to the right entry through an equivalence map; a reference without a version is not accepted and each catalog version is frozen with a fingerprint.</p></div><div class="feature" data-feature="F05"><h4><span lang="es">Los controles de ISO/IEC 42001 en palabras propias</span><span lang="en">ISO/IEC 42001 controls in your own words</span></h4><p class="como" lang="es">La estructura del Anexo A con resúmenes propios, nunca el texto de la norma, y para cada control qué pruebas lo cubren; una prueba sin control se acepta pero su deuda se ve.</p><p class="como" lang="en">The structure of Annex A with our own summaries, never the standard&#x27;s text, and for each control which tests cover it; a test with no control is accepted, but its debt is visible.</p></div><div class="feature" data-feature="F06"><h4><span lang="es">La familia que nadie prueba todavía</span><span lang="en">The family nobody tests yet</span></h4><p class="como" lang="es">Los modelos de decisión tipados, con un activo demo propio que imita el contrato de un producto real: calibración, cruce de umbral, paridad español/inglés y «válido pero equivocado».</p><p class="como" lang="en">Typed decision models, with a demo asset of our own that imitates the contract of a real product: calibration, threshold crossing, Spanish/English parity and “valid but wrong”.</p></div><div class="feature" data-feature="F07"><h4><span lang="es">Un investigador que propone con pruebas</span><span lang="en">A researcher that proposes with evidence</span></h4><p class="como" lang="es">A demanda, una skill de Claude Code busca pruebas nuevas, versiones de marcos y retiros; ninguna fuente llega a tus ojos sin que el código verifique que existe y dice lo que se cita. Tú apruebas.</p><p class="como" lang="en">On demand, a Claude Code skill looks for new tests, framework versions and retirements; no source reaches your eyes until the code verifies that it exists and says what is quoted. You approve.</p></div>
+          </div></div>
+        </div>
+      </article>
+      <article class="tarjeta revela">
+        <h3 class="tarjeta-cabeza">
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="d2">
+            <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6l2 2 3-3M5 13l2 2 3-3M13 7h6M13 14h6M5 20h14" /></svg></span>
+            <span class="tarjeta-titulos"><span class="titulo" id="ti2"><span lang="es">Un plan que explica</span><span lang="en">A plan that explains itself</span></span><span class="linea"><span lang="es">Tu app como activo y un plan que dice por qué cada prueba entra o sale.</span><span lang="en">Your app as an asset and a plan that says why each test comes in or stays out.</span></span></span>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="detalle" id="d2">
+          <div class="detalle-interior" role="region" aria-labelledby="ti2"><div class="detalle-cuerpo"><div class="feature" data-feature="F08"><h4><span lang="es">Tu app, descrita como activo</span><span lang="en">Your app, described as an asset</span></h4><p class="como" lang="es">Tipo, exposición, datos y modelos que consume, con el dueño y el proveedor separados y el alcance autorizado y las reglas de enfrentamiento declarados antes de cualquier plan: sin ellos no hay plan.</p><p class="como" lang="en">Type, exposure, data and models it consumes, with owner and provider kept apart and the authorized scope and rules of engagement declared before any plan: without them there is no plan.</p></div><div class="feature" data-feature="F09"><h4><span lang="es">Un planificador que explica cada decisión</span><span lang="en">A planner that explains every decision</span></h4><p class="como" lang="es">Cruza el activo con el catálogo y dice qué pruebas entran, cuáles salen y por qué, con qué prioridad, con qué herramienta gratuita y qué cobertura esperar por control. Mismo activo, mismo catálogo, mismo plan.</p><p class="como" lang="en">It crosses the asset with the catalog and says which tests come in, which stay out and why, with what priority, with which free tool and what coverage to expect per control. Same asset, same catalog, same plan.</p></div><div class="feature" data-feature="F10"><h4><span lang="es">El paquete para correr afuera</span><span lang="en">The package to run elsewhere</span></h4><p class="como" lang="es">Herramienta, versión mínima, entorno, configuración declarativa, límites y resultado esperado; nunca una carga. HackGuard no ejecuta pruebas: tú las corres con tus herramientas.</p><p class="como" lang="en">Tool, minimum version, environment, declarative configuration, limits and expected result; never a payload. HackGuard does not run tests: you run them with your own tools.</p></div>
+          </div></div>
+        </div>
+      </article>
+      <article class="tarjeta revela" data-estrella="">
+        <h3 class="tarjeta-cabeza">
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="d3">
+            <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9c-4-1.5-7-4.5-7-9V6z M9 12l2.5 2.5L15.5 10" /></svg></span>
+            <span class="tarjeta-titulos"><span class="titulo" id="ti3"><span lang="es">Evidencia que firmas tú</span><span lang="en">Evidence you sign</span></span><span class="linea"><span lang="es">Nada cuenta sin tu confirmación, y un hallazgo solo cierra con una re-prueba.</span><span lang="en">Nothing counts without your confirmation, and a finding closes only with a re-test.</span></span></span>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="detalle" id="d3">
+          <div class="detalle-interior" role="region" aria-labelledby="ti3"><div class="detalle-cuerpo"><div class="feature" data-feature="F11"><h4><span lang="es">Un libro de evidencia que una persona firma</span><span lang="en">An evidence ledger a person signs</span></h4><p class="como" lang="es">Los resultados entran por el archivo nativo de la herramienta o a mano, y nada cuenta sin confirmación, individual o por lote con una muestra que tú revisas. El crudo nunca entra al almacén: solo su huella y un extracto.</p><p class="como" lang="en">Results come in through the tool&#x27;s native file or by hand, and nothing counts without confirmation, one by one or as a batch with a sample you review. The raw output never enters the store: only its fingerprint and an excerpt.</p></div><div class="feature" data-feature="F12"><h4><span lang="es">Hallazgos que solo cierran con re-prueba</span><span lang="en">Findings that close only with a re-test</span></h4><p class="como" lang="es">Abierto, corregido, re-probado, cerrado, con plazos de 7, 30 y 90 días según severidad y vencidos visibles; que un hallazgo desaparezca de un escaneo posterior no lo cierra.</p><p class="como" lang="en">Open, fixed, re-tested, closed, with 7, 30 and 90-day deadlines by severity and overdue ones in plain sight; a finding that disappears from a later scan is not closed.</p></div><div class="feature" data-feature="F13"><h4><span lang="es">Severidad que un auditor puede reproducir</span><span lang="en">Severity an auditor can reproduce</span></h4><p class="como" lang="es">CVSS 4.0 contra la referencia fijada de FIRST para el software; para la IA, una tabla de prioridad que mira primero el impacto, nunca una suma.</p><p class="como" lang="en">CVSS 4.0 against FIRST&#x27;s pinned reference for software; for AI, a priority table that looks at impact first, never a sum.</p></div><div class="feature" data-feature="F14"><h4><span lang="es">Garak y ZAP hablan tu idioma</span><span lang="en">Garak and ZAP speak your language</span></h4><p class="como" lang="es">Adaptadores que convierten sus reportes nativos en sobres con veredicto sugerido por la regla; cuando ZAP no puede demostrar que una regla corrió, se dice «no ejecutada», no «superada».</p><p class="como" lang="en">Adapters that turn their native reports into envelopes with a verdict suggested by the rule; when ZAP cannot prove a rule ran, it says “not run”, not “passed”.</p></div><div class="feature" data-feature="F15"><h4><span lang="es">Un extractor para lo que pegas</span><span lang="en">An extractor for what you paste</span></h4><p class="como" lang="es">Una skill de Claude Code propone a qué prueba del plan corresponde un texto, con citas literales que el código verifica; el veredicto lo calcula la regla y tú confirmas.</p><p class="como" lang="en">A Claude Code skill proposes which test in the plan a text belongs to, with literal quotes the code verifies; the rule computes the verdict and you confirm.</p></div>
+          </div></div>
+        </div>
+      </article>
+      <article class="tarjeta revela" data-estrella="">
+        <h3 class="tarjeta-cabeza">
+          <button class="tarjeta-boton" type="button" aria-expanded="false" aria-controls="d4">
+            <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M10 20V4M15 20v-7M20 20V8" /></svg></span>
+            <span class="tarjeta-titulos"><span class="titulo" id="ti4"><span lang="es">La brecha, control por control</span><span lang="en">The gap, control by control</span></span><span class="linea"><span lang="es">Lo esperado contra lo obtenido, y el instrumento que se prueba a sí mismo.</span><span lang="en">Expected against obtained, and the instrument that tests itself.</span></span></span>
+            <svg class="chevron" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </h3>
+        <div class="detalle" id="d4">
+          <div class="detalle-interior" role="region" aria-labelledby="ti4"><div class="detalle-cuerpo"><div class="feature" data-feature="F16"><h4><span lang="es">Lo esperado contra lo obtenido</span><span lang="en">Expected against obtained</span></h4><p class="como" lang="es">Por prueba, familia y control: planeadas, ejecutadas, superadas, fallidas, no ejecutadas; «no detectado» nunca se disfraza de «verificado». Con alertas de catálogo vencido, marcos nuevos y evidencia vieja, y un informe imprimible.</p><p class="como" lang="en">By test, family and control: planned, run, passed, failed, not run; “not detected” is never dressed up as “verified”. With alerts for an out-of-date catalog, new framework versions and old evidence, and a printable report.</p></div><div class="feature" data-feature="F17"><h4><span lang="es">La vista por control</span><span lang="en">The per-control view</span></h4><p class="como" lang="es">Para cada control de ISO/IEC 42001: qué pruebas lo cubren, qué evidencia existe y de qué fecha, qué falló y la cadena hallazgo → corrección → re-prueba.</p><p class="como" lang="en">For each ISO/IEC 42001 control: which tests cover it, what evidence exists and from when, what failed and the whole chain finding → fix → re-test.</p></div><div class="feature" data-feature="F18"><h4><span lang="es">El instrumento se prueba a sí mismo</span><span lang="en">The instrument tests itself</span></h4><p class="como" lang="es">Semillas inválidas que deben rechazarse, contenido que debe marcarse y cierres que deben negarse; si algo falla, ninguna instantánea ni paquete se publica.</p><p class="como" lang="en">Invalid seeds that must be rejected, content that must be flagged and closures that must be refused; if anything fails, no snapshot or package is published.</p></div>
+          </div></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- E4 · Clímax: lo que HackGuard se niega a hacer -->
+  <section class="climax revela" aria-labelledby="t-niega">
+    <p class="eyebrow"><span lang="es">La promesa mayor</span><span lang="en">The bigger promise</span></p>
+    <h2 id="t-niega"><span lang="es">Lo que HackGuard se niega a hacer</span><span lang="en">What HackGuard refuses to do</span></h2>
+    <ul class="niega">
+      <li><strong><span lang="es">No ejecuta tus pruebas.</span><span lang="en">It does not run your tests.</span></strong><span class="porque"><span lang="es">Las corres tú, afuera, con herramientas abiertas; aquí llega el resultado como evidencia que una persona confirma.</span><span lang="en">You run them, elsewhere, with open tools; the result arrives here as evidence a person confirms.</span></span></li>
+      <li><strong><span lang="es">No certifica cumplimiento.</span><span lang="en">It does not certify compliance.</span></strong><span class="porque"><span lang="es">Da evidencia control por control, con su fecha y su huella; no un sello.</span><span lang="en">It gives evidence control by control, with its date and fingerprint; not a seal.</span></span></li>
+      <li><strong><span lang="es">No decide un veredicto por ti.</span><span lang="en">It does not decide a verdict for you.</span></strong><span class="porque"><span lang="es">La IA propone, el código verifica las fuentes y las citas, la regla de la prueba calcula el veredicto y tú confirmas.</span><span lang="en">The AI proposes, the code verifies the sources and quotes, the test's rule computes the verdict, and you confirm.</span></span></li>
+      <li><strong><span lang="es">No cierra un hallazgo porque dejó de aparecer.</span><span lang="en">It does not close a finding because it stopped showing up.</span></strong><span class="porque"><span lang="es">Solo una re-prueba válida, con la misma configuración, lo cierra.</span><span lang="en">Only a valid re-test, with the same configuration, closes it.</span></span></li>
+    </ul>
+  </section>
+
+  <!-- E5 · Lo fino -->
+  <section class="seccion" aria-labelledby="t-fino">
+    <h2 id="t-fino" class="revela"><span lang="es">Los detalles finos</span><span lang="en">The fine print</span></h2>
+    <details class="fino revela">
+      <summary><span lang="es">Las cifras, con su fuente</span><span lang="en">The figures, with their source</span></summary>
+      <div class="cuerpo chica"><ul><li><strong><span lang="es" data-cifra="pruebas_en_el_catalogo">38</span><span lang="en" data-cifra="pruebas_en_el_catalogo">38</span></strong> <span lang="es">pruebas en el catálogo</span><span lang="en">tests in the catalog</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">medido</span><span lang="en">measured</span></span></li><li><strong><span lang="es" data-cifra="controles_iso_42001">38</span><span lang="en" data-cifra="controles_iso_42001">38</span></strong> <span lang="es">controles de ISO/IEC 42001 (resúmenes propios, sin contrastar aún con la norma)</span><span lang="en">ISO/IEC 42001 controls (own summaries, not yet checked against the standard)</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">medido</span><span lang="en">measured</span></span></li><li><strong><span lang="es" data-cifra="marcos_de_referencia">14</span><span lang="en" data-cifra="marcos_de_referencia">14</span></strong> <span lang="es">marcos de referencia, cada uno con su versión</span><span lang="en">reference frameworks, each with its version</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">medido</span><span lang="en">measured</span></span></li><li><strong><span lang="es" data-cifra="pruebas_automaticas">4.370</span><span lang="en" data-cifra="pruebas_automaticas">4,370</span></strong> <span lang="es">pruebas automáticas de la propia app (unitarias y de extremo a extremo)</span><span lang="en">automated tests of the app itself (unit and end-to-end)</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">medido</span><span lang="en">measured</span></span></li><li><strong><span lang="es" data-cifra="cobertura_lineas">97,53</span><span lang="en" data-cifra="cobertura_lineas">97.53</span></strong> <span lang="es">% de líneas cubiertas por esas pruebas</span><span lang="en">% of lines covered by those tests</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">medido</span><span lang="en">measured</span></span></li><li><strong><span lang="es" data-cifra="costo_operacion_mensual">0</span><span lang="en" data-cifra="costo_operacion_mensual">0</span></strong> <span lang="es">dólares al mes de costo de operación</span><span lang="en">dollars a month to run</span> <span class="suave chica">· <span lang="es">fuente</span><span lang="en">source</span>: <span lang="es">declarado</span><span lang="en">declared</span></span></li></ul>
+        <p lang="es">Se miden con un comando al cerrar cada hito; ninguna se escribe a mano. Las cifras de un activo demo demuestran que las métricas funcionan, no miden un sistema real.</p><p lang="en">They are measured with a command at the close of each milestone; none is written by hand. Figures about a demo asset show the metrics work; they do not measure a real system.</p></div>
+    </details>
+    <details class="fino revela">
+      <summary><span lang="es">Requisitos y límites</span><span lang="en">Requirements and limits</span></summary>
+      <div class="cuerpo chica">
+        <p lang="es">Las pantallas funcionan en un navegador moderno, en español y en inglés, en escritorio y en un teléfono de 380 píxeles. La línea de comandos pide Node 22 o superior. Hoy trabaja sobre activos demo sintéticos: la evidencia de un activo real vive fuera del repositorio y su uso real es el siguiente paso. Los resúmenes de los controles de ISO/IEC 42001 son propios y todavía no se contrastan con el texto de la norma.</p><p lang="en">The screens work in a modern browser, in Spanish and in English, on a desktop and on a 380-pixel phone. The command line needs Node 22 or later. Today it works on synthetic demo assets: a real asset's evidence lives outside the repository and real use is the next step. The summaries of the ISO/IEC 42001 controls are our own and are not yet checked against the text of the standard.</p></div>
+    </details>
+    <details class="fino revela">
+      <summary><span lang="es">Privacidad</span><span lang="en">Privacy</span></summary>
+      <div class="cuerpo chica">
+        <p lang="es">Es una web estática: sin backend, sin base de datos, sin cuentas y sin ninguna IA en tiempo de ejecución. La IA vive fuera: dos skills de Claude Code que corres tú, a demanda, y que solo escriben propuestas en una carpeta. Nunca guarda cargas ni procedimientos para atacar, ni prueba infraestructura de terceros.</p><p lang="en">It is a static website: no backend, no database, no accounts and no AI at run time. The AI lives outside: two Claude Code skills that you run, on demand, which only write proposals into a folder. It never stores payloads or attack procedures, and never tests third-party infrastructure.</p></div>
+    </details>
+    <details class="fino revela">
+      <summary><span lang="es">Mapa de la app — a dónde lleva cada ruta</span><span lang="en">Map of the app — where each route leads</span></summary>
+      <div class="cuerpo chica"><ul><li><a href="/tablero"><span lang="es">Tablero</span><span lang="en">Dashboard</span></a> — <span lang="es">lo que pide atención hoy y cómo va cada activo</span><span lang="en">what needs attention today and how each asset is doing</span></li><li><a href="/catalogo"><span lang="es">Catálogo de pruebas</span><span lang="en">Test catalog</span></a> — <span lang="es">las 38 pruebas, con filtros y su semáforo de vigencia</span><span lang="en">the 38 tests, with filters and their freshness light</span></li><li><a href="/catalogo/marcos"><span lang="es">Marcos y versiones</span><span lang="en">Frameworks and versions</span></a> — <span lang="es">14 marcos con su versión y su mapa de equivalencias</span><span lang="en">14 frameworks with their version and equivalence map</span></li><li><a href="/catalogo/controles"><span lang="es">Controles</span><span lang="en">Controls</span></a> — <span lang="es">el Anexo A de ISO/IEC 42001 y las pruebas que cubren cada control</span><span lang="en">Annex A of ISO/IEC 42001 and the tests covering each control</span></li><li><a href="/catalogo/propuestas"><span lang="es">Bandeja de propuestas</span><span lang="en">Proposal inbox</span></a> — <span lang="es">lo que proponen el investigador y el extractor, por decidir</span><span lang="en">what the researcher and the extractor propose, to decide</span></li><li><a href="/activos/act-demo-asistente"><span lang="es">Activo y plan</span><span lang="en">Asset and plan</span></a> — <span lang="es">un activo demo, su alcance autorizado y su plan de pruebas</span><span lang="en">a demo asset, its authorized scope and its test plan</span></li><li><a href="/evidencia/carga"><span lang="es">Carga de evidencia</span><span lang="en">Evidence intake</span></a> — <span lang="es">los lotes de Garak y ZAP y su revisión</span><span lang="en">the Garak and ZAP batches and their review</span></li><li><a href="/evidencia/hallazgos/HZ-0007"><span lang="es">Hallazgos</span><span lang="en">Findings</span></a> — <span lang="es">la cadena hallazgo → corrección → re-prueba → cierre</span><span lang="en">the chain finding → fix → re-test → closure</span></li><li><a href="/brecha"><span lang="es">Brecha</span><span lang="en">Gap</span></a> — <span lang="es">lo esperado contra lo obtenido en todos los activos</span><span lang="en">expected against obtained across all assets</span></li><li><a href="/brecha/control"><span lang="es">Vista por control</span><span lang="en">Control view</span></a> — <span lang="es">para cada control, qué lo cubre y qué evidencia hay</span><span lang="en">for each control, what covers it and what evidence exists</span></li><li><a href="/brecha/informe"><span lang="es">Informe</span><span lang="en">Report</span></a> — <span lang="es">el informe de brecha, imprimible</span><span lang="en">the gap report, printable</span></li></ul></div>
+    </details>
+  </section>
+
+  <footer class="revela">
+    <p class="chica suave"><span lang="es">Este recorrido cubre las</span><span lang="en">This walkthrough covers all</span> <strong><span lang="es" data-cifra="funcionalidades">18</span><span lang="en" data-cifra="funcionalidades">18</span></strong> <span lang="es">funcionalidades de HackGuard, todas, agrupadas para que las descubras a tu ritmo. El conteo cuadra con el manual de uso del repositorio y con las funciones del primer corte de la visión.</span><span lang="en">functions of HackGuard, all of them, grouped so you can discover them at your own pace. The count matches the repository's user manual and the first cut of the vision.</span></p>
+    <details class="chica">
+      <summary><span lang="es">Historial del brochure</span><span lang="en">Brochure history</span></summary>
+      <ul>
+        <li><strong>S9 · 2026-10-13:</strong> <span lang="es">primera versión, con las 18 funciones del primer corte repartidas en cuatro tarjetas.</span><span lang="en">first version, with the 18 functions of the first cut spread over four cards.</span></li>
+      </ul>
+    </details>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var raiz = document.documentElement;
+  var CLAVE = "hackguard:idioma";
+  try {
+    var guardado = window.localStorage.getItem(CLAVE);
+    if (guardado === "es" || guardado === "en") { raiz.setAttribute("data-lang", guardado); raiz.setAttribute("lang", guardado); }
+  } catch (e) {}
+  var boton = document.getElementById("idioma");
+  function etiquetar() {
+    boton.setAttribute("aria-label", raiz.getAttribute("data-lang") === "en" ? "EN · Switch the language to Spanish" : "ES · Cambiar el idioma a inglés");
+  }
+  etiquetar();
+  boton.addEventListener("click", function () {
+    var siguiente = raiz.getAttribute("data-lang") === "en" ? "es" : "en";
+    raiz.setAttribute("data-lang", siguiente); raiz.setAttribute("lang", siguiente);
+    try { window.localStorage.setItem(CLAVE, siguiente); } catch (e) {}
+    etiquetar();
+  });
+  document.querySelectorAll(".tarjeta-boton").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tarjeta = btn.closest(".tarjeta");
+      var abierta = tarjeta.hasAttribute("data-abierta");
+      if (abierta) tarjeta.removeAttribute("data-abierta"); else tarjeta.setAttribute("data-abierta", "");
+      btn.setAttribute("aria-expanded", String(!abierta));
+    });
+  });
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("visto"); obs.unobserve(e.target); } });
+    }, { threshold: 0 });
+    document.querySelectorAll(".revela").forEach(function (el) { obs.observe(el); });
+  } else {
+    document.querySelectorAll(".revela").forEach(function (el) { el.classList.add("visto"); });
+  }
+})();
+</script>
+</body>
+</html>

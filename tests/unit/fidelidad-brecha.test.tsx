@@ -231,7 +231,7 @@ describe("fidelidad de la página de un control contra control-iso42001-a-6-2-4.
       prod.querySelectorAll(dentroDe(".hg-selector .hg-opcion")).length,
     ).toBe(8);
     expect(
-      prod.querySelectorAll(dentroDe('.hg-selector [aria-current="true"]'))
+      prod.querySelectorAll(dentroDe('.hg-selector [aria-current="page"]'))
         .length,
     ).toBe(1);
   });

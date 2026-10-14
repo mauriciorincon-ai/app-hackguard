@@ -84,6 +84,47 @@ describe("semillas de cierre (C18 · RF-10.3 · E-6)", () => {
     expect(correrSemilla(engañosa, BASE).pasa).toBe(false);
   });
 
+  it("una semilla con un sobre fechado después de la consulta no mata el build: sale en rojo con su motivo (S7-B2)", () => {
+    const original = manifiesto.semillas.find(
+      (s) => s.id === "CIERRE-REPRUEBA-NO-EJECUTADA",
+    )!;
+    const tarde = SemillaDeCierre.parse({
+      ...original,
+      sobres: [
+        {
+          id: original.sobres[0]!.id,
+          cambios: { ...original.sobres[0]!.cambios, fecha: "2099-01-01" },
+        },
+      ],
+    });
+    const r = correrSemilla(tarde, BASE);
+    expect(r.pasa).toBe(false);
+    expect(r.diferencias[0]).toContain("la brecha no se pudo armar");
+    // Y el instrumento entero lo cuenta como una comprobación que no pasó, en vez de lanzar.
+    const todas = validarInstrumento([tarde], BASE);
+    expect(todas[0]!.obtenidas).toBe(0);
+  });
+
+  // S9-E-B8: solo la entrada que la brecha no puede armar es una «diferencia»; un RangeError ajeno (p. ej. un desbordamiento de pila)
+  // no se disfraza de diferencia de la semilla: sube.
+  it("un RangeError ajeno a la entrada de la brecha no se traga como una diferencia de la semilla", () => {
+    const semilla = manifiesto.semillas[0]!;
+    const base = {
+      ...BASE,
+      umbrales: new Proxy(
+        {},
+        {
+          get: () => {
+            throw new RangeError("Maximum call stack size exceeded");
+          },
+        },
+      ),
+    } as unknown as typeof BASE;
+    expect(() => correrSemilla(semilla, base)).toThrow(
+      "Maximum call stack size exceeded",
+    );
+  });
+
   it("una semilla que apunta a un campo o a un sobre que no existe es un error, no un verde", () => {
     const base = manifiesto.semillas[1]!;
     expect(() =>

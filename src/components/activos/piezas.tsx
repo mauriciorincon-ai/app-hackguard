@@ -59,7 +59,7 @@ export function SelectorDeActivos({
               href={
                 hacia === "plan" ? `/activos/${a.id}/plan` : `/activos/${a.id}`
               }
-              aria-current={a.actual ? "true" : undefined}
+              aria-current={a.actual ? "page" : undefined}
             >
               <span className="hg-opcion-nombre">
                 <T t={a.nombre} />

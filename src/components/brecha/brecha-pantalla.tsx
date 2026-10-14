@@ -43,7 +43,7 @@ export function BrechaPantalla({ v }: { v: VistaDeBrecha }) {
   const total = v.filas.length;
   const coincide = (f: FilaDeEsperadoObtenido) =>
     (activo === "" || f.activo.id === activo) &&
-    (veredicto === "" || f.veredictoId === veredicto);
+    (veredicto === "" || f.filtroId === veredicto);
   const visibles = v.filas.filter(coincide).length;
   const hayFiltro = activo !== "" || veredicto !== "";
 

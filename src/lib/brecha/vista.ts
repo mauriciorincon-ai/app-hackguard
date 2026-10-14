@@ -9,7 +9,10 @@ import {
   type ControlDeBrecha,
   type FilaDeBrecha,
 } from "../../engine/brecha/calcular.ts";
-import { ESTADOS_DE_CONTROL } from "../../engine/brecha/esquemas.ts";
+import {
+  ESTADOS_DE_CONTROL,
+  type IdDeTextoDeBrecha,
+} from "../../engine/brecha/esquemas.ts";
 import { estadoDeVigencia } from "../../engine/catalogo/semaforo.ts";
 import { diasEntre } from "../../engine/fecha.ts";
 import { ESTADOS_DE_HALLAZGO } from "../../engine/hallazgos/esquemas.ts";
@@ -81,10 +84,20 @@ function estadoDeMarcos(
       etiqueta: k.prop("vacio"),
       corrida: investigacion.corrida,
       fecha: investigacion.fecha,
+      leidas: investigacion.leidas,
+      noLeidas: investigacion.noLeidas,
     };
   return { tipo: "sin_registro", etiqueta: k.prop("sin_registro") };
 }
-const VEREDICTOS_DEL_FILTRO = ["superada", "fallida", "no_ejecutada"] as const;
+const VEREDICTOS_DEL_FILTRO = [
+  "superada",
+  "fallida",
+  "no_ejecutada",
+  "no_aplicable",
+] as const;
+/** La opción del filtro «Veredicto» a la que pertenece una fila: las parciales cuentan como fallidas, igual que en las cifras (ADR-010 §2). */
+export const filtroDeVeredicto = (veredicto: string): string =>
+  veredicto === "parcial" ? "fallida" : veredicto;
 /** El orden en que el informe cuenta los hallazgos por estado. */
 const ORDEN_DE_ESTADO = [
   "abierto",
@@ -105,6 +118,7 @@ function contexto(m: MundoDeBrecha) {
     etiqueta(c, vocabulario, id);
   const prop = (id: Parameters<typeof etiquetaDeBrecha>[1]): Etiqueta =>
     etiquetaDeBrecha(m.etiquetas, id);
+  const texto = (id: IdDeTextoDeBrecha): Bilingue => m.etiquetas.textos[id];
 
   const datos = {
     escala: m.evidencia.escala,
@@ -171,7 +185,6 @@ function contexto(m: MundoDeBrecha) {
       id,
       titulo: hallazgo(id).titulo,
       severidad: et("severidad", s.severidad.nivel),
-      nivel: s.severidad.nivel,
       estado: et("estado_de_hallazgo", s.evaluacion.estado),
       estadoId: s.evaluacion.estado,
     };
@@ -194,6 +207,7 @@ function contexto(m: MundoDeBrecha) {
     b,
     et,
     prop,
+    texto,
     sit,
     hallazgo,
     sobre,
@@ -267,6 +281,7 @@ function alertasDe(
       id: prueba,
       tipo: k.prop("ficha_vencida"),
       prueba: { id: prueba, nombre: p.nombre },
+      activoId: activo,
       activo: k.nombreDeActivo(activo),
       ficha: {
         desde: p.fecha_verificacion,
@@ -285,6 +300,7 @@ function alertasDe(
       id: prueba,
       tipo: k.prop("evidencia_antigua_alerta"),
       prueba: { id: prueba, nombre: k.prueba(prueba).nombre },
+      activoId: activo,
       activo: k.nombreDeActivo(activo),
       evidencia: k.evidencia(f.fecha!),
     });
@@ -321,6 +337,7 @@ const filaDeEsperado = (
     esperado: p.resultado_esperado.descripcion,
     veredicto: k.et("veredicto", veredictoId),
     veredictoId,
+    filtroId: filtroDeVeredicto(veredictoId),
     obtenido: {
       sobre: s === null ? null : s.id,
       evidencia: s === null ? null : k.evidencia(s.fecha),
@@ -350,12 +367,11 @@ const comprobaciones = (
     requisito: c.requisito,
     nombre:
       c.nombre ??
-      (c.requisito === "RF-10.3"
-        ? { es: "Cierres prohibidos", en: "Forbidden closures" }
-        : {
-            es: "«No detectado» no es verificado",
-            en: "“Not detected” is not verified",
-          }),
+      k.texto(
+        c.requisito === "RF-10.3"
+          ? "comprobacion_cierres_prohibidos"
+          : "comprobacion_no_detectado",
+      ),
     sembradas: c.sembradas,
     obtenidas: c.obtenidas,
     pasa: c.obtenidas === c.sembradas,
@@ -407,25 +423,25 @@ export function construirVistaDeTablero(m: MundoDeBrecha): VistaDeTablero {
       {
         clave: "sin_cerrar",
         valor: String(pideTrabajo.length),
-        texto: { es: "hallazgos sin cerrar", en: "open findings" },
+        texto: k.texto("cifra_sin_cerrar"),
         marca: null,
       },
       {
         clave: "vencidos",
         valor: String(b.vencidos.length),
-        texto: { es: "fuera de plazo", en: "past their deadline" },
+        texto: k.texto("cifra_vencidos"),
         marca: null,
       },
       {
         clave: "por_confirmar",
         valor: String(b.porConfirmar.sobres),
-        texto: { es: "sobres por confirmar", en: "envelopes to confirm" },
+        texto: k.texto("cifra_por_confirmar"),
         marca: null,
       },
       {
         clave: "por_decidir",
         valor: String(m.propuestas.porDecidir),
-        texto: { es: "propuestas por decidir", en: "proposals to decide" },
+        texto: k.texto("cifra_por_decidir"),
         marca: null,
       },
     ],
@@ -541,10 +557,7 @@ export function construirVistaDeBrecha(m: MundoDeBrecha): VistaDeBrecha {
       return {
         id: activo,
         nombre: a.activo.nombre,
-        plan:
-          a.plan === null
-            ? null
-            : { huella: a.plan.huella, fecha: a.plan.fecha_emision },
+        plan: a.plan === null ? null : { huella: a.plan.huella },
         totales,
         estado:
           a.plan === null
@@ -654,8 +667,14 @@ function accionDe(
       : { tipo: "hallazgo", hallazgo: h };
   }
   if (c.estado === "evidencia_antigua")
-    return { tipo: "plan", activo: filas[0]!.activo };
+    // El plan que hay que volver a ejecutar es el del activo cuya evidencia envejeció, no el de la primera fila.
+    return {
+      tipo: "plan",
+      activo: (filas.find((f) => f.edad?.estado === "antigua") ?? filas[0]!)
+        .activo,
+    };
   if (c.totales.planeadas === 0) return { tipo: "catalogo" };
+  if (c.estado === "con_evidencia_vigente") return { tipo: "ninguna" };
   return {
     tipo: "carga",
     sinResultado: filas.filter((f) => f.estado === "sin_evidencia").length,
@@ -691,6 +710,7 @@ export function construirVistaDeControl(
     const veredictoId = f.veredicto ?? "no_ejecutada";
     return {
       prueba: { id: f.prueba, nombre: k.prueba(f.prueba).nombre },
+      activoId: f.activo,
       activo: k.nombreDeActivo(f.activo),
       veredicto: k.et("veredicto", veredictoId),
       veredictoId,
@@ -866,6 +886,15 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
   const hallazgos = ordenados.map((h): FilaDeHallazgoDeInforme => {
     const s = k.sit(h.id);
     const e = s.evaluacion;
+    // Un hallazgo que no pide trabajo ni es un riesgo aceptado está cerrado, y un cerrado trae su cierre: nunca se inventa la fecha.
+    if (
+      !h.pideTrabajo &&
+      !(h.estado === "aceptado_con_riesgo" && k.revisionDe(h.id) !== null) &&
+      e.cierre === null
+    )
+      throw new Error(
+        `el hallazgo ${h.id} figura cerrado y no trae su cierre / finding ${h.id} is closed but has no closure`,
+      );
     return {
       hallazgo: k.enlace(h.id),
       activo: k.nombreDeActivo(h.activo),
@@ -876,8 +905,8 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
           ? { tipo: "revision", revision: k.revisionDe(h.id)! }
           : {
               tipo: "cerrado",
-              fecha: e.cierre?.fecha ?? e.apertura,
-              sobre: e.cierre?.sobre ?? null,
+              fecha: e.cierre!.fecha,
+              sobre: e.cierre!.sobre,
             },
     };
   });
@@ -895,31 +924,25 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
         {
           clave: "graves",
           valor: String(graves.length),
-          texto: {
-            es: "críticos o altos sin cerrar",
-            en: "critical or high still open",
-          },
+          texto: k.texto("cifra_graves"),
           marca: null,
         },
         {
           clave: "vencidos",
           valor: String(b.vencidos.length),
-          texto: { es: "fuera de plazo", en: "past their deadline" },
+          texto: k.texto("cifra_vencidos"),
           marca: null,
         },
         {
           clave: "sin_evidencia",
           valor: String(sinEvidencia.length),
-          texto: {
-            es: "controles sin evidencia",
-            en: "controls with no evidence",
-          },
+          texto: k.texto("cifra_sin_evidencia"),
           marca: null,
         },
         {
           clave: "ejecutadas",
           valor: `${r.ejecutadas} / ${r.planeadas}`,
-          texto: { es: "pruebas ejecutadas", en: "tests run" },
+          texto: k.texto("cifra_ejecutadas"),
           marca: null,
         },
       ],

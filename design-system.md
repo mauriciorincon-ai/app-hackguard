@@ -1,6 +1,6 @@
 ---
-version: 1.0.0
-estado: sellado en G-Diseño (2026-10-04) · dirección «consola» · miradas 1 a 6 aprobadas
+version: 1.1.0
+estado: sellado en G-Diseño (2026-10-04) · dirección «consola» · miradas 1 a 6 aprobadas · al día con los Sprints 2 a 9 (cierre del H-1, 2026-10-13)
 ---
 
 # HackGuard — sistema de diseño
@@ -233,8 +233,36 @@ fidelidad. Queda para el producto:
   PR; se publica en Claude Design después del gate ⭐⭐ del ciclo, cuando el usuario invoque
   `/design-sync`.
 
-## 12. Registro de cambios
+## 12. Lo que el producto agregó desde el sello (Sprints 2 a 9)
 
+El producto obedece este documento; estas son las decisiones que aparecieron al construirlo y que hoy son canon. Cada una tiene su
+gate; el detalle por pantalla y su razón están en `docs/diseno/README.md` («Lo que el producto suma o recorta frente a la maqueta»).
+
+- **Todo rótulo de estado es dato, y el componente no escribe un color.** Además del vocabulario de § 5 (`datos/estados.json`), las
+  etiquetas propias de cada familia de pantallas viven en `datos/vistas/`, `datos/brecha/`, `datos/hallazgos/`, `datos/propuestas/`
+  y `datos/evidencia/`, fuera de la huella de la instantánea. Un test recorre todos los componentes y falla si uno escribe `es-<rol>`,
+  `rol: "…"` o `simbolo: "…"` (`tests/unit/etiquetas-en-componentes.test.ts`).
+- **Una lectura, un estado.** Un botón que despliega algo dice `aria-expanded` (el revelado `.hg-revelado` lo sigue); uno que queda
+  elegido, `aria-pressed`; la opción actual de una lista de páginas, `aria-current="page"`. La hoja muestra el revelado con
+  `aria-expanded`.
+- **Cada página lleva su título** («Brecha / Gap · HackGuard», o «HZ-0007 · Hallazgo / Finding · HackGuard»): un export estático lleva
+  un solo título por página, así que dice los dos idiomas.
+- **La paginación entrega el foco.** Al llegar a un extremo el botón pulsado se desactiva y el foco pasa al otro; no cae al `<body>`.
+- **Las pantallas son de lectura.** Una salida que escribiría (confirmar, declarar, decidir) se muestra con su consecuencia y el comando
+  exacto que la hace; no hay botón que escriba. El adjunto de una herramienta se muestra como texto inerte, escapado.
+- **El estado «cargando» solo existe en la maqueta; «error» existe como componente (`CatalogoConError`).** En un export estático un dato que no cuadra con su huella rompe el
+  build en vez de mostrarse a medias; «vacío» sí existe y dice qué hacer.
+- **Lo que no se pudo verificar no se dice verificado.** Un marco cuya fuente el agente no puede leer lleva «Fuente no accesible» y su
+  fecha dice «Revisado», no «Verificado»; lo que la instantánea no trae se dice («Sin aviso registrado»), no se simula.
+- **Una cuenta, un cálculo, también en las cifras sueltas.** Las cifras de arriba de cada pantalla cuentan sobre el mismo conjunto
+  (en la carga: los sobres que todavía son una propuesta); el veredicto se compara por identificador, nunca por nombre.
+- **Las cabeceras de tabla son una sola pieza** (`src/components/cabeceras.tsx`).
+
+## 13. Registro de cambios
+
+- **1.1.0** — Al día con los Sprints 2 a 9 (cierre del H-1): § 12 nueva con las decisiones que el producto agregó desde el sello;
+  la maqueta suma la opción «Revisada y aprobada» en el filtro de revisión del catálogo y `aria-expanded` en sus botones de
+  revelado (`pnpm maqueta`); el bundle `design-sync/` se regeneró con esta versión. Ninguna pantalla cambia de forma.
 - **1.0.0** — Sellado en G-Diseño (mirada 6, 2026-10-04), sin cambios de forma desde 0.8.0. Nace el
   bundle `design-sync/`: una tarjeta por panel del kit, generada con la misma hoja que las pantallas.
 - **0.8.0** — Cierre de la etapa (fase 2 de la auditoría): lo elegido lleva además barra inferior y más

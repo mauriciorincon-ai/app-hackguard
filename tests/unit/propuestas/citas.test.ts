@@ -1,13 +1,18 @@
 // @vitest-environment node
 // U1 = 1,0 (plan v2, supuesto S1): una cita vale si y solo si es subcadena LITERAL del texto tras normalizar los espacios.
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { UmbralesDePropuestas } from "../../../src/engine/propuestas/esquemas.ts";
+import { RAIZ } from "./ayuda.ts";
 import {
+  cifraEnElTexto,
   citaEsLiteral,
   huellaDeTexto,
   normalizarEspacios,
   numeroEnElTexto,
   similitudDeCita,
   verificarCita,
+  versionEnElTexto,
 } from "../../../src/engine/propuestas/citas.ts";
 
 const TEXTO =
@@ -88,5 +93,108 @@ describe("el número tiene que estar en la cita", () => {
     expect(
       verificarCita("fecha", "run 2026-10-09", "2026-10-09", TEXTO).estado,
     ).toBe("no_literal");
+  });
+});
+
+describe("una versión está en el texto como palabra propia (RF-07.5)", () => {
+  it("la encuentra cuando es una palabra suelta", () => {
+    expect(
+      versionEnElTexto("v2", "Revised v2 (2026-10-01): adds check C5."),
+    ).toBe(true);
+    expect(versionEnElTexto("2.0", "Version 2.0 released today")).toBe(true);
+    expect(versionEnElTexto("1.1+", "Version 1.1+ is out")).toBe(true);
+  });
+  it("no la encuentra dentro de otra versión, de una palabra ni de un número", () => {
+    expect(versionEnElTexto("v2", "Revised v20 of the list")).toBe(false);
+    expect(versionEnElTexto("v2", "the rev2 branch")).toBe(false);
+    expect(versionEnElTexto("2", "Version 2.0 released")).toBe(false);
+    expect(versionEnElTexto("2.0", "Version 2.0.1 released")).toBe(false);
+  });
+  it("una versión vacía no está en ningún texto", () => {
+    expect(versionEnElTexto("", "cualquier texto")).toBe(false);
+    expect(versionEnElTexto("   ", "cualquier texto")).toBe(false);
+  });
+});
+
+describe("la métrica, la fecha y la versión tienen que estar en su cita (auditoría S8)", () => {
+  const texto =
+    "garak LLM vulnerability scanner v0.17.0 run 2026-10-12. Metric: latency 0,5 s against a limit of 2 s.";
+  const metrica = {
+    nombre: "latencia",
+    valor: 0.5,
+    umbral: 2,
+    sentido: "maximo",
+  };
+  it("una cifra decimal se encuentra con punto o con coma, y como número propio", () => {
+    expect(cifraEnElTexto(0.5, "limit of 0.5 s")).toBe(true);
+    expect(cifraEnElTexto(0.5, "limit of 0,5 s")).toBe(true);
+    expect(cifraEnElTexto(0.5, "limit of 10.55 s")).toBe(false);
+    expect(cifraEnElTexto(2, "against a limit of 2 s")).toBe(true);
+  });
+  it("la métrica se verifica solo si la cita trae su valor y su umbral", () => {
+    const completa = "Metric: latency 0,5 s against a limit of 2 s.";
+    expect(
+      verificarCita("resultado.metrica", completa, metrica, texto).estado,
+    ).toBe("verificada");
+    const sinUmbral = "Metric: latency 0,5 s";
+    expect(
+      verificarCita("resultado.metrica", sinUmbral, metrica, texto).estado,
+    ).toBe("valor_sin_respaldo");
+  });
+  it("la fecha propuesta tiene que estar en la cita tal cual (AAAA-MM-DD)", () => {
+    expect(
+      verificarCita("fecha", "run 2026-10-12", "2026-10-12", texto).estado,
+    ).toBe("verificada");
+    expect(
+      verificarCita(
+        "fecha",
+        "garak LLM vulnerability scanner",
+        "2026-10-12",
+        texto,
+      ).estado,
+    ).toBe("valor_sin_respaldo");
+  });
+  it("la versión de la herramienta tiene que estar en la cita, también con prefijo v", () => {
+    expect(
+      verificarCita(
+        "herramienta.version",
+        "scanner v0.17.0 run",
+        "0.17.0",
+        texto,
+      ).estado,
+    ).toBe("verificada");
+    expect(
+      verificarCita(
+        "herramienta.version",
+        "garak LLM vulnerability scanner",
+        "0.17.0",
+        texto,
+      ).estado,
+    ).toBe("valor_sin_respaldo");
+  });
+});
+
+const umbrales = JSON.parse(
+  readFileSync(`${RAIZ}/datos/propuestas/umbrales.json`, "utf8"),
+);
+
+describe("el umbral de similitud lo lee el motor (auditoría S8)", () => {
+  const texto = "El escáner evaluó veinte intentos y no falló ninguno.";
+  const casiLiteral = "El escáner evaluó veinte intentos y falló ninguno.";
+  it("con el umbral del dato (1) una cita casi literal no vale", () => {
+    expect(
+      verificarCita("resultado.ejecutada", casiLiteral, true, texto).estado,
+    ).toBe("no_literal");
+  });
+  it("el umbral que recibe es el que manda, y el dato solo admite 1", () => {
+    expect(
+      verificarCita("resultado.ejecutada", casiLiteral, true, texto, 0.5)
+        .estado,
+    ).toBe("verificada");
+    expect(
+      UmbralesDePropuestas.safeParse({ ...umbrales, similitud_cita: 0.9 })
+        .success,
+    ).toBe(false);
+    expect(UmbralesDePropuestas.safeParse(umbrales).success).toBe(true);
   });
 });

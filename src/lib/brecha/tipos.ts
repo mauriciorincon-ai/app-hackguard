@@ -22,7 +22,6 @@ export interface EnlaceAHallazgo {
   id: string;
   titulo: Bilingue;
   severidad: Etiqueta;
-  nivel: string;
   estado: Etiqueta;
   estadoId: string;
 }
@@ -56,7 +55,14 @@ export interface BaseDeVista {
  */
 export type EstadoDeMarcos =
   | { tipo: "avisos"; etiqueta: Etiqueta; avisos: AvisoDeMarco[] }
-  | { tipo: "ninguno"; etiqueta: Etiqueta; corrida: string; fecha: string }
+  | {
+      tipo: "ninguno";
+      etiqueta: Etiqueta;
+      corrida: string;
+      fecha: string;
+      leidas: number;
+      noLeidas: number;
+    }
   | { tipo: "sin_registro"; etiqueta: Etiqueta };
 
 /** Una cifra de arriba: el valor, lo que dice y, si es un estado, su marca (símbolo, rol y color salen de datos). */
@@ -96,6 +102,7 @@ export type FilaDeAlerta =
       id: string;
       tipo: Etiqueta;
       prueba: ObjetoNombrado;
+      activoId: string;
       activo: Bilingue;
       ficha: { desde: string; dias: number; etiqueta: Etiqueta };
     }
@@ -104,6 +111,7 @@ export type FilaDeAlerta =
       id: string;
       tipo: Etiqueta;
       prueba: ObjetoNombrado;
+      activoId: string;
       activo: Bilingue;
       evidencia: EvidenciaVista;
     };
@@ -153,7 +161,7 @@ export interface VistaDeTablero extends BaseDeVista {
 export interface FilaDeCoberturaPorActivo {
   id: string;
   nombre: Bilingue;
-  plan: { huella: string; fecha: string } | null;
+  plan: { huella: string } | null;
   totales: Totales | null;
   estado: Etiqueta;
 }
@@ -179,6 +187,8 @@ export interface FilaDeEsperadoObtenido {
   esperado: Bilingue;
   veredicto: Etiqueta;
   veredictoId: string;
+  /** Con qué opción del filtro «Veredicto» coincide la fila: una parcial cuenta como fallida (así la cuentan las cifras de arriba). */
+  filtroId: string;
   obtenido: {
     sobre: string | null;
     evidencia: EvidenciaVista | null;
@@ -242,6 +252,8 @@ export interface VistaDeControles extends BaseDeVista {
 
 export interface FilaDePruebaDeControl {
   prueba: ObjetoNombrado;
+  /** El activo de la fila: una misma prueba puede estar en dos activos, y la fila se identifica por los dos. */
+  activoId: string;
   activo: Bilingue;
   veredicto: Etiqueta;
   veredictoId: string;
@@ -270,7 +282,9 @@ export type AccionDeControl =
   | { tipo: "aceptado" }
   | { tipo: "plan"; activo: string }
   | { tipo: "catalogo" }
-  | { tipo: "carga"; sinResultado: number; total: number };
+  | { tipo: "carga"; sinResultado: number; total: number }
+  /** Evidencia vigente en todas sus pruebas ejecutadas y sin fallas: no hay nada que hacer. */
+  | { tipo: "ninguna" };
 
 export interface VistaDeControl extends BaseDeVista {
   veredictos: MarcasDeVeredicto;

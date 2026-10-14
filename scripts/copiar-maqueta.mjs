@@ -5,7 +5,7 @@
 //
 // Declara el árbol que lee (regla 17-bis b): solo docs/diseno/ de este repo, hacia public/diseno/, que es
 // fijo. Sin la maqueta, el build falla: un sitio sin /diseno/ no debe pasar en verde.
-import { cpSync, existsSync, rmSync, statSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,3 +26,16 @@ cpSync(origen, destino, {
   filter: (ruta) => statSync(ruta).isDirectory() || /\.(html|css|js|woff2|svg|txt|json)$/.test(ruta),
 });
 console.log(`copiar-maqueta: ${origen} → ${destino}`);
+
+// El brochure (docs/BROCHURE.html) se sirve como la ruta pública /conoce: la entrega ideal de un brochure es un enlace. La fuente es
+// el archivo de docs/; public/conoce/ es DERIVADO (ignorado por git), como public/diseno/. Autocontenido: un solo archivo.
+const brochure = join(raiz, "docs", "BROCHURE.html");
+if (!existsSync(brochure)) {
+  console.error(`copiar-maqueta: no existe ${brochure}; /conoce saldría vacía. Aborto.`);
+  process.exit(1);
+}
+const rutaConoce = join(raiz, "public", "conoce");
+rmSync(rutaConoce, { recursive: true, force: true });
+mkdirSync(rutaConoce, { recursive: true });
+cpSync(brochure, join(rutaConoce, "index.html"));
+console.log(`copiar-maqueta: ${brochure} → ${join(rutaConoce, "index.html")}`);

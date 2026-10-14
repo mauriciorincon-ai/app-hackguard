@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { pruebas } from "@/lib/catalogo/etiquetas";
-import { SIN_CONTROL, SIN_CONTROL_CORTO } from "@/lib/catalogo/etiquetas";
+import {
+  ETIQUETAS_DE_VISTAS as E,
+  SIN_CONTROL,
+  SIN_CONTROL_CORTO,
+} from "@/lib/catalogo/etiquetas";
 import type { VistaDeControles } from "@/lib/catalogo/controles";
 import { Aviso, Chip, Estado, Huella } from "../estado";
+import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
 
 /**
@@ -11,33 +16,12 @@ import { Dato, T } from "../texto";
  * los que el catálogo da evidencia con las pruebas que los cubren, y la deuda a la vista: pruebas sin control asignado.
  */
 
-const CON_PRUEBAS = { rol: "positivo", simbolo: "ok" } as const;
-const SIN_PRUEBAS = {
-  rol: "neutro",
-  simbolo: "vacio",
-  nombre: { es: "Sin pruebas", en: "No tests" },
-};
-
-function Cabeceras({ columnas }: { columnas: { es: string; en: string }[] }) {
-  return (
-    <thead>
-      <tr>
-        {columnas.map((c) => (
-          <th key={c.es} scope="col">
-            <T t={c} />
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
+const CON_PRUEBAS = E.areas_con_pruebas;
+const SIN_PRUEBAS = E.sin_pruebas;
 
 export function ControlesVacio() {
   return (
-    <Aviso
-      etiqueta={{ rol: "neutro", simbolo: "vacio" }}
-      titulo={{ es: "No hay controles cargados", en: "No controls loaded" }}
-    >
+    <Aviso etiqueta={E.controles_vacio} titulo={E.controles_vacio.nombre}>
       <p>
         <T
           t={{
@@ -172,16 +156,7 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
             <T t={vista.capa.descripcion} />
           </p>
           <p>
-            <Chip
-              etiqueta={{
-                rol: "atencion",
-                simbolo: "aviso",
-                nombre: {
-                  es: "No contrastado con la norma",
-                  en: "Not checked against the standard",
-                },
-              }}
-            />{" "}
+            <Chip etiqueta={E.no_contrastado} />{" "}
             <span className="hg-menor" lang="es">
               {vista.capa.sinContrastar} de {vista.capa.controles} resúmenes
               todavía sin contrastar.
@@ -266,10 +241,18 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
           <p className="hg-menor">
             <T
               t={{
-                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. La vista por control, con el estado de cada control y su evidencia, todavía no existe como pantalla.",
-                en: "A test giving evidence to a control does not say the control is met: it says where to look. The control view, with each control's status and evidence, does not exist as a screen yet.",
+                es: "Que una prueba dé evidencia a un control no dice que el control se cumpla: dice dónde mirar. El estado de cada control y su evidencia están en la vista por control.",
+                en: "A test giving evidence to a control does not say the control is met: it says where to look. Each control's status and evidence are in the control view.",
               }}
-            />
+            />{" "}
+            <Link href="/brecha/control">
+              <T
+                t={{
+                  es: "Abrir la vista por control",
+                  en: "Open the control view",
+                }}
+              />
+            </Link>
           </p>
         </div>
         <table className="hg-tabla">

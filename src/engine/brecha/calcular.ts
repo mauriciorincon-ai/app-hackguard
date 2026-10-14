@@ -91,13 +91,6 @@ export type Desviacion =
   | { tipo: "dentro_del_limite" }
   | { tipo: "ninguna" };
 
-export interface ObtenidoDeBrecha {
-  evaluadas: number | null;
-  fallidas: number | null;
-  alertas: number | null;
-  k: number | null;
-}
-
 export interface EdadDeEvidencia {
   dias: number;
   estado: "vigente" | "antigua";
@@ -113,14 +106,13 @@ export interface FilaDeBrecha {
   ejecutada: boolean;
   sobre: string | null;
   fecha: string | null;
-  obtenido: ObtenidoDeBrecha | null;
   desviacion: Desviacion;
   /** El hallazgo que el último sobre intentó cerrar, si es una re-prueba. */
   repruebaDe: string | null;
   edad: EdadDeEvidencia | null;
   /** El estado de la fila, con la misma regla que el del control: sus fallas primero, luego su evidencia. */
   estado: EstadoDeControl;
-  vigenciaDeFicha: { dias: number; estado: EstadoDeVigencia };
+  vigenciaDeFicha: { estado: EstadoDeVigencia };
   /** El hallazgo de esta prueba y este activo que sigue contando como falla, si lo hay. */
   hallazgo: string | null;
   /** Sobres propuestos de esta prueba: se ven, pero no mueven ninguna cifra. */
@@ -134,7 +126,6 @@ export interface HallazgoDeBrecha {
   controles: string[];
   estado: EstadoDeHallazgo;
   severidad: string;
-  apertura: string;
   cuentaComoFalla: boolean;
   /** Pide trabajo: abierto, corregido o re-probado. Un riesgo aceptado no lo pide. */
   pideTrabajo: boolean;
@@ -150,7 +141,6 @@ export interface ControlDeBrecha {
   totales: Totales;
   /** Fecha del último resultado ejecutado entre sus pruebas. */
   ultima: string | null;
-  edad: EdadDeEvidencia | null;
   hallazgos: string[];
   fallas: string[];
 }
@@ -175,7 +165,6 @@ export interface Brecha {
     /** Pruebas del plan cuya ficha del catálogo está vencida. */
     fichasVencidas: { activo: string; prueba: string }[];
     /** Marcos con versión nueva: hoy no hay registro de la fuente, así que no se puede decir (RF-05.5). */
-    marcos: { registro: false; conVersionNueva: string[] };
     /** Pruebas cuya evidencia es más vieja que el umbral. */
     antiguas: { activo: string; prueba: string }[];
   };
@@ -236,7 +225,7 @@ export const edadDe = (
 ): EdadDeEvidencia => {
   const dias = diasEntre(fecha, consulta);
   if (dias < 0)
-    throw new RangeError(
+    throw new ErrorDeEntradaDeBrecha(
       `la evidencia (${fecha}) es posterior a la fecha de consulta (${consulta})`,
     );
   return { dias, estado: dias >= umbral ? "antigua" : "vigente" };
@@ -246,6 +235,15 @@ const porPruebaYFecha = (a: SobreEfectivo, b: SobreEfectivo) =>
   comparar(a.fecha, b.fecha) || comparar(a.id, b.id);
 
 /** La brecha sin sellar: toda la cuenta, ordenada y sin huella. */
+
+/**
+ * La entrada de la brecha no se puede armar (un sobre fechado después de la consulta, un dato que falta). Sigue siendo un `RangeError`
+ * (los consumidores que ya lo atrapan no cambian), pero se distingue de un desbordamiento de pila o de cualquier otro `RangeError` ajeno.
+ */
+export class ErrorDeEntradaDeBrecha extends RangeError {
+  override name = "ErrorDeEntradaDeBrecha";
+}
+
 export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
   const problemas: string[] = [];
   const pruebas = new Map(e.pruebas.map((p) => [p.id, p] as const));
@@ -254,7 +252,7 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
   const confirmados = e.libro.filter((s) => s.confirmacion !== null);
   for (const s of confirmados)
     if (diasEntre(s.fecha, e.consulta) < 0)
-      throw new RangeError(
+      throw new ErrorDeEntradaDeBrecha(
         `el sobre ${s.id} (${s.fecha}) es posterior a la fecha de consulta (${e.consulta})`,
       );
   const corregidos = new Set(
@@ -285,7 +283,6 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
       ),
       estado: evaluacion.estado,
       severidad: severidad.nivel,
-      apertura: evaluacion.apertura,
       cuentaComoFalla: evaluacion.cuentaComoFalla,
       pideTrabajo: ESTADOS_CON_PLAZO.includes(evaluacion.estado),
       plazo,
@@ -313,7 +310,7 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
       const ejecutada = veredicto !== null && EJECUTADOS.includes(veredicto);
       const diasDeFicha = diasEntre(prueba.fecha_verificacion, e.consulta);
       if (diasDeFicha < 0)
-        throw new RangeError(
+        throw new ErrorDeEntradaDeBrecha(
           `la ficha ${prueba.id} se verificó (${prueba.fecha_verificacion}) después de la fecha de consulta (${e.consulta})`,
         );
       const edad =
@@ -336,15 +333,6 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
         ejecutada,
         sobre: ultimo === null ? null : ultimo.id,
         fecha: ultimo === null ? null : ultimo.fecha,
-        obtenido:
-          ultimo === null
-            ? null
-            : {
-                evaluadas: ultimo.resultado.evaluadas,
-                fallidas: ultimo.resultado.fallidas,
-                alertas: ultimo.resultado.alertas,
-                k: ultimo.k,
-              },
         desviacion: desviacionDe(ultimo),
         repruebaDe: ultimo === null ? null : ultimo.reprueba_de,
         edad,
@@ -357,7 +345,6 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
                 ? "evidencia_antigua"
                 : "con_evidencia_vigente",
         vigenciaDeFicha: {
-          dias: diasDeFicha,
           estado: estadoDeVigencia(diasDeFicha, e.vigencia),
         },
         hallazgo: delHallazgo,
@@ -400,7 +387,6 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
       filas: suyas.map((f) => ({ activo: f.activo, prueba: f.prueba })),
       totales: totalesDe(suyas),
       ultima,
-      edad,
       hallazgos: delControl.map((h) => h.id),
       fallas: fallas.map((h) => h.id),
     };
@@ -445,7 +431,6 @@ export function armarBrecha(e: EntradaDeBrecha): Omit<Brecha, "huella"> {
       fichasVencidas: filas
         .filter((f) => f.vigenciaDeFicha.estado === "vencido")
         .map((f) => ({ activo: f.activo, prueba: f.prueba })),
-      marcos: { registro: false, conVersionNueva: [] },
       antiguas: filas
         .filter((f) => f.edad?.estado === "antigua")
         .map((f) => ({ activo: f.activo, prueba: f.prueba })),

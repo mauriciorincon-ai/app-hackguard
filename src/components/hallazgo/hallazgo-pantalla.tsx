@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { frasePorDias } from "@/lib/catalogo/etiquetas";
 import type {
   AccionDeHallazgo,
   DetalleDeCvss,
@@ -47,10 +46,10 @@ function Linea({ l }: { l: LineaDeEslabon }) {
     case "firma":
       return (
         <p>
-          <span className="hg-firma es-acento">
-            <Simbolo nombre="firma" />
+          <span className={`hg-firma es-${l.etiqueta.rol}`}>
+            <Simbolo nombre={l.etiqueta.simbolo} />
             <span>
-              <T t={{ es: "Confirmada", en: "Confirmed" }} /> ·{" "}
+              <T t={l.etiqueta.nombre} /> ·{" "}
               <span data-neutro>{l.fecha}</span>
             </span>
           </span>
@@ -235,7 +234,6 @@ function SeveridadDeIa({ d }: { d: DetalleDeEscalaIa }) {
 }
 
 function SeveridadCvss({ d }: { d: DetalleDeCvss }) {
-  const [repo, commit] = d.referencia.split("@");
   return (
     <div className="hg-panel-cuerpo">
       <p className="hg-menor">
@@ -257,7 +255,7 @@ function SeveridadCvss({ d }: { d: DetalleDeCvss }) {
       <dl className="hg-propiedades">
         <Par rotulo={{ es: "Vector", en: "Vector" }}>
           <span className="hg-dato hg-vector" data-neutro>
-            {d.vector.split("/").flatMap((parte, i) => [
+            {d.partesDelVector.flatMap((parte, i) => [
               i > 0 ? "/" : null,
               i > 0 ? <wbr key={`w${i}`} /> : null,
               parte,
@@ -285,8 +283,8 @@ function SeveridadCvss({ d }: { d: DetalleDeCvss }) {
           <p className="hg-menor">
             <T t={{ es: "Referencia fijada:", en: "Pinned reference:" }} />{" "}
             <span className="hg-dato hg-vector" data-neutro>
-              {repo}
-              <wbr />@{commit}
+              {d.repositorio}
+              <wbr />@{d.commit}
             </span>
           </p>
           <p className="hg-menor">
@@ -366,7 +364,7 @@ export function Revision({ r }: { r: VistaDeRevision }) {
       <span className="hg-menor">
         <T t={{ es: "Aceptado", en: "Accepted" }} />{" "}
         <span data-frase-dias>
-          <T t={frasePorDias(r.dias)} />
+          <T t={r.frase} />
         </span>
         , <T t={{ es: "se revisa el", en: "to be reviewed on" }} />{" "}
         <Dato>{r.fecha}</Dato>
