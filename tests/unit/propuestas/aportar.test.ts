@@ -202,6 +202,16 @@ describe("aportar un documento que el agente no pudo leer", () => {
     );
   });
 
+  // S9-E-M1: `buscar` siempre abre una corrida nueva; el aporte está atado a la corrida donde se hizo. El skill dice cómo citarlo.
+  it("el skill del investigador dice cómo citar un aporte y ya no promete «volver a buscar»", () => {
+    const skill = readFileSync(
+      path.join(RAIZ, ".claude/skills/investigar/SKILL.md"),
+      "utf8",
+    );
+    expect(skill).toContain("aportes.json");
+    expect(skill).not.toContain("volver a buscar");
+  });
+
   it("una corrida que ya tiene decisiones no recibe más documentos", () => {
     const raiz = raizConUna403();
     // La corrida demo del investigador, ya sellada, pasa a ser «real» en esta raíz y se le decide una propuesta.

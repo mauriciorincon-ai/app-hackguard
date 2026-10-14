@@ -68,6 +68,34 @@ export function sprintsConCierre() {
   return numeros.size;
 }
 
+/** «a, b y c»: la lista como la escribe una persona. */
+export function enumerar(lista) {
+  if (lista.length <= 1) return lista.join("");
+  return `${lista.slice(0, -1).join(", ")} y ${lista.at(-1)}`;
+}
+
+const NAVEGADORES = {
+  chromium: "Chromium",
+  firefox: "Firefox",
+  webkit: "WebKit",
+};
+
+/** Los navegadores en que corren las e2e: los `projects` de `playwright.config.ts`, sin repetir el motor (escritorio y teléfono son uno). */
+export function navegadoresDeLaConfig(
+  texto = readFileSync(join(RAIZ, "playwright.config.ts"), "utf8"),
+) {
+  const proyectos = texto.slice(
+    texto.indexOf("projects:"),
+    texto.indexOf("webServer:"),
+  );
+  const motores = [...proyectos.matchAll(/name:\s*"([^"]+)"/g)].map((m) =>
+    m[1].replace(/^(mobile|desktop)-/, ""),
+  );
+  return [...new Set(motores)].map(
+    (n) => NAVEGADORES[n] ?? n.charAt(0).toUpperCase() + n.slice(1),
+  );
+}
+
 /** Las cifras que salen de archivos del repo. */
 export async function cifrasBaratas() {
   const pruebas = archivosJson("datos/pruebas");
@@ -92,9 +120,23 @@ export async function cifrasBaratas() {
         String(n).endsWith(".html"),
       ).length
     : null;
+  const herramientas = archivosJson("datos/herramientas").map((n) =>
+    leerJson(join("datos/herramientas", n)),
+  );
   return {
     pruebas_en_el_catalogo: pruebas.length,
     por_familia: porFamilia,
+    // Las familias con su nombre del dato y en el orden del dato: la prosa no las nombra a mano.
+    familias: leerJson("datos/familias.json").familias.map((f) => ({
+      id: f.id,
+      nombre: f.nombre.es.toLowerCase(),
+      pruebas: porFamilia[f.id] ?? 0,
+    })),
+    navegadores_e2e: navegadoresDeLaConfig(),
+    herramientas_publicas: herramientas.filter((h) => h.tipo === "publica")
+      .length,
+    herramientas_propias: herramientas.filter((h) => h.tipo !== "publica")
+      .length,
     controles_iso_42001: anexo.areas.reduce(
       (n, a) => n + a.controles.length,
       0,
@@ -104,7 +146,7 @@ export async function cifrasBaratas() {
     marcos_de_referencia: readdirSync(join(RAIZ, "datos/marcos")).filter((n) =>
       n.endsWith(".json"),
     ).length,
-    herramientas: archivosJson("datos/herramientas").length,
+    herramientas: herramientas.length,
     pruebas_de_software_sin_control: sinControl,
     casos_del_clasificador_demo: casos,
     secciones_del_manual: [
@@ -176,19 +218,26 @@ export function cifrasCaras() {
 
 /** El `detalle` de cada métrica, con la cuenta tomada del resultado. */
 export function detalles(c, caras, fecha) {
-  const f = c.por_familia;
+  // Las familias salen del dato; si una no trae nombre (cifras de otra procedencia), se nombra por su id.
+  const familias =
+    c.familias ??
+    Object.entries(c.por_familia).map(([id, n]) => ({
+      nombre: id.replace(/_/g, " "),
+      pruebas: n,
+    }));
+  const navegadores = enumerar(c.navegadores_e2e ?? navegadoresDeLaConfig());
   const caro = caras ?? {};
   return {
     funcionalidades: (n) =>
-      `Las ${n} funciones del primer corte que la visión aprueba para uso personal, contadas contra ${c.secciones_del_manual} secciones de docs/MANUAL-DE-USO.md. El resto de las 32 son del roadmap o de la vitrina para terceros y no se han construido.`,
+      `Las ${n} funciones del primer corte que la visión aprueba para uso personal, contadas contra ${c.secciones_del_manual} secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido.`,
     pruebas_en_el_catalogo: () =>
-      `Archivos de datos/pruebas/ del ${fecha}: ${c.pruebas_en_el_catalogo} pruebas. Por familia: software ${f.software}, agente ${f.agente}, modelo generativo ${f.modelo_generativo} y modelo de decisión ${f.modelo_decision}. \`pnpm catalogo:validar\` las da por publicables.`,
+      `Archivos de datos/pruebas/ del ${fecha}: ${c.pruebas_en_el_catalogo} pruebas. Por familia: ${enumerar(familias.map((x) => `${x.nombre} ${x.pruebas}`))}. \`pnpm catalogo:validar\` las da por publicables.`,
     controles_iso_42001: () =>
       `Contados en datos/controles/iso42001-anexo-a.json del ${fecha}. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no).`,
     fichas_de_prueba: () =>
       `Una página por prueba en out/catalogo/ tras \`pnpm build\` del ${fecha}.${c.paginas_del_build ? ` El build entero genera ${c.paginas_del_build} páginas, idénticas a las que sirve el proveedor (\`node scripts/build-como-proveedor.mjs\`).` : ""}`,
     pruebas_automaticas: () =>
-      `Suma de dos corridas del ${fecha} sobre el árbol de este export: \`pnpm test\` ${caro.pruebas_unitarias} pruebas, y \`pnpm test:e2e\` ${caro.pruebas_e2e} en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces).`,
+      `Suma de dos corridas del ${fecha} sobre el árbol de este export: \`pnpm test\` ${caro.pruebas_unitarias} pruebas, y \`pnpm test:e2e\` ${caro.pruebas_e2e} en ${navegadores} sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces).`,
     pruebas_unitarias: () =>
       `Salida de \`pnpm test\` (vitest run --coverage) del ${fecha} sobre el árbol de este export: ${caro.archivos_unitarios} archivos, ${caro.pruebas_unitarias} pruebas, todas pasan.`,
     pruebas_e2e: () =>
@@ -200,7 +249,7 @@ export function detalles(c, caras, fecha) {
     marcos_de_referencia: () =>
       `Archivos de datos/marcos/ del ${fecha}, cada uno con su versión; hay un mapa de equivalencias entre versiones.`,
     herramientas: () =>
-      `Archivos de datos/herramientas/ del ${fecha}: ${c.herramientas - 1} públicas con versión verificada y licencia, más la revisión documentada por una persona.`,
+      `Archivos de datos/herramientas/ del ${fecha}: ${c.herramientas_publicas ?? c.herramientas} públicas con versión verificada y licencia${c.herramientas_propias > 0 ? `, más ${c.herramientas_propias} propia${c.herramientas_propias === 1 ? "" : "s"} de HackGuard (la revisión documentada por una persona)` : ""}.`,
     pruebas_de_software_sin_control: () =>
       `Son las ${c.pruebas_de_software_sin_control} advertencias de \`pnpm catalogo:validar\`: el Anexo A gobierna sistemas de IA, así que las pruebas de software todavía no le dan evidencia a ningún control. Por eso el catálogo sale «con advertencias» y no «ok».`,
     casos_del_clasificador_demo: () =>

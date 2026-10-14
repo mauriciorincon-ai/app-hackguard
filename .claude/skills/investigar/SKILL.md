@@ -36,8 +36,8 @@ página está en `propuestas/.lecturas/<huella>.txt`, por líneas. **No las leas
 Una fuente `no_accesible` (401, 403, 429, pide sesión, sin red) **no se rodea**: no hay otra cabecera, otra ruta ni otro comando. La
 reportas al final: queda registrada como `fuente_no_accesible_al_agente`. Si la persona necesita ese documento, lo lee ella y lo aporta con
 `pnpm propuestas:aportar propuestas/entradas/<archivo> --corrida <corrida> --url <la dirección> --por "<su nombre>" --fecha AAAA-MM-DD`
-(un comando que **tú no corres**: corre en su terminal). Al aportarlo, el documento se verifica como una página leída; tú no lo tocas ni lo lees
-hasta que ella te pida volver a buscar en esa corrida.
+(un comando que **tú no corres**: corre en su terminal). Al aportarlo, el documento se verifica como una página leída; tú no lo
+tocas ni lo lees por tu cuenta, y solo lo citas si, cuando escribes el borrador de esa misma corrida, ya existe su `aportes.json` (paso 3).
 
 ## 3. Escribe el borrador
 
@@ -56,6 +56,9 @@ En `propuestas/corridas/<corrida>/propuesta.json` (la carpeta ya existe):
   - `herramienta`: `herramienta_id` y el `cambio` (campo, de, a, fecha).
 - Cada propuesta lleva **dos fuentes o más**: `url` (la de la consulta), `nombre`, `fragmento` (el pasaje LITERAL de la página, corto),
   `huella_de_la_pagina` (la de `consulta.json`, sin tocarla) y `leida` (la fecha de hoy). Las dos de la lista blanca del marco.
+  - **Si existe `propuestas/corridas/<corrida>/aportes.json`**, cada aporte es una página que una persona leyó por ti: cítala con su `url` y su
+    `huella_de_la_pagina` **de ese archivo** (en `consulta.json` esa fuente trae `huella_de_la_pagina: null`, porque no fue accesible); su texto
+    está en `propuestas/.lecturas/<huella>.txt` y se lee como cualquier otra página. Se verifica igual: el pasaje que cites tiene que estar en ella.
 - Español e inglés **redactados**, no traducidos. Frontera de contenido: qué se verifica, por qué importa, con qué herramienta y qué resultado
   se espera; ninguna carga ni procedimiento operativo.
 
