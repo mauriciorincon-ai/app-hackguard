@@ -215,3 +215,46 @@ constitución, S9-R9 (lista blanca del paquete público, H-2) y S9-R10 (registro
 
 **Una fila pagada a medias, dicho aquí:** S3-B11 borró los campos y el reexport sin lector; `rechazadasDe` y `CatalogoConError` se
 quedan porque son el estado de error del diseño (§ 6) y su disparador, un catálogo inválido, rompe el build antes de pintar la pantalla.
+
+## Auditoría de cierre (S9) · filas nuevas
+
+Salen de la auditoría de una pasada, por superficies (texto y alcance · motor, contratos y gates · UI, idioma, accesibilidad y privacidad).
+Ningún crítico. Cada fila dice su estado real: «pagado» con su commit y su test, o «abierta» con quién la paga.
+
+| Id | Sev | Dónde | Defecto | Estado |
+| --- | --- | --- | --- | --- |
+| S9-UI-M1 | M | `docs/BROCHURE.html` (`lienzo`) | sin `<main>`: `landmark-one-main` (moderate) | pagado e5af179 · `conoce.spec` (axe de cualquier impacto) |
+| S9-UI-M2 | M | `docs/BROCHURE.html` (`role="region"` en cada tarjeta) | regiones vacías en el árbol cuando la tarjeta está cerrada | pagado e5af179 · `conoce.spec` (`toHaveCount(0)` cerrada) |
+| S9-UI-B1 | B | `docs/BROCHURE.html` `@media print` | al imprimir, las secciones no reveladas salen en blanco | pagado e5af179 · `conoce.spec` «al imprimir» · demo en rojo |
+| S9-UI-B2 | B | `docs/BROCHURE.html`, `conmutadores.tsx` | el nombre del botón de idioma no contiene su texto visible | pagado e5af179 · `consola.test`, `conoce.spec` |
+| S9-UI-B3 | B | `instrumentation-client.ts` (`beforeSend`) | la garantía metadata-only no tenía prueba | pagado e5af179 · `sentry-cliente.test` · demo en rojo |
+| S9-UI-B4 | B | `tests/e2e/flujo-en.spec.ts` | faltaban `/catalogo/marcos`, `/catalogo/controles` y `/brecha/control` | pagado e5af179 |
+| S9-UI-B5 | B | `propuestas-pantalla.tsx` (rótulo «Ejecución») | el rótulo no decía costo | pagado 0e343f0 |
+| S9-UI-B6 | B | `carga-pantalla.tsx`, `propuestas-pantalla.tsx` (avisos vacíos) | título literal duplicado frente al dato | pagado 0e343f0 · `carga-vista.test` |
+| S9-UI-B7 | B | `marcos-pantalla.tsx`, `brecha/piezas.tsx` (plural de páginas) | «leyó 1 páginas» | pagado e5af179 |
+| S9-UI-B8 | B | `sprints/SPRINT_009-lote.md` (S7-B3) | fila contada como pagada, ya estaba en `main` | pagado d27dcd8 |
+| S9-UI-B9 | B | `serve.json`, `vercel.json` (`/conoce`) | `style-src 'unsafe-inline'` sin necesidad | pagado e5af179 · `documentos-del-hito.test` (hash del estilo) |
+| S9-E-A2 | A | `src/lib/evidencia/vista-de-carga.ts` (`comandos.confirmar`) | el comando de la pantalla lo bloquea el CLI (falta `--revisados`) | pagado 0e343f0 · `carga-vista.test` |
+| S9-E-A1 | A | `src/engine/propuestas/verificar.ts:363-374,458-462` | el filtro de órdenes sembradas se aplica a la página envuelta: una orden que cruza un salto de línea se escapa | abierta · relevo a Sonnet 5.5 |
+| S9-E-A3 | A | `scripts/cifras-del-export.mjs:183-203` | literales de cardinalidad en la prosa del export (familias, herramientas, «32», navegadores) | abierta · relevo a Sonnet 5.5 |
+| S9-E-M1 | M | `.claude/skills/investigar/SKILL.md:36-40` | la skill no consume el aporte (dice «volver a buscar», que no existe) | abierta · relevo a Sonnet 5.5 |
+| S9-E-M2 | M | `src/cli/propuestas.ts:277-385` (`aportar`) | acepta documentos de ISO/IEC 42001, cuya licencia no permite reproducir texto | abierta · **decisión del usuario** |
+| S9-E-M3 | M | `src/lib/propuestas/buscar.ts:126,134` | el tope de 5 MB solo mira `content-length` | abierta · relevo a Sonnet 5.5 |
+| S9-E-M4 | M | `src/cli/propuestas.ts:471-483` | el re-sellado se omite si falta la carpeta `.lecturas` entera | abierta · relevo a Sonnet 5.5 |
+| S9-E-M5 | M | `tests/unit/campos-con-lector.test.ts:28` | el patrón `\.frase\b` acepta un campo viejo: el gate no distingue | abierta · relevo a Sonnet 5.5 (con su demo) |
+| S9-E-M6 | M | `src/engine/propuestas/esquemas.ts:464,469` | `Aportes.corrida` no se valida contra la carpeta | abierta · relevo a Sonnet 5.5 |
+| S9-E-M7 | M | `src/lib/propuestas/vista.ts:352-363` | la señal `version_en_la_cita` se muestra como «cita sin verificar» | abierta · relevo a Sonnet 5.5 |
+| S9-E-M8 | M | `docs/brochure-export.json` | cifras de tests de antes de F3 | pagado al cierre (re-medida como último paso) |
+| S9-E-B1 | B | `src/engine/propuestas/verificar.ts` | marcas de instrucción duplicadas por página | abierta · relevo a Sonnet 5.5 |
+| S9-E-B2 | B | `tests/unit/brecha/calcular.test.ts` | aserción condicional que puede saltarse | abierta · relevo a Sonnet 5.5 |
+| S9-E-B3 | B | `src/cli/propuestas.ts:363-364` | la lectura se guarda antes de validar la fecha | abierta · relevo a Sonnet 5.5 |
+| S9-E-B4 | B | `src/lib/evidencia/cargar-evidencia.ts:270-298` | `rename` sin reversa a mitad del bucle | abierta · sin verificar la gravedad |
+| S9-E-B5 | B | `src/engine/propuestas/avisos.ts:5` | importa un valor de `verificar.ts` (arrastra el sellado) | abierta · relevo a Sonnet 5.5 |
+| S9-E-B6 | B | `src/lib/catalogo/etiquetas.ts` (`as unknown as`) | sin validación al cargar (la cubre el test) | abierta · relevo a Sonnet 5.5 |
+| S9-E-B7 | B | `tests/unit/carga-etiquetas.test.ts` | lista fija de 5 archivos; `nota.length > 20` casi vacío | abierta · relevo a Sonnet 5.5 |
+| S9-E-B8 | B | `src/engine/instrumento/cierres.ts` | `catch` de `RangeError` genérico | abierta · relevo a Sonnet 5.5 |
+| S9-E-B9 | B | `hooks.test`, `zap.test`, `ramas.test` | aserciones débiles o mal tituladas | abierta · relevo a Sonnet 5.5 |
+| S9-E-B10 | B | diff de tests | reformateo de más de 1400 líneas | sin acción (lo dice el auditor) |
+| S9-E-B11 | B | `decisions/011-…` | el formato `hackguard/aporte@1` no tiene nota de consecuencia | abierta · relevo a Sonnet 5.5 |
+| S9-E-B12 | B | `sprints/SPRINT_009-lote.md` (S8-F9) | el sitio citado no es el arreglo | abierta · relevo a Sonnet 5.5 |
+| S9-E-B13 | B | regla 15 | sin demo en rojo registrada para los gates unitarios nuevos | abierta · se registra en el cierre |
