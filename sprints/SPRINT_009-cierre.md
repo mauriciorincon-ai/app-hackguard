@@ -12,7 +12,7 @@ pr: 23
 
 - **Objetivo planeado:** cerrar el H-1: la deuda media y baja de S2 a S8 pagada, la arquitectura as-built, la ficha para CV Viva con cifras de comandos, el flujo principal también en inglés y la guía lista para el gate.
 - **Resultado:** entregado salvo una decisión tuya. Lote de 130 filas: 95 pagadas con su sha y su test, 26 «ya no aplica», 9 «imposible» con razón y sitio, 0 abiertas. BLUEPRINT, índice de ADR, design-system 1.1.0, export de 18 funciones, brochure en `/conoce` con política por huella, e2e en inglés y «Gate del H-1» (29 paradas).
-- **Estado:** completo, con una fila de auditoría abierta por tu decisión (S9-E-M2). CI (PR #23, leída al final): {CI}.
+- **Estado:** completo, con una fila de auditoría abierta por tu decisión (S9-E-M2). CI (PR #23, leída al final sobre `6477250`): `quality`, `e2e` (1293 en verde, 1 saltada, 0 flaky), `lighthouse` y `un-pr-vivo` en success, cada uno con conclusión propia; antes hubo dos corridas rojas, ya arregladas (`quality` por un test que dependía de derivados de build, `b6fb23b`; `e2e` por axe a media animación, `6477250`). `lighthouse` corrió por primera vez con `/conoce`: sin histórico, no puede afirmarse ni regresión ni su ausencia.
 - **Fases planeadas y resultado:** F1 lote de código (hecho) · F2 documentos del hito y `/conoce` (hecho) · F3 inglés, guía, auditoría de una pasada y cierre (hecho).
 - **Tiempo (`horas-sprint.mjs`, 40 commits, 2 sesiones):** estimado 7,75 h · real 4,3 h (F1 2,2 / 4 · F2 0,4 / 2 · F3 1,7 / 1,75) · diferencia −3,45 h. La heurística cuenta huecos ≤ 2 h y subestima: el span fue de 18,7 h.
 - **Entregables:** lote en `sprints/SPRINT_009-lote.md`; `docs/{BLUEPRINT,BROCHURE,BROCHURE-guion,brochure-export}`, `decisions/README.md`, `design-system.md`; `scripts/{cifras-del-export,csp-del-brochure}.mjs`; `tests/e2e/{flujo-en,conoce}.spec.ts`; bloque H1 de la guía; manual ES/EN con `aportar` y `/conoce`.
@@ -29,4 +29,4 @@ pr: 23
 - **Recomendación:** decidir M2 antes del merge; recorrer el gate del H-1 en dos sesiones; después H-2 si hay un uso real.
 - **Modelo por fase y relevos:** F1 y F2 Sonnet 5.5 · F3 Haiku 5.5 (e2e en inglés, manual, guía y los pagos acotados; bastó para eso). **Relevos: 1**, Haiku → Sonnet 5.5, pedido por el builder para los pagos de auditoría de código no trivial que el plan de F3 preveía (verificación de propuestas, validadores, export): Haiku no era el modelo para esos.
 - **Huellas:** la instantánea oficial no cambió (sin diff en `datos/instantaneas/`); el e2e de determinismo da en Chromium, Firefox y WebKit lo mismo que Node; la corrida real `INV-2026-10-12-01` se volvió a sellar (`ce357fc4…` → `9331fd9e…`) porque cambió la regla del filtro.
-- **Para mergear:** squash y borrar la rama; después `/cierre-sprint hackguard`. PRs abiertos al pedir el merge: {ABIERTOS}.
+- **Para mergear:** squash y borrar la rama; después `/cierre-sprint hackguard`. PRs abiertos al pedir el merge: solo este (#23).
