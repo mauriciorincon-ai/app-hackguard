@@ -95,3 +95,13 @@ that a pasted text carrying forged counts is rejected, because to the extractor 
 caught by the mark on any planted instruction and by the person who confirms the envelope, never by the code; confirming an envelope
 from a text the person did not produce is the person's responsibility. The experience that CI cannot see (does the inbox
 read well, does the mark stand out) goes to the human gate of the milestone.
+
+Added in Sprint 9 (RF-07.2b, contributing a document the agent could not read). A person can hand the code a document for an address
+the agent got `no_accesible` (403, a login, not text). It is stored in a new file per run, `aportes.json`, in a new format
+`hackguard/aporte@1` (`url`, `huella_de_la_pagina`, `caracteres`, `fecha`, `por`), and the formats of ADR-011 (`consulta@1`,
+`corrida@1`) are not touched. Sealing counts a contributed document as a page that was read, and the verification is the same one: the quote
+must be literal in it. Three conditions are enforced by code, not by the skill: only a person runs `pnpm propuestas:aportar` (the same
+boundary as `decidir`: not inside Claude Code, not without a terminal); only for an address that is `no_accesible` in the run's query and on
+the framework's allowlist; and only while the run has no decisions. The file must name the run of the folder it sits in. What the code
+cannot judge is whether the framework's licence lets a quote from the document be kept in the public repo: that is the open
+decision S9-E-M2 of the Sprint 9 audit, recorded in `sprints/SPRINT_009-lote.md` until the user decides it.
