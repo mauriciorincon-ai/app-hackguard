@@ -2,7 +2,7 @@
 // RF-07.2b: una persona aporta el documento que el agente no pudo leer (403, sesión, no era texto). El comando `aportar` registra el
 // documento en un archivo aparte (`aportes.json`) y guarda su lectura; el sellado lo cuenta como una página leída y la verificación es la
 // misma. Solo lo corre una persona (misma frontera que `decidir`), solo sobre lo que el agente no pudo leer, solo dentro de la lista
-// blanca del marco, y nunca sobre una corrida ya decidida.
+// blanca del marco, solo si la licencia del marco deja citar su texto (S9-E-M2), y nunca sobre una corrida ya decidida.
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
@@ -30,10 +30,11 @@ afterAll(() =>
   temporales.forEach((d) => rmSync(d, { recursive: true, force: true })),
 );
 
+const URL_NIST = "https://airc.nist.gov/airmf-resources/airmf/";
 const URL_ISO = "https://www.iso.org/standard/81230.html";
 const CORRIDA = "INV-2026-10-12-07";
 
-/** Una raíz de juguete con los datos, la demo y UNA corrida del investigador cuya consulta tiene una fuente que dio 403. */
+/** Una raíz de juguete con los datos, la demo y UNA corrida del investigador cuya consulta tiene fuentes que dieron 403. */
 function raizConUna403() {
   const raiz = mkdtempSync(path.join(tmpdir(), "hackguard-aportar-"));
   temporales.push(raiz);
@@ -64,16 +65,18 @@ function raizConUna403() {
       fecha: "2026-10-12",
       alcance: { es: "prueba", en: "test" },
       fuentes: [
+        fila(URL_NIST, "nist-ai-rmf"),
+        // Fuera de la lista blanca del marco: aunque dé 403, no se acepta un documento de ahí.
+        fila("https://ajeno.example/nist", "nist-ai-rmf"),
+        // En la lista blanca de su marco, pero su licencia no deja reproducir el texto.
         fila(URL_ISO, "iso-iec-42001"),
-        // Fuera de la lista blanca del marco (iso.org): aunque dé 403, no se acepta un documento de ahí.
-        fila("https://ajeno.example/iso", "iso-iec-42001"),
       ],
     }),
   );
   mkdirSync(path.join(raiz, "propuestas/entradas"), { recursive: true });
   writeFileSync(
-    path.join(raiz, "propuestas/entradas/iso.txt"),
-    "ISO/IEC 42001 trata de sistemas de gestión de inteligencia artificial. Esta es una copia que leyó una persona.",
+    path.join(raiz, "propuestas/entradas/nist.txt"),
+    "El AI RMF de NIST organiza la gestión del riesgo de la inteligencia artificial en cuatro funciones. Esta es una copia que leyó una persona.",
   );
   return raiz;
 }
@@ -81,11 +84,11 @@ function raizConUna403() {
 const aportar = (
   raiz: string,
   extra: Partial<Record<string, string>> = {},
-  archivo = "propuestas/entradas/iso.txt",
+  archivo = "propuestas/entradas/nist.txt",
 ) => {
   const a = {
     corrida: CORRIDA,
-    url: URL_ISO,
+    url: URL_NIST,
     por: "Ana",
     fecha: "2026-10-12",
     ...extra,
@@ -123,7 +126,7 @@ describe("aportar un documento que el agente no pudo leer", () => {
     );
     expect(aportes.aportes).toHaveLength(1);
     const a = aportes.aportes[0]!;
-    expect(a).toMatchObject({ url: URL_ISO, por: "Ana", fecha: "2026-10-12" });
+    expect(a).toMatchObject({ url: URL_NIST, por: "Ana", fecha: "2026-10-12" });
     const lectura = path.join(
       raiz,
       "propuestas/.lecturas",
@@ -145,7 +148,7 @@ describe("aportar un documento que el agente no pudo leer", () => {
 
   it("rechaza lo que el agente SÍ pudo leer o que no figura en la consulta", () => {
     const raiz = raizConUna403();
-    const r = aportar(raiz, { url: "https://www.iso.org/otra" });
+    const r = aportar(raiz, { url: "https://airc.nist.gov/otra" });
     expect(r.codigo).toBe(2);
     expect(r.salida).toContain("no figura como no accesible");
     expect(existsSync(rutaAportes(raiz))).toBe(false);
@@ -153,9 +156,35 @@ describe("aportar un documento que el agente no pudo leer", () => {
 
   it("rechaza una dirección fuera de la lista blanca del marco", () => {
     const raiz = raizConUna403();
-    const r = aportar(raiz, { url: "https://ajeno.example/iso" });
+    const r = aportar(raiz, { url: "https://ajeno.example/nist" });
     expect(r.codigo).toBe(2);
     expect(r.salida).toContain("lista blanca");
+    expect(existsSync(rutaAportes(raiz))).toBe(false);
+  });
+
+  // S9-E-M2: lo aportado se cita literal en una corrida que se publica con el repositorio; la licencia de ISO/IEC 42001 no lo permite.
+  it("rechaza el documento de un marco cuya licencia no deja reproducir su texto, y no guarda nada", () => {
+    const raiz = raizConUna403();
+    const r = aportar(raiz, { url: URL_ISO });
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("no deja reproducir su texto");
+    expect(r.salida).toContain("ISO/IEC 42001");
+    expect(existsSync(rutaAportes(raiz))).toBe(false);
+    const lecturas = path.join(raiz, "propuestas/.lecturas");
+    expect(existsSync(lecturas) ? readdirSync(lecturas) : []).toEqual([]);
+  });
+
+  it("un marco sin clasificar en licencias.json cuenta como «solo identificadores»: ante la duda, su texto no entra", () => {
+    const raiz = raizConUna403();
+    const archivo = path.join(raiz, "datos/propuestas/licencias.json");
+    const datos = JSON.parse(readFileSync(archivo, "utf8")) as {
+      marcos: Record<string, string>;
+    };
+    delete datos.marcos["nist-ai-rmf"];
+    writeFileSync(archivo, JSON.stringify(datos));
+    const r = aportar(raiz);
+    expect(r.codigo).toBe(2);
+    expect(r.salida).toContain("no deja reproducir su texto");
     expect(existsSync(rutaAportes(raiz))).toBe(false);
   });
 
@@ -249,11 +278,11 @@ describe("aportar un documento que el agente no pudo leer", () => {
         "--disable-warning=MODULE_TYPELESS_PACKAGE_JSON",
         path.join(RAIZ, "src/cli/propuestas.ts"),
         "aportar",
-        "propuestas/entradas/iso.txt",
+        "propuestas/entradas/nist.txt",
         "--corrida",
         CORRIDA,
         "--url",
-        URL_ISO,
+        URL_NIST,
         "--por",
         "Ana",
         "--fecha",

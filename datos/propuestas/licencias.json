@@ -1,0 +1,23 @@
+{
+  "version": "1",
+  "origen": {
+    "es": "Lo que la licencia de cada marco deja llevar a una propuesta (regla dura 11, DA-01; decisión del usuario del 2026-10-13 sobre S9-E-M2). «cita_con_atribucion»: una propuesta puede llevar un pasaje literal corto de sus fuentes, con su dirección y su nombre. «solo_identificadores»: su texto no se reproduce, así que ni se aporta un documento suyo ni se sella una propuesta con pasajes de sus fuentes, porque la corrida sellada se publica con el repositorio. Vive fuera de la huella de la instantánea oficial; un marco que no figure aquí cuenta como «solo_identificadores».",
+    "en": "What each framework's licence lets a proposal carry (hard rule 11, DA-01; the user's decision of 2026-10-13 on S9-E-M2). «cita_con_atribucion»: a proposal may carry a short literal passage from its sources, with its address and name. «solo_identificadores»: its text is not reproduced, so no document of it is contributed and no proposal with passages from its sources is sealed, because the sealed run is published with the repository. It lives outside the official snapshot's fingerprint; a framework missing here counts as «solo_identificadores»."
+  },
+  "marcos": {
+    "cwe": "cita_con_atribucion",
+    "iso-iec-42001": "solo_identificadores",
+    "lista-decision-14": "cita_con_atribucion",
+    "mitre-atlas": "cita_con_atribucion",
+    "mitre-attack": "cita_con_atribucion",
+    "nist-ai-100-2": "cita_con_atribucion",
+    "nist-ai-600-1": "cita_con_atribucion",
+    "nist-ai-rmf": "cita_con_atribucion",
+    "owasp-agentic-top10": "cita_con_atribucion",
+    "owasp-asvs": "cita_con_atribucion",
+    "owasp-llm-top10": "cita_con_atribucion",
+    "owasp-top10": "cita_con_atribucion",
+    "owasp-wstg": "cita_con_atribucion",
+    "typesafe-jev": "cita_con_atribucion"
+  }
+}

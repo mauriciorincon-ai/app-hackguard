@@ -43,7 +43,10 @@ import {
 import { enListaBlanca } from "../engine/propuestas/fuentes.ts";
 import { textoDeLaPagina } from "../engine/propuestas/pagina.ts";
 import { evaluarCriterios } from "../engine/propuestas/traza.ts";
-import { sellarCorrida } from "../engine/propuestas/verificar.ts";
+import {
+  dejaCitarSuTexto,
+  sellarCorrida,
+} from "../engine/propuestas/verificar.ts";
 import { cargarActivosDelBuild } from "../lib/activos/cargar.ts";
 import { origenDelActivo } from "../lib/evidencia/cargar-evidencia.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
@@ -329,6 +332,12 @@ async function principal(argv: string[]): Promise<number> {
       return rechazo(
         `«${url}» no está en la lista blanca de fuentes del marco: no se acepta un documento de otra dirección.`,
         `"${url}" is not in the framework's source allowlist: a document from another address is not accepted.`,
+      );
+    // Regla dura 11 (S9-E-M2): lo aportado se cita literal en una corrida que se publica con el repositorio.
+    if (!dejaCitarSuTexto(ctx.licencias, marco.id))
+      return rechazo(
+        `La licencia de ${marco.nombre} no deja reproducir su texto (${marco.licencia.exige.es}): no se aporta un documento suyo, porque sus pasajes viajarían en la corrida, que se publica con el repositorio.`,
+        `The licence of ${marco.nombre} does not allow reproducing its text (${marco.licencia.exige.en}): no document of it is contributed, because its passages would travel in the run, which is published with the repository.`,
       );
     const sellada = cargadas.corridas.find((c) => c.carpeta === carpeta);
     if (sellada !== undefined) {

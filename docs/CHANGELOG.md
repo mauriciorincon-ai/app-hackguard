@@ -10,6 +10,7 @@ The closing sprint of milestone H-1: the debt of seven sprints paid, the archite
 ### Added
 
 - **`propuestas:aportar`** (RF-07.2b): a person contributes the page the researcher could not read; it is sealed like a page the agent read (`hackguard/aporte@1`, `aportes.json`), and blocked for every Claude Code session.
+- **`datos/propuestas/licencias.json`:** what each framework's licence lets a proposal quote. A framework whose licence allows identifiers only (ISO/IEC 42001) is neither contributed with `aportar` nor quoted in a sealed run (`borrador/licencia-sin-texto`), because the run is published with the repository.
 - **RF-07.5 as a sealing rule:** a version notice needs the new version inside a verified quote; otherwise the proposal pauses. The planted-order filter now scans the whole page read, and a metric, a date or a version needs its value inside its quote.
 - **`datos/vistas/etiquetas.json`:** the vocabulary of the catalog, controls and frameworks screens as data, outside the snapshot's fingerprint. A test fails if any component writes a state role or symbol.
 - **Titles per page** (WCAG 2.4.2), the paging hands the focus over at the ends (2.4.3), and the buttons that open a panel say `aria-expanded`.

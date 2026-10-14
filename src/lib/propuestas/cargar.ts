@@ -19,6 +19,7 @@ import {
   Consulta,
   Corrida,
   Decision,
+  LicenciasDeMarcos,
   UmbralesDePropuestas,
   type Aporte,
 } from "../../engine/propuestas/esquemas.ts";
@@ -47,6 +48,12 @@ export const cargarUmbralesDePropuestas = (
   raiz: string = process.cwd(),
 ): UmbralesDePropuestas =>
   UmbralesDePropuestas.parse(leerJson(raiz, "datos/propuestas/umbrales.json"));
+
+/** Lo que la licencia de cada marco deja llevar a una propuesta (regla dura 11, S9-E-M2). */
+export const cargarLicenciasDeMarcos = (
+  raiz: string = process.cwd(),
+): LicenciasDeMarcos =>
+  LicenciasDeMarcos.parse(leerJson(raiz, "datos/propuestas/licencias.json"));
 
 function compilar(datos: unknown, donde: string): PatronCompilado[] {
   const { patrones, problemas } = compilarPatrones(
@@ -178,6 +185,7 @@ export function contextoDeVerificacion(
     patronesDeContenido: cargarPatronesDeContenido(raiz),
     patronesDeInstrucciones: cargarPatronesDeInstrucciones(raiz),
     lecturas: lecturasDeDisco(raiz),
+    licencias: cargarLicenciasDeMarcos(raiz).marcos,
   };
 }
 

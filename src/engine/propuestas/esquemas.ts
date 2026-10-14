@@ -488,3 +488,18 @@ export const UmbralesDePropuestas = z.strictObject({
   origen: Texto,
 });
 export type UmbralesDePropuestas = z.infer<typeof UmbralesDePropuestas>;
+
+/** Lo que la licencia de un marco deja llevar a una propuesta (regla dura 11): un pasaje con atribución, o solo identificadores. */
+export const PERMISOS_DE_CITA = [
+  "cita_con_atribucion",
+  "solo_identificadores",
+] as const;
+export type PermisoDeCita = (typeof PERMISOS_DE_CITA)[number];
+
+/** `datos/propuestas/licencias.json`: fuera de la huella de la instantánea oficial (S9-E-M2). */
+export const LicenciasDeMarcos = z.strictObject({
+  version: Nombre,
+  origen: Texto,
+  marcos: z.record(IdMinusculas, z.enum(PERMISOS_DE_CITA)),
+});
+export type LicenciasDeMarcos = z.infer<typeof LicenciasDeMarcos>;
