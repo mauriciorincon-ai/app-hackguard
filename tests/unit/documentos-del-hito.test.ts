@@ -3,6 +3,7 @@
 // sistema de diseño. Un documento de arquitectura que describe lo planeado y no lo construido es una frase caducada de página entera:
 // aquí se exige que no tenga marcadores sin llenar, que cada ruta que cita exista, que cada ADR esté indexado, que el brochure diga
 // las mismas cifras que el export y cada funcionalidad, y que la cabecera de /conoce lleve la huella del script que hoy tiene.
+import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -66,6 +67,18 @@ const NO_SON_RUTAS = new Set([
   "mauriciorincon-ai/app-hackguard",
 ]);
 
+/**
+ * ¿La ruta es un derivado que git ignora (`out/`, `public/diseno`, `public/conoce/`, `propuestas/.lecturas/`)? Existe después de un build o de una
+ * corrida y no en un checkout limpio: que falte ahí no es un olvido del documento. Se le pregunta a git, con y sin barra final (una carpeta
+ * que no existe no se sabe carpeta).
+ */
+const ignoradaPorGit = (ruta: string): boolean =>
+  [ruta.replace(/\/$/, ""), `${ruta.replace(/\/$/, "")}/`].some(
+    (r) =>
+      spawnSync("git", ["check-ignore", "-q", "--", r], { cwd: RAIZ })
+        .status === 0,
+  );
+
 describe("docs/BLUEPRINT.html (as built)", () => {
   const html = leer("docs/BLUEPRINT.html");
   const sinEstilo = html.replace(/<style>[\s\S]*?<\/style>/, "");
@@ -92,10 +105,20 @@ describe("docs/BLUEPRINT.html (as built)", () => {
       .filter((c) => !NO_SON_RUTAS.has(c))
       .filter((c) =>
         c.includes("/")
-          ? !existsSync(path.join(RAIZ, c.replace(/\/$/, "")))
+          ? !existsSync(path.join(RAIZ, c.replace(/\/$/, ""))) &&
+            !ignoradaPorGit(c)
           : !nombres.has(c),
       );
     expect(faltan).toEqual([]);
+  });
+
+  // La CI corre sobre un checkout limpio, sin los derivados: el test no puede depender de que existan en una máquina con build (S9, CI del PR).
+  it("solo perdona lo ausente que git ignora: una ruta inventada sigue faltando", () => {
+    expect(ignoradaPorGit("out/")).toBe(true);
+    expect(ignoradaPorGit("propuestas/.lecturas")).toBe(true);
+    expect(ignoradaPorGit("public/conoce/index.html")).toBe(true);
+    expect(ignoradaPorGit("src/no-existe-nunca.ts")).toBe(false);
+    expect(ignoradaPorGit("docs/nada.md")).toBe(false);
   });
 
   it("cita bastantes rutas (no es un documento vacío) y nombra las cuatro familias de piezas", () => {
