@@ -67,6 +67,7 @@ import {
 } from "../lib/propuestas/aplicar.ts";
 import { puedeDecidir } from "../lib/propuestas/frontera.ts";
 import { leerTextoPegado } from "../lib/propuestas/leer.ts";
+import { huellaDeTexto } from "../engine/propuestas/citas.ts";
 import { guardarLectura } from "../lib/propuestas/lecturas.ts";
 
 const CODIGOS = { ok: 0, bloqueado: 2, uso: 3 } as const;
@@ -360,7 +361,8 @@ async function principal(argv: string[]): Promise<number> {
         "El documento no tiene texto que leer.",
         "The document has no text to read.",
       );
-    const huellaDelDocumento = await guardarLectura(raiz, texto);
+    // Primero se calcula la huella y se valida el aporte; la lectura se guarda después: una fecha o un nombre inválidos no dejan un archivo huérfano.
+    const huellaDelDocumento = await huellaDeTexto(texto);
     const aportes = Aportes.parse({
       formato: FORMATO_DE_APORTE,
       corrida: id,
@@ -375,6 +377,7 @@ async function principal(argv: string[]): Promise<number> {
         },
       ],
     });
+    await guardarLectura(raiz, texto);
     const destino = path.join(raiz, carpeta, "aportes.json");
     writeFileSync(`${destino}.tmp`, json(aportes));
     renameSync(`${destino}.tmp`, destino);
@@ -470,26 +473,42 @@ async function principal(argv: string[]): Promise<number> {
       }
       // Si el borrador sigue junto a la corrida, sellarlo otra vez da la misma huella: nadie editó lo sellado ni cambió el catálogo.
       if (!existsSync(path.join(raiz, c.carpeta, "propuesta.json"))) continue;
-      // Las lecturas de una corrida real (páginas o texto pegado) viven en `propuestas/.lecturas/`, que git ignora: en un clon limpio no están y el
-      // re-sellado daría otra huella por una razón que no es un defecto. Se dice, no se falla.
-      if (
-        c.lugar === "real" &&
-        !existsSync(path.join(raiz, CARPETA_DE_LECTURAS))
-      ) {
-        avisos.push(
-          `${c.carpeta}: no se pudo sellar otra vez aquí (faltan las lecturas de ${CARPETA_DE_LECTURAS}/, que git ignora); se comprobó solo lo sellado`,
-        );
-        continue;
-      }
       try {
         const borrador = cargarBorrador(raiz, c.carpeta);
+        const consulta = cargarConsulta(raiz, c.carpeta);
+        const aportes = cargarAportes(raiz, c.carpeta);
+        // Las lecturas de una corrida real (páginas, texto pegado, aportes) viven en `propuestas/.lecturas/`, que git ignora: en un clon limpio
+        // no están y el re-sellado daría otra huella por una razón que no es un defecto. Se decide por corrida y por lo que ella cita (una
+        // carpeta a medias también avisa), y se dice, no se falla.
+        if (c.lugar === "real") {
+          const citadas = new Set<string>([
+            ...borrador.propuestas.flatMap((p) =>
+              p.tipo === "sobre"
+                ? [p.texto.huella]
+                : p.fuentes.map((f) => f.huella_de_la_pagina),
+            ),
+            ...(consulta?.fuentes ?? []).flatMap((f) =>
+              f.huella_de_la_pagina === null ? [] : [f.huella_de_la_pagina],
+            ),
+            ...aportes.map((a) => a.huella_de_la_pagina),
+          ]);
+          const faltan = [...citadas].filter(
+            (h) => ctx.lecturas(h) === undefined,
+          );
+          if (faltan.length > 0) {
+            avisos.push(
+              `${c.carpeta}: no se pudo sellar otra vez aquí (faltan ${faltan.length} de ${citadas.size} lecturas de ${CARPETA_DE_LECTURAS}/, que git ignora); se comprobó solo lo sellado`,
+            );
+            continue;
+          }
+        }
         const primero = c.corrida.propuestas[0];
         const r = await sellarCorrida(
           borrador,
-          cargarConsulta(raiz, c.carpeta),
+          consulta,
           ctx,
           primero === undefined ? 1 : numeroDe(primero.id),
-          cargarAportes(raiz, c.carpeta),
+          aportes,
         );
         if (!r.ok)
           problemas.push(`${c.carpeta}: el borrador ya no se puede sellar`);

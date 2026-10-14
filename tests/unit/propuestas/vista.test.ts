@@ -320,6 +320,7 @@ describe("los campos del contrato tienen su lector en la pantalla (auditoría S8
     expect(fila("PROP-0032", w).fuentes[0]!.aportada).toEqual({
       por: "Ana",
       fecha: "2026-10-12",
+      caracteres: 10,
     });
     expect(fila("PROP-0032", w).fuentes[1]!.aportada).toBeNull();
     expect(fila("PROP-0032").fuentes[0]!.aportada).toBeNull();

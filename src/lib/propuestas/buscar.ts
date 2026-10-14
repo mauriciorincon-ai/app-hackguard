@@ -34,11 +34,48 @@ export type Peticion = (
     redirect: "manual";
     signal: AbortSignal;
   },
-) => Promise<{
+) => Promise<RespuestaDePagina>;
+
+/** Lo mínimo que se usa de una respuesta: `fetch` la cumple y los tests la doblan. `body` es opcional: sin él se lee con `text()`. */
+export interface RespuestaDePagina {
   status: number;
   headers: { get(nombre: string): string | null };
   text(): Promise<string>;
-}>;
+  body?: {
+    getReader(): {
+      read(): Promise<{ done: boolean; value?: Uint8Array }>;
+      cancel(): Promise<void>;
+    };
+  } | null;
+}
+
+/**
+ * Lee el cuerpo con tope de bytes. Con flujo, corta al pasarse (una respuesta sin `content-length`, en trozos o comprimida, no baja
+ * entera); sin flujo, mide el texto ya leído. Devuelve null si se pasó del tope.
+ */
+async function leerConTope(r: RespuestaDePagina): Promise<string | null> {
+  if (r.body) {
+    const lector = r.body.getReader();
+    const decodificador = new TextDecoder();
+    let total = 0;
+    let texto = "";
+    for (;;) {
+      const { done, value } = await lector.read();
+      if (done) break;
+      total += value?.byteLength ?? 0;
+      if (total > MAXIMO_DE_BYTES) {
+        await lector.cancel();
+        return null;
+      }
+      if (value) texto += decodificador.decode(value, { stream: true });
+    }
+    return texto + decodificador.decode();
+  }
+  const texto = await r.text();
+  return new TextEncoder().encode(texto).byteLength > MAXIMO_DE_BYTES
+    ? null
+    : texto;
+}
 
 export interface OpcionesDeBusqueda {
   /** Un marco, o todos los que aplican a una familia, o todos. */
@@ -131,7 +168,14 @@ async function leerUna(
       });
     let cuerpo: string;
     try {
-      cuerpo = await r.text();
+      const leido = await leerConTope(r);
+      if (leido === null)
+        return fila({
+          estado: "no_accesible",
+          http: r.status,
+          motivo: "http_otro",
+        });
+      cuerpo = leido;
     } catch {
       return fila({
         estado: "no_accesible",

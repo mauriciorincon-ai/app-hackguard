@@ -73,6 +73,71 @@ describe("la búsqueda no se cuelga ni lee de más (auditoría S8, F6)", () => {
     expect(senal).toBeInstanceOf(AbortSignal);
     expect(TIEMPO_MAXIMO_DE_PETICION_MS).toBeGreaterThan(0);
   });
+  // S9-E-M3: el tope de bytes no depende de que el servidor declare `content-length`.
+  it("un cuerpo en trozos sin content-length que pasa de 5 MB se corta y queda «no_accesible»", async () => {
+    let cancelado = false;
+    let leidos = 0;
+    const trozo = new Uint8Array(1_000_000).fill(97);
+    const peticion: Peticion = async () => ({
+      status: 200,
+      headers: {
+        get: (n: string) => (n === "content-type" ? "text/plain" : null),
+      },
+      text: async () => {
+        throw new Error("no debe leerse entero con text()");
+      },
+      body: {
+        getReader: () => ({
+          read: async () => {
+            leidos += 1;
+            return leidos > 50 ? { done: true } : { done: false, value: trozo };
+          },
+          cancel: async () => {
+            cancelado = true;
+          },
+        }),
+      },
+    });
+    const c = await buscar(instantanea, OPCIONES, peticion, carpeta());
+    expect(c.fuentes[0]).toMatchObject({
+      estado: "no_accesible",
+      motivo: "http_otro",
+    });
+    expect(cancelado).toBe(true);
+    expect(leidos).toBeLessThan(10);
+  });
+  it("sin flujo, un texto de más de 5 MB leído con text() también queda «no_accesible»", async () => {
+    const peticion: Peticion = async () =>
+      respuesta(async () => "a".repeat(6_000_000));
+    const c = await buscar(instantanea, OPCIONES, peticion, carpeta());
+    expect(c.fuentes[0]).toMatchObject({
+      estado: "no_accesible",
+      motivo: "http_otro",
+    });
+  });
+  it("un cuerpo en trozos bajo el tope se lee entero", async () => {
+    const cuerpo = new TextEncoder().encode("hola, mundo");
+    let dado = false;
+    const peticion: Peticion = async () => ({
+      status: 200,
+      headers: {
+        get: (n: string) => (n === "content-type" ? "text/plain" : null),
+      },
+      text: async () => "",
+      body: {
+        getReader: () => ({
+          read: async () => {
+            if (dado) return { done: true };
+            dado = true;
+            return { done: false, value: cuerpo };
+          },
+          cancel: async () => {},
+        }),
+      },
+    });
+    const c = await buscar(instantanea, OPCIONES, peticion, carpeta());
+    expect(c.fuentes[0]).toMatchObject({ estado: "leida", caracteres: 11 });
+  });
   it("una fuente que nunca contesta vence y queda «sin_red», sin colgar la búsqueda", async () => {
     const peticion: Peticion = (_url, init) => colgada(init.signal);
     const c = await buscar(
@@ -172,6 +237,15 @@ describe("`validar` en un clon limpio (auditoría S8, F8)", () => {
     expect(r.salida).toContain("no se pudo sellar otra vez aquí");
     expect(r.salida).toContain("INV-2026-10-12-01");
     expect(r.salida).toContain("EXT-2026-10-12-01");
+  });
+  // S9-E-M4: la decisión es por corrida y por lo que cada una cita, no por la existencia de la carpeta.
+  it("con la carpeta de lecturas a medias también avisa cuántas faltan y no falla", () => {
+    const raiz = clonLimpio();
+    mkdirSync(path.join(raiz, "propuestas/.lecturas"), { recursive: true });
+    const r = validar(raiz);
+    expect(r.codigo).toBe(0);
+    expect(r.salida).toContain("no se pudo sellar otra vez aquí");
+    expect(r.salida).toMatch(/faltan \d+ de \d+ lecturas/);
   });
   it("un borrador roto NO se traga: se nombra y sale con error", () => {
     const raiz = clonLimpio();

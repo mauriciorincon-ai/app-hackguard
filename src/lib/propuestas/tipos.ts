@@ -30,7 +30,7 @@ export interface FuenteVista {
   /** El día en que el investigador leyó la página. */
   leida: string;
   /** Si la página la aportó una persona porque el agente no pudo leerla (RF-07.2b): quién y cuándo. */
-  aportada: { por: string; fecha: string } | null;
+  aportada: { por: string; fecha: string; caracteres: number } | null;
   /** Dónde está la fuente (sitio oficial, registro…), si la propuesta lo dice. */
   donde: Bilingue | null;
   url: string;

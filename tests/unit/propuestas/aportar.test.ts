@@ -9,6 +9,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   statSync,
@@ -21,6 +22,7 @@ import {
   Aportes,
   FORMATO_DE_CONSULTA,
 } from "../../../src/engine/propuestas/esquemas.ts";
+import { cargarAportes } from "../../../src/lib/propuestas/cargar.ts";
 import { RAIZ } from "./ayuda.ts";
 
 const temporales: string[] = [];
@@ -172,6 +174,32 @@ describe("aportar un documento que el agente no pudo leer", () => {
     const otra = aportar(raiz);
     expect(otra.codigo).toBe(2);
     expect(otra.salida).toContain("Ya se aportó");
+  });
+
+  // S9-E-B3: una fecha con forma válida pero que no existe falla el esquema; la lectura no se guarda antes.
+  it("una fecha que no existe en el calendario no deja una lectura huérfana", () => {
+    const raiz = raizConUna403();
+    const r = aportar(raiz, { fecha: "2026-13-45" });
+    expect(r.codigo).not.toBe(0);
+    expect(existsSync(rutaAportes(raiz))).toBe(false);
+    const lecturas = path.join(raiz, "propuestas/.lecturas");
+    expect(existsSync(lecturas) ? readdirSync(lecturas) : []).toEqual([]);
+  });
+
+  // S9-E-M6: lo aportado es de la corrida que lo nombra; un archivo copiado a otra carpeta no se acepta.
+  it("un aportes.json que nombra a otra corrida se rechaza al cargar", () => {
+    const raiz = raizConUna403();
+    expect(aportar(raiz).codigo).toBe(0);
+    const otra = path.join(raiz, "propuestas/corridas/INV-2026-10-12-08");
+    mkdirSync(otra, { recursive: true });
+    cpSync(rutaAportes(raiz), path.join(otra, "aportes.json"));
+    expect(() =>
+      cargarAportes(raiz, "propuestas/corridas/INV-2026-10-12-08"),
+    ).toThrow(/aportes\.json es de otra corrida/);
+    // En su propia carpeta se carga.
+    expect(cargarAportes(raiz, `propuestas/corridas/${CORRIDA}`)).toHaveLength(
+      1,
+    );
   });
 
   it("una corrida que ya tiene decisiones no recibe más documentos", () => {

@@ -3,7 +3,7 @@
 // decisiones. Es la única pieza de las propuestas que toca el sistema de archivos: el motor recibe objetos y no sabe de dónde vinieron.
 // Se ejecuta en el build y en el CLI (Node), jamás en el navegador.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { PatronesDelFiltro } from "../../engine/catalogo/esquemas.ts";
 import {
   compilarPatrones,
@@ -255,10 +255,13 @@ export async function cargarCorridas(
       let aportes: Aporte[] = [];
       try {
         aportes = cargarAportes(raiz, carpeta);
-      } catch {
+      } catch (e) {
         problemas.push({
           ruta: `${carpeta}/aportes.json`,
-          detalle: "no cumple su esquema o no es un JSON válido",
+          detalle:
+            e instanceof Error && e.message.startsWith(MENSAJE_DE_OTRA_CORRIDA)
+              ? e.message
+              : "no cumple su esquema o no es un JSON válido",
         });
         continue;
       }
@@ -273,6 +276,8 @@ export async function cargarCorridas(
   return { corridas, problemas };
 }
 
+const MENSAJE_DE_OTRA_CORRIDA = "aportes.json es de otra corrida";
+
 /** El borrador que escribió el modelo y la consulta que escribió el código, de una carpeta de corrida. */
 export function cargarBorrador(raiz: string, carpeta: string): Borrador {
   return Borrador.parse(leerJson(raiz, `${carpeta}/propuesta.json`));
@@ -281,9 +286,16 @@ export function cargarBorrador(raiz: string, carpeta: string): Borrador {
 /** Los documentos que una persona aportó a una corrida (RF-07.2b); vacío si no hay `aportes.json`. */
 export function cargarAportes(raiz: string, carpeta: string): Aporte[] {
   const ruta = join(raiz, carpeta, "aportes.json");
-  return existsSync(ruta)
-    ? Aportes.parse(JSON.parse(readFileSync(ruta, "utf8")) as unknown).aportes
-    : [];
+  if (!existsSync(ruta)) return [];
+  const leidos = Aportes.parse(
+    JSON.parse(readFileSync(ruta, "utf8")) as unknown,
+  );
+  // Un aportes.json copiado a otra corrida se rechaza: lo aportado es de la corrida que lo nombra, no de la carpeta donde cayó.
+  if (leidos.corrida !== basename(carpeta))
+    throw new Error(
+      `${MENSAJE_DE_OTRA_CORRIDA} (${leidos.corrida}, no ${basename(carpeta)})`,
+    );
+  return leidos.aportes;
 }
 
 export function cargarConsulta(raiz: string, carpeta: string): Consulta | null {

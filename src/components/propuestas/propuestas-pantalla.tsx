@@ -107,11 +107,13 @@ function Fuentes({ f }: { f: FilaDePropuesta }) {
                   ·{" "}
                   <span lang="es" data-aportada>
                     aportada por <span data-neutro>{x.aportada.por}</span> el{" "}
-                    <Dato>{x.aportada.fecha}</Dato>
+                    <Dato>{x.aportada.fecha}</Dato> (
+                    <Dato>{x.aportada.caracteres}</Dato> caracteres)
                   </span>
                   <span lang="en" data-aportada>
                     contributed by <span data-neutro>{x.aportada.por}</span> on{" "}
-                    <Dato>{x.aportada.fecha}</Dato>
+                    <Dato>{x.aportada.fecha}</Dato> (
+                    <Dato>{x.aportada.caracteres}</Dato> characters)
                   </span>
                 </>
               ) : null}
@@ -901,10 +903,7 @@ export function PropuestasPantalla({ v }: { v: VistaDePropuestas }) {
       ) : null}
 
       {v.vacio ? (
-        <Aviso
-          etiqueta={v.etiquetaDeVacio}
-          titulo={v.etiquetaDeVacio.nombre}
-        >
+        <Aviso etiqueta={v.etiquetaDeVacio} titulo={v.etiquetaDeVacio.nombre}>
           <p>
             <T
               t={{

@@ -162,7 +162,13 @@ function fuentesDe(
       nombre: f.nombre,
       leida: f.leida,
       aportada:
-        aporte === undefined ? null : { por: aporte.por, fecha: aporte.fecha },
+        aporte === undefined
+          ? null
+          : {
+              por: aporte.por,
+              fecha: aporte.fecha,
+              caracteres: aporte.caracteres,
+            },
       donde: f.donde ?? null,
       url: f.url,
       etiqueta: etiquetaDePropuesta(m.etiquetas, `fuente_${estado}`),
