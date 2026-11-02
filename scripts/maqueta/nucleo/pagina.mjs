@@ -13,7 +13,8 @@ const PRIMER_ACTIVO = Object.keys(ACTIVOS)[0];
 
 const SALTO = { es: "Saltar al contenido", en: "Skip to content" };
 const TEMA = { es: "Cambiar entre tema oscuro y claro", en: "Switch between dark and light theme" };
-const IDIOMA = { es: "Cambiar el idioma a inglés", en: "Switch the language to Spanish" };
+// El nombre accesible contiene el texto visible del botón («ES» o «EN»), como en el producto (WCAG 2.5.3, S9-UI-B2).
+const IDIOMA = { es: "ES · Cambiar el idioma a inglés", en: "EN · Switch the language to Spanish" };
 const SALA = { es: "Sala de diseño", en: "Design room" };
 const MATRIZ = { es: "Qué revisar y qué deberías ver", en: "What to check and what you should see" };
 const COLUMNAS = [
