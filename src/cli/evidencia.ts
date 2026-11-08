@@ -51,6 +51,8 @@ import {
   siguienteIdDeHallazgo,
 } from "../engine/hallazgos/apertura.ts";
 import { evaluarHallazgo } from "../engine/hallazgos/ciclo.ts";
+import type { EstadoDeHallazgo } from "../engine/hallazgos/esquemas.ts";
+import { etiquetaDeEstadoDeHallazgo } from "../lib/evidencia/etiqueta-de-estado.ts";
 import { armarLote, siguienteIdDeLote } from "../engine/lotes/armar.ts";
 import { confirmarLote } from "../engine/lotes/confirmar.ts";
 import { revisionDelLote } from "../engine/lotes/revision.ts";
@@ -76,6 +78,7 @@ import {
   CARPETA_DE_SOBRES_DEMO,
   CARPETA_DE_SOBRES_PRIVADA,
   cargarEscalaIa,
+  cargarEtiquetasDeHallazgo,
   cargarPlazos,
   escribirDato,
   escribirDatosJuntos,
@@ -163,6 +166,25 @@ function nombreDeEstado(
   const v = i.catalogo.estados.find((x) => x.id === vocabulario);
   const e = v?.estados.find((x) => x.id === id);
   return e?.nombre ?? { es: id, en: id };
+}
+
+/** El nombre de un estado de hallazgo: del vocabulario de la instantánea oficial o, para los que nacieron después (`reabierto`), de las etiquetas del hallazgo (que solo se leen entonces). */
+function nombreDeEstadoDeHallazgo(
+  raiz: string,
+  i: Instantanea,
+  estado: EstadoDeHallazgo,
+): TextoBilingue {
+  const enLaInstantanea = i.catalogo.estados
+    .find((v) => v.id === "estado_de_hallazgo")
+    ?.estados.find((e) => e.id === estado);
+  return (
+    enLaInstantanea ??
+    etiquetaDeEstadoDeHallazgo(
+      i.catalogo,
+      cargarEtiquetasDeHallazgo(raiz),
+      estado,
+    )
+  ).nombre;
 }
 
 async function cargarLibro(raiz: string) {
@@ -844,9 +866,9 @@ async function principal(argv: string[]): Promise<number> {
     for (const situacion of situaciones)
       filas.push({
         situacion,
-        estado: nombreDeEstado(
+        estado: nombreDeEstadoDeHallazgo(
+          raiz,
           L.instantanea,
-          "estado_de_hallazgo",
           situacion.evaluacion.estado,
         ),
         nivel: nombreDeEstado(
@@ -926,9 +948,9 @@ async function principal(argv: string[]): Promise<number> {
       L.libro.map((s) => s.sobre),
     );
     if (actual.ok && ESTADOS_TERMINALES.has(actual.evaluacion.estado)) {
-      const estado = nombreDeEstado(
+      const estado = nombreDeEstadoDeHallazgo(
+        raiz,
         L.instantanea,
-        "estado_de_hallazgo",
         actual.evaluacion.estado,
       );
       escribirTexto(
@@ -989,7 +1011,7 @@ async function principal(argv: string[]): Promise<number> {
       L.libro.map((s) => s.sobre),
     );
     const estado = r.ok
-      ? nombreDeEstado(L.instantanea, "estado_de_hallazgo", r.evaluacion.estado)
+      ? nombreDeEstadoDeHallazgo(raiz, L.instantanea, r.evaluacion.estado)
       : { es: "?", en: "?" };
     escribirTexto(
       o.idioma === "es"

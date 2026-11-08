@@ -1,8 +1,8 @@
 {
   "version": "1",
   "nota": {
-    "es": "Las etiquetas de estado de las pantallas de hallazgo que el vocabulario del catálogo (datos/estados.json) no tiene —plazo, avisos y eslabones de la cadena de cierre—, el orden del selector de hallazgos y las razones por las que una re-prueba no cierra un hallazgo. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
-    "en": "The status labels of the finding screens that the catalog's vocabulary (datos/estados.json) lacks —deadline, notices and the links of the closure chain—, the order of the finding selector and the reasons a re-test does not close a finding. Role and symbol come from here, never from a component (hard rule 12)."
+    "es": "Las etiquetas de estado de las pantallas de hallazgo que el vocabulario del catálogo (datos/estados.json) no tiene —plazo, avisos y eslabones de la cadena de cierre—, el estado «reabierto» (el vocabulario del catálogo no lo tiene y su huella no se mueve), el orden del selector de hallazgos y las razones por las que una re-prueba no cierra un hallazgo. Rol y símbolo salen de aquí, nunca de un componente (regla dura 12).",
+    "en": "The status labels of the finding screens that the catalog's vocabulary (datos/estados.json) lacks —deadline, notices and the links of the closure chain—, the «reopened» state (the catalog vocabulary lacks it and its fingerprint does not move), the order of the finding selector and the reasons a re-test does not close a finding. Role and symbol come from here, never from a component (hard rule 12)."
   },
   "etiquetas": [
     {
@@ -84,6 +84,15 @@
       "nombre": {
         "es": "Vector válido y completo",
         "en": "Valid, complete vector"
+      }
+    },
+    {
+      "id": "reabierto",
+      "rol": "falla",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Reabierto: volvió a fallar",
+        "en": "Reopened: failed again"
       }
     },
     {
@@ -177,6 +186,15 @@
       }
     },
     {
+      "id": "cadena_reabierto",
+      "rol": "falla",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Reabierto por una re-prueba que volvió a fallar",
+        "en": "Reopened by a re-test that failed again"
+      }
+    },
+    {
       "id": "cadena_sin_cerrar",
       "rol": "neutro",
       "simbolo": "vacio",
@@ -232,6 +250,7 @@
     }
   ],
   "orden_del_selector": [
+    "reabierto",
     "abierto",
     "corregido",
     "re_probado",
@@ -316,6 +335,20 @@
       "nombre": {
         "es": "La re-prueba usó menos repeticiones (k) que la prueba original",
         "en": "The re-test used fewer repetitions (k) than the original test"
+      }
+    },
+    {
+      "id": "anterior_al_cierre",
+      "nombre": {
+        "es": "La re-prueba no es posterior al cierre: para reabrir, su fecha debe ser mayor que la del cierre",
+        "en": "The re-test is not later than the closure: to reopen, its date must be after the closure's"
+      }
+    },
+    {
+      "id": "no_falla",
+      "nombre": {
+        "es": "La re-prueba no falló, así que no hay nada que reabrir",
+        "en": "The re-test did not fail, so there is nothing to reopen"
       }
     }
   ]

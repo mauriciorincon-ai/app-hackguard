@@ -23,6 +23,8 @@ export const ESTADOS_DE_HALLAZGO = [
   "abierto",
   "corregido",
   "re_probado",
+  /** Estaba cerrado por una re-prueba y una persona confirmó otra, posterior, que vuelve a fallar (D5, RF-04.9). */
+  "reabierto",
   "cerrado",
   "cerrado_por_eliminacion",
   "no_reproducible",
@@ -123,6 +125,10 @@ export const MOTIVOS_DE_RECHAZO = [
   "otra_version",
   "otro_selector",
   "k_menor",
+  /** Para reabrir: la re-prueba no es posterior al cierre (la fecha civil debe ser estrictamente mayor). */
+  "anterior_al_cierre",
+  /** Para reabrir: la re-prueba no falló, así que no hay nada que reabrir. */
+  "no_falla",
 ] as const;
 export type MotivoDeRechazo = (typeof MOTIVOS_DE_RECHAZO)[number];
 

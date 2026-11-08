@@ -20,6 +20,7 @@ import { nombreDeMetrica } from "../../engine/severidad/etiquetas-cvss.ts";
 import type { MundoDeActivos } from "../activos/cargar.ts";
 import { construirFicha, etiqueta } from "../catalogo/vista.ts";
 import type { MundoDeHallazgos } from "./cargar.ts";
+import { etiquetaDeEstadoDeHallazgo } from "./etiqueta-de-estado.ts";
 import { frasePorDias } from "../catalogo/etiquetas.ts";
 import { PISO_Y_TECHO } from "./etiquetas.ts";
 import type {
@@ -565,7 +566,7 @@ export function construirVistaDeHallazgo(
     titulo: h.titulo,
     descripcion: h.descripcion,
     estadoId: e.estado,
-    estado: etiqueta(c, "estado_de_hallazgo", e.estado),
+    estado: etiquetaDeEstadoDeHallazgo(c, mundo.etiquetas, e.estado),
     cuentaComoFalla: e.cuentaComoFalla,
     nivel,
     nivelId: s.severidad.nivel,
@@ -578,7 +579,11 @@ export function construirVistaDeHallazgo(
       mundo.etiquetas.orden_del_selector,
     ).map((x): ItemDeSelectorDeHallazgo => ({
       id: x.evaluacion.id,
-      estado: etiqueta(c, "estado_de_hallazgo", x.evaluacion.estado),
+      estado: etiquetaDeEstadoDeHallazgo(
+        c,
+        mundo.etiquetas,
+        x.evaluacion.estado,
+      ),
       actual: x.evaluacion.id === id,
     })),
     avisos: {

@@ -31,6 +31,7 @@ export type MotivoDeNoSituar =
   | "sobre_origen_inexistente"
   | "sobre_origen_sin_confirmar"
   | "fecha_anterior_a_la_apertura"
+  | "fecha_anterior_a_la_reapertura"
   | "fecha_anterior_a_la_aceptacion"
   | MotivoDeNoCalcular;
 
@@ -51,6 +52,14 @@ export function situacionDeHallazgo(
       ok: false,
       motivo: "fecha_anterior_a_la_apertura",
       detalle: `${h.id}: ${evaluacion.apertura}`,
+    };
+  // El plazo de un reabierto corre desde que una persona confirmó la reapertura, no desde la apertura original.
+  const desde = evaluacion.reapertura?.fecha ?? evaluacion.apertura;
+  if (diasEntre(desde, datos.fecha) < 0)
+    return {
+      ok: false,
+      motivo: "fecha_anterior_a_la_reapertura",
+      detalle: `${h.id}: ${desde}`,
     };
   if (
     evaluacion.aceptacion !== null &&
@@ -75,7 +84,7 @@ export function situacionDeHallazgo(
       plazo: plazoDe(
         s.severidad.nivel,
         evaluacion.estado,
-        evaluacion.apertura,
+        desde,
         datos.fecha,
         datos.plazos,
       ),

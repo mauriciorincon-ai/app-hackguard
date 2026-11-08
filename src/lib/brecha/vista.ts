@@ -15,13 +15,17 @@ import {
 } from "../../engine/brecha/esquemas.ts";
 import { estadoDeVigencia } from "../../engine/catalogo/semaforo.ts";
 import { diasEntre } from "../../engine/fecha.ts";
-import { ESTADOS_DE_HALLAZGO } from "../../engine/hallazgos/esquemas.ts";
+import {
+  ESTADOS_DE_HALLAZGO,
+  type EstadoDeHallazgo,
+} from "../../engine/hallazgos/esquemas.ts";
 import {
   situacionDeHallazgo,
   type SituacionDeHallazgo,
 } from "../../engine/hallazgos/situacion.ts";
 import { comparar } from "../../engine/planificador/orden.ts";
 import { etiqueta, porId } from "../catalogo/vista.ts";
+import { etiquetaDeEstadoDeHallazgo } from "../evidencia/etiqueta-de-estado.ts";
 import {
   construirCadena,
   conteoDeSobre,
@@ -101,6 +105,7 @@ export const filtroDeVeredicto = (veredicto: string): string =>
 /** El orden en que el informe cuenta los hallazgos por estado. */
 const ORDEN_DE_ESTADO = [
   "abierto",
+  "reabierto",
   "corregido",
   "re_probado",
   "aceptado_con_riesgo",
@@ -116,6 +121,8 @@ function contexto(m: MundoDeBrecha) {
   const b = m.brecha;
   const et = (vocabulario: string, id: string): Etiqueta =>
     etiqueta(c, vocabulario, id);
+  const estadoDeHallazgo = (e: EstadoDeHallazgo): Etiqueta =>
+    etiquetaDeEstadoDeHallazgo(c, m.evidencia.etiquetas, e);
   const prop = (id: Parameters<typeof etiquetaDeBrecha>[1]): Etiqueta =>
     etiquetaDeBrecha(m.etiquetas, id);
   const texto = (id: IdDeTextoDeBrecha): Bilingue => m.etiquetas.textos[id];
@@ -185,7 +192,7 @@ function contexto(m: MundoDeBrecha) {
       id,
       titulo: hallazgo(id).titulo,
       severidad: et("severidad", s.severidad.nivel),
-      estado: et("estado_de_hallazgo", s.evaluacion.estado),
+      estado: estadoDeHallazgo(s.evaluacion.estado),
       estadoId: s.evaluacion.estado,
     };
   };
@@ -206,6 +213,7 @@ function contexto(m: MundoDeBrecha) {
     c,
     b,
     et,
+    estadoDeHallazgo,
     prop,
     texto,
     sit,
@@ -962,7 +970,7 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
     hallazgosPorEstado: ORDEN_DE_ESTADO.filter((e) =>
       b.hallazgos.some((h) => h.estado === e),
     ).map((e) => ({
-      etiqueta: k.et("estado_de_hallazgo", e),
+      etiqueta: k.estadoDeHallazgo(e),
       n: b.hallazgos.filter((h) => h.estado === e).length,
     })),
     hallazgos,
