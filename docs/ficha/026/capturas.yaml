@@ -1,0 +1,24 @@
+# Capturas de HackGuard para su ficha en CV Viva (pedido 026, 2026-10-27). Build de producción de b5acd4b en una copia
+# aislada, con la fecha de consulta del commit (2026-10-14), tema claro, interfaz en español; tomas con propósito (2026-10-31): cada pieza completa, centrada sobre el fondo de la app, con margen, y ampliada hasta llenar el lienzo de 1536×960 (a DPR 3, en el ancho de ventana que más llena); la barra de navegación no entra en ninguna.
+# Datos: solo los activos, lotes, hallazgos y propuestas demo sintéticos del repo. Ninguna muestra una carga ni un ataque.
+portada: entrada.webp
+capturas:
+  - { funcionalidad: F01, archivo: F01.webp, pie: { es: "Una prueba completa: qué se espera, cómo se decide y cuándo aplica", en: "A complete test: what is expected, how it is decided and when it applies" } }
+  - { funcionalidad: F02, archivo: F02.webp, pie: { es: "Una propuesta marcada por el filtro espera la revisión de una persona", en: "A proposal flagged by the filter waits for a person's review" } }
+  - { funcionalidad: F03, archivo: F03.webp, pie: { es: "La vigencia de cada prueba y de cada familia, con símbolo y texto", en: "How current each test and each family is, with symbol and text" } }
+  - { funcionalidad: F04, archivo: F04.webp, pie: { es: "El mapa de OWASP LLM de 2025 a 2026: qué cambió y qué pruebas lo citan", en: "The OWASP LLM map from 2025 to 2026: what changed and which tests cite it" } }
+  - { funcionalidad: F05, archivo: F05.webp, pie: { es: "Los controles de ISO/IEC 42001 en palabras propias, sin copiar la norma", en: "ISO/IEC 42001 controls in our own words, never copying the standard" } }
+  - { funcionalidad: F06, archivo: F06.webp, pie: { es: "El catálogo filtrado: las 12 pruebas para modelos que deciden", en: "The catalog filtered: the 12 tests for decision models" } }
+  - { funcionalidad: F07, archivo: F07.webp, pie: { es: "La bandeja del investigador: propuestas con cada fuente verificada", en: "The researcher's inbox: proposals with every source verified" } }
+  - { funcionalidad: F08, archivo: F08.webp, pie: { es: "Un activo sin alcance ni reglas declaradas: sin autorización no hay plan", en: "An asset with no declared scope or rules: no authorization, no plan" } }
+  - { funcionalidad: F09, archivo: F09.webp, pie: { es: "El plan: cada prueba con su razón, su prioridad y su herramienta", en: "The plan: each test with its reason, its priority and its tool" } }
+  - { funcionalidad: F10, archivo: F10.webp, pie: { es: "El paquete para correr afuera: herramientas, alcance, límites y reglas", en: "The package to run outside: tools, scope, limits and rules" } }
+  - { funcionalidad: F11, archivo: F11.webp, pie: { es: "La ficha de un lote: sus huellas y lo que una persona debe revisar", en: "A batch record: its fingerprints and what a person must review" } }
+  - { funcionalidad: F12, archivo: F12.webp, pie: { es: "Un hallazgo cerrado por re-prueba, con su cadena completa", en: "A finding closed by retest, with its full chain" } }
+  - { funcionalidad: F13, archivo: F13.webp, pie: { es: "Severidad CVSS 4.0 con su vector y la referencia oficial fijada", en: "CVSS 4.0 severity with its vector and the pinned official reference" } }
+  - { funcionalidad: F14, archivo: F14.webp, pie: { es: "Un lote de ZAP por confirmar: lo que no corrió dice «no ejecutada»", en: "A ZAP batch to confirm: what did not run says “not run”" } }
+  - { funcionalidad: F15, archivo: F15.webp, pie: { es: "La propuesta del extractor: citas verificadas y veredicto por regla", en: "The extractor's proposal: verified quotes and a rule-based verdict" } }
+  - { funcionalidad: F16, archivo: F16.webp, pie: { es: "La brecha: lo planeado contra lo ejecutado, por activo", en: "The gap: planned against run, by asset" } }
+  - { funcionalidad: F17, archivo: F17.webp, pie: { es: "Un control con fallas: sus tres pruebas, la evidencia y el hallazgo", en: "A failing control: its three tests, the evidence and the finding" } }
+  - { funcionalidad: F18, archivo: F18.webp, pie: { es: "Las comprobaciones del instrumento, todas en verde", en: "The instrument's checks, all green" } }
+sin_pantalla: []

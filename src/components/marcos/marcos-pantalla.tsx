@@ -489,6 +489,16 @@ export function MarcosPantalla({ vista }: { vista: VistaDeMarcos }) {
               }}
             />
           </p>
+          <p className="hg-menor">
+            <Link href="/catalogo/diferencias">
+              <T
+                t={{
+                  es: "Ver qué cambió entre dos instantáneas",
+                  en: "See what changed between two snapshots",
+                }}
+              />
+            </Link>
+          </p>
         </div>
         <table className="hg-tabla">
           <caption className="hg-oculto">

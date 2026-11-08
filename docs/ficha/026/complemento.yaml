@@ -1,0 +1,156 @@
+# Complemento de la ficha técnica de HackGuard (`hackguard`). PROCEDENCIA: planeadora — pedido 026 de CV Viva
+# (sentada 4a de la revisión del H-2), 2026-10-27, armado desde una copia aislada de app-hackguard en b5acd4b: VISION
+# v1.0.0, brief, manual de uso, pantallas y pruebas. Se copia tal cual a data/fichas/hackguard.yaml de hoja-de-vida junto
+# con el export. `cifras_destacadas` son CLAVES de `metricas[]` del export: el export debe traerlas con su fuente.
+# El único cero de la tira es `costo_operacion_mensual`, el que declara la promesa («operarla cuesta cero»).
+schema_version: "1.0.0"
+app: hackguard
+procedencia: planeadora
+declarado_en: "2026-10-27"
+titular: "Otras herramientas acumulan alertas o llenan matrices de controles. HackGuard une las dos en un solo hilo: cada prueba sabe qué control de ISO/IEC 42001 respalda, y un hallazgo solo se cierra cuando la re-prueba sale bien."
+cifras_destacadas: [funcionalidades, pruebas_en_el_catalogo, controles_iso_42001, pruebas_automaticas, costo_operacion_mensual]
+limites:
+  - "No ejecuta las pruebas: las corres afuera, con herramientas abiertas, y traes los resultados."
+  - "Describe qué se verifica, nunca cómo se rompe: un filtro marca el texto que parezca una instrucción de ataque."
+  - "La IA solo propone pruebas nuevas y ordena resultados pegados; cada veredicto lo confirmas tú."
+  - "Los resúmenes de ISO/IEC 42001 son palabras propias y aún no se contrastan con el texto de la norma."
+nunca:
+  - "Genera ni guarda cargas, exploits o crudos que sirvan para atacar."
+  - "Prueba infraestructura de terceros."
+  - "Certifica cumplimiento: da evidencia control por control, no un sello."
+  - "Decide un veredicto sin tu confirmación."
+  - "Cierra un hallazgo porque dejó de aparecer en un escaneo."
+# «Cómo funciona» (pedido 026, OM-20): nuevo. Lo que hace una persona con HackGuard, de la descripción de su app al
+# informe por control; cada paso está en el manual de uso (Activos y plan · Carga de evidencia · Evidencia y hallazgos ·
+# La brecha y el informe).
+proceso:
+  titulo: "De tu app a la evidencia, control por control"
+  carriles:
+    - { id: tu, nombre: "Tú" }
+    - { id: hackguard, nombre: "HackGuard · núcleo determinista" }
+    - { id: afuera, nombre: "Tus herramientas, afuera" }
+  pasos:
+    - { id: inicio, tipo: inicio, carril: tu, texto: "Quieres saber si tu app es segura" }
+    - { id: describe, tipo: tarea, carril: tu, texto: "Describes tu app y hasta dónde se puede probar" }
+    - { id: autorizado, tipo: decision, carril: hackguard, texto: "¿Hay alcance y reglas declarados?" }
+    - { id: planea, tipo: tarea, carril: hackguard, texto: "Cruza tu app con el catálogo y arma el plan" }
+    - { id: paquete, tipo: tarea, carril: hackguard, texto: "Entrega el paquete: herramienta, versión y esperado" }
+    - { id: corre, tipo: tarea, carril: afuera, texto: "Corres las pruebas con Garak, ZAP u otras" }
+    - { id: importa, tipo: tarea, carril: hackguard, texto: "Convierte el reporte en evidencia con huella" }
+    - { id: confirma, tipo: tarea, carril: tu, texto: "Confirmas cada veredicto o el lote por muestra" }
+    - { id: falla, tipo: decision, carril: hackguard, texto: "¿Alguna prueba falló?" }
+    - { id: hallazgo, tipo: tarea, carril: hackguard, texto: "Abre un hallazgo con severidad y plazo" }
+    - { id: corrige, tipo: tarea, carril: tu, texto: "Corriges la falla en tu app" }
+    - { id: reprueba, tipo: tarea, carril: afuera, texto: "Repites la misma prueba, con la misma configuración" }
+    - { id: supera, tipo: decision, carril: hackguard, texto: "¿La re-prueba confirmada salió bien?" }
+    - { id: cierra, tipo: tarea, carril: hackguard, texto: "Cierra el hallazgo con su cadena completa" }
+    - { id: brecha, tipo: tarea, carril: hackguard, texto: "Muestra la brecha control por control" }
+    - { id: informe, tipo: tarea, carril: tu, texto: "Imprimes el informe para quien lo pida" }
+    - { id: fin, tipo: fin, carril: tu, texto: "Evidencia fechada, control por control" }
+  flujos:
+    - { de: inicio, a: describe }
+    - { de: describe, a: autorizado }
+    - { de: autorizado, a: planea, etiqueta: "sí" }
+    - { de: autorizado, a: describe, etiqueta: "no: sin plan" }
+    - { de: planea, a: paquete }
+    - { de: paquete, a: corre }
+    - { de: corre, a: importa }
+    - { de: importa, a: confirma }
+    - { de: confirma, a: falla }
+    - { de: falla, a: hallazgo, etiqueta: "sí" }
+    - { de: falla, a: brecha, etiqueta: "no" }
+    - { de: hallazgo, a: corrige }
+    - { de: corrige, a: reprueba }
+    - { de: reprueba, a: supera }
+    - { de: supera, a: cierra, etiqueta: "sí" }
+    - { de: supera, a: corrige, etiqueta: "no: sigue abierto" }
+    - { de: cierra, a: brecha }
+    - { de: brecha, a: informe }
+    - { de: informe, a: fin }
+  anotaciones:
+    - { paso: autorizado, texto: "Sin alcance autorizado ni reglas de enfrentamiento no hay plan: nada se prueba sin permiso del dueño." }
+    - { paso: planea, texto: "El catálogo lo mantiene al día un investigador de IA que solo propone; ninguna prueba entra sin tu aprobación." }
+    - { paso: paquete, texto: "HackGuard no ejecuta pruebas ni guarda cargas de ataque: describe qué se verifica, nunca cómo se rompe." }
+    - { paso: importa, texto: "Del reporte solo quedan su huella y un extracto; el veredicto lo calcula la regla de cada prueba, no la herramienta." }
+    - { paso: supera, texto: "Que una falla deje de aparecer en un escaneo no cierra nada: solo la misma prueba, repetida, con éxito." }
+
+# Roadmap votable (G-Plan del S9, P3, 2026-10-13): los 11 `[roadmap]` de la VISION sin «severidad sugerida por el
+# extractor» (sale por el plan v2 de los agentes, D3; G-Plan del S8, P3). Los `id` son estables: cambiarlos reinicia su conteo.
+roadmap:
+  - id: diferencias-entre-catalogos
+    titulo:
+      es: "Diferencias entre dos versiones del catálogo"
+      en: "Differences between two catalog versions"
+    descripcion:
+      es: "Ver qué pruebas entraron, cambiaron o se retiraron entre dos instantáneas congeladas, cada una con su huella."
+      en: "See which tests came in, changed or were retired between two frozen snapshots, each with its fingerprint."
+  - id: activo-desde-ficha
+    titulo:
+      es: "Importar un activo desde su ficha técnica"
+      en: "Import an asset from its technical sheet"
+    descripcion:
+      es: "Describir tu app como activo leyendo su ficha técnica, en vez de llenar el perfil a mano."
+      en: "Describe your app as an asset by reading its technical sheet instead of filling in the profile by hand."
+  - id: historial-del-activo
+    titulo:
+      es: "Historial del perfil de un activo"
+      en: "Asset profile history"
+    descripcion:
+      es: "Cada cambio del perfil queda registrado y el plan se marca como desactualizado cuando el activo cambia."
+      en: "Every profile change is recorded, and the plan is flagged as out of date when the asset changes."
+  - id: re-planeacion
+    titulo:
+      es: "Re-planeación con diferencias"
+      en: "Re-planning with differences"
+    descripcion:
+      es: "Volver a planear un activo y ver qué pruebas entran, cuáles salen y por qué."
+      en: "Plan an asset again and see which tests come in, which go out and why."
+  - id: hallazgos-reabiertos
+    titulo:
+      es: "Hallazgos reabiertos"
+      en: "Reopened findings"
+    descripcion:
+      es: "Un hallazgo cerrado se reabre solo cuando una re-prueba posterior vuelve a fallar, con la cadena completa a la vista."
+      en: "A closed finding reopens when a later retest fails again, with the whole chain in view."
+  - id: tendencia-entre-informes
+    titulo:
+      es: "Tendencia entre informes"
+      en: "Trend across reports"
+    descripcion:
+      es: "Cómo evolucionan la cobertura, las fallas y los vencidos de un informe al siguiente."
+      en: "How coverage, failures and overdue findings evolve from one report to the next."
+  - id: adaptador-promptfoo
+    titulo:
+      es: "Adaptador para promptfoo"
+      en: "promptfoo adapter"
+    descripcion:
+      es: "Que los reportes de promptfoo entren como lotes de evidencia, igual que hoy entran los de Garak y ZAP."
+      en: "Let promptfoo reports come in as evidence batches, just as Garak and ZAP reports do today."
+  - id: exportar-defectdojo
+    titulo:
+      es: "Exportar a DefectDojo"
+      en: "Export to DefectDojo"
+    descripcion:
+      es: "Llevar los hallazgos a un formato que DefectDojo lea, sin perder su control ni su severidad."
+      en: "Take findings to a format DefectDojo can read, keeping their control and their severity."
+  - id: adaptadores-pyrit-inspect
+    titulo:
+      es: "Adaptadores para PyRIT e Inspect"
+      en: "PyRIT and Inspect adapters"
+    descripcion:
+      es: "Dos herramientas abiertas más para pruebas de modelos y agentes, con sus resultados como evidencia."
+      en: "Two more open tools for testing models and agents, with their results as evidence."
+  - id: ejecutor-opcional
+    titulo:
+      es: "Un ejecutor opcional de pruebas"
+      en: "An optional test runner"
+    descripcion:
+      es: "Correr pruebas desde la herramienta, bajo las mismas reglas: activo propio, alcance autorizado y nunca una carga guardada."
+      en: "Run tests from the tool under the same rules: your own asset, authorized scope and never a stored payload."
+  - id: controles-propios
+    titulo:
+      es: "Controles propios de una organización"
+      en: "An organization's own controls"
+    descripcion:
+      es: "Una capa de controles de tu organización, superpuesta a la de ISO/IEC 42001 sin tocarla."
+      en: "A layer of your organization's own controls on top of ISO/IEC 42001, without touching it."

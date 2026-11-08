@@ -7,8 +7,13 @@ import { readFileSync } from "node:fs";
 // del servidor: si la huella de la cabecera está vieja, el script no corre y estos tests fallan. Estados: movimiento reducido (la
 // experiencia alterna completa, mirada de verdad), los dos temas con axe, 380 px y el mapa de rutas.
 
-const FUNCIONES = JSON.parse(readFileSync("docs/brochure-export.json", "utf8"))
-  .funcionalidades.total as number;
+const EXPORTADO = JSON.parse(readFileSync("docs/brochure-export.json", "utf8"));
+const FUNCIONES = EXPORTADO.funcionalidades.total as number;
+// Los textos que la página muestra salen del export (español) y de su copia en inglés: ninguno se escribe aquí a mano.
+const TITULAR_ES = EXPORTADO.promesa.tagline as string;
+const TITULAR_EN = JSON.parse(readFileSync("docs/brochure-en.json", "utf8"))
+  .tagline as string;
+const PRIMERA_TARJETA = EXPORTADO.funcionalidades.grupos[0].nombre as string;
 
 /** Los errores de política de contenido que el navegador reporta en consola. */
 function vigilarCsp(page: Page): string[] {
@@ -33,7 +38,7 @@ test.describe("/conoce", () => {
     expect(politica).not.toContain("unsafe-eval");
     await expect(page).toHaveTitle(/HackGuard/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Un hallazgo no es una vulnerabilidad",
+      TITULAR_ES,
     );
     // el script corre: una tarjeta se abre
     const boton = page.locator(".tarjeta-boton").first();
@@ -52,7 +57,7 @@ test.describe("/conoce", () => {
   }) => {
     await page.goto("/conoce");
     const region = page.getByRole("region", {
-      name: /Un catálogo que no miente/,
+      name: PRIMERA_TARJETA,
     });
     await expect(region).toHaveCount(0);
     await page.locator(".tarjeta-boton").first().click();
@@ -98,7 +103,7 @@ test.describe("/conoce", () => {
       .click();
     await expect(page.locator("html")).toHaveAttribute("data-lang", "en");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "A finding is not a vulnerability",
+      TITULAR_EN,
     );
     // ningún elemento visible está en español (los pares lang="es" salen del árbol)
     const visibleEnEspanol = await page.evaluate(

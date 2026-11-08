@@ -148,6 +148,26 @@ test.describe("/activos/act-demo-asistente/plan", () => {
     ).toHaveCount(PLAN_ASISTENTE.resumen.controles_sin_prueba);
   });
 
+  test("a 1024 px «Descargar el paquete» cabe en una línea y no se parte letra por letra (devolución 026)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1024, height: 640 });
+    await page.goto(`/activos/${ASISTENTE}/plan`);
+    const boton = page.locator(".hg-decision a.hg-boton-primario:visible");
+    await expect(boton).toContainText("Descargar el paquete");
+    const caja = (await boton.boundingBox())!;
+    const lineas = await boton.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const alto = parseFloat(getComputedStyle(el).lineHeight);
+      return Math.round(r.height / alto);
+    });
+    // Partido letra por letra medía 30 px de ancho y 367 de alto: una línea de texto cabe en menos de 60 px.
+    expect(caja.width).toBeGreaterThan(120);
+    expect(caja.height).toBeLessThan(60);
+    expect(lineas).toBeLessThanOrEqual(2);
+    await sinDesborde(page);
+  });
+
   test("descargar el paquete entrega los mismos bytes del archivo versionado", async ({
     page,
   }) => {

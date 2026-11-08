@@ -2,6 +2,8 @@
 // El planificador: qué entra al plan, qué queda fuera y por qué; que sea determinista (los mismos bytes
 // aunque los conjuntos lleguen en otro orden); que sin autorización no haya plan; y que el paquete sea
 // declarativo. Las invariantes valen para cualquier activo, no solo para los demo.
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Activo } from "../../../src/engine/activos/esquemas.ts";
 import { normalizarActivo } from "../../../src/engine/activos/normalizar.ts";
@@ -19,7 +21,18 @@ import {
   FECHA,
   mundo,
   PORTAL,
+  RAIZ,
 } from "./ayuda.ts";
+
+/** La versión 1 del clasificador demo, la de su plan emitido: viaja entera en su historial (D3, Sprint 10). */
+const CLASIFICADOR_V1 = (
+  JSON.parse(
+    readFileSync(
+      path.join(RAIZ, "datos/historial/activos/act-demo-clasificador.json"),
+      "utf8",
+    ),
+  ) as { anteriores: { activo: Activo }[] }
+).anteriores[0]!.activo;
 
 async function plan(id: string, cambiar?: (a: Activo) => void) {
   const m = await mundo();
@@ -123,8 +136,10 @@ describe("el plan del asistente demo (software + agente + modelo generativo)", (
 });
 
 describe("el plan del clasificador demo (modelo de decisión, solo en el portátil)", () => {
-  it("planea 11 y excluye la que exige un modelo de terceros", async () => {
-    const { plan: p } = await emitido(CLASIFICADOR);
+  it("con su versión 1 (sin modelo de terceros) planea 11 y excluye la que lo exige", async () => {
+    const { plan: p } = await emitido(CLASIFICADOR, (a) =>
+      Object.assign(a, copia(CLASIFICADOR_V1)),
+    );
     expect(p.resumen).toMatchObject({
       candidatas: 12,
       otras_familias: 26,
@@ -143,6 +158,16 @@ describe("el plan del clasificador demo (modelo de decisión, solo en el portát
         (x) => x.prioridad.ajuste === 1 && x.prioridad.ajustes.length === 1,
       ),
     ).toBe(true);
+  });
+
+  it("con su versión 2 (consume un modelo de terceros) planea las 12: la prueba excluida entra por el perfil", async () => {
+    const { plan: p } = await emitido(CLASIFICADOR);
+    expect(p.resumen).toMatchObject({
+      candidatas: 12,
+      planeadas: 12,
+      excluidas: 0,
+    });
+    expect(ids(p.planeadas)).toContain("PR-MD-DER-001");
   });
 });
 

@@ -55,6 +55,19 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
   ],
   ["S9-M4", "docs/GUIA-DE-PRUEBA.html", /Propuestas sigue con la marca/],
   ["S9-M5", "docs/GUIA-DE-PRUEBA.html", /«9 passed»/],
+  // S10: el plan viejo ya no «deja de construirse»; queda desactualizado y se re-planea
+  [
+    "S10-M1",
+    "docs/MANUAL-DE-USO.md",
+    /el plan viejo deja de construirse hasta volver a emitirlo/,
+  ],
+  [
+    "S10-M1",
+    "docs/MANUAL-DE-USO.md",
+    /the old plan stops being built until it is issued again/,
+  ],
+  // S10: la guía ya no tiene el tope del «gate corto ⭐⭐»
+  ["S10-G1", "docs/GUIA-DE-PRUEBA.html", /⭐⭐ Parada \d+ de/],
   // El código y sus comentarios
   [
     "S3-X",

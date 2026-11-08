@@ -12,7 +12,10 @@
   "familias": ["modelo_decision"],
   "acceso": "caja_blanca",
   "dueno": {
-    "nombre": { "es": "Equipo demo de producto", "en": "Demo product team" },
+    "nombre": {
+      "es": "Equipo demo de producto",
+      "en": "Demo product team"
+    },
     "nota": {
       "es": "Activo propio del operador. Autoriza las pruebas y recibe los hallazgos.",
       "en": "The operator's own asset. Authorizes the tests and receives the findings."
@@ -32,11 +35,14 @@
     "datos": "personales",
     "actua": false,
     "modelos": {
-      "es": "Ninguno de terceros.",
-      "en": "None from third parties."
+      "es": "Un modelo de lenguaje de terceros reordena los casos dudosos antes de que decida el clasificador.",
+      "en": "A third-party language model reorders the doubtful cases before the classifier decides."
     },
     "canales": [
-      { "es": "Texto de la solicitud", "en": "Request text" },
+      {
+        "es": "Texto de la solicitud",
+        "en": "Request text"
+      },
       {
         "es": "Estado con notas de terceros",
         "en": "State with third-party notes"
@@ -55,7 +61,8 @@
     "dispone_de_casos_etiquetados": true,
     "opera_en_varios_idiomas": true,
     "procesa_contenido_externo": true,
-    "usa_umbral_de_decision": true
+    "usa_umbral_de_decision": true,
+    "modelo_de_terceros": true
   },
   "alcance": {
     "incluye": [
@@ -75,7 +82,10 @@
       "es": "Sin restricción: corre en el portátil.",
       "en": "No restriction: it runs on the laptop."
     },
-    "limites": { "es": "Sin límite de carga.", "en": "No load limit." },
+    "limites": {
+      "es": "Sin límite de carga.",
+      "en": "No load limit."
+    },
     "fuera": []
   },
   "reglas": [

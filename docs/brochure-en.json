@@ -1,0 +1,96 @@
+{
+  "_lee_esto_primero": "Copia en inglés de lo que el export (docs/brochure-export.json) dice en español. El export es de la vitrina y solo tiene español; el inglés lo redacta la app (regla 20: redactado, no traducido) y vive aquí, con las mismas claves. scripts/brochure.mjs une las dos lenguas en docs/BROCHURE.html; tests/unit/brochure-generador.test.ts falla si falta una frase o si el HTML se desvía de lo que el script genera.",
+  "tagline": "If someone asks whether your app is secure, answer with evidence, not opinion.",
+  "grupos": {
+    "1": {
+      "nombre": "The catalog: what to test and why",
+      "linea": "Security tests for software and for AI, complete, with a review date and tied to their framework version."
+    },
+    "2": {
+      "nombre": "The plan: what you need to test",
+      "linea": "You describe your app, declare how far testing is allowed to go and get a plan that justifies every decision."
+    },
+    "3": {
+      "nombre": "The evidence: what you got, signed",
+      "linea": "Your tools' results come in sealed with their fingerprint, and nothing counts until a person confirms it."
+    },
+    "4": {
+      "nombre": "The gap: what is backed and what is not",
+      "linea": "What you expected against what you got, control by control, and an instrument that puts itself to the test."
+    }
+  },
+  "features": {
+    "F01": {
+      "nombre": "Complete tests or they do not get in",
+      "que_hace": "Each test tells you what it verifies, what result to expect, how it is decided whether it passed and which apps it applies to. If it measures an AI model that answers differently each time, it also sets how many repetitions are needed. Anything incomplete is rejected on load."
+    },
+    "F02": {
+      "nombre": "What to verify, never how to attack",
+      "que_hace": "The catalog stays at what to verify, never how to attack. If a test reads like an attack instruction, a filter flags it and it is not published until a person decides. Naming a technique or a tool is not enough to flag it."
+    },
+    "F03": {
+      "nombre": "A traffic light that does not depend on colour",
+      "que_hace": "You see which part of the catalog is up to date and which needs review. Every test, framework, family and tool says how long it has gone unchecked: current, due for review from 30 days, or expired from 60. Each state carries a symbol and text, never colour alone."
+    },
+    "F04": {
+      "nombre": "When a framework changes, nothing is lost",
+      "que_hace": "When a security framework such as OWASP renumbers its entries, your tests and findings keep pointing to the right place thanks to a map between versions. No reference gets in without a version. Every catalog version is frozen with a fingerprint that exposes any change."
+    },
+    "F05": {
+      "nombre": "ISO/IEC 42001, control by control",
+      "que_hace": "You see which tests back each control of ISO/IEC 42001, the international standard for managing AI systems. Every control is summarised in our own words, never with the standard's text. A test with no control is accepted, but its debt stays in plain sight."
+    },
+    "F06": {
+      "nombre": "Tests for the AI that decides",
+      "que_hace": "It puts the AI that decides to the test, such as the one that approves or rejects applications: whether its probabilities match how often it is right, whether it fails near the threshold and whether it decides differently in Spanish and in English. It ships with a demo classifier carrying three planted defects."
+    },
+    "F07": {
+      "nombre": "A researcher with checked sources",
+      "que_hace": "It tells you when a framework publishes a new version or when it is worth adding or retiring a test. An AI assistant that you run on demand looks it up, and the code checks every quotation against its source. Nothing gets in without your approval."
+    },
+    "F08": {
+      "nombre": "No permission, no plan",
+      "que_hace": "You describe your app: what kind it is, how exposed it is, what data it handles and which models it uses, with its owner and its provider kept apart. Without an authorised scope and rules of engagement (how far and how testing is allowed), there is no plan."
+    },
+    "F09": {
+      "nombre": "A plan that justifies every test",
+      "que_hace": "You get the exact list of tests for your app, each with the reason it applies, its priority and a free tool to run it. The ones left out say why too. With the same data, the plan comes out identical, byte for byte."
+    },
+    "F10": {
+      "nombre": "Ready to run with your tools",
+      "que_hace": "You download a package that says, test by test, which tool to use, from which version, where to run it, within which limits and what result to expect. HackGuard runs nothing and ships no attack payloads: you run the tests yourself, outside."
+    },
+    "F11": {
+      "nombre": "Evidence a person signs",
+      "que_hace": "Nothing counts as evidence until a person confirms it, one by one or in batches by reviewing a calculated sample. Only the tool file's fingerprint and an excerpt are kept, never its content. What is confirmed no longer changes."
+    },
+    "F12": {
+      "nombre": "No finding is closed by vanishing",
+      "que_hace": "Every confirmed failure opens a finding; if it is critical, high or medium, it has 7, 30 or 90 days to be fixed, and the overdue ones stand out. Only repeating the same test successfully closes it: no longer showing up in a scan is not enough."
+    },
+    "F13": {
+      "nombre": "Severity an auditor can recompute",
+      "que_hace": "The seriousness of each finding is calculated, not opined. For software it uses CVSS 4.0, the standard scale, with the official reference calculator pinned to an exact version. For AI it uses a table that looks at impact first and never adds scores."
+    },
+    "F14": {
+      "nombre": "Garak and ZAP, straight to evidence",
+      "que_hace": "You bring the report from Garak, the open scanner for language models, or from ZAP, the one for web applications, and it becomes a batch ready for review. If ZAP does not prove that a rule ran, it says “not run”, never “passed”."
+    },
+    "F15": {
+      "nombre": "An extractor that quotes before it proposes",
+      "que_hace": "An AI assistant reads the result you saved from a tool and proposes which test of your plan it belongs to. The code checks that every quotation appears verbatim in the text. The rule calculates the verdict, and you confirm."
+    },
+    "F16": {
+      "nombre": "What you expected against what you got",
+      "que_hace": "You see how many planned tests were run, how many passed, how many failed and which never ran, by app, by family and by control. “Not detected” is never dressed up as “verified”. Everything comes out in a printable report with its fingerprint."
+    },
+    "F17": {
+      "nombre": "The answer an auditor asks for",
+      "que_hace": "For each ISO/IEC 42001 control you have, on a single page, which tests cover it, what evidence exists and from which date, what failed and the chain of every finding: failure, fix and re-test. It is evidence put in order for whoever assesses, not a compliance seal."
+    },
+    "F18": {
+      "nombre": "A tool that audits itself",
+      "que_hace": "Before publishing, HackGuard puts itself to the test with planted cases: data it must reject, texts it must flag and closures it must deny. If a single check fails, nothing is published, and the dashboard shows you the result."
+    }
+  }
+}

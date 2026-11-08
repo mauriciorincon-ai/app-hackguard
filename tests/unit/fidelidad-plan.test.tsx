@@ -82,7 +82,10 @@ describe.each(IDS)(
       const chips = (doc: Document) =>
         de(doc, ".hg-chip > span, .hg-sello-titulo", SOLO_DE_LA_MAQUETA);
       const delaMaqueta = new Set(chips(maqueta));
-      for (const c of chips(producto)) expect(delaMaqueta, c).toContain(c);
+      // S10: un plan emitido con una versión anterior del activo se marca «desactualizado» (chip y aviso); la maqueta no lo dibuja.
+      const SOLO_DEL_PRODUCTO = new Set(["Plan desactualizado|Plan out of date"]);
+      for (const c of chips(producto))
+        if (!SOLO_DEL_PRODUCTO.has(c)) expect(delaMaqueta, c).toContain(c);
     });
   },
 );

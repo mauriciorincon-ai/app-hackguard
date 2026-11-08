@@ -277,11 +277,13 @@ ${lista(a.reglas)}
 </div>
 </div>
 <div class="hg-decision">
+<div class="hg-grupo">
+<a class="hg-boton hg-boton-primario" href="${destino("evidencia.html", existentes)}">${t({ es: "Ir a la carga de evidencia", en: "Go to evidence intake" })}</a>
+</div>
 <p class="hg-menor">${t({
     es: "Corre las pruebas con tus herramientas, dentro de estos límites. Los resultados vuelven por la carga de evidencia.",
     en: "Run the tests with your tools, within these limits. Results come back through evidence intake.",
   })}</p>
-<a class="hg-boton hg-boton-primario" href="${destino("evidencia.html", existentes)}">${t({ es: "Ir a la carga de evidencia", en: "Go to evidence intake" })}</a>
 </div>
 </section>
 </div>

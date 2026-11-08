@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { pruebas } from "@/lib/catalogo/etiquetas";
 import type { Bilingue, FilaPlaneada, VistaDePlan } from "@/lib/activos/tipos";
-import { LineaDeCabecera, Par, SelectorDeActivos } from "../activos/piezas";
+import {
+  AvisoDePlanDesactualizado,
+  LineaDeCabecera,
+  Par,
+  SelectorDeActivos,
+} from "../activos/piezas";
 import { Chip, Estado, Fechado, Huella, Sello } from "../estado";
 import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
@@ -100,15 +105,15 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
         <Sello etiqueta={e.sinAutorizacion}>
           <p>
             <span lang="es">
-              Falta el alcance autorizado y las reglas de enfrentamiento.
-              Se declaran en el archivo del activo y el plan se emite con
-              pnpm plan:emitir. Mientras tanto, mira{" "}
+              Falta el alcance autorizado y las reglas de enfrentamiento. Se
+              declaran en el archivo del activo y el plan se emite con pnpm
+              plan:emitir. Mientras tanto, mira{" "}
               <Link href={`/activos/${v.id}`}>la página del activo</Link>.
             </span>
             <span lang="en">
-              The authorized scope and the rules of engagement are missing.
-              They are declared in the asset&apos;s file and the plan is issued
-              with pnpm plan:emitir. Meanwhile, see{" "}
+              The authorized scope and the rules of engagement are missing. They
+              are declared in the asset&apos;s file and the plan is issued with
+              pnpm plan:emitir. Meanwhile, see{" "}
               <Link href={`/activos/${v.id}`}>the asset&apos;s page</Link>.
             </span>
           </p>
@@ -191,6 +196,7 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           </li>
         </ul>
       </div>
+      <AvisoDePlanDesactualizado v={v} />
 
       <section className="hg-panel" aria-labelledby="planeadas">
         <div className="hg-panel-cab">
@@ -605,6 +611,25 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           </dl>
         </div>
         <div className="hg-decision">
+          <div className="hg-grupo">
+            <a
+              className="hg-boton hg-boton-primario"
+              href={p.paquete.href}
+              download
+            >
+              <T
+                t={{ es: "Descargar el paquete", en: "Download the package" }}
+              />
+            </a>
+            <Link className="hg-boton" href="/evidencia/carga">
+              <T
+                t={{
+                  es: "Ir a la carga de evidencia",
+                  en: "Go to evidence intake",
+                }}
+              />
+            </Link>
+          </div>
           <p className="hg-menor">
             <T
               t={{
@@ -613,21 +638,6 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
               }}
             />
           </p>
-          <a
-            className="hg-boton hg-boton-primario"
-            href={p.paquete.href}
-            download
-          >
-            <T t={{ es: "Descargar el paquete", en: "Download the package" }} />
-          </a>
-          <Link className="hg-boton" href="/evidencia/carga">
-            <T
-              t={{
-                es: "Ir a la carga de evidencia",
-                en: "Go to evidence intake",
-              }}
-            />
-          </Link>
         </div>
       </section>
     </div>

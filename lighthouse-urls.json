@@ -5,6 +5,8 @@
   "/catalogo/controles",
   "/activos/act-demo-asistente",
   "/activos/act-demo-asistente/plan",
+  "/activos/act-demo-clasificador/historial",
+  "/activos/act-demo-clasificador/re-planear",
   "/evidencia/hallazgos/HZ-0007",
   "/evidencia/carga",
   "/tablero",
@@ -12,6 +14,7 @@
   "/brecha/control",
   "/brecha/control/iso42001-a-6-2-4",
   "/brecha/informe",
+  "/catalogo/diferencias",
   "/catalogo/propuestas",
   "/conoce"
 ]

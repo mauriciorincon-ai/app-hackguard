@@ -70,6 +70,12 @@
       "rol": "positivo",
       "simbolo": "ok",
       "nombre": { "es": "con prueba", "en": "with a test" }
+    },
+    {
+      "id": "plan_desactualizado",
+      "rol": "atencion",
+      "simbolo": "reloj",
+      "nombre": { "es": "Plan desactualizado", "en": "Plan out of date" }
     }
   ]
 }

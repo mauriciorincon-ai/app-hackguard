@@ -19,9 +19,8 @@ import {
 import { esFechaCivil } from "../fecha.ts";
 import { huella } from "../huella.ts";
 import type { Instantanea } from "../catalogo/instantanea.ts";
-import { aplicaPorPerfil } from "./aplicabilidad.ts";
-import { fueraDeAlcance } from "./alcance.ts";
 import { coberturaDe } from "./cobertura.ts";
+import { decidirPrueba } from "./decision.ts";
 import {
   FORMATO_DE_PLAN,
   type Entornos,
@@ -30,10 +29,8 @@ import {
   type PruebaExcluida,
   type PruebaPlaneada,
 } from "./esquemas.ts";
-import { elegirHerramienta } from "./herramienta.ts";
 import { comparar } from "./orden.ts";
 import { construirPaquete, type Elegida } from "./paquete.ts";
-import { prioridadDe } from "./prioridad.ts";
 import type { Paquete } from "./esquemas.ts";
 
 export interface EntradaDelPlan {
@@ -86,54 +83,19 @@ export async function planificar(
   const excluidas: PruebaExcluida[] = [];
 
   for (const prueba of candidatas) {
-    const ajuste = ajustes.get(prueba.id);
-    const pide = aplicaPorPerfil(activo, prueba.aplicabilidad);
-    const agregada = !pide && ajuste?.accion === "agregada" ? ajuste : null;
-    if (!pide && agregada === null) {
-      excluidas.push({
-        prueba: prueba.id,
-        motivo: "perfil",
-        razon: prueba.aplicabilidad.descripcion,
-      });
-      continue;
+    const d = decidirPrueba(
+      prueba,
+      activo,
+      alcance,
+      ajustes.get(prueba.id),
+      formula,
+      entornos,
+    );
+    if (d.tipo === "excluida") excluidas.push(d.excluida);
+    else {
+      planeadas.push(d.planeada);
+      if (d.elegida !== null) elegidas.push(d.elegida);
     }
-    const razonDeAlcance = fueraDeAlcance(alcance, prueba);
-    if (razonDeAlcance !== null) {
-      excluidas.push({
-        prueba: prueba.id,
-        motivo: "alcance",
-        razon: razonDeAlcance,
-      });
-      continue;
-    }
-    if (ajuste?.accion === "quitada") {
-      excluidas.push({
-        prueba: prueba.id,
-        motivo: "operador",
-        razon: ajuste.justificacion,
-      });
-      continue;
-    }
-    const herramienta = elegirHerramienta(prueba, activo.entornos, entornos);
-    planeadas.push({
-      prueba: prueba.id,
-      razon: agregada === null ? prueba.aplicabilidad.descripcion : null,
-      agregada:
-        agregada === null
-          ? null
-          : { fecha: agregada.fecha, justificacion: agregada.justificacion },
-      prioridad: prioridadDe(prueba.prioridad_base, activo.perfil, formula),
-      herramienta:
-        herramienta === null
-          ? null
-          : {
-              id: herramienta.id,
-              entorno: herramienta.entorno,
-              version_minima: herramienta.version_minima,
-            },
-      controles: [...prueba.controles].sort(comparar),
-    });
-    if (herramienta !== null) elegidas.push({ prueba, herramienta });
   }
   // De mayor a menor prioridad; a igualdad, por id.
   planeadas.sort(
@@ -163,7 +125,9 @@ export async function planificar(
     fecha_emision: fecha,
     resumen: {
       candidatas: candidatas.length,
-      otras_familias: pruebas.filter((p) => !activo.familias.includes(p.familia)).length,
+      otras_familias: pruebas.filter(
+        (p) => !activo.familias.includes(p.familia),
+      ).length,
       planeadas: planeadas.length,
       excluidas: excluidas.length,
       controles_con_prueba: cobertura.filter((c) => c.estado === "con_prueba")

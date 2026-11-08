@@ -49,6 +49,8 @@ export const CARPETA_DE_HALLAZGOS_PRIVADA = "datos/privado/hallazgos";
 export const CARPETA_DE_LOTES_DEMO = "datos/lotes/demo";
 export const CARPETA_DE_LOTES_PRIVADA = "datos/privado/lotes";
 const CARPETAS_DE_PLANES = ["datos/planes", "datos/privado/planes"] as const;
+/** Donde `plan replanear` archiva el plan que reemplaza: se conserva, no se lee como vigente. */
+export const CARPETA_DE_PLANES_ARCHIVADOS = "anteriores";
 
 function jsonsDe(
   raiz: string,
@@ -152,6 +154,8 @@ export async function cargarPlanesEmitidos(
   )) {
     for (const { ruta, texto } of jsonsDe(raiz, carpeta)) {
       if (!ruta.endsWith(".plan.json")) continue;
+      // Un plan archivado por un re-plan (`datos/planes/anteriores/`) es historia: jamás el vigente de su activo.
+      if (ruta.includes(`/${CARPETA_DE_PLANES_ARCHIVADOS}/`)) continue;
       const plan = Plan.parse(JSON.parse(texto) as unknown);
       const rutaPaquete = ruta.replace(/\.plan\.json$/, ".paquete.json");
       const paquete = Paquete.parse(

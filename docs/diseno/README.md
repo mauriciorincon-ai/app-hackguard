@@ -325,6 +325,34 @@ y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa
 | `barra lateral` | «Propuestas» abre `/catalogo/propuestas`: ya no queda ninguna página «pronto» | La bandeja es del S8 |
 | `carga` | «Texto pegado» dice que el texto lo lee el extractor con `/extraer` sobre un archivo, y que desde el navegador no se pega nada | La skill existe; la pantalla sigue de solo lectura |
 
+## Decisiones de diseño del Sprint 10 (devolución 026, dos defectos a 1024 px)
+
+La vitrina midió el producto a 1024 px y encontró dos defectos que la maqueta compartía. Se corrigen en la fuente (`app.css` y el generador
+`scripts/maqueta/paginas/plan.mjs`), se regenera la maqueta (`pnpm maqueta`: solo cambian las dos páginas de plan) y cada uno lleva su e2e
+a 1024 px (`tests/e2e/activos-plan.spec.ts`, `tests/e2e/propuestas.spec.ts`).
+
+| Defecto | Causa | Decisión |
+|---|---|---|
+| «Descargar el paquete» (`/activos/<id>/plan`) se partía letra por letra (30 px de ancho, 367 de alto) | `.hg-decision` pone la columna `auto` al texto largo y deja la `minmax(0, 1fr)` al botón; con `overflow-wrap: anywhere` heredado del `body` la columna del botón mide 0 | Los botones van **primero**, en un `.hg-grupo` (columna `auto`), y el texto después (columna `1fr`): el mismo orden que ya usa la bandeja de propuestas. Vale para la maqueta y para el producto |
+| `/catalogo/propuestas` dejaba una cuarta celda gris vacía a 1024 px | La tira `.hg-resumen` fija cuatro columnas desde 720 px y la bandeja trae tres cifras; el fondo de la tira es la línea entre celdas | De 1 a 4 cifras la tira reparte su ancho entre las que tiene (`:has(> li:nth-child(5))` conserva las cuatro columnas con cinco o más) |
+
+## Lo que el producto suma frente a la maqueta (Sprint 10: lo que cambió)
+
+La maqueta no se regenera en este sprint (no tiene estas pantallas); las tres pantallas nuevas y el aviso se arman solo con piezas que la consola
+ya tiene (panel, tabla, chip, sello, huella): **sin una clase de CSS nueva**. Las vigilan `tests/unit/historial-diferencias-pantalla.test.tsx`,
+`tests/unit/replan-pantalla.test.tsx` y `tests/e2e/historial-diferencias.spec.ts`; el aviso lo cubren además `tests/unit/fidelidad-activo.test.tsx` y `fidelidad-plan.test.tsx` con
+su razón. La maqueta las alcanza en el `design-sync` del hito.
+
+| Pantalla | Suma | Razón |
+|---|---|---|
+| `activo` · `plan` | Un **sello «Plan desactualizado»** (reloj + texto + color de atención, del vocabulario de `datos/planificador/etiquetas.json`) bajo la cabecera, con la causa (perfil, catálogo o las dos) y el enlace al historial; el plan de abajo se sigue mostrando intacto | D3: un plan cita la huella del activo con que se emitió; si el activo cambia, el plan no se corrige solo ni se oculta (regla dura 6) |
+| `activo` · `plan` | Una **segunda pestaña «Historial»** en la subnavegación y un segundo chip en la cabecera, solo en los activos que tienen historial | Un activo sin versiones anteriores no tiene nada que mostrar |
+| `/activos/<id>/historial` (nueva) | Tabla de versiones, de la más nueva a la más vieja (fecha · qué cambió · huella · con cuál se emitió el plan) y, por versión, qué campos cambiaron frente a la anterior | D3. Una cuenta, un cálculo: `versionesDe` y `diferenciasDeActivo` del motor |
+| `/catalogo/diferencias` (nueva) | Qué entra, sale y cambia entre la instantánea oficial y la **demo** (sintética), con la regla del validador que cuida cada campo y las dos huellas; la demo se rotula «Demo, no oficial» con chip y sello | D1. Un marco que solo permite citar identificadores muestra el nombre del campo y las huellas, nunca su texto (regla dura 11) |
+| `marcos` | Un enlace «Ver qué cambió entre dos instantáneas» en el panel de instantáneas | Es la única entrada a la pantalla nueva |
+| `/activos/<id>/re-planear` (nueva) | Vista previa del re-plan de un plan desactualizado: qué **entra**, qué **sale** y qué **se queda**, cada prueba con su **causa** (catálogo · regla de aplicabilidad · perfil, todas las que apliquen; «conjunta» si ninguna basta sola), su lugar antes y ahora, y el control de ISO/IEC 42001 que **gana o pierde cobertura** (chip con símbolo + texto). Dos secciones precalculadas, sin interruptor: la base **oficial** y la **demo** («Demo, no oficial», con chip y sello) | D4. Una cuenta, un cálculo: `replanear` del motor; la causa sale de probar cada cambio por separado, no de una sospecha. No escribe nada: la emisión es `plan replanear` en la terminal, que archiva el plan anterior |
+| `activo` · `plan` · `historial` | Una tercera pestaña **«Re-planear»** en la subnavegación (solo con plan desactualizado e historial) y un segundo enlace en el sello «Plan desactualizado» | Es la entrada a la pantalla nueva |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |

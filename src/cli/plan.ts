@@ -4,20 +4,20 @@
 //
 //   activo-validar  [<id>] [--json] [--idioma es|en]
 //   emitir          <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]
+//   replanear       <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]   (ver src/cli/replanear.ts)
 //
 // Códigos de salida — activo-validar: 0 ok · 1 con advertencias · 2 inválido · 3 error de uso o de lectura.
 // emitir: 0 emitido · 1 emitido con algo que mirar (advertencias del activo, texto marcado por el filtro o pruebas
 // sin herramienta) · 2 bloqueado (el activo no está autorizado o es inválido; no escribe nada) · 3 error de uso
 // o de lectura (también una fecha anterior a la instantánea).
-import {
-  chmodSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { escribir } from "./escribir.ts";
+import {
+  ErrorDeUso as ErrorDeUsoDeReplan,
+  replanearComando,
+} from "./replanear.ts";
 import type { Idioma } from "../engine/catalogo/informe.ts";
 import {
   validarActivos,
@@ -44,8 +44,8 @@ import {
 } from "../lib/activos/cargar-activos.ts";
 
 const USO = {
-  es: "uso: plan activo-validar [<id>] [--json] [--idioma es|en]\n     plan emitir <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]",
-  en: "usage: plan activo-validar [<id>] [--json] [--idioma es|en]\n       plan emitir <id> --fecha YYYY-MM-DD [--json] [--idioma es|en] [--salida <folder>]",
+  es: "uso: plan activo-validar [<id>] [--json] [--idioma es|en]\n     plan emitir <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]\n     plan replanear <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]",
+  en: "usage: plan activo-validar [<id>] [--json] [--idioma es|en]\n       plan emitir <id> --fecha YYYY-MM-DD [--json] [--idioma es|en] [--salida <folder>]\n       plan replanear <id> --fecha YYYY-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]",
 };
 
 class ErrorDeUso extends Error {}
@@ -59,6 +59,8 @@ function opciones(argv: string[]) {
       idioma: { type: "string", default: "es" },
       fecha: { type: "string" },
       salida: { type: "string" },
+      demo: { type: "boolean", default: false },
+      "sin-escribir": { type: "boolean", default: false },
     },
   });
   if (values.idioma !== "es" && values.idioma !== "en")
@@ -75,18 +77,19 @@ function opciones(argv: string[]) {
 const imprimir = (valor: unknown) =>
   process.stdout.write(`${JSON.stringify(valor, null, 2)}\n`);
 
-/** Escribe un derivado solo si cambió (su nombre no lleva la huella, así que se compara el contenido). */
-function escribir(ruta: string, contenido: string, modo: number) {
-  if (!existsSync(ruta) || readFileSync(ruta, "utf8") !== contenido)
-    writeFileSync(ruta, contenido, { mode: modo });
-  // Un archivo que ya existía conserva su modo: se fija el que corresponde (regla 17-bis).
-  chmodSync(ruta, modo);
-}
-
 async function principal(argv: string[]): Promise<number> {
   const o = opciones(argv);
   if (o.sobrantes.length > 0) throw new ErrorDeUso(o.sobrantes.join(" "));
   const raiz = process.cwd();
+  if (o.comando === "replanear")
+    return replanearComando(raiz, {
+      id: o.id,
+      fecha: o.fecha,
+      demo: o.demo,
+      sinEscribir: o["sin-escribir"],
+      json: o.json,
+      idioma: o.idioma,
+    });
   const { instantanea } = await cargarInstantaneaOficial(raiz);
   const archivos = cargarActivos(raiz);
   const validacion = validarActivos(archivos, {
@@ -140,9 +143,11 @@ async function principal(argv: string[]): Promise<number> {
     let rutas: { plan: string; paquete: string } | null = null;
     if (resultado.emitido) {
       // Un activo es propio por su origen y, además, por su carpeta: lo que está en datos/privado/ no sale a datos/planes/.
-      const ruta = archivos.find((a) => a.ruta.endsWith(`/${o.id}.json`))?.ruta ?? "";
+      const ruta =
+        archivos.find((a) => a.ruta.endsWith(`/${o.id}.json`))?.ruta ?? "";
       const propio =
-        encontrado.activo.origen === "propio" || ruta.startsWith("datos/privado/");
+        encontrado.activo.origen === "propio" ||
+        ruta.startsWith("datos/privado/");
       const privada = path.resolve(raiz, CARPETA_PRIVADA_DE_PLANES);
       const salida = path.resolve(
         raiz,
@@ -198,6 +203,7 @@ principal(process.argv.slice(2)).then(
     const detalle = error instanceof Error ? error.message : String(error);
     if (
       error instanceof ErrorDeUso ||
+      error instanceof ErrorDeUsoDeReplan ||
       error instanceof RangeError ||
       (error instanceof Error &&
         "code" in error &&
