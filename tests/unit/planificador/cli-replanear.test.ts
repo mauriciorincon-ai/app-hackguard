@@ -3,6 +3,7 @@
 // temporal de `datos/`: los planes versionados del repo no se tocan (el del clasificador debe seguir «desactualizado» para el demo).
 import { spawnSync } from "node:child_process";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   mkdirSync,
@@ -10,6 +11,7 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -237,5 +239,202 @@ describe("replanear", () => {
     );
     expect(demo.codigo).toBe(3);
     expect(demo.errores).toContain("anterior a la instantánea");
+  });
+});
+
+// Deuda del S10 (#9): `--salida` se honra, y un activo propio de `datos/privado/` se re-planea con derivados 700/600 (regla 17-bis).
+describe("replanear con --salida y con un activo propio", () => {
+  const PROPIO = "act-propio-prueba";
+  const modoDe = (ruta: string) => statSync(ruta).mode & 0o777;
+
+  /** Un activo propio de mentira, hecho de los dos del clasificador demo: v1 con su plan emitido y v2 vigente, historial privado. */
+  async function raizConPropio() {
+    const raiz = copiaDeDatos();
+    const leer = (r: string) =>
+      JSON.parse(readFileSync(path.join(raiz, r), "utf8")) as Record<
+        string,
+        unknown
+      >;
+    const historial = leer(`datos/historial/activos/${CLASIFICADOR}.json`) as {
+      anteriores: { activo: Record<string, unknown> }[];
+    };
+    const comoPropio = (a: Record<string, unknown>) =>
+      Activo.parse({ ...a, id: PROPIO, origen: "propio" });
+    const v1 = comoPropio(historial.anteriores[0]!.activo);
+    const v2 = comoPropio(leer(`datos/activos/demo/${CLASIFICADOR}.json`));
+    const privado = (r: string, contenido: unknown) => {
+      const ruta = path.join(raiz, "datos/privado", r);
+      mkdirSync(path.dirname(ruta), { recursive: true });
+      writeFileSync(ruta, `${JSON.stringify(contenido, null, 2)}\n`);
+    };
+    privado(`activos/${PROPIO}.json`, v1);
+    const emitido = correr(
+      ["emitir", PROPIO, "--fecha", "2026-10-12", "--json"],
+      raiz,
+    );
+    expect(emitido.codigo).toBe(0);
+    privado(`activos/${PROPIO}.json`, v2);
+    privado(`historial/activos/${PROPIO}.json`, {
+      formato: "hackguard/historial-de-activo@1",
+      activo: PROPIO,
+      nota: { es: "Prueba.", en: "Test." },
+      anteriores: [
+        {
+          n: 1,
+          fecha: "2026-10-12",
+          huella: await huellaDelActivo(v1),
+          cambio: { es: "Primera.", en: "First." },
+          activo: v1,
+        },
+      ],
+      actual: {
+        n: 2,
+        fecha: "2026-11-01",
+        huella: await huellaDelActivo(v2),
+        cambio: { es: "Segunda.", en: "Second." },
+      },
+    });
+    return raiz;
+  }
+  const argumentos = ["replanear", PROPIO, "--fecha", FECHA];
+
+  it("un activo propio se re-planea: el plan nuevo y el archivado quedan en datos/privado/ con carpetas 700 y archivos 600", async () => {
+    const raiz = await raizConPropio();
+    const privada = path.join(raiz, "datos/privado/planes");
+    // El plan emitido para un activo propio ya nació privado; se abre a propósito para ver que el re-plan lo vuelve a cerrar.
+    chmodSync(privada, 0o755);
+    const r = correr(argumentos, raiz);
+    expect(r.codigo).toBe(0);
+    expect(r.errores).toBe("");
+    expect(
+      Plan.parse(
+        JSON.parse(
+          readFileSync(path.join(privada, `${PROPIO}.plan.json`), "utf8"),
+        ),
+      ).fecha_emision,
+    ).toBe(FECHA);
+    const archivo = path.join(privada, "anteriores");
+    expect(readdirSync(archivo)).toHaveLength(2);
+    expect(modoDe(privada)).toBe(0o700);
+    expect(modoDe(archivo)).toBe(0o700);
+    for (const f of [
+      path.join(privada, `${PROPIO}.plan.json`),
+      path.join(privada, `${PROPIO}.paquete.json`),
+      ...readdirSync(archivo).map((n) => path.join(archivo, n)),
+    ])
+      expect(modoDe(f), f).toBe(0o600);
+    // Nada de un activo propio llega a la carpeta pública.
+    expect(
+      existsSync(path.join(raiz, `datos/planes/${PROPIO}.plan.json`)),
+    ).toBe(false);
+    expect(existsSync(path.join(raiz, "datos/planes/anteriores"))).toBe(false);
+    // El libro de evidencia lee el plan nuevo del activo propio, no el archivado.
+    const planes = await cargarPlanesEmitidos(raiz);
+    expect(planes[PROPIO]!.plan.fecha_emision).toBe(FECHA);
+  });
+
+  it("el plan de un activo propio no se escribe dentro del repo fuera de datos/privado/ (código 3, nada escrito)", async () => {
+    const raiz = await raizConPropio();
+    const antes = readFileSync(
+      path.join(raiz, `datos/privado/planes/${PROPIO}.plan.json`),
+      "utf8",
+    );
+    mkdirSync(path.join(raiz, "docs"));
+    const r = correr([...argumentos, "--salida", "docs"], raiz);
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain("solo se escribe en datos/privado/");
+    expect(existsSync(path.join(raiz, "docs", `${PROPIO}.plan.json`))).toBe(
+      false,
+    );
+    expect(
+      readFileSync(
+        path.join(raiz, `datos/privado/planes/${PROPIO}.plan.json`),
+        "utf8",
+      ),
+    ).toBe(antes);
+  });
+
+  it("--salida a otra carpeta de datos/privado/ se honra: el plan nuevo va allí, el anterior sigue donde estaba y no se archiva nada", async () => {
+    const raiz = await raizConPropio();
+    const origen = path.join(raiz, `datos/privado/planes/${PROPIO}.plan.json`);
+    const antes = readFileSync(origen, "utf8");
+    const r = correr(
+      [...argumentos, "--salida", "datos/privado/otros-planes"],
+      raiz,
+    );
+    expect(r.errores).toBe("");
+    expect(r.codigo).toBe(0);
+    expect(r.salida).toContain("no se reemplazó nada");
+    expect(r.salida).toContain(
+      `Escrito: datos/privado/otros-planes/${PROPIO}.plan.json`,
+    );
+    const destino = path.join(raiz, "datos/privado/otros-planes");
+    expect(
+      Plan.parse(
+        JSON.parse(
+          readFileSync(path.join(destino, `${PROPIO}.plan.json`), "utf8"),
+        ),
+      ).fecha_emision,
+    ).toBe(FECHA);
+    expect(modoDe(destino)).toBe(0o700);
+    expect(modoDe(path.join(destino, `${PROPIO}.plan.json`))).toBe(0o600);
+    expect(readFileSync(origen, "utf8")).toBe(antes);
+    expect(existsSync(path.join(raiz, "datos/privado/planes/anteriores"))).toBe(
+      false,
+    );
+  });
+
+  it("--salida con un activo demo: el plan nuevo va a esa carpeta y el versionado no se toca", () => {
+    const raiz = copiaDeDatos();
+    const antes = planDe(raiz);
+    const r = correr([...CLASIF, "--salida", "salida-aparte"], raiz);
+    expect(r.codigo).toBe(0);
+    expect(planDe(raiz)).toBe(antes);
+    expect(existsSync(path.join(raiz, "datos/planes/anteriores"))).toBe(false);
+    expect(
+      Plan.parse(
+        JSON.parse(
+          readFileSync(
+            path.join(raiz, `salida-aparte/${CLASIFICADOR}.plan.json`),
+            "utf8",
+          ),
+        ),
+      ).fecha_emision,
+    ).toBe(FECHA);
+    expect(
+      modoDe(path.join(raiz, `salida-aparte/${CLASIFICADOR}.plan.json`)),
+    ).toBe(0o644);
+  });
+
+  it("una carpeta de salida sin permiso lo dice (código 3) y no deja nada a medias", async () => {
+    if (process.getuid?.() === 0) return; // root escribe donde sea: no hay permiso que probar
+    const raiz = copiaDeDatos();
+    const cerrada = path.join(raiz, "cerrada");
+    mkdirSync(cerrada, { mode: 0o500 });
+    const antes = planDe(raiz);
+    const r = correr([...CLASIF, "--salida", "cerrada/dentro"], raiz);
+    chmodSync(cerrada, 0o700);
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain("falta permiso");
+    expect(planDe(raiz)).toBe(antes);
+    expect(existsSync(path.join(raiz, "cerrada/dentro"))).toBe(false);
+  });
+
+  it("una carpeta de salida con un plan ajeno de otro contenido no se pisa (código 3)", () => {
+    const raiz = copiaDeDatos();
+    mkdirSync(path.join(raiz, "salida-aparte"));
+    writeFileSync(
+      path.join(raiz, `salida-aparte/${CLASIFICADOR}.plan.json`),
+      "ajeno",
+    );
+    const r = correr([...CLASIF, "--salida", "salida-aparte"], raiz);
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain("no se sobrescribe");
+    expect(
+      readFileSync(
+        path.join(raiz, `salida-aparte/${CLASIFICADOR}.plan.json`),
+        "utf8",
+      ),
+    ).toBe("ajeno");
   });
 });

@@ -19,6 +19,8 @@ export const CARPETAS_DE_ACTIVOS = [
 ] as const;
 export const CARPETA_DE_PLANES = "datos/planes";
 export const CARPETA_PRIVADA_DE_PLANES = "datos/privado/planes";
+/** Todo lo propio vive aquí (regla dura 8): un derivado de un activo propio solo se escribe dentro de esta carpeta. */
+export const CARPETA_PRIVADA = "datos/privado";
 
 function jsonsDe(raiz: string, relativa: string): ArchivoDeActivo[] {
   const absoluta = path.join(raiz, relativa);

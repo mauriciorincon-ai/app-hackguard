@@ -13,7 +13,8 @@ const CORTO = (h: string) => h.slice(0, 12);
 export interface RutasDeReplan {
   plan: string;
   paquete: string;
-  archivado: { plan: string; paquete: string };
+  /** `null` cuando el plan nuevo se escribió en otra carpeta y el anterior sigue donde estaba (nada se reemplazó, nada se archivó). */
+  archivado: { plan: string; paquete: string } | null;
 }
 
 function linea(m: Movimiento, idioma: Idioma): string {
@@ -81,8 +82,17 @@ export function informeDeReplan(
     out.push(t("No se escribió nada.", "Nothing was written."));
   else
     out.push(
-      `${t("Archivado", "Archived")}: ${rutas.archivado.plan}`,
-      `${t("Archivado", "Archived")}: ${rutas.archivado.paquete}`,
+      ...(rutas.archivado === null
+        ? [
+            t(
+              "El plan anterior sigue donde estaba: no se reemplazó nada.",
+              "The earlier plan stays where it was: nothing was replaced.",
+            ),
+          ]
+        : [
+            `${t("Archivado", "Archived")}: ${rutas.archivado.plan}`,
+            `${t("Archivado", "Archived")}: ${rutas.archivado.paquete}`,
+          ]),
       `${t("Escrito", "Written")}: ${rutas.plan}`,
       `${t("Escrito", "Written")}: ${rutas.paquete}`,
     );

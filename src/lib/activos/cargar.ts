@@ -4,7 +4,12 @@
 // nadie puede reproducir. Los planes se re-emiten con `pnpm plan:emitir`.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { cargarActivosPublicos } from "./cargar-activos.ts";
+import {
+  cargarActivos,
+  cargarActivosPublicos,
+  CARPETA_DE_PLANES,
+  CARPETA_PRIVADA_DE_PLANES,
+} from "./cargar-activos.ts";
 import { Activo } from "../../engine/activos/esquemas.ts";
 import {
   estadoDelPlan,
@@ -78,8 +83,9 @@ export function cargarDatosDelPlanificador(raiz: string): DatosDelPlanificador {
 async function cargarVersiones(
   raiz: string,
   activo: Activo,
+  propio: boolean,
 ): Promise<VersionDeActivo[] | null> {
-  const ruta = join(raiz, `datos/historial/activos/${activo.id}.json`);
+  const ruta = join(raiz, carpetaDeHistorial(propio), `${activo.id}.json`);
   if (!existsSync(ruta)) return null;
   return versionesDe(
     Historial.parse(JSON.parse(readFileSync(ruta, "utf8"))),
@@ -87,16 +93,33 @@ async function cargarVersiones(
   );
 }
 
+/** El historial de un activo propio vive en `datos/privado/` (guarda sus versiones: jamás nace menos privado que su fuente, regla 17-bis). */
+export const carpetaDeHistorial = (propio: boolean) =>
+  propio ? "datos/privado/historial/activos" : "datos/historial/activos";
+/** Un activo es propio por su origen y por su carpeta: lo de `datos/privado/` jamás sale a `datos/planes/`. */
+export const esPropio = (activo: Activo, ruta: string) =>
+  activo.origen === "propio" || ruta.startsWith("datos/privado/");
+export const carpetaDePlanes = (propio: boolean) =>
+  propio ? CARPETA_PRIVADA_DE_PLANES : CARPETA_DE_PLANES;
+
+/**
+ * `privados: false` (el build y las pantallas) lee solo los activos demo versionados; la CLI de re-planeación pasa `privados: true` para
+ * leer también los propios de `datos/privado/`, con su plan y su historial en carpetas privadas.
+ */
 export async function cargarActivosDelBuild(
   instantanea: Instantanea,
   raiz: string = process.cwd(),
+  { privados = false }: { privados?: boolean } = {},
 ): Promise<MundoDeActivos> {
   const datos = cargarDatosDelPlanificador(raiz);
-  const validacion = validarActivos(cargarActivosPublicos(raiz), {
-    familias: instantanea.catalogo.familias.map((f) => f.id),
-    rasgos: instantanea.catalogo.rasgos,
-    pruebas: instantanea.catalogo.pruebas,
-  });
+  const validacion = validarActivos(
+    privados ? cargarActivos(raiz) : cargarActivosPublicos(raiz),
+    {
+      familias: instantanea.catalogo.familias.map((f) => f.id),
+      rasgos: instantanea.catalogo.rasgos,
+      pruebas: instantanea.catalogo.pruebas,
+    },
+  );
   if (validacion.estado === "invalido")
     falla(
       "los activos no pasan su validación: corre pnpm activo:validar",
@@ -106,11 +129,13 @@ export async function cargarActivosDelBuild(
   const huellaDeFormula = await huella(datos.formula);
   const huellaDeEntornos = await huella(datos.entornos);
   const activos: ActivoCargado[] = [];
-  for (const { activo, autorizado } of validacion.activos) {
+  for (const { activo, autorizado, ruta } of validacion.activos) {
+    const propio = esPropio(activo, ruta);
+    const planes = carpetaDePlanes(propio);
     if (!autorizado) {
       // Sin alcance y reglas no hay plan (regla dura 5): un plan que sobrevivió a su autorización rompe el build.
       const emitidos = ["plan.json", "paquete.json"].some((ext) =>
-        existsSync(join(raiz, `datos/planes/${activo.id}.${ext}`)),
+        existsSync(join(raiz, `${planes}/${activo.id}.${ext}`)),
       );
       if (emitidos)
         falla(
@@ -121,13 +146,13 @@ export async function cargarActivosDelBuild(
         activo,
         plan: null,
         paquete: null,
-        versiones: await cargarVersiones(raiz, activo),
+        versiones: await cargarVersiones(raiz, activo, propio),
         veredicto: null,
         versionDelPlan: null,
       });
       continue;
     }
-    const base = `datos/planes/${activo.id}`;
+    const base = `${planes}/${activo.id}`;
     let plan: Plan;
     let paquete: Paquete;
     try {
@@ -143,7 +168,7 @@ export async function cargarActivosDelBuild(
     delete cuerpoDelPlan.huella;
     const cuerpoDelPaquete: Record<string, unknown> = { ...paquete };
     delete cuerpoDelPaquete.huella;
-    const versiones = await cargarVersiones(raiz, activo);
+    const versiones = await cargarVersiones(raiz, activo, propio);
     const huellaDeHoy = await huellaDelActivo(activo);
     // Un plan puede citar un activo o un catálogo que ya no son los de hoy, y eso NO rompe el build si el pasado es CONOCIDO: la
     // versión del activo está en su historial y la instantánea está en `datos/instantaneas/`. Se muestra «desactualizado», con su
@@ -154,7 +179,9 @@ export async function cargarActivosDelBuild(
       plan.activo.huella === huellaDeHoy || versionDelPlanCitada !== null;
     const instantaneaConocida =
       plan.instantanea.huella === instantanea.huella ||
-      listarInstantaneas(raiz).some((l) => l.huella === plan.instantanea.huella);
+      listarInstantaneas(raiz).some(
+        (l) => l.huella === plan.instantanea.huella,
+      );
     const comprobaciones: [boolean, string, string][] = [
       [
         (await huella(cuerpoDelPlan)) === plan.huella,
