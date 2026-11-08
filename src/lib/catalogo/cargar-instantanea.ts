@@ -91,7 +91,11 @@ export async function cargarInstantaneaOficial(
 }
 
 /** La carpeta de la instantánea DEMO: sintética, comprobada igual que la oficial y jamás confundida con ella. */
-export const CARPETA_DE_INSTANTANEA_DEMO = join("datos", "instantaneas", "demo");
+export const CARPETA_DE_INSTANTANEA_DEMO = join(
+  "datos",
+  "instantaneas",
+  "demo",
+);
 
 /** La instantánea demo (la más reciente de `datos/instantaneas/demo/`), o `null` si no hay ninguna. Nunca es la oficial. */
 export async function cargarInstantaneaDemo(
@@ -104,4 +108,28 @@ export async function cargarInstantaneaDemo(
     .sort()
     .at(-1);
   return ultimo === undefined ? null : leerYComprobar(carpeta, ultimo);
+}
+
+/**
+ * La instantánea (oficial o demo) cuya huella es la dada: la que un plan cita. `null` si ninguna archivada la tiene. El pasado de un plan es
+ * conocido solo si su instantánea sigue en `datos/instantaneas/`.
+ */
+export async function cargarInstantaneaPorHuella(
+  huella: string,
+  raiz: string = process.cwd(),
+): Promise<InstantaneaCargada | null> {
+  for (const carpeta of [
+    join(raiz, "datos", "instantaneas"),
+    join(raiz, CARPETA_DE_INSTANTANEA_DEMO),
+  ]) {
+    if (!existsSync(carpeta)) continue;
+    const archivo = readdirSync(carpeta)
+      .filter((n) => NOMBRE.test(n))
+      .find((n) => n.endsWith(`-${huella.slice(0, 12)}.json`));
+    if (archivo !== undefined) {
+      const c = await leerYComprobar(carpeta, archivo);
+      if (c.instantanea.huella === huella) return c;
+    }
+  }
+  return null;
 }

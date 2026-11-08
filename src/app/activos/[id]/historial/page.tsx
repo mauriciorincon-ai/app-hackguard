@@ -56,7 +56,14 @@ export default async function Historial({
         { es: "Historial", en: "History" },
       ]}
       pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
-      subnav={<SubnavDelActivo id={id} abierta="historial" historial />}
+      subnav={
+        <SubnavDelActivo
+          id={id}
+          abierta="historial"
+          historial
+          replanear={vista.planDesactualizado !== null}
+        />
+      }
     >
       <HistorialPantalla v={vista} />
     </Consola>

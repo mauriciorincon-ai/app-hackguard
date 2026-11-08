@@ -197,3 +197,62 @@ export interface VistaDeHistorial extends CabeceraDeActivo {
   plan: null | { huella: string; fecha: string };
   etiquetas: { vigente: Etiqueta };
 }
+
+// ── Re-plan (D4 del Sprint 10) ──────────────────────────────────────────────────────────────────
+
+export interface ControlDeReplanVista {
+  id: string;
+  nombre: Bilingue;
+  efecto: "gana" | "pierde";
+  etiqueta: Etiqueta;
+}
+
+export interface MovimientoDeReplanVista {
+  id: string;
+  nombre: Bilingue | null;
+  tipo: "entra" | "sale" | "se_queda";
+  etiqueta: Etiqueta;
+  /** Las causas, todas las que apliquen, con su nombre llano. Vacío solo en una que se queda sin cambiar. */
+  causas: { id: "catalogo" | "regla" | "perfil"; nombre: Bilingue }[];
+  conjunta: boolean;
+  /** Por qué estaba fuera (entra) o por qué ya no está (sale). */
+  fuera: Bilingue | null;
+  antes: Bilingue | null;
+  despues: Bilingue | null;
+  /** Solo «se queda»: qué cambió de ella. */
+  cambios: Bilingue[];
+  controles: ControlDeReplanVista[];
+}
+
+export interface BaseDeReplanVista {
+  clave: "oficial" | "demo";
+  demo: boolean;
+  instantanea: { nombre: string; fecha: string; huella: string };
+  planeadas: { antes: number; despues: number };
+  entran: MovimientoDeReplanVista[];
+  salen: MovimientoDeReplanVista[];
+  seQuedan: MovimientoDeReplanVista[];
+  sigueFuera: number;
+  controles: ControlDeReplanVista[];
+}
+
+export interface VistaDeReplan extends CabeceraDeActivo {
+  /** Con qué versión del activo se emitió el plan y cuál es la de hoy; sus huellas. */
+  activo: {
+    versionDelPlan: number | null;
+    versionVigente: number | null;
+    huellaDelPlan: string;
+    huellaDeHoy: string;
+  };
+  plan: { huella: string; fecha: string };
+  /** Primero la base oficial; después, si existe, la demo («no oficial»). */
+  bases: BaseDeReplanVista[];
+  etiquetas: {
+    entra: Etiqueta;
+    sale: Etiqueta;
+    seQueda: Etiqueta;
+    demo: Etiqueta;
+    sinMovimientos: Etiqueta;
+  };
+  nota: Bilingue;
+}

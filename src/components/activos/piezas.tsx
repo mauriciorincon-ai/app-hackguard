@@ -80,11 +80,14 @@ export function SubnavDelActivo({
   id,
   abierta,
   historial = false,
+  replanear = false,
 }: {
   id: string;
-  abierta: "activo" | "plan" | "historial";
+  abierta: "activo" | "plan" | "historial" | "replanear";
   /** El activo tiene historial de versiones: se agrega su entrada. */
   historial?: boolean;
+  /** Su plan está desactualizado y tiene historial: se agrega «Re-planear». */
+  replanear?: boolean;
 }) {
   return (
     <nav className="hg-subnav" aria-labelledby="rotulo-subnav">
@@ -115,6 +118,16 @@ export function SubnavDelActivo({
               aria-current={abierta === "historial" ? "page" : undefined}
             >
               <T t={{ es: "Historial", en: "History" }} />
+            </Link>
+          </li>
+        ) : null}
+        {replanear ? (
+          <li>
+            <Link
+              href={`/activos/${id}/re-planear`}
+              aria-current={abierta === "replanear" ? "page" : undefined}
+            >
+              <T t={{ es: "Re-planear", en: "Re-plan" }} />
             </Link>
           </li>
         ) : null}
@@ -149,7 +162,10 @@ export function AvisoDePlanDesactualizado({ v }: { v: CabeceraDeActivo }) {
   const porPerfil = d.por.includes("perfil");
   const porCatalogo = d.por.includes("catalogo");
   return (
-    <Sello etiqueta={d.etiqueta} atributos={{ "data-plan-desactualizado": true }}>
+    <Sello
+      etiqueta={d.etiqueta}
+      atributos={{ "data-plan-desactualizado": true }}
+    >
       <p>
         {porPerfil ? (
           <T
@@ -182,6 +198,15 @@ export function AvisoDePlanDesactualizado({ v }: { v: CabeceraDeActivo }) {
               t={{
                 es: "Ver qué cambió en el activo",
                 en: "See what changed in the asset",
+              }}
+            />
+          </Link>
+          {" · "}
+          <Link href={`/activos/${v.id}/re-planear`}>
+            <T
+              t={{
+                es: "Ver qué cambiaría al re-planear",
+                en: "See what re-planning would change",
               }}
             />
           </Link>

@@ -259,6 +259,33 @@
         "es": "Sin cambios",
         "en": "No changes"
       }
+    },
+    {
+      "id": "movimiento_se_queda",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Se queda",
+        "en": "Stays"
+      }
+    },
+    {
+      "id": "cobertura_gana",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Gana cobertura",
+        "en": "Gains coverage"
+      }
+    },
+    {
+      "id": "cobertura_pierde",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Pierde cobertura",
+        "en": "Loses coverage"
+      }
     }
   ]
 }
