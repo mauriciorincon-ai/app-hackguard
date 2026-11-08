@@ -3,6 +3,31 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 010 — «Lo que cambió» (2026-11-08)
+
+The first sprint of milestone H-2: what changed in the catalog, in an asset and in a plan, each with its cause; the guide becomes one walk; the closing devolución 026 is paid.
+
+### Added
+
+- **Snapshot differences (D1):** `/catalogo/diferencias` and `pnpm catalogo:diferencias <A> <B>` list which tests enter, leave or change between two snapshots, with the changed field and the validator rule that guards it; a field hidden by licence says «text not shown». A demonstration snapshot (`datos/instantaneas/demo`) makes the screen show something and says «Demo, not official».
+- **Asset history (D3):** `datos/historial` keeps each earlier version of an asset with its fingerprint; a plan cites the fingerprint of the asset it was issued with, so a changed asset leaves its plan «out of date» (cause: profile, catalog or both) instead of breaking the build. `/activos/<id>/historial` shows the versions and what changed.
+- **Re-planning with the cause of each movement (D4):** `/activos/<id>/re-planear` and `pnpm plan:replanear <id> --fecha …` show the new plan next to the old one, test by test («enters · leaves · stays»), and why: catalog, applicability rule or profile (every cause that applies; «joint» when none is enough alone), plus the ISO/IEC 42001 control that gains or loses coverage. Without `--sin-escribir` or `--demo` it archives the old plan in `datos/planes/anteriores` (never deleted, never overwritten) and issues the new one. It refuses a different formula or environments, a plan it cannot recompute, and an asset without authorization.
+- **One shared decision per test** (`src/engine/planificador/decision.ts`): the plan and the re-plan count the same way, with the plan's bytes unchanged.
+- **`tests/unit/guia-cobertura.test.ts`:** the guide's coverage matrix (C1–C20, D1–D12) fails if a built feature has no stop, if an id appears in two stops, or if a stop cites an unknown id.
+- **`scripts/capturas-ficha.mjs`** (production build, light theme, 1024×640 at 1.5, text anchors) and the in-repo brochure generator with its English copy (devolución 026).
+
+### Changed
+
+- **`docs/GUIA-DE-PRUEBA.html` is one walk:** prepared once, ordered by the product's flow (65 stops in 10 sections), each feature tested once. The repeated checks were merged (the validator's four commands, the seven phone checks, the four language checks, theme) and the «short gate ⭐⭐» cap is gone: it keeps «Human judgment ⭐».
+- **The evidence loader skips archived plans** (`datos/planes/anteriores`), so an archived plan is never read as the current one.
+- **`pnpm start` binds to 127.0.0.1;** the Dependabot #29 bumps (next 16.4.5, sentry 11.10, tailwind 4.3.4, vitest 5.1) are in the branch.
+- **Two UI fixes from devolución 026:** the «Descargar el paquete» button no longer wraps letter by letter and the proposals strip has no empty cell at 1024 px.
+- **The manual** gains the «What changed» section in both languages, and the limitation that said an old plan «stops being built» is gone.
+
+### Not in this sprint
+
+- The other roadmap items (D2, D5, D6, D8–D12) and the public mode and static package (C19, C20); the rehearsal of the milestone, a sprint of its own.
+
 ## Sprint 009 — «Listo para el gate» (2026-10-13)
 
 The closing sprint of milestone H-1: the debt of seven sprints paid, the architecture written down as built, the data sheet figures taken from commands, and the screens read in both languages.
