@@ -311,8 +311,9 @@ export async function replanear(
     const O = resultadoDe(pA, antes, formula, entornos);
     const N = resultadoDe(pN, ahora, formula, entornos);
     if (O.estado !== "planeada" && N.estado !== "planeada") {
-      // Candidata del activo que no estaba ni está en el plan (excluida por perfil, alcance u operador, antes y ahora).
-      if (O.estado === "fuera" || N.estado === "fuera") siguenFuera += 1;
+      // «Sigue fuera»: excluida por perfil, alcance u operador antes Y ahora. Una que antes no estaba en el catálogo (o ya no está) no es
+      // «una que sigue fuera»: no tenía lugar de donde salir ni de donde quedarse.
+      if (O.estado === "fuera" && N.estado === "fuera") siguenFuera += 1;
       continue;
     }
 
