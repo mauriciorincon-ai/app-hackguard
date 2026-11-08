@@ -5,7 +5,7 @@ hito: H-2 Producto completo
 opened: 2026-11-08
 closed: 2026-11-08
 branch: sprint-010/lo-que-cambio
-pr: pendiente
+pr: 30
 ---
 
 # Sprint 010 · «Lo que cambió»
