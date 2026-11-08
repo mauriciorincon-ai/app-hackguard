@@ -123,6 +123,28 @@ describe("diferenciasEntreInstantaneas", () => {
     expect(d.movimientos).toEqual([]);
   });
 
+  it("lo que cambia es el CONTENIDO de las entradas: otra fecha de evaluación u otra huella del sobre no es un movimiento", async () => {
+    const otra = structuredClone(a);
+    otra.fecha_evaluacion = "2099-01-01";
+    otra.huella = "f".repeat(64);
+    const d = await diferenciasEntreInstantaneas(a, otra);
+    expect(d.movimientos).toEqual([]);
+    expect(d.resumen).toEqual({ entra: 0, sale: 0, cambia: 0 });
+    // Pero el encabezado sí dice de qué a qué se comparó.
+    expect(d.a.fecha).toBe("2099-01-01");
+    expect(d.de.fecha).toBe(a.fecha_evaluacion);
+  });
+
+  it("un cambio en UNA entrada es UN movimiento: ninguna otra entrada se marca de paso", async () => {
+    const otra = structuredClone(a);
+    const h = otra.catalogo.herramientas[0]!;
+    (h as Record<string, unknown>).campo_nuevo = "x";
+    const d = await diferenciasEntreInstantaneas(a, otra);
+    expect(d.movimientos.map((m) => `${m.seccion} ${m.id} ${m.tipo}`)).toEqual([
+      `herramientas ${h.id} cambia`,
+    ]);
+  });
+
   it("el orden de un ARREGLO sí es un cambio: es dato", async () => {
     const otra = structuredClone(a);
     const p = otra.catalogo.pruebas.find((x) => x.controles.length > 0)!;
