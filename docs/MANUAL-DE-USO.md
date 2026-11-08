@@ -252,7 +252,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 - **Limitaciones conocidas:**
   - El plan no muestra qué pruebas ya tienen evidencia confirmada: eso lo dicen la página de cada hallazgo, la brecha y la vista por control (secciones siguientes).
   - No hay editor de perfil ni de plan en pantalla: un cambio se hace en el archivo del activo y el plan se vuelve a emitir.
-  - Si sale una instantánea oficial nueva, el plan viejo deja de construirse hasta volver a emitirlo.
+  - Si el activo cambia o sale una instantánea oficial nueva, el plan viejo queda «desactualizado»: sigue mostrándose, con su causa, y se vuelve a emitir con `pnpm plan:replanear` (sección «Lo que cambió: instantáneas, historial y re-planeación»).
   - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### Evidencia y hallazgos · desde Sprint 005
@@ -367,6 +367,22 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   - Las pantallas se prueban en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
   - La cuenta de «propuestas por decidir» del tablero es la de la bandeja: baja cuando una decisión queda registrada en el libro, no cuando se marca en la pantalla.
 
+#### Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010
+
+- **Qué hace:** responde tres preguntas cuando algo cambia. **¿Qué cambió en el catálogo?** (dos instantáneas, una frente a otra). **¿Qué cambió en el activo?** (sus versiones, con la huella de cada una). **¿Qué pasaría con mi plan?** (el plan nuevo junto al viejo, prueba por prueba, con la causa de cada movimiento). Todo es de **solo lectura**: ninguna pantalla cambia un archivo.
+- **Cómo se usa:**
+  1. **Entre dos instantáneas.** En **Marcos**, pulsa «Ver qué cambió entre dos instantáneas» (`/catalogo/diferencias`). Cada prueba **entra**, **sale** o **cambia**; en una que cambia ves los campos que difieren y la regla del validador que cuida cada campo. Si la comparación usa una instantánea de demostración, la página dice «Demo, no oficial». En la terminal: `pnpm catalogo:diferencias <instantánea-A> <instantánea-B> [--json] [--idioma es|en]`.
+  2. **El plan desactualizado.** Cuando el activo cambió, o el catálogo oficial es otro, su plan muestra el aviso «Plan desactualizado» con la causa (**perfil**, **catálogo** o las dos). El plan no se borra ni se vuelve a emitir solo.
+  3. **El historial del activo.** El enlace «Ver qué cambió en el activo» abre `/activos/<id>/historial`: las versiones del activo, de la más nueva a la más vieja, cada una con su huella y lo que cambió respecto de la anterior; la vigente va marcada y la versión con la que se emitió el plan dice «El plan se emitió con esta versión».
+  4. **Re-planear.** «Ver qué cambiaría al re-planear» abre `/activos/<id>/re-planear`: cada prueba **entra**, **sale** o **se queda** (con algo que cambió), con su **causa**: el **catálogo** (la prueba apareció, desapareció o cambió), la **regla de aplicabilidad** (la prueba sigue, pero la regla que decide si aplica cambió) o el **perfil** del activo. Si dos causas actúan a la vez y ninguna alcanza sola, la fila dice «Conjunta». Debajo, los **controles de ISO/IEC 42001** que ganan o pierden cobertura.
+  5. **En la terminal:** `pnpm plan:replanear <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]`. Sin opciones **escribe**: archiva el plan viejo en `datos/planes/anteriores/<id>.<huella>.plan.json` (y su paquete) y emite el nuevo; el viejo nunca se borra ni se sobrescribe. Con `--sin-escribir` solo muestra lo que haría. `--demo` compara contra la instantánea de demostración y siempre es solo de lectura.
+- **Reglas que no cambian:** la ausencia de un hallazgo en un escaneo posterior nunca lo cierra; re-planear no toca la evidencia confirmada; sin autorización no hay plan (re-planear lo rechaza con `sin_autorizacion`).
+- **Cuándo no funciona, y por qué:** `formula_distinta` (la fórmula de prioridad cambió desde el plan viejo), `entornos_distintos`, `plan_no_reproducible` (el plan viejo no se recalcula con lo que cita, así que no se compara contra algo que no se puede probar) y `sin_autorizacion`. En todos, el comando sale con error y no escribe nada.
+- **Limitaciones conocidas:**
+  - El historial de un activo es un archivo que se mantiene a mano; si el activo cambia sin dejar su versión, el build se rompe (más vale eso que un plan sin dueño).
+  - La pantalla de re-planeación muestra la base oficial y, aparte y rotulada, una base de demostración; no hay botón para re-planear desde la pantalla.
+  - Las pantallas se prueban en español y en inglés; el texto de cada idioma lo juzga una persona en el ensayo.
+
 #### El clasificador demo de la familia «modelo de decisión» · desde Sprint 001
 
 - **Qué hace:** simula un modelo que decide, para que las pruebas de esa familia tengan algo que medir.
@@ -424,17 +440,18 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
 
 ### Historial
 
-| Sprint           | Features añadidas a este manual                                                                                                                                               |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                                                                                     |
-| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                                                      |
-| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                                                              |
-| 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete                                     |
-| 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página                                            |
-| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                                                   |
-| 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco                                      |
-| 008 · 2026-10-12 | Las propuestas (la bandeja con sus decisiones por comando) · el investigador de marcos y el extractor de resultados, como skills de Claude Code · avisos de versión en Marcos |
-| 009 · 2026-10-13 | Aportar a mano la lectura de una fuente que el agente no pudo leer (`pnpm propuestas:aportar`) · la presentación de la app en `/conoce`                                         |
+| Sprint           | Features añadidas a este manual                                                                                                                                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | El catálogo como dato (validar, instantánea, semáforo de vigencia) · el clasificador demo                                                                                                                                                                       |
+| 002 · 2026-10-11 | El catálogo en pantalla (lista con filtros, vigencia por familia y una ficha por prueba)                                                                                                                                                                        |
+| 003 · 2026-10-11 | Marcos y versiones (con el mapa de equivalencias y las instantáneas) · controles del Anexo A · la lista paginada                                                                                                                                                |
+| 004 · 2026-10-11 | Activos (selector, dueño y proveedor, perfil, alcance y reglas) · plan de pruebas con sus excluidas y su cobertura · descarga del paquete                                                                                                                       |
+| 005 · 2026-10-11 | Evidencia (registrar y confirmar sobres) · hallazgos con severidad, plazo y ciclo de vida, cerrados solo por re-prueba · su página                                                                                                                              |
+| 006 · 2026-10-12 | Carga de evidencia (lotes de Garak y ZAP, revisión por muestra con su plan de calidad, confirmación por lote) · su pantalla                                                                                                                                     |
+| 007 · 2026-10-12 | La brecha y el informe (tablero, brecha, vista por control con su cadena de cierre, informe imprimible) · una sola cuenta para las cinco                                                                                                                        |
+| 008 · 2026-10-12 | Las propuestas (la bandeja con sus decisiones por comando) · el investigador de marcos y el extractor de resultados, como skills de Claude Code · avisos de versión en Marcos                                                                                   |
+| 009 · 2026-10-13 | Aportar a mano la lectura de una fuente que el agente no pudo leer (`pnpm propuestas:aportar`) · la presentación de la app en `/conoce`                                                                                                                         |
+| 010 · 2026-11-08 | Lo que cambió: diferencias entre dos instantáneas · historial de versiones del activo con su plan desactualizado · re-planeación con la causa de cada prueba y los controles que ganan o pierden cobertura (`pnpm catalogo:diferencias`, `pnpm plan:replanear`) |
 
 ---
 
@@ -676,7 +693,7 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 - **Known limitations:**
   - The plan does not show which tests already have confirmed evidence: the page of each finding, the gap and the control view do (next sections).
   - There is no profile or plan editor on screen: a change is made in the asset's file and the plan is issued again.
-  - If a new official snapshot comes out, the old plan stops being built until it is issued again.
+  - If the asset changes or a new official snapshot comes out, the old plan becomes “out of date”: it is still shown, with its cause, and is issued again with `pnpm plan:replanear` (section “What changed: snapshots, history and re-planning”).
   - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### Evidence and findings · since Sprint 005
@@ -787,6 +804,22 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   - The screens are tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
   - The dashboard's “proposals to decide” count is the inbox's: it goes down when a decision is recorded in the ledger, not when it is marked on screen.
 
+#### What changed: snapshots, history and re-planning · since Sprint 010
+
+- **What it does:** it answers three questions when something changes. **What changed in the catalog?** (two snapshots, one against the other). **What changed in the asset?** (its versions, with each one's fingerprint). **What would happen to my plan?** (the new plan next to the old one, test by test, with the cause of each movement). Everything is **read-only**: no screen changes a file.
+- **How to use it:**
+  1. **Between two snapshots.** In **Frameworks**, press “See what changed between two snapshots” (`/catalogo/diferencias`). Each test **enters**, **leaves** or **changes**; for one that changes you see the fields that differ and the validator rule that guards each field. If the comparison uses a demonstration snapshot, the page says “Demo, not official”. In the terminal: `pnpm catalogo:diferencias <snapshot-A> <snapshot-B> [--json] [--idioma es|en]`.
+  2. **The out-of-date plan.** When the asset changed, or the official catalog is another one, its plan shows the notice “Plan out of date” with the cause (**profile**, **catalog** or both). The plan is not deleted and is not issued again on its own.
+  3. **The asset's history.** The link “See what changed in the asset” opens `/activos/<id>/historial`: the asset's versions, newest first, each with its fingerprint and what changed from the previous one; the current one is marked and the version the plan was issued with says “The plan was issued with this version”.
+  4. **Re-plan.** “See what re-planning would change” opens `/activos/<id>/re-planear`: each test **enters**, **leaves** or **stays** (with something changed), with its **cause**: the **catalog** (the test appeared, disappeared or changed), the **applicability rule** (the test stays, but the rule that decides whether it applies changed) or the asset's **profile**. If two causes act at once and neither is enough alone, the row says “Joint”. Below, the **ISO/IEC 42001 controls** that gain or lose coverage.
+  5. **In the terminal:** `pnpm plan:replanear <id> --fecha YYYY-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]`. With no options it **writes**: it archives the old plan in `datos/planes/anteriores/<id>.<fingerprint>.plan.json` (and its package) and issues the new one; the old one is never deleted or overwritten. With `--sin-escribir` it only shows what it would do. `--demo` compares against the demonstration snapshot and is always read-only.
+- **Rules that do not change:** the absence of a finding in a later scan never closes it; re-planning does not touch confirmed evidence; without authorization there is no plan (re-planning rejects it with `sin_autorizacion`).
+- **When it does not work, and why:** `formula_distinta` (the priority formula changed since the old plan), `entornos_distintos`, `plan_no_reproducible` (the old plan cannot be recomputed from what it cites, so it is not compared against something that cannot be proven) and `sin_autorizacion`. In all of them the command exits with an error and writes nothing.
+- **Known limitations:**
+  - An asset's history is a file kept by hand; if the asset changes without leaving its version, the build breaks (better that than a plan with no owner).
+  - The re-plan screen shows the official base and, apart and labelled, a demonstration base; there is no button to re-plan from the screen.
+  - The screens are tested in Spanish and in English; a person judges the wording of each language at the rehearsal.
+
 #### The demo classifier for the “decision model” family · since Sprint 001
 
 - **What it does:** it simulates a model that makes decisions, so the tests of that family have something to
@@ -845,14 +878,15 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
 
 ### History
 
-| Sprint           | Features added to this manual                                                                                                                                        |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                                                                                  |
-| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                                                                 |
-| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                                                         |
-| 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download                                      |
-| 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page                                       |
-| 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                                                        |
-| 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five                                              |
-| 008 · 2026-10-12 | Proposals (the inbox with its decisions by command) · the researcher for frameworks and the extractor for results, as Claude Code skills · version notices in Marcos |
-| 009 · 2026-10-13 | Contribute by hand the reading of a source the agent could not read (`pnpm propuestas:aportar`) · the app's presentation at `/conoce`                               |
+| Sprint           | Features added to this manual                                                                                                                                                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 001 · 2026-10-04 | The catalog as data (validate, snapshot, freshness semaphore) · the demo classifier                                                                                                                                                                |
+| 002 · 2026-10-11 | The catalog on screen (list with filters, freshness by family and a record per test)                                                                                                                                                               |
+| 003 · 2026-10-11 | Frameworks and versions (with the equivalence map and the snapshots) · Annex A controls · the paginated list                                                                                                                                       |
+| 004 · 2026-10-11 | Assets (selector, owner and provider, profile, scope and rules) · test plan with its exclusions and coverage · package download                                                                                                                    |
+| 005 · 2026-10-11 | Evidence (record and confirm envelopes) · findings with severity, deadline and lifecycle, closed only by a retest · their page                                                                                                                     |
+| 006 · 2026-10-12 | Evidence intake (Garak and ZAP batches, sample review with its quality plan, batch confirmation) · its screen                                                                                                                                      |
+| 007 · 2026-10-12 | The gap and the report (dashboard, gap, control view with its closure chain, printable report) · one count for the five                                                                                                                            |
+| 008 · 2026-10-12 | Proposals (the inbox with its decisions by command) · the researcher for frameworks and the extractor for results, as Claude Code skills · version notices in Marcos                                                                               |
+| 009 · 2026-10-13 | Contribute by hand the reading of a source the agent could not read (`pnpm propuestas:aportar`) · the app's presentation at `/conoce`                                                                                                              |
+| 010 · 2026-11-08 | What changed: differences between two snapshots · the asset's version history with its out-of-date plan · re-planning with the cause of each test and the controls that gain or lose coverage (`pnpm catalogo:diferencias`, `pnpm plan:replanear`) |
