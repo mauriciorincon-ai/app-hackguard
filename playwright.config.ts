@@ -23,7 +23,8 @@ export default defineConfig({
   // de paso desmintió la razón original del cambio — ver CHANGELOG).
   reporter: process.env.CI ? [["github"], ["list"]] : "list",
   use: {
-    baseURL: `http://localhost:${PUERTO}`,
+    // La dirección literal en que escucha `pnpm start` (127.0.0.1): `localhost` puede resolver a ::1 primero (deuda del S10, la CI lo confirmó).
+    baseURL: `http://127.0.0.1:${PUERTO}`,
     trace: "on-first-retry",
   },
   // El determinismo del motor (RNF-01) se prueba en los tres motores de navegador: Chromium (en el proyecto de
@@ -56,7 +57,7 @@ export default defineConfig({
     // un árbol limpio — 5 en Velo S1 — y un suite que grita cuando no pasa nada acaba ignorado.
     // Cuesta el tiempo del build; compra que el e2e local afirme lo mismo que el de CI.
     command: `HACKGUARD_CONSULTA=${CONSULTA_DEL_E2E} pnpm build && PORT=${PUERTO} pnpm start`,
-    url: `http://localhost:${PUERTO}`,
+    url: `http://127.0.0.1:${PUERTO}`,
     // Sin reuso: un `pnpm dev` olvidado en :3000 secuestraría el suite entero en silencio.
     reuseExistingServer: false,
     timeout: 180_000,
