@@ -23,6 +23,7 @@
     "evidencia:importar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts importar",
     "evidencia:confirmar-lote": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts confirmar-lote",
     "hallazgos:listar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-listar",
+    "brecha:tendencia": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/brecha.ts tendencia",
     "hallazgo:cadena": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgo-cadena",
     "hallazgos:declarar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts hallazgos-declarar",
     "propuestas:buscar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/propuestas.ts buscar",
