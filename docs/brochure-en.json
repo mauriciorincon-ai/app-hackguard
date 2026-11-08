@@ -17,6 +17,10 @@
     "4": {
       "nombre": "The gap: what is backed and what is not",
       "linea": "What you expected against what you got, control by control, and an instrument that puts itself to the test."
+    },
+    "5": {
+      "nombre": "What changed: what moved and why",
+      "linea": "When the catalog or your app change, you see what moved and why before you touch your plan."
     }
   },
   "features": {
@@ -91,6 +95,18 @@
     "F18": {
       "nombre": "A tool that audits itself",
       "que_hace": "Before publishing, HackGuard puts itself to the test with planted cases: data it must reject, texts it must flag and closures it must deny. If a single check fails, nothing is published, and the dashboard shows you the result."
+    },
+    "F19": {
+      "nombre": "What changed between two catalog versions",
+      "que_hace": "You set two catalog snapshots side by side and see which tests come in, which go out and which change, with the fields that differ. If the comparison uses a demonstration snapshot, the screen says so. It is read-only: nothing is modified."
+    },
+    "F20": {
+      "nombre": "Each app's history and a plan that is up to date",
+      "que_hace": "Each app keeps its versions, each with its fingerprint. If the app changed or the official catalog is a different one, its plan is flagged «Plan out of date» with the cause: the profile, the catalog or both. The plan is neither deleted nor re-issued on its own."
+    },
+    "F21": {
+      "nombre": "Re-plan, with the cause of every movement",
+      "que_hace": "Before you change a plan you see the new one next to the old one, test by test: which comes in, which goes out and which stays, with its cause (the catalog, the applicability rule or the app's profile) and the ISO/IEC 42001 controls that gain or lose coverage. The old plan is archived, never deleted."
     }
   }
 }

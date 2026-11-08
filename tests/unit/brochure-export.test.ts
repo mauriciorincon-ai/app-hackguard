@@ -79,13 +79,8 @@ describe("docs/brochure-export.json", () => {
     ].map((m) => m[1]);
     // El manual en inglés repite las secciones con otro título: las del español son las que el export cita.
     const delEspanol = delManual.filter((t) => !t.includes("since"));
-    // Las secciones del roadmap que el H-2 va construyendo (D1, D3 y D4 en el S10) no son de las 18 del primer corte: el export las suma
-    // al cierre del hito, con el brochure. Una sección nueva que no esté aquí ni en el export sigue rompiendo esta prueba.
-    const delRoadmapDelH2 = new Set([
-      "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010",
-    ]);
-    for (const s of delEspanol)
-      if (!delRoadmapDelH2.has(s!)) expect(secciones.has(s!), s).toBe(true);
+    // Sin exenciones (S11, deuda M5): una sección del roadmap que se construye entra al export en el sprint que la construye.
+    for (const s of delEspanol) expect(secciones.has(s!), s).toBe(true);
   });
 
   it("las cifras destacadas del complemento de la vitrina son claves del export (cuando la planeadora está en esta máquina)", () => {

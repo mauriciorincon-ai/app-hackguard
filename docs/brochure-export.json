@@ -29,8 +29,8 @@
     "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming (ataques simulados contra modelos de IA) encuentran fallas y las herramientas de gobierno llenan matrices de controles. HackGuard une las tres cosas en un solo hilo que se sigue de punta a punta: la prueba con su resultado esperado, el marco que la pide con su versión, el control de ISO/IEC 42001 que respalda cuando aplica, la evidencia sellada con su huella y el cierre que solo llega con una re-prueba. Ese hilo ya corre completo sobre apps de demostración: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Su núcleo es código determinista: con los mismos datos, cualquiera obtiene los mismos bytes. La IA solo propone, siempre bajo tu aprobación. Corre como web estática, sin servidor ni servicios de pago: operarla cuesta cero. Y nunca guarda una carga de ataque: describe qué se verifica, jamás cómo se rompe."
   },
   "funcionalidades": {
-    "total": 18,
-    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión",
+    "total": 21,
+    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 3 del roadmap del H-2 ya construidas (D1, D3 y D4)",
     "descartadas": [],
     "grupos": [
       {
@@ -172,6 +172,32 @@
             "seccion_manual": "La brecha y el informe · desde Sprint 007"
           }
         ]
+      },
+      {
+        "orden": 5,
+        "estrella": false,
+        "nombre": "Lo que cambió: qué se movió y por qué",
+        "linea": "Cuando el catálogo o tu app cambian, ves qué se movió y por qué antes de tocar tu plan.",
+        "features": [
+          {
+            "id": "F19",
+            "nombre": "Qué cambió entre dos versiones del catálogo",
+            "que_hace": "Pones dos instantáneas del catálogo una frente a otra y ves qué pruebas entran, cuáles salen y cuáles cambian, con los campos que difieren. Si la comparación usa una instantánea de demostración, la pantalla lo dice. Es solo lectura: nada se modifica.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          },
+          {
+            "id": "F20",
+            "nombre": "La historia de cada app y su plan al día",
+            "que_hace": "Cada app guarda sus versiones, cada una con su huella. Si la app cambió o el catálogo oficial es otro, su plan se marca «Plan desactualizado» con la causa: el perfil, el catálogo o las dos. El plan no se borra ni se vuelve a emitir solo.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          },
+          {
+            "id": "F21",
+            "nombre": "Re-planear con la causa de cada movimiento",
+            "que_hace": "Antes de cambiar un plan ves el nuevo junto al viejo, prueba por prueba: cuál entra, cuál sale y cuál se queda, con su causa (el catálogo, la regla de aplicabilidad o el perfil de la app) y los controles de ISO/IEC 42001 que ganan o pierden cobertura. El plan viejo se archiva, nunca se borra.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          }
+        ]
       }
     ]
   },
@@ -179,10 +205,10 @@
     {
       "clave": "funcionalidades",
       "etiqueta": "Funcionalidades",
-      "valor": 18,
+      "valor": 21,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 10 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido."
+      "detalle": "Las 21 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 3 del roadmap del H-2, contadas contra 10 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",

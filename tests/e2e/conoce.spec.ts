@@ -86,11 +86,13 @@ test.describe("/conoce", () => {
     expect(opacidades.filter((o) => o !== "1")).toEqual([]);
   });
 
-  test("las cuatro tarjetas llevan las funciones del export, todas", async ({
+  test("las tarjetas llevan las funciones del export, todas", async ({
     page,
   }) => {
     await page.goto("/conoce");
-    await expect(page.locator(".tarjeta")).toHaveCount(4);
+    await expect(page.locator(".tarjeta")).toHaveCount(
+      EXPORTADO.funcionalidades.grupos.length,
+    );
     await expect(page.locator("[data-feature]")).toHaveCount(FUNCIONES);
   });
 

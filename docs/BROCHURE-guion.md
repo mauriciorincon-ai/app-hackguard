@@ -30,7 +30,7 @@
 | --- | --------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------- | ----- | ---------------------------------------------------------- | ---------------------------------------------- |
 | E1  | Portada                     | «Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.»                          | G3 · alzar sin fundido (el `h1` es candidato LCP)        | la frase sube y se asienta una vez: es la tesis, no un adorno           | ninguno                 | 1 KB  | `transform`                                                | frase y apoyo visibles, quietos                |
 | E2  | El hilo                     | Cada prueba queda atada a un marco con versión, a un control, a una evidencia con huella y a un cierre | G3 · dibujar el trazo (un disparo)                       | el hilo se traza de la prueba al cierre: la trazabilidad ES el producto | SVG propio, cinco nodos | 3 KB  | `stroke-dashoffset` (excepción 1)                          | el hilo ya dibujado                            |
-| E3  | Qué hace                    | Dieciocho funciones en cuatro tarjetas, cada una explicada al abrirla                                  | G2 · apertura de tarjeta                                 | la tarjeta se abre solo si quieres: nadie lee lo que no pidió           | 4 iconos de trazo       | 10 KB | `grid-template-rows` (excepción 2), `opacity`, `transform` | tarjetas con la misma apertura, sin transición |
+| E3  | Qué hace                    | Veintiuna funciones en cinco tarjetas, cada una explicada al abrirla                                       | G2 · apertura de tarjeta                                 | la tarjeta se abre solo si quieres: nadie lee lo que no pidió           | 5 iconos de trazo       | 10 KB | `grid-template-rows` (excepción 2), `opacity`, `transform` | tarjetas con la misma apertura, sin transición |
 | E4  | **Clímax · lo que no hace** | Se vende por lo que se niega a hacer                                                                   | G3 · alzar escalonado, la primera negativa un beat antes | el orden importa: lo primero que lees es «no ejecuta pruebas»           | ninguno                 | 1 KB  | `transform`, `opacity`                                     | las cuatro negativas visibles, quietas         |
 | E5  | Lo fino                     | Cifras con su fuente, requisitos, privacidad y el mapa de rutas                                        | G2 · `details` nativos                                   | baja la voz a propósito después del clímax                              | ninguno                 | 6 KB  | ninguna                                                    | igual                                          |
 
@@ -40,8 +40,8 @@
 
 ## Cuadre de mensajes n/n
 
-Las **18 funcionalidades** del export (`docs/brochure-export.json`, cuadradas con las 18 `[MVP · personal]` de la visión y con las
-funcionalidades del manual, cada una con su sección en `seccion_manual`) caben en las cuatro tarjetas de E3; ninguna se omite.
+Las **21 funcionalidades** del export (`docs/brochure-export.json`, cuadradas con las 18 `[MVP · personal]` de la visión, las 3 del roadmap del H-2
+ya construidas (D1, D3 y D4, desde el S11) y con las funcionalidades del manual, cada una con su sección en `seccion_manual`) caben en las cinco tarjetas de E3; ninguna se omite.
 `tests/unit/documentos-del-hito.test.ts` exige que cada una esté en el HTML.
 
 | Id  | Funcionalidad                                      | Sección del manual                                                         | Tarjeta                             |
@@ -64,9 +64,12 @@ funcionalidades del manual, cada una con su sección en `seccion_manual`) caben 
 | F16 | Lo esperado contra lo obtenido                     | La brecha y el informe · desde Sprint 007                                  | T4 · La brecha, control por control |
 | F17 | La vista por control                               | La brecha y el informe · desde Sprint 007                                  | T4 · La brecha, control por control |
 | F18 | El instrumento se prueba a sí mismo                | La brecha y el informe · desde Sprint 007                                  | T4 · La brecha, control por control |
+| F19 | Qué cambió entre dos versiones del catálogo        | Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010  | T5 · Lo que cambió                  |
+| F20 | La historia de cada app y su plan al día           | Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010  | T5 · Lo que cambió                  |
+| F21 | Re-planear con la causa de cada movimiento         | Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010  | T5 · Lo que cambió                  |
 
 **Qué no cuenta y por qué:** el propio brochure (no se documenta a sí mismo), el kit de prueba y la guía (son del gate, no de la app) y las
-12 funciones `[roadmap]` de la visión (no existen todavía; viajan aparte, como roadmap votable, en el complemento de la ficha).
+funciones `[roadmap]` de la visión que aún no se construyen (no existen todavía; viajan aparte, como roadmap votable, en el complemento de la ficha).
 
 ## Escena por escena en inglés
 
@@ -76,6 +79,6 @@ comprueba que con el idioma en inglés no queda español visible.
 ## Lo que el gate juzga
 
 1. ¿La decisión valiente funciona, o la pieza se lee mejor con las limitaciones al pie?
-2. ¿Las 18 funciones se entienden con los nombres de las tarjetas, sin abrir el manual?
+2. ¿Las 21 funciones se entienden con los nombres de las tarjetas, sin abrir el manual?
 3. ¿El inglés suena a inglés?
 4. El movimiento mínimo: ¿es demasiado poco?
