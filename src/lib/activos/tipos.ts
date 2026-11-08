@@ -215,6 +215,8 @@ export interface MovimientoDeReplanVista {
   /** Las causas, todas las que apliquen, con su nombre llano. Vacío solo en una que se queda sin cambiar. */
   causas: { id: "catalogo" | "regla" | "perfil"; nombre: Bilingue }[];
   conjunta: boolean;
+  /** La frase de la causa conjunta, con cuántas causas actúan y cuáles; `null` si la causa no es conjunta. */
+  notaConjunta: Bilingue | null;
   /** Por qué estaba fuera (entra) o por qué ya no está (sale). */
   fuera: Bilingue | null;
   antes: Bilingue | null;

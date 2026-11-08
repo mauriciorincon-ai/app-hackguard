@@ -89,16 +89,11 @@ function Fila({ m, id }: { m: MovimientoDeReplanVista; id: string }) {
                 </li>
               ))}
             </ul>
-            {m.conjunta ? (
+            {m.notaConjunta === null ? null : (
               <p className="hg-menor" data-conjunta-nota>
-                <T
-                  t={{
-                    es: "Conjunta: ninguna basta por sí sola, se mueve por las dos cosas a la vez.",
-                    en: "Joint: neither is enough on its own, it moves because of both at once.",
-                  }}
-                />
+                <T t={m.notaConjunta} />
               </p>
-            ) : null}
+            )}
           </>
         )}
         {m.fuera === null ? null : (
