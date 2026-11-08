@@ -1,18 +1,21 @@
-# HackGuard — constitución de la app (núcleo, kit v2.2.0)
+# HackGuard — constitución de la app (núcleo, kit v2.3.0)
 
 > Auto-cargado en cada sesión de este repo. Esta app pertenece al pipeline **AI-APPs**; su plan vive en la casa planeadora.
 > Núcleo regenerado por la planeadora (`/nueva-app hackguard` modo regenerar): v2.0.0 el 2026-10-10, regla 18 de v2.1.0 el 2026-10-11 y
 > v2.2.0 (gate de modelo, regla 29, matriz de hitos) para el S5. Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen
 > solo cuando una regla se cita, nunca al abrir la sesión. Las reglas duras de producto de HackGuard están aquí, completas.
+> **Regenerado el 2026-11-08 para el S10** (primer sprint de la ola H-2, método v2.3.0): hito H-2 «Producto completo», matriz v2.3.0,
+> gate de fase con el esfuerzo y su `/effort`, construcción en `high` (decisión del usuario, 2026-11-07) y `# Compact instructions`.
 
 ## Identidad y las dos casas (regla dura)
 
 - **Planeadora** (`~/Code/hr01-develop-ai-apps/`, privada): brief, visión, el archivo del sprint (inicio ejecutivo + plan + prompt), método y estándares. La **lees** (`additionalDirectories` o path absoluto); **nunca escribes ahí**.
 - **Esta app** (`~/Code/app-hackguard`, pública): código, tests, ADRs, `sprints/SPRINT_NNN-cierre.md`. Escritor único: **tú**. El avance vive solo aquí; la planeadora te lee, tú no le reportas a mano. Si el plan necesita cambio, lo declaras en el cierre ejecutivo («desviaciones») y avisas al usuario.
 - **Qué es:** planeador, gestor y validador de pruebas de seguridad para software y sistemas de IA. Catálogo vivo de pruebas en cuatro familias (software · agente · modelo generativo · modelo de decisión tipado), cada una trazada a un marco con versión y, cuando se puede, a un control de ISO/IEC 42001; planea desde el perfil del activo con alcance autorizado; recibe resultados de herramientas externas como evidencia confirmada por una persona; mide la brecha control por control. **No ejecuta pruebas.** Tesis: *un hallazgo no es una vulnerabilidad; es evidencia de que un control falla.* Fuentes de verdad (planeadora, RO): `portafolio/hackguard/brief.md` (manda sobre la especificación) · `VISION.md` · `investigacion/2026-10-02-especificacion-features.md` (E-1…E-29) · `corpus/raw/[APP HackGuard] - Requerimientos v1.1.md`.
-- **Stack:** Next.js 16.3 **exportado estático** (`output: "export"`, `images.unoptimized`; `pnpm start` sirve `out/` con `serve`; la CI construye como el proveedor con `scripts/build-como-proveedor.mjs`) + TypeScript strict + Tailwind · **sin backend, sin base de datos, sin auth, sin IA en tiempo de ejecución** · datos como JSON versionados con huella (JCS RFC 8785 + SHA-256 con `crypto.subtle`) · Vitest + Playwright + Testing Library + @axe-core/playwright · Sentry client-only y metadata-only (inerte sin DSN) · Vercel con protección en **All Deployments** (la app privada no se muestra a nadie; la superficie pública del H-2 es el paquete estático dentro de hoja-de-vida). Node ≥ 22.18 (el CLI corre TypeScript nativo, sin `tsx`).
+- **Stack:** Next.js 16 **exportado estático** (`output: "export"`, `images.unoptimized`; `pnpm start` sirve `out/` con `serve`; la CI construye como el proveedor con `scripts/build-como-proveedor.mjs`) + TypeScript strict + Tailwind · **sin backend, sin base de datos, sin auth, sin IA en tiempo de ejecución** · datos como JSON versionados con huella (JCS RFC 8785 + SHA-256 con `crypto.subtle`) · Vitest + Playwright + Testing Library + @axe-core/playwright · Sentry client-only y metadata-only (inerte sin DSN) · Vercel con protección en **All Deployments** (la app privada no se muestra a nadie; la superficie pública del H-2 es el paquete estático dentro de hoja-de-vida). Node ≥ 22.18 (el CLI corre TypeScript nativo, sin `tsx`).
   captura_terceros: false
-- **Estructura:** `src/app` (App Router, export estático) · `src/components` (UI sin lógica) · `src/engine` (núcleo determinista: `catalogo/` esquemas · validador · filtro · semáforo · equivalencias · instantánea · informe; `modelo-decision/`; `demo/`; `huella.ts`; `fecha.ts`) · `src/cli` (`catalogo validar | instantanea`, `clasificador-demo`) · `src/lib` · `datos/` (marcos, controles, herramientas, pruebas por familia, equivalencias, filtro, estados, instantáneas) · `datos/privado/` (evidencia real, **ignorado por git**) · `propuestas/` (única carpeta donde escriben las skills) · `scripts/maqueta/` + `docs/diseno/` (maqueta aprobada; generador con gate de deriva) · `design-system.md` 1.1.0 · `docs/MANUAL-DE-USO.md` · `docs/GUIA-DE-PRUEBA.html` · `docs/LICENCIAS-DE-MARCOS.md` · `docs/kit-de-prueba/` · `sprints/SPRINT_NNN-cierre.md` · `decisions/NNN-titulo.md` (ADR solo si la decisión es irreversible).
+- **Hito vigente: H-2 «Producto completo»** (ola H-2 desde el 2026-11-08): H-1 construido (S1–S9; ficha en CV Viva, #80). Faltan las 2 `[MVP · terceros]` (modo público con lista blanca · paquete estático para hoja-de-vida) y 11 del roadmap (D7 salió por decisión del usuario, G-Plan del S8 «3a»), más lo que el H-1 dejó al H-2 (texto pegado en el navegador · supuesto S3 y lotes 20/200). El gate del H-1 se funde en el **ensayo general del H-2**, que es un sprint propio (F0 2026-11-01 «1a»; usuario 2026-11-08).
+- **Estructura:** `src/app` (App Router, export estático) · `src/components` (UI sin lógica) · `src/engine` (núcleo determinista: `activos/` · `adaptadores/` · `brecha/` · `catalogo/` (esquemas · validador · filtro · semáforo · equivalencias · instantánea · informe) · `demo/` · `evidencia/` · `hallazgos/` · `instrumento/` · `lotes/` · `modelo-decision/` · `planificador/` · `propuestas/` · `severidad/`; `huella.ts`; `fecha.ts`) · `src/cli` (`catalogo validar | instantanea`, `clasificador-demo`) · `src/lib` · `datos/` (marcos, controles, herramientas, pruebas por familia, equivalencias, filtro, estados, instantáneas) · `datos/privado/` (evidencia real, **ignorado por git**) · `propuestas/` (única carpeta donde escriben las skills) · `scripts/maqueta/` + `docs/diseno/` (maqueta aprobada; generador con gate de deriva) · `design-system.md` 1.1.0 · `docs/MANUAL-DE-USO.md` · `docs/GUIA-DE-PRUEBA.html` · `docs/LICENCIAS-DE-MARCOS.md` · `docs/kit-de-prueba/` · `sprints/SPRINT_NNN-cierre.md` · `decisions/NNN-titulo.md` (ADR solo si la decisión es irreversible).
 
 ## Reglas duras de HackGuard (producto, no estilo — 12, completas)
 
@@ -37,38 +40,38 @@
 4. **Cierre ejecutivo.** `sprints/SPRINT_NNN-cierre.md` ≤ 40 líneas con la salida de `node scripts/horas-sprint.mjs` pegada (campos abajo). Reemplaza al summary, la bitácora y la auditoría como archivos aparte (la auditoría es una sección del cierre).
 5. **PR normal** (no en borrador) con el cierre dentro; checks requeridos (`quality` · `e2e` · `lighthouse` · `un-pr-vivo`) con conclusión propia `success` leídos **al final**, no tras cada push. **Antes de abrirlo, `gh pr list --state open` (regla 18): un PR vivo por app.** Al pedir el merge entregas la lista de PRs abiertos, que debe ser ese uno. **El merge squash lo hace el usuario** y borra la rama; después corre `/cierre-sprint hackguard` en la planeadora.
 
-- **Por hito, no por sprint:** gate humano único (≈ 20 min con la página abierta; ⭐/⭐⭐ de la guía, FORMA y TEXTO pendientes, juicio de diseño) · lote de hallazgos medios y bajos · brochure (hito Vitrina) · `design-sync/` y `/design-sync` · `docs/BLUEPRINT.html` · pruebas y capturas en el segundo idioma · adopción del kit y de esta constitución (una vez al abrir el hito; el kit versiona ≤ 1 vez al mes).
-- **Matriz de hitos (método v2.2.0; 4 hitos, ninguno más).** Un hito = los sprints que su objetivo necesite; el gate humano es uno por hito (≈ 20 min con la página abierta).
+- **Por hito, no por sprint:** gate humano único = **ensayo general del H-2** en su propio sprint (⭐/⭐⭐ de la guía, FORMA y TEXTO pendientes, juicio de diseño; con presupuesto de paradas en el plan: el del H-1 salió de 29 paradas y ≈ 56 min) · lote de hallazgos medios y bajos · brochure (hito Vitrina) · `design-sync/` y `/design-sync` · `docs/BLUEPRINT.html` · pruebas y capturas en el segundo idioma · adopción del kit y de esta constitución (una vez al abrir el hito; el kit versiona ≤ 1 vez al mes).
+- **Matriz de hitos (método v2.3.0; 4 hitos, ninguno más).** Un hito = los sprints que su objetivo necesite; el gate humano es uno por hito.
 
-  | Hito | Objetivo | Entra cuando | Sale cuando (gate humano) | Lo que suma el kit en este hito |
-  |---|---|---|---|---|
-  | **H-1 Vitrina funcional** (= MVP) | diseño, experiencia, propuesta de valor y funciones esenciales, demostrables | visión + maqueta aprobadas (G-Diseño) | flujo principal navegable de punta a punta con datos sintéticos · manual · gate humano aprobado · deuda registrada · **ficha publicada en CV Viva** (export + complemento, build verde; apps de vitrina) · **documentos de arquitectura al día** (`docs/BLUEPRINT.html` as-built, ADRs, `design-system.md`) | automático en cada PR: tests + e2e contra el build · CI con checks propios · gitleaks · Lighthouse 1 corrida · a11y · bilingüe con paridad · cero enlaces · brochure + export |
-  | **H-2 Uso real** (OPCIONAL, nunca impedimento) | el usuario la usa en su caso real; los flujos resuelven el problema | H-1 cerrado | ≥ 1 uso real declarado con fecha en la bitácora, sin defecto bloqueante · datos reales fuera del repo si aplica · arquitectura al día | lo mismo que H-1 |
-  | **H-3 Robustez** | calidad, mantenibilidad, datos y conectividad proporcionales | terceros a la vista o riesgo material (**con o sin H-2**) | pruebas esenciales de lo que cambia · persistencia e integraciones definitivas · lote de medios y bajos pagado · arquitectura al día | cobertura > 70 % en módulos no-UI · request-id y timing · rate limiting · `design-sync/` + checklist de diseño · techo de costo de IA declarado |
-  | **H-4 Producción** (= G-Release) | seguridad, privacidad, despliegue, operación y legal proporcionales | usuarios reales o salida comercial (**con o sin H-2**) | checklist de release corto · observabilidad mínima · legal · smoke en producción · arquitectura al día | suite completa verde en `main` · alerta activa · OWASP + red teaming si hay IA · WCAG AA manual · Privacy Policy + ToS · `/release-check` |
+  | Hito | Objetivo | Sale cuando (gate humano) |
+  |---|---|---|
+  | **H-1 Vitrina funcional** (= MVP) | diseño, propuesta de valor y funciones esenciales, demostrables | flujo principal de punta a punta con datos sintéticos · manual · deuda registrada · ficha en CV Viva · arquitectura al día |
+  | **H-2 Producto completo** (ensayo general; no robusto) | todo lo que el visitante verá y usará, de punta a punta como en producción | VISION 100 % construida o descartada con nombre · bilingüe completo · **ensayo general del usuario** (lo no visto no cuenta) · arquitectura al día |
+  | **H-3 Robustez** | calidad, mantenibilidad, datos y conectividad proporcionales | lote de medios y bajos pagado · integraciones definitivas · arquitectura al día |
+  | **H-4 Producción** (= G-Release) | seguridad, privacidad, despliegue, operación y legal proporcionales | checklist de release · observabilidad mínima · legal · smoke |
 
-  La vitrina solo exige H-1. H-2 puede estar en curso o no haberse probado: **jamás bloquea H-3 ni H-4** (decisión del usuario, 2026-10-11). Evolución y escalabilidad no son hitos: cada versión repite H-2 → H-4. El sprint de cierre del hito trae lote de medios y bajos, guía al día, manual, BLUEPRINT, `design-sync` y auditoría de la constitución.
+  H-2 se cierra antes de H-3 y H-4 (método v2.3.0, 2026-10-17); que el usuario use la app en su vida no es un hito. El último sprint de construcción del hito trae lote de medios y bajos, guía con el bloque del ensayo, manual, BLUEPRINT, `design-sync` y la auditoría de esta constitución contra el código; el ensayo va después, en su sprint.
 - **Solo por cambio:** aprovisionamiento (tabla y humo solo si hay uno nuevo) · demo en rojo (solo gates propios nuevos) · roadmap de CV Viva (solo si el sprint toca una feature votada) · ADR (solo decisiones irreversibles).
 - **Tamaño:** ≈ 4 h activas de builder por defecto; hasta ≈ 12 h con una línea de justificación. Si el real supera el estimado en más del 50 %, el cierre explica la causa y propone una medida.
 - **Modelo por DECISIÓN, nunca por descuido (regla dura del usuario, 2026-10-11; kit v2.2.0).** Cada fase del plan declara el modelo requerido y un esfuerzo **sugerido**; el modelo tope ordinario es **Opus 5.5**; **Fable 5.1 solo en emergencia declarada por el usuario** (validación o planeación extraordinaria), jamás por iniciativa del builder, de una skill ni de un subagente.
 
-  | Actividad | Modelo requerido | Esfuerzo (sugerido, no se verifica) |
+  | Actividad | Modelo requerido | Esfuerzo (sugerido) |
   |---|---|---|
   | Planear sprint, cerrar sprint, preguntas de la planeadora | Opus 5.5 | medium |
   | Checkpoint de hito, decisión irreversible, auditoría del proceso | Opus 5.5 | high |
   | **Emergencia declarada por el usuario** (validación o planeación extraordinaria) | Fable 5.1 | — (solo si él lo pide en el mensaje) |
-  | Construcción con alcance claro (interfaz, lógica, pruebas) | Sonnet 5.5 | medium |
-  | Construcción simple: ajustes de interfaz, textos, cambios pequeños | Haiku 5.5 (en prueba) | medium |
+  | Construcción con alcance claro (interfaz, lógica, pruebas) | Sonnet 5.5 | high |
+  | Construcción simple: ajustes de interfaz, textos, cambios pequeños | Haiku 5.5 (en prueba) | high |
   | Depuración difícil, concurrencia, seguridad | Opus 5.5 | high |
   | Auditoría de una pasada | Sonnet 5.5 | high |
   | Cierre ejecutivo, script de horas, documentación corta | Haiku 5.5 | low |
-  | Subagentes de búsqueda o lectura de archivos | Haiku 5.5 | — |
+  | Subagentes de búsqueda o lectura de archivos | `Explore` de usuario (Haiku 5.5, `~/.claude/agents/Explore.md`) | medium (en su archivo) |
 
-  - **Gate de modelo al abrir cada fase:** tu primera línea es «Fase N · modelo requerido: X · modelo activo: Y» (Y lo lees de tu propio encabezado de sesión). Si coinciden, arrancas. **Si no coinciden, NO construyes nada** hasta que el usuario escriba «vamos con Y» (queda registrado en el archivo del sprint como decisión) o cambie con `/model X`. Es un renglón, no una parada del techo. Trabajo de rutina en Opus o Fable también se detiene y se recomienda bajar.
-  - **El esfuerzo es sugerido:** no se verifica, no se reporta como desvío y nunca detiene nada; `/effort` es opcional.
+  - **Gate de modelo al abrir cada fase:** tu primera línea es «Fase N · modelo requerido: X · esfuerzo sugerido: E (`/effort E` si tu encabezado muestra otro) · modelo activo: Y» (Y lo lees de tu propio encabezado de sesión). Si coinciden, arrancas. **Si no coinciden, NO construyes nada** hasta que el usuario escriba «vamos con Y» (queda registrado en el archivo del sprint como decisión) o cambie con `/model X`. Es un renglón, no una parada del techo. Trabajo de rutina en Opus o Fable también se detiene y se recomienda bajar.
+  - **El esfuerzo es sugerido:** va en el gate con su comando, pero no detiene nada ni se reporta como desvío. `/model`, `/effort`, `/compact` y `/advisor` los escribe el usuario: cuando el sprint los pida, se los pides en una línea con el comando exacto y esperas su «listo».
   - **Relevo, nunca loop (regla 29):** al **segundo intento fallido** sobre el mismo problema, o a los **20 min sin avance verificable** (un test que pasa, un error que cambia), **paras**: escribes en el cierre o la bitácora qué intentaste, qué falló y qué sabes, y pides relevo en UNA línea: «Relevo: modelo actual X · recomiendo Y · por qué · `/model Y`». Prohibido el tercer intento por el mismo camino con el mismo modelo. Escalón: Haiku → Sonnet → Opus; si Opus pide relevo, decide el usuario (Fable solo si él lo declara emergencia).
   - **Haiku 5.5 en construcción simple está en prueba:** su relevo es Sonnet 5.5 (regla 29); el cierre registra si Haiku bastó o no; tras 3 sprints se decide si se queda. Nombre completo `claude-haiku-5-5` en `/model` hasta confirmar que el alias `haiku` apunta a esa versión.
-  - Al cambiar de fase, si el contexto anterior no se necesita, recomienda `/clear` o `/compact`: el archivo del sprint conserva el estado.
+  - Al cambiar de fase, pide `/compact` (dentro del sprint, nunca `/clear`): el archivo del sprint conserva el estado.
   - Los subagentes declaran su modelo en su definición (búsqueda y lectura: Haiku 5.5; auditor: Sonnet 5.5); ninguno hereda Opus o Fable por omisión.
 
 ## Reglas del kit (29, una línea cada una)
@@ -137,4 +140,11 @@ Detalle canónico: `estandares/estandares.md` de la planeadora (solo lectura). �
 - **Vista por control:** «evidencia organizada», separada del nivel de aseguramiento; cadena hallazgo → corrección → re-prueba visible (E-16). **Brecha única de todos los activos**; tablero, brecha, vista por control e informe salen del mismo cálculo (decisión 21 de diseño).
 - **Maqueta como referencia de fidelidad:** `scripts/maqueta/` genera `docs/diseno/` (gate de deriva byte a byte); el producto obedece `design-system.md` y la hoja `docs/diseno/assets/app.css` + `tokens.css` (fuente: `scripts/paleta/`); una decisión de diseño nueva se registra en `docs/diseno/README.md` y se regenera la maqueta, nunca se edita el HTML a mano.
 
-Constitución núcleo kit v2.2.0 — HackGuard, regenerada 2026-10-10 (regla 18 2026-10-11; v2.2.0 2026-10-11: gate de modelo, regla 29, matriz de hitos). Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.
+# Compact instructions
+
+Al compactar conserva: el archivo del sprint (`SPRINT_NNN.md`) como manifiesto, la fase en curso con su modelo y su esfuerzo, las
+rutas tocadas con su último commit, las decisiones del dueño y los defaults que rigen, las huellas de instantáneas, planes y lotes
+que el sprint creó, los gates en rojo con su causa y lo que falta para el STOP. Descarta salidas de herramientas, contenidos de
+archivos ya leídos y diffs: se releen si hacen falta.
+
+Constitución núcleo kit v2.3.0 — HackGuard, regenerada 2026-11-08 para el S10 (antes: 2026-10-10; regla 18 2026-10-11; v2.2.0 2026-10-11). Las reglas del kit en detalle viven en `docs/REGLAS-ANEXO.md` y se leen solo cuando una regla se cita.
