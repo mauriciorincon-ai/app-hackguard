@@ -199,6 +199,24 @@ describe("replanear", () => {
     expect(r.errores).toContain("no hay nada que re-planear");
   });
 
+  it("--json bloqueado imprime el motivo como JSON en stdout (código 2) y nada en stderr", () => {
+    const r = correr(
+      ["replanear", ASISTENTE, "--fecha", FECHA, "--json"],
+      copiaDeDatos(),
+    );
+    expect(r.codigo).toBe(2);
+    expect(r.errores).toBe("");
+    const j = JSON.parse(r.salida) as {
+      bloqueado: boolean;
+      codigo: number;
+      motivo: string;
+    };
+    expect(j.bloqueado).toBe(true);
+    expect(j.codigo).toBe(2);
+    expect(j.motivo).toContain("no hay nada que re-planear");
+    expect(j.motivo).toContain("there is nothing to re-plan");
+  });
+
   it("errores de uso: sin id, sin fecha, activo que no existe, fecha anterior a la instantánea (código 3)", () => {
     const raiz = copiaDeDatos();
     expect(correr(["replanear"], raiz).codigo).toBe(3);

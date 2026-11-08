@@ -68,8 +68,16 @@ export async function replanearComando(
       `no hay un activo «${o.id}» / there is no asset “${o.id}”`,
     );
   // `es` puede venir ya bilingüe («es / en»), como los mensajes de ErrorDeReplan: `en` es opcional.
+  // Con `--json` el motivo sale en stdout como JSON (quien parsea la salida no recibe un archivo vacío); sin él, como texto en stderr.
   const bloqueado = (es: string, en?: string) => {
-    process.stderr.write(`${en === undefined ? es : `${es} / ${en}`}\n`);
+    const motivo = en === undefined ? es : `${es} / ${en}`;
+    if (o.json)
+      imprimir({
+        bloqueado: true,
+        codigo: CODIGO_DE_REPLAN.bloqueado,
+        motivo,
+      });
+    else process.stderr.write(`${motivo}\n`);
     return CODIGO_DE_REPLAN.bloqueado;
   };
   if (cargado.veredicto?.estado !== "plan_desactualizado")
