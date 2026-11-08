@@ -12,7 +12,7 @@
     "enlaces.produccion": "null cuando la app no tiene URL pública. `razon` explica por qué, y es lo que la vitrina muestra en lugar del enlace. Nunca se rellena con un enlace de repositorio ni con una promesa."
   },
   "schema_version": "1.0.0",
-  "actualizado": "2026-10-13",
+  "actualizado": "2026-10-27",
   "app": {
     "slug": "hackguard",
     "nombre": "HackGuard",
@@ -23,10 +23,10 @@
     "version_repo": "0.1.0"
   },
   "promesa": {
-    "tagline": "Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.",
-    "intro": "Para cada una de tus apps, HackGuard te ayuda a responder cuatro preguntas que casi nadie contesta: qué probaste, qué esperabas, qué obtuviste y qué te falta. Es un catálogo vivo de pruebas de seguridad para software y para IA, cada una atada a su marco con versión. No ejecuta las pruebas: las corres afuera y traes los resultados como evidencia que una persona confirma.",
-    "para_quien": "Para quien construye apps con IA y hoy prueba su seguridad tarde, sin plan y sin memoria, y quiere mostrar evidencia fechada cuando alguien pregunte «¿cómo sabes que esto es seguro?». Y para quien mire esa evidencia: el auditor de gobierno de IA, el par de seguridad que recorre el catálogo y el líder sin formación técnica.",
-    "diferencial": "Cada prueba queda atada a su marco con versión y, cuando se puede, al control de ISO/IEC 42001 al que le da evidencia. Los gestores de hallazgos acumulan alertas, las plataformas de red teaming encuentran fallas y las herramientas de gobierno llenan matrices de controles; HackGuard une las tres en un solo hilo trazable: prueba con resultado esperado, marco con versión, control del Anexo A, evidencia con huella y cierre solo por re-prueba. Ese hilo ya está construido de punta a punta sobre activos demo: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Lo hace con un núcleo determinista que cualquiera puede volver a correr y obtener los mismos bytes, con la IA solo proponiendo —un investigador y un extractor que escriben únicamente en una bandeja— y siempre bajo aprobación humana, y sin guardar jamás una carga: describe qué se verifica, nunca cómo se rompe."
+    "tagline": "Si te preguntan si tu app es segura, responde con evidencia, no con opinión.",
+    "intro": "HackGuard convierte la seguridad de tus apps con IA en evidencia. Te dice qué probar, con qué herramienta abierta y gratuita y qué resultado esperar; recibe lo que obtuviste y te muestra, control por control de ISO/IEC 42001, la norma internacional para gestionar sistemas de IA, qué está respaldado y qué no. Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.",
+    "para_quien": "Para quien construye apps con IA y hoy prueba su seguridad tarde, sin plan y sin memoria, y quiere contestar «¿cómo sabes que esto es seguro?» con evidencia fechada. Y para quien revisa esa evidencia: el auditor de gobierno de IA que pide, control por control, qué se probó y qué falló, y el líder sin formación técnica que necesita entenderlo en minutos.",
+    "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming (ataques simulados contra modelos de IA) encuentran fallas y las herramientas de gobierno llenan matrices de controles. HackGuard une las tres cosas en un solo hilo que se sigue de punta a punta: la prueba con su resultado esperado, el marco que la pide con su versión, el control de ISO/IEC 42001 que respalda cuando aplica, la evidencia sellada con su huella y el cierre que solo llega con una re-prueba. Ese hilo ya corre completo sobre apps de demostración: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Su núcleo es código determinista: con los mismos datos, cualquiera obtiene los mismos bytes. La IA solo propone, siempre bajo tu aprobación. Corre como web estática, sin servidor ni servicios de pago: operarla cuesta cero. Y nunca guarda una carga de ataque: describe qué se verifica, jamás cómo se rompe."
   },
   "funcionalidades": {
     "total": 18,
@@ -36,49 +36,49 @@
       {
         "orden": 1,
         "estrella": true,
-        "nombre": "El catálogo vivo",
-        "linea": "Lo que HackGuard sabe vive como dato validado, con versión y con huella, y se lee sin color.",
+        "nombre": "El catálogo: qué probar y por qué",
+        "linea": "Pruebas de seguridad para software y para IA, completas, con fecha de revisión y atadas a su marco con versión.",
         "features": [
           {
             "id": "F01",
-            "nombre": "Pruebas que no entran a medias",
-            "que_hace": "Cada prueba llega con su marco y versión, su resultado esperado, su regla de veredicto y cuándo aplica; si es sobre un sistema que varía entre corridas, con cuántas repeticiones. Lo incompleto se rechaza al cargar, con 61 reglas con nombre y severidad.",
+            "nombre": "Pruebas completas o no entran",
+            "que_hace": "Cada prueba te dice qué verifica, qué resultado esperar, cómo se decide si pasó y a qué apps aplica. Si mide un modelo de IA que responde distinto cada vez, también fija cuántas repeticiones hacen falta. Lo incompleto se rechaza al cargar.",
             "seccion_manual": "El catálogo como dato · desde Sprint 001"
           },
           {
             "id": "F02",
-            "nombre": "Un filtro que marca, nunca censura",
-            "que_hace": "Si el texto de una prueba parece describir cómo atacar en vez de qué verificar, queda marcado para que una persona decida. Nombrar una técnica o un módulo de una herramienta nunca es motivo de marca.",
+            "nombre": "Qué verificar, nunca cómo atacar",
+            "que_hace": "El catálogo se queda en qué verificar, nunca en cómo atacar. Si una prueba parece una instrucción de ataque, un filtro la marca y no se publica hasta que una persona decida. Nombrar una técnica o una herramienta no basta para marcarla.",
             "seccion_manual": "El catálogo como dato · desde Sprint 001"
           },
           {
             "id": "F03",
-            "nombre": "Semáforo de vigencia que se lee sin color",
-            "que_hace": "Cada prueba, marco, familia y herramienta muestra cuánto lleva sin revisarse, con símbolo, texto y color; la fecha de consulta es una entrada del build, nunca el reloj.",
+            "nombre": "Un semáforo que no depende del color",
+            "que_hace": "Ves qué parte del catálogo sigue al día y qué toca revisar. Cada prueba, marco, familia y herramienta dice cuánto lleva sin verificarse: vigente, por revisar desde los 30 días o vencida desde los 60. Cada estado lleva símbolo y texto, nunca solo color.",
             "seccion_manual": "El catálogo en pantalla · desde Sprint 002"
           },
           {
             "id": "F04",
-            "nombre": "Memoria entre versiones de un marco",
-            "que_hace": "Cuando un marco se renumera, los hallazgos viejos siguen apuntando a la entrada correcta mediante un mapa de equivalencias; una referencia sin versión no se acepta y cada versión del catálogo queda congelada con huella.",
+            "nombre": "Cuando un marco cambia, nada se pierde",
+            "que_hace": "Cuando un marco de seguridad como OWASP renumera sus entradas, tus pruebas y hallazgos siguen apuntando al lugar correcto gracias a un mapa entre versiones. Ninguna referencia entra sin versión. Cada versión del catálogo queda congelada con una huella que delata cualquier cambio.",
             "seccion_manual": "Marcos y controles · desde Sprint 003"
           },
           {
             "id": "F05",
-            "nombre": "Los controles de ISO/IEC 42001 en palabras propias",
-            "que_hace": "La estructura del Anexo A con resúmenes propios, nunca el texto de la norma, y para cada control qué pruebas lo cubren; una prueba sin control se acepta pero su deuda se ve.",
+            "nombre": "ISO/IEC 42001, control por control",
+            "que_hace": "Ves qué pruebas respaldan cada control de ISO/IEC 42001, la norma internacional para gestionar sistemas de IA. Cada control está resumido con palabras propias, nunca con el texto de la norma. Una prueba sin control se acepta, pero su deuda queda a la vista.",
             "seccion_manual": "Marcos y controles · desde Sprint 003"
           },
           {
             "id": "F06",
-            "nombre": "La familia que nadie prueba todavía",
-            "que_hace": "Los modelos de decisión tipados, con un activo demo propio que imita el contrato de un producto real: calibración, cruce de umbral, paridad español/inglés y «válido pero equivocado».",
+            "nombre": "Pruebas para la IA que decide",
+            "que_hace": "Pone a prueba la IA que decide, como la que aprueba o rechaza solicitudes: si sus probabilidades coinciden con lo que acierta, si falla cerca del umbral y si decide distinto en español y en inglés. Trae un clasificador de demostración con tres defectos sembrados.",
             "seccion_manual": "El clasificador demo de la familia «modelo de decisión» · desde Sprint 001"
           },
           {
             "id": "F07",
-            "nombre": "Un investigador que propone con pruebas",
-            "que_hace": "A demanda, una skill de Claude Code busca pruebas nuevas, versiones de marcos y retiros; ninguna fuente llega a tus ojos sin que el código verifique que existe y dice lo que se cita. Tú apruebas.",
+            "nombre": "Un investigador con fuentes comprobadas",
+            "que_hace": "Te avisa cuando un marco publica una versión nueva o cuando conviene sumar o retirar una prueba. Lo busca un asistente de IA que corres a demanda, y el código comprueba cada cita contra su fuente. Nada entra sin tu aprobación.",
             "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
           }
         ]
@@ -86,25 +86,25 @@
       {
         "orden": 2,
         "estrella": false,
-        "nombre": "El plan",
-        "linea": "Tu app descrita como activo y un plan que explica cada decisión, byte a byte reproducible.",
+        "nombre": "El plan: lo que te toca probar",
+        "linea": "Describes tu app, declaras hasta dónde se puede probar y recibes un plan que justifica cada decisión.",
         "features": [
           {
             "id": "F08",
-            "nombre": "Tu app, descrita como activo",
-            "que_hace": "Tipo, exposición, datos y modelos que consume, con el dueño y el proveedor separados y el alcance autorizado y las reglas de enfrentamiento declarados antes de cualquier plan: sin ellos no hay plan.",
+            "nombre": "Sin permiso, no hay plan",
+            "que_hace": "Describes tu app: qué tipo es, qué tan expuesta está, qué datos maneja y qué modelos usa, con su dueño y su proveedor por separado. Sin un alcance autorizado y unas reglas de enfrentamiento (hasta dónde y cómo se puede probar), no hay plan.",
             "seccion_manual": "Activos y plan · desde Sprint 004"
           },
           {
             "id": "F09",
-            "nombre": "Un planificador que explica cada decisión",
-            "que_hace": "Cruza el activo con el catálogo y dice qué pruebas entran, cuáles salen y por qué, con qué prioridad, con qué herramienta gratuita y qué cobertura esperar por control. Mismo activo, mismo catálogo, mismo plan.",
+            "nombre": "Un plan que justifica cada prueba",
+            "que_hace": "Recibes la lista exacta de pruebas para tu app, cada una con la razón por la que aplica, su prioridad y una herramienta gratuita para correrla. Las que quedan fuera también dicen por qué. Con los mismos datos, el plan sale idéntico, byte a byte.",
             "seccion_manual": "Activos y plan · desde Sprint 004"
           },
           {
             "id": "F10",
-            "nombre": "El paquete para correr afuera",
-            "que_hace": "Herramienta, versión mínima, entorno, configuración declarativa, límites y resultado esperado; nunca una carga. HackGuard no ejecuta pruebas: tú las corres con tus herramientas.",
+            "nombre": "Listo para correr con tus herramientas",
+            "que_hace": "Descargas un paquete que dice, prueba por prueba, qué herramienta usar, desde qué versión, dónde correrla, con qué límites y qué resultado esperar. HackGuard no ejecuta nada ni incluye cargas de ataque: las pruebas las corres tú, afuera.",
             "seccion_manual": "Activos y plan · desde Sprint 004"
           }
         ]
@@ -112,37 +112,37 @@
       {
         "orden": 3,
         "estrella": true,
-        "nombre": "La evidencia",
-        "linea": "Nada cuenta sin tu confirmación, y un hallazgo solo se cierra con una re-prueba.",
+        "nombre": "La evidencia: lo que obtuviste, firmado",
+        "linea": "Los resultados de tus herramientas entran sellados con su huella, y nada cuenta hasta que una persona lo confirma.",
         "features": [
           {
             "id": "F11",
-            "nombre": "Un libro de evidencia que una persona firma",
-            "que_hace": "Los resultados entran por el archivo nativo de la herramienta o a mano, y nada cuenta sin confirmación, individual o por lote con una muestra que tú revisas. El crudo nunca entra al almacén: solo su huella y un extracto.",
+            "nombre": "Evidencia que una persona firma",
+            "que_hace": "Nada cuenta como evidencia hasta que una persona lo confirma, uno por uno o por lotes revisando una muestra calculada. Del archivo de la herramienta solo se guardan su huella y un extracto, nunca el contenido. Lo confirmado ya no cambia.",
             "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
             "id": "F12",
-            "nombre": "Hallazgos que solo cierran con re-prueba",
-            "que_hace": "Abierto, corregido, re-probado, cerrado, con plazos de 7, 30 y 90 días según severidad y vencidos visibles; que un hallazgo desaparezca de un escaneo posterior no lo cierra.",
+            "nombre": "Ningún hallazgo se cierra por desaparecer",
+            "que_hace": "Cada falla confirmada abre un hallazgo; si es crítico, alto o medio, tiene 7, 30 o 90 días para corregirse, y los vencidos saltan a la vista. Solo lo cierra repetir la misma prueba con éxito: dejar de aparecer en un escaneo no basta.",
             "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
             "id": "F13",
-            "nombre": "Severidad que un auditor puede reproducir",
-            "que_hace": "CVSS 4.0 contra la referencia fijada de FIRST para el software; para la IA, una tabla de prioridad que mira primero el impacto, nunca una suma.",
+            "nombre": "Severidad que un auditor puede recalcular",
+            "que_hace": "La gravedad de cada hallazgo se calcula, no se opina. En software usa CVSS 4.0, la escala estándar, con la calculadora oficial de referencia fijada en una versión exacta. En IA usa una tabla que mira primero el impacto y nunca suma puntajes.",
             "seccion_manual": "Evidencia y hallazgos · desde Sprint 005"
           },
           {
             "id": "F14",
-            "nombre": "Garak y ZAP hablan tu idioma",
-            "que_hace": "Adaptadores que convierten sus reportes nativos en sobres con veredicto sugerido por la regla; cuando ZAP no puede demostrar que una regla corrió, se dice «no ejecutada», no «superada».",
+            "nombre": "Garak y ZAP, directo a evidencia",
+            "que_hace": "Traes el reporte de Garak, el escáner abierto de modelos de lenguaje, o de ZAP, el de aplicaciones web, y queda convertido en un lote listo para revisar. Si ZAP no demuestra que una regla corrió, dice «no ejecutada», jamás «superada».",
             "seccion_manual": "Carga de evidencia · desde Sprint 006"
           },
           {
             "id": "F15",
-            "nombre": "Un extractor para lo que pegas",
-            "que_hace": "Una skill de Claude Code propone a qué prueba del plan corresponde un texto, con citas literales que el código verifica; el veredicto lo calcula la regla y tú confirmas.",
+            "nombre": "Un extractor que cita antes de proponer",
+            "que_hace": "Un asistente de IA lee el resultado que guardaste de una herramienta y te propone a qué prueba de tu plan corresponde. El código comprueba que cada cita aparezca literal en el texto. El veredicto lo calcula la regla, y tú confirmas.",
             "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
           }
         ]
@@ -150,25 +150,25 @@
       {
         "orden": 4,
         "estrella": true,
-        "nombre": "La brecha",
-        "linea": "Lo esperado contra lo obtenido, control por control, y el instrumento que se prueba a sí mismo.",
+        "nombre": "La brecha: qué está respaldado y qué no",
+        "linea": "Lo que esperabas contra lo que obtuviste, control por control, y un instrumento que se pone a prueba a sí mismo.",
         "features": [
           {
             "id": "F16",
-            "nombre": "Lo esperado contra lo obtenido",
-            "que_hace": "Por prueba, familia y control: planeadas, ejecutadas, superadas, fallidas, no ejecutadas; «no detectado» nunca se disfraza de «verificado». Con alertas de catálogo vencido, marcos nuevos y evidencia vieja, y un informe imprimible.",
+            "nombre": "Lo que esperabas contra lo que obtuviste",
+            "que_hace": "Ves cuántas pruebas planeadas se ejecutaron, cuántas pasaron, cuántas fallaron y cuáles nunca corrieron, por app, por familia y por control. «No detectado» nunca se disfraza de «verificado». Todo sale en un informe imprimible con su huella.",
             "seccion_manual": "La brecha y el informe · desde Sprint 007"
           },
           {
             "id": "F17",
-            "nombre": "La vista por control",
-            "que_hace": "Para cada control de ISO/IEC 42001: qué pruebas lo cubren, qué evidencia existe y de qué fecha, qué falló y la cadena hallazgo → corrección → re-prueba.",
+            "nombre": "La respuesta que pide un auditor",
+            "que_hace": "Para cada control de ISO/IEC 42001 tienes en una sola página qué pruebas lo cubren, qué evidencia existe y de qué fecha, qué falló y la cadena de cada hallazgo: falla, corrección y re-prueba. Es evidencia ordenada para quien evalúa, no un sello de cumplimiento.",
             "seccion_manual": "La brecha y el informe · desde Sprint 007"
           },
           {
             "id": "F18",
-            "nombre": "El instrumento se prueba a sí mismo",
-            "que_hace": "Semillas inválidas que deben rechazarse, contenido que debe marcarse y cierres que deben negarse; si algo falla, ninguna instantánea ni paquete se publica.",
+            "nombre": "Una herramienta que se audita a sí misma",
+            "que_hace": "Antes de publicar, HackGuard se pone a prueba con casos sembrados: datos que debe rechazar, textos que debe marcar y cierres que debe negar. Si una sola comprobación falla, no se publica nada, y el tablero te muestra el resultado.",
             "seccion_manual": "La brecha y el informe · desde Sprint 007"
           }
         ]
@@ -182,7 +182,7 @@
       "valor": 18,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido."
+      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o del modo público para terceros, y no se han construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -211,18 +211,18 @@
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4390,
+      "valor": 4392,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-10-13 sobre el árbol de este export: `pnpm test` 3096 pruebas, y `pnpm test:e2e` 1294 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas sobre b5acd4b: `pnpm test` del 2026-10-27, 3098 pruebas, y `pnpm test:e2e`, 1294 en Chromium, Firefox y WebKit sobre el build de producción (corrida del 2026-10-13; `playwright test --list` del 2026-10-27 da las mismas). El mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3096,
+      "valor": 3098,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-13 sobre el árbol de este export: 154 archivos, 3096 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-27 sobre b5acd4b: 154 archivos, 3098 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
@@ -327,13 +327,13 @@
     "local_only": false,
     "red_saliente": false,
     "usa_ia": true,
-    "detalle": "Es una web estática: sin backend, sin base de datos, sin cuentas y sin ninguna IA en tiempo de ejecución. La IA vive fuera de la app: dos skills de Claude Code que corres tú, a demanda, y que solo escriben propuestas en una carpeta; nada se aprueba sin una persona. Solo muestra contenido público por diseño (catálogo, marcos, controles y activos demo sintéticos); la evidencia de activos reales vive en una carpeta que git ignora y no viaja al repositorio. El informe de errores a Sentry está apagado sin DSN y, si se activa, solo envía metadatos."
+    "detalle": "Es una web estática: sin servidor propio, sin base de datos, sin cuentas y sin ninguna IA corriendo dentro de la app. La IA vive afuera: dos asistentes de Claude Code que tú corres a demanda y que solo escriben propuestas; nada se aprueba sin una persona. Lo publicado es contenido público por diseño, con apps de demostración sintéticas, y la evidencia de apps reales vive en una carpeta que nunca viaja al repositorio. El reporte de errores está apagado y, si se activa, solo envía metadatos."
   },
   "enlaces": {
     "produccion": null,
-    "razon": "La app privada no se muestra a nadie: el despliegue está protegido y la producción se muestra en este brochure, no se entrega como enlace. Es la regla de cero enlaces del portafolio.",
+    "razon": "HackGuard corre en un despliegue privado y protegido. Aquí se muestra cómo funciona, pero el enlace no se entrega: es la regla de cero enlaces del Portafolio.",
     "repositorio": null,
-    "razon_repositorio": "Ningún enlace viaja en este export: es la regla de cero enlaces del portafolio, no una cuestión de visibilidad del repositorio.",
+    "razon_repositorio": "Este export no lleva enlaces de ningún tipo: es la regla de cero enlaces del Portafolio, no una cuestión de visibilidad del código.",
     "brochure_archivo": "docs/BROCHURE.html",
     "brochure_ruta_local": "/conoce"
   }
