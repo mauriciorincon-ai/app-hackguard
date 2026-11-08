@@ -214,6 +214,51 @@
         "es": "Oficial",
         "en": "Official"
       }
+    },
+    {
+      "id": "movimiento_entra",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Entra",
+        "en": "Enters"
+      }
+    },
+    {
+      "id": "movimiento_sale",
+      "rol": "neutro",
+      "simbolo": "no_aplica",
+      "nombre": {
+        "es": "Sale",
+        "en": "Leaves"
+      }
+    },
+    {
+      "id": "movimiento_cambia",
+      "rol": "atencion",
+      "simbolo": "parcial",
+      "nombre": {
+        "es": "Cambia",
+        "en": "Changes"
+      }
+    },
+    {
+      "id": "instantanea_demo",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Demo, no oficial",
+        "en": "Demo, not official"
+      }
+    },
+    {
+      "id": "diferencias_sin_cambios",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin cambios",
+        "en": "No changes"
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ItemDeSelector } from "@/lib/activos/tipos";
-import { Chip } from "../estado";
+import { Chip, Sello } from "../estado";
 import { Dato, T, type Bilingue } from "../texto";
 import type { CabeceraDeActivo } from "@/lib/activos/tipos";
 
@@ -79,9 +79,12 @@ export function SelectorDeActivos({
 export function SubnavDelActivo({
   id,
   abierta,
+  historial = false,
 }: {
   id: string;
-  abierta: "activo" | "plan";
+  abierta: "activo" | "plan" | "historial";
+  /** El activo tiene historial de versiones: se agrega su entrada. */
+  historial?: boolean;
 }) {
   return (
     <nav className="hg-subnav" aria-labelledby="rotulo-subnav">
@@ -105,6 +108,16 @@ export function SubnavDelActivo({
             <T t={{ es: "Plan", en: "Plan" }} />
           </Link>
         </li>
+        {historial ? (
+          <li>
+            <Link
+              href={`/activos/${id}/historial`}
+              aria-current={abierta === "historial" ? "page" : undefined}
+            >
+              <T t={{ es: "Historial", en: "History" }} />
+            </Link>
+          </li>
+        ) : null}
       </ul>
     </nav>
   );
@@ -122,6 +135,58 @@ export function LineaDeCabecera({
     <p className="hg-cabecera-linea">
       <Dato>{v.id}</Dato>
       <Chip etiqueta={chip} />
+      {v.planDesactualizado === null ? null : (
+        <Chip etiqueta={v.planDesactualizado.etiqueta} />
+      )}
     </p>
+  );
+}
+
+/** Lo que dice el aviso de un plan desactualizado: la versión con la que se emitió, la de hoy y la causa. Una sola redacción para el activo y el plan. */
+export function AvisoDePlanDesactualizado({ v }: { v: CabeceraDeActivo }) {
+  const d = v.planDesactualizado;
+  if (d === null) return null;
+  const porPerfil = d.por.includes("perfil");
+  const porCatalogo = d.por.includes("catalogo");
+  return (
+    <Sello etiqueta={d.etiqueta} atributos={{ "data-plan-desactualizado": true }}>
+      <p>
+        {porPerfil ? (
+          <T
+            t={{
+              es: `El perfil del activo cambió desde que se emitió el plan${d.versionDelPlan !== null && d.versionVigente !== null ? `: se emitió con la versión ${d.versionDelPlan} y hoy es la ${d.versionVigente}` : ""}.`,
+              en: `The asset's profile changed since the plan was issued${d.versionDelPlan !== null && d.versionVigente !== null ? `: it was issued with version ${d.versionDelPlan} and today it is version ${d.versionVigente}` : ""}.`,
+            }}
+          />
+        ) : null}
+        {porPerfil && porCatalogo ? " " : null}
+        {porCatalogo ? (
+          <T
+            t={{
+              es: "El catálogo oficial ya no es el que usó el plan.",
+              en: "The official catalog is no longer the one the plan used.",
+            }}
+          />
+        ) : null}{" "}
+        <T
+          t={{
+            es: "El plan de abajo sigue siendo el que se emitió, con su huella: no se corrige solo. Lo que dice ya no refleja lo de hoy; hay que re-emitirlo.",
+            en: "The plan below is still the one that was issued, with its fingerprint: it does not fix itself. What it says no longer reflects today; it has to be issued again.",
+          }}
+        />
+      </p>
+      {v.tieneHistorial ? (
+        <p>
+          <Link href={`/activos/${v.id}/historial`}>
+            <T
+              t={{
+                es: "Ver qué cambió en el activo",
+                en: "See what changed in the asset",
+              }}
+            />
+          </Link>
+        </p>
+      ) : null}
+    </Sello>
   );
 }

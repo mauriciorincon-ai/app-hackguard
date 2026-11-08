@@ -3,7 +3,13 @@ import type { VistaDeActivo } from "@/lib/activos/tipos";
 import { Chip, Fechado, Sello } from "../estado";
 import { Dato, T } from "../texto";
 import { PlantillaParaActivosPropios } from "./plantilla";
-import { Lista, LineaDeCabecera, Par, SelectorDeActivos } from "./piezas";
+import {
+  AvisoDePlanDesactualizado,
+  Lista,
+  LineaDeCabecera,
+  Par,
+  SelectorDeActivos,
+} from "./piezas";
 import { Huella } from "../estado";
 
 /**
@@ -30,6 +36,7 @@ export function ActivoPantalla({ v }: { v: VistaDeActivo }) {
           </p>
         </div>
       </div>
+      <AvisoDePlanDesactualizado v={v} />
       {v.autorizado ? null : (
         <Sello etiqueta={e.sinAutorizacion}>
           <p>

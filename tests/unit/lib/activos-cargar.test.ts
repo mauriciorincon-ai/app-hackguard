@@ -43,7 +43,7 @@ afterAll(() =>
 function raiz() {
   const r = mkdtempSync(path.join(tmpdir(), "hackguard-cargar-"));
   temporales.push(r);
-  for (const c of ["activos", "planes", "planificador"])
+  for (const c of ["activos", "planes", "planificador", "historial"])
     cpSync(path.join(RAIZ, "datos", c), path.join(r, "datos", c), {
       recursive: true,
     });
@@ -92,10 +92,29 @@ describe("cargarActivosDelBuild", () => {
     );
   });
 
-  it("un plan que cita otra instantánea que la oficial rompe el build", async () => {
+  it("un plan que cita una instantánea CONOCIDA que ya no es la oficial no rompe el build: queda «desactualizado» por catálogo", async () => {
+    // Las tres instantáneas se conocen (la del plan está en datos/instantaneas/); la oficial «de hoy» es otra.
     const otra = { ...copia(instantanea), huella: "0".repeat(64) };
-    await expect(cargarActivosDelBuild(otra, RAIZ)).rejects.toThrow(
-      /otra instantánea/,
+    const m = await cargarActivosDelBuild(otra, RAIZ);
+    const conPlan = m.activos.filter((a) => a.plan !== null);
+    expect(conPlan.length).toBeGreaterThan(0);
+    for (const a of conPlan) {
+      expect(a.veredicto?.estado).toBe("plan_desactualizado");
+      expect(a.veredicto?.por).toContain("catalogo");
+    }
+  });
+
+  it("un plan que cita una instantánea que NO está en datos/instantaneas/ rompe el build: no se puede reproducir", async () => {
+    const r = raiz();
+    cpSync(
+      path.join(RAIZ, "datos", "instantaneas"),
+      path.join(r, "datos", "instantaneas"),
+      { recursive: true },
+    );
+    rmSync(path.join(r, "datos", "instantaneas", `${nombreDeLaInstantanea}.json`));
+    const otra = { ...copia(instantanea), huella: "0".repeat(64) };
+    await expect(cargarActivosDelBuild(otra, r)).rejects.toThrow(
+      /no está en datos\/instantaneas/,
     );
   });
 

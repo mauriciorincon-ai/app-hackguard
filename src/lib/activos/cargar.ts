@@ -6,10 +6,19 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cargarActivosPublicos } from "./cargar-activos.ts";
 import { Activo } from "../../engine/activos/esquemas.ts";
-import { normalizarActivo } from "../../engine/activos/normalizar.ts";
+import {
+  estadoDelPlan,
+  Historial,
+  huellaDelActivo,
+  versionDelPlan,
+  versionesDe,
+  type VeredictoDelPlan,
+  type VersionDeActivo,
+} from "../../engine/activos/historial.ts";
 import { validarActivos } from "../../engine/activos/validar.ts";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
 import { huella } from "../../engine/huella.ts";
+import { listarInstantaneas } from "../catalogo/cargar-instantanea.ts";
 import {
   Entornos,
   Etiquetas,
@@ -24,6 +33,12 @@ export interface ActivoCargado {
   activo: Activo;
   plan: Plan | null;
   paquete: Paquete | null;
+  /** Sus versiones, de la más nueva a la más vieja, si tiene historial (`datos/historial/activos/`); `null` si no. */
+  versiones: VersionDeActivo[] | null;
+  /** ¿Sigue vigente el plan? `null` si el activo no tiene plan. Una cuenta, un cálculo: la hace `estadoDelPlan`. */
+  veredicto: VeredictoDelPlan | null;
+  /** La versión del activo con la que se emitió el plan, o `null` si no hay plan o el activo no tiene historial. */
+  versionDelPlan: number | null;
 }
 
 export interface DatosDelPlanificador {
@@ -59,6 +74,19 @@ export function cargarDatosDelPlanificador(raiz: string): DatosDelPlanificador {
   };
 }
 
+/** El historial de un activo, comprobado contra el archivo de hoy; `null` si no tiene. Lanza si el historial no cuadra. */
+async function cargarVersiones(
+  raiz: string,
+  activo: Activo,
+): Promise<VersionDeActivo[] | null> {
+  const ruta = join(raiz, `datos/historial/activos/${activo.id}.json`);
+  if (!existsSync(ruta)) return null;
+  return versionesDe(
+    Historial.parse(JSON.parse(readFileSync(ruta, "utf8"))),
+    activo,
+  );
+}
+
 export async function cargarActivosDelBuild(
   instantanea: Instantanea,
   raiz: string = process.cwd(),
@@ -89,7 +117,14 @@ export async function cargarActivosDelBuild(
           `${activo.id}: no está autorizado y tiene un plan emitido: bórralo`,
           `${activo.id}: is not authorized and has an issued plan: delete it`,
         );
-      activos.push({ activo, plan: null, paquete: null });
+      activos.push({
+        activo,
+        plan: null,
+        paquete: null,
+        versiones: await cargarVersiones(raiz, activo),
+        veredicto: null,
+        versionDelPlan: null,
+      });
       continue;
     }
     const base = `datos/planes/${activo.id}`;
@@ -108,6 +143,18 @@ export async function cargarActivosDelBuild(
     delete cuerpoDelPlan.huella;
     const cuerpoDelPaquete: Record<string, unknown> = { ...paquete };
     delete cuerpoDelPaquete.huella;
+    const versiones = await cargarVersiones(raiz, activo);
+    const huellaDeHoy = await huellaDelActivo(activo);
+    // Un plan puede citar un activo o un catálogo que ya no son los de hoy, y eso NO rompe el build si el pasado es CONOCIDO: la
+    // versión del activo está en su historial y la instantánea está en `datos/instantaneas/`. Se muestra «desactualizado», con su
+    // causa. Si la huella no es de ninguna versión ni instantánea conocida, el plan no se puede reproducir: eso sí rompe.
+    const versionDelPlanCitada =
+      versiones === null ? null : versionDelPlan(versiones, plan);
+    const activoConocido =
+      plan.activo.huella === huellaDeHoy || versionDelPlanCitada !== null;
+    const instantaneaConocida =
+      plan.instantanea.huella === instantanea.huella ||
+      listarInstantaneas(raiz).some((l) => l.huella === plan.instantanea.huella);
     const comprobaciones: [boolean, string, string][] = [
       [
         (await huella(cuerpoDelPlan)) === plan.huella,
@@ -121,14 +168,14 @@ export async function cargarActivosDelBuild(
         "the package is not the one the plan cites",
       ],
       [
-        plan.activo.huella === (await huella(normalizarActivo(activo))),
-        "el activo cambió desde que se emitió el plan",
-        "the asset changed since the plan was issued",
+        activoConocido,
+        "el activo cambió desde que se emitió el plan y su historial no tiene esa versión: agrega la versión a datos/historial/activos/",
+        "the asset changed since the plan was issued and its history does not have that version: add the version to datos/historial/activos/",
       ],
       [
-        plan.instantanea.huella === instantanea.huella,
-        "el plan cita otra instantánea que la oficial: re-emítelo",
-        "the plan cites a snapshot other than the official one: issue it again",
+        instantaneaConocida,
+        "el plan cita una instantánea que no está en datos/instantaneas/: re-emítelo",
+        "the plan cites a snapshot that is not in datos/instantaneas/: issue it again",
       ],
       [
         plan.formula.huella === huellaDeFormula &&
@@ -139,7 +186,17 @@ export async function cargarActivosDelBuild(
     ];
     for (const [cuadra, es, en] of comprobaciones)
       if (!cuadra) falla(`${activo.id}: ${es}`, `${activo.id}: ${en}`);
-    activos.push({ activo, plan, paquete });
+    activos.push({
+      activo,
+      plan,
+      paquete,
+      versiones,
+      veredicto: estadoDelPlan(plan, {
+        huella_del_activo: huellaDeHoy,
+        huella_de_la_instantanea: instantanea.huella,
+      }),
+      versionDelPlan: versionDelPlanCitada?.n ?? null,
+    });
   }
   return { activos, datos };
 }

@@ -85,6 +85,19 @@ function cabecera(
     id,
     nombre: cargado.activo.nombre,
     descripcion: cargado.activo.descripcion,
+    planDesactualizado:
+      cargado.veredicto === null || cargado.veredicto.estado === "vigente"
+        ? null
+        : {
+            etiqueta: etiquetaPropia(
+              mundo.datos.etiquetas,
+              "plan_desactualizado",
+            ),
+            por: cargado.veredicto.por,
+            versionDelPlan: cargado.versionDelPlan,
+            versionVigente: cargado.versiones?.[0]?.n ?? null,
+          },
+    tieneHistorial: cargado.versiones !== null,
     estado: estadoDe(cargado.plan !== null),
     autorizado: cargado.plan !== null,
     selector: mundo.activos.map((a) => ({

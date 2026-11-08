@@ -28,6 +28,9 @@ const SOLO_DE_LA_MAQUETA = new Set([
 const SOLO_DEL_PRODUCTO = new Set([
   // El estado del asistente se deriva de su plan emitido («Con plan»); la maqueta le escribió «En prueba» a mano.
   "Con plan|Has a plan",
+  // S10: el clasificador demo tiene una versión 2 de su perfil y su plan se emitió con la 1: el producto lo marca «desactualizado»
+  // (chip y aviso). La maqueta no dibuja ese estado: es una decisión de diseño nueva, registrada en docs/diseno/README.md.
+  "Plan desactualizado|Plan out of date",
 ]);
 
 // Los textos del selector son los nombres de los activos y su estado: el estado del producto se deriva (Con plan / Registrado).

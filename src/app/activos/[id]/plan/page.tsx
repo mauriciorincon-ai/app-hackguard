@@ -42,7 +42,11 @@ export default async function Plan({
         { es: "Plan", en: "Plan" },
       ]}
       pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
-      subnav={<SubnavDelActivo id={id} abierta="plan" />}
+      subnav={<SubnavDelActivo
+          id={id}
+          abierta="plan"
+          historial={vista.tieneHistorial}
+        />}
     >
       <PlanPantalla v={vista} />
     </Consola>

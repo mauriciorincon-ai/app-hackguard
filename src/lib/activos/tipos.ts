@@ -12,6 +12,16 @@ export interface ItemDeSelector {
   actual: boolean;
 }
 
+/** Un plan que ya no es el de hoy: por qué y con qué versión del activo se emitió. Solo existe si el plan está desactualizado. */
+export interface PlanDesactualizadoVista {
+  etiqueta: Etiqueta;
+  /** Las causas, en este orden: el activo cambió (perfil) y el catálogo oficial es otro (catálogo). */
+  por: ("perfil" | "catalogo")[];
+  /** La versión del activo con la que se emitió el plan, y la vigente; `null` si el activo no tiene historial. */
+  versionDelPlan: number | null;
+  versionVigente: number | null;
+}
+
 /** Lo que las dos pantallas comparten: quién es el activo y en qué estado está su plan. */
 export interface CabeceraDeActivo {
   id: string;
@@ -20,6 +30,10 @@ export interface CabeceraDeActivo {
   estado: Etiqueta;
   autorizado: boolean;
   selector: ItemDeSelector[];
+  /** `null` si el plan está vigente o el activo no tiene plan. */
+  planDesactualizado: PlanDesactualizadoVista | null;
+  /** ¿Tiene historial de versiones? Si lo tiene, `/activos/<id>/historial` existe. */
+  tieneHistorial: boolean;
   /** Nombre de la instantánea oficial y fecha de consulta: lo que lleva el pie del lateral. */
   instantanea: string;
   consulta: string;
@@ -151,4 +165,35 @@ export interface VistaDePlan extends CabeceraDeActivo {
     resumenSinPrueba: Etiqueta;
     conPrueba: Etiqueta;
   };
+}
+
+// ── Historial del activo (D3) ───────────────────────────────────────────────────────────────────
+
+export interface CambioDeVersionVista {
+  /** El campo, con su nombre llano; `ruta` es la ruta con puntos tal como está en el archivo. */
+  campo: Bilingue;
+  ruta: string;
+  antes: Bilingue;
+  despues: Bilingue;
+}
+
+export interface VersionVista {
+  n: number;
+  fecha: string;
+  huella: string;
+  cambio: Bilingue;
+  vigente: boolean;
+  /** Con esta versión se emitió el plan que hoy está en `datos/planes/`. */
+  planEmitidoConEsta: boolean;
+  /** Los campos que cambiaron frente a la versión anterior; vacío en la primera. */
+  cambios: CambioDeVersionVista[];
+}
+
+export interface VistaDeHistorial extends CabeceraDeActivo {
+  /** De la más nueva a la más vieja. */
+  versiones: VersionVista[];
+  nota: Bilingue;
+  /** La huella del plan emitido, o `null` si el activo no tiene plan. */
+  plan: null | { huella: string; fecha: string };
+  etiquetas: { vigente: Etiqueta };
 }

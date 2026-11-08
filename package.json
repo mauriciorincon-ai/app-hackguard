@@ -12,6 +12,8 @@
     "test:e2e": "playwright test",
     "catalogo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts validar",
     "catalogo:instantanea": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts instantanea",
+    "catalogo:diferencias": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts diferencias",
+    "activo:historial": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/activo.ts historial",
     "activo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts activo-validar",
     "plan:emitir": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts emitir",
     "evidencia:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts validar",

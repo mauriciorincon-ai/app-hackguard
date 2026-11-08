@@ -2,9 +2,10 @@
 // Los planes y paquetes de `datos/planes/` son los que el CLI escribiría hoy: cada uno cita su activo, la
 // instantánea oficial, la fórmula y los entornos vigentes, y su propia huella. Si el catálogo o un activo
 // cambian sin re-emitir, esto falla: es lo que cierra la nota de ADR-002 («mientras ningún plan la cite»).
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import type { Activo } from "../../../src/engine/activos/esquemas.ts";
 import { normalizarActivo } from "../../../src/engine/activos/normalizar.ts";
 import { ROLES, SIMBOLOS } from "../../../src/engine/catalogo/esquemas.ts";
 import { huella } from "../../../src/engine/huella.ts";
@@ -17,6 +18,18 @@ import {
 } from "../../../src/engine/planificador/esquemas.ts";
 import { planificar } from "../../../src/engine/planificador/planificar.ts";
 import { ASISTENTE, CLASIFICADOR, mundo, PORTAL, RAIZ } from "./ayuda.ts";
+
+async function activoDelPlan(id: string, hoy: Activo, h: string) {
+  if ((await huella(normalizarActivo(hoy))) === h) return hoy;
+  const ruta = path.join(RAIZ, `datos/historial/activos/${id}.json`);
+  if (!existsSync(ruta)) return null;
+  const { anteriores } = JSON.parse(readFileSync(ruta, "utf8")) as {
+    anteriores: { activo: Activo }[];
+  };
+  for (const v of anteriores)
+    if ((await huella(normalizarActivo(v.activo))) === h) return v.activo;
+  return null;
+}
 
 const leer = (ruta: string) => readFileSync(path.join(RAIZ, ruta), "utf8");
 const archivosDePlanes = readdirSync(path.join(RAIZ, "datos/planes")).sort();
@@ -45,15 +58,22 @@ describe("datos/planes/", () => {
         fecha: m.instantanea.fecha_evaluacion,
         huella: m.instantanea.huella,
       });
-      expect(plan.activo.huella).toBe(
-        await huella(normalizarActivo(m.activos[id]!)),
+      // Cita la versión del activo con que se emitió: la de hoy, o una anterior de su historial (D3: entonces el plan sale «desactualizado»).
+      const delPlan = await activoDelPlan(
+        id,
+        m.activos[id]!,
+        plan.activo.huella,
       );
+      expect(
+        delPlan,
+        "la huella del activo es de alguna versión conocida",
+      ).not.toBeNull();
       expect(plan.formula.huella).toBe(await huella(m.formula));
       expect(plan.entornos.huella).toBe(await huella(m.entornos));
       expect(plan.paquete.huella).toBe(paquete.huella);
       // Re-emitido con la fecha del propio plan, son exactamente los mismos bytes.
       const r = await planificar({
-        activo: m.activos[id]!,
+        activo: delPlan!,
         instantanea: m.instantanea,
         formula: m.formula,
         entornos: m.entornos,

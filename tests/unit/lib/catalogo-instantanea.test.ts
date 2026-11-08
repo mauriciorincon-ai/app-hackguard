@@ -29,7 +29,8 @@ function raizCon(editar?: (texto: string) => string, nombre = OFICIAL): string {
   const carpeta = join(raiz, "datos", "instantaneas");
   cpSync(join(RAIZ, "datos", "instantaneas"), carpeta, { recursive: true });
   for (const n of readdirSync(carpeta))
-    if (n !== OFICIAL) throw new Error("hay más de una instantánea oficial");
+    if (n !== OFICIAL && n !== "demo")
+      throw new Error("hay más de una instantánea oficial");
   const texto = readFileSync(join(carpeta, OFICIAL), "utf8");
   if (nombre !== OFICIAL) {
     writeFileSync(join(carpeta, nombre), editar ? editar(texto) : texto);

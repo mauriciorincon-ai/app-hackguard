@@ -44,7 +44,11 @@ export default async function Activo({
       pagina={`/activos/${id}`}
       migas={[{ es: "Activos", en: "Assets" }, vista.nombre]}
       pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
-      subnav={<SubnavDelActivo id={id} abierta="activo" />}
+      subnav={<SubnavDelActivo
+          id={id}
+          abierta="activo"
+          historial={vista.tieneHistorial}
+        />}
     >
       <ActivoPantalla v={vista} />
     </Consola>

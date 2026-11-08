@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { pruebas } from "@/lib/catalogo/etiquetas";
 import type { Bilingue, FilaPlaneada, VistaDePlan } from "@/lib/activos/tipos";
-import { LineaDeCabecera, Par, SelectorDeActivos } from "../activos/piezas";
+import {
+  AvisoDePlanDesactualizado,
+  LineaDeCabecera,
+  Par,
+  SelectorDeActivos,
+} from "../activos/piezas";
 import { Chip, Estado, Fechado, Huella, Sello } from "../estado";
 import { Cabeceras } from "../cabeceras";
 import { Dato, T } from "../texto";
@@ -191,6 +196,7 @@ export function PlanPantalla({ v }: { v: VistaDePlan }) {
           </li>
         </ul>
       </div>
+      <AvisoDePlanDesactualizado v={v} />
 
       <section className="hg-panel" aria-labelledby="planeadas">
         <div className="hg-panel-cab">

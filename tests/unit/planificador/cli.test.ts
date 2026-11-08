@@ -130,7 +130,7 @@ describe("emitir", () => {
     expect(r.codigo).toBe(0);
     expect(JSON.parse(r.salida)).toMatchObject({
       emitido: true,
-      resumen: { planeadas: 11, excluidas: 1 },
+      resumen: { planeadas: 12, excluidas: 0 },
     });
   });
 
@@ -251,8 +251,12 @@ describe("un activo propio vive en datos/privado/ y su plan también (regla 17-b
 
   it("la carpeta privada que el CLI crea nace con modo 0700 (regla 17-bis)", async () => {
     const raiz = await raizConPropio();
-    expect(correr(["emitir", "mi-clasificador", "--fecha", FECHA], raiz).codigo).toBe(0);
-    expect(statSync(path.join(raiz, "datos/privado/planes")).mode & 0o777).toBe(0o700);
+    expect(
+      correr(["emitir", "mi-clasificador", "--fecha", FECHA], raiz).codigo,
+    ).toBe(0);
+    expect(statSync(path.join(raiz, "datos/privado/planes")).mode & 0o777).toBe(
+      0o700,
+    );
   });
 
   it("un archivo ya existente con otro modo se deja en el que corresponde", async () => {

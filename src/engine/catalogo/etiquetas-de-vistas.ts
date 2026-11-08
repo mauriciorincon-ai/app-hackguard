@@ -34,6 +34,12 @@ export const IDS_DE_ETIQUETAS_DE_VISTAS = [
   "marcos_vacio",
   "sin_avisos_registrados",
   "instantanea_oficial",
+  // Qué cambió entre dos instantáneas (S10)
+  "movimiento_entra",
+  "movimiento_sale",
+  "movimiento_cambia",
+  "instantanea_demo",
+  "diferencias_sin_cambios",
 ] as const;
 export type IdDeEtiquetaDeVista = (typeof IDS_DE_ETIQUETAS_DE_VISTAS)[number];
 

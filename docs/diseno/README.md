@@ -336,6 +336,21 @@ a 1024 px (`tests/e2e/activos-plan.spec.ts`, `tests/e2e/propuestas.spec.ts`).
 | «Descargar el paquete» (`/activos/<id>/plan`) se partía letra por letra (30 px de ancho, 367 de alto) | `.hg-decision` pone la columna `auto` al texto largo y deja la `minmax(0, 1fr)` al botón; con `overflow-wrap: anywhere` heredado del `body` la columna del botón mide 0 | Los botones van **primero**, en un `.hg-grupo` (columna `auto`), y el texto después (columna `1fr`): el mismo orden que ya usa la bandeja de propuestas. Vale para la maqueta y para el producto |
 | `/catalogo/propuestas` dejaba una cuarta celda gris vacía a 1024 px | La tira `.hg-resumen` fija cuatro columnas desde 720 px y la bandeja trae tres cifras; el fondo de la tira es la línea entre celdas | De 1 a 4 cifras la tira reparte su ancho entre las que tiene (`:has(> li:nth-child(5))` conserva las cuatro columnas con cinco o más) |
 
+## Lo que el producto suma frente a la maqueta (Sprint 10: lo que cambió)
+
+La maqueta no se regenera en este sprint (no tiene estas pantallas); las dos pantallas nuevas y el aviso se arman solo con piezas que la consola
+ya tiene (panel, tabla, chip, sello, huella): **sin una clase de CSS nueva**. Las vigilan `tests/unit/historial-diferencias-pantalla.test.tsx`
+y `tests/e2e/historial-diferencias.spec.ts`; el aviso lo cubren además `tests/unit/fidelidad-activo.test.tsx` y `fidelidad-plan.test.tsx` con
+su razón. La maqueta las alcanza en el `design-sync` del hito.
+
+| Pantalla | Suma | Razón |
+|---|---|---|
+| `activo` · `plan` | Un **sello «Plan desactualizado»** (reloj + texto + color de atención, del vocabulario de `datos/planificador/etiquetas.json`) bajo la cabecera, con la causa (perfil, catálogo o las dos) y el enlace al historial; el plan de abajo se sigue mostrando intacto | D3: un plan cita la huella del activo con que se emitió; si el activo cambia, el plan no se corrige solo ni se oculta (regla dura 6) |
+| `activo` · `plan` | Una **segunda pestaña «Historial»** en la subnavegación y un segundo chip en la cabecera, solo en los activos que tienen historial | Un activo sin versiones anteriores no tiene nada que mostrar |
+| `/activos/<id>/historial` (nueva) | Tabla de versiones, de la más nueva a la más vieja (fecha · qué cambió · huella · con cuál se emitió el plan) y, por versión, qué campos cambiaron frente a la anterior | D3. Una cuenta, un cálculo: `versionesDe` y `diferenciasDeActivo` del motor |
+| `/catalogo/diferencias` (nueva) | Qué entra, sale y cambia entre la instantánea oficial y la **demo** (sintética), con la regla del validador que cuida cada campo y las dos huellas; la demo se rotula «Demo, no oficial» con chip y sello | D1. Un marco que solo permite citar identificadores muestra el nombre del campo y las huellas, nunca su texto (regla dura 11) |
+| `marcos` | Un enlace «Ver qué cambió entre dos instantáneas» en el panel de instantáneas | Es la única entrada a la pantalla nueva |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |

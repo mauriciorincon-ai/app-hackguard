@@ -56,7 +56,10 @@ const controles = () =>
 const cuantas = (html: string, patron: RegExp) =>
   (html.match(patron) ?? []).length;
 const enlaces = (html: string) =>
-  [...html.matchAll(/href="\/catalogo\/([^"]+)"/g)].map((m) => m[1]!);
+  [...html.matchAll(/href="\/catalogo\/([^"]+)"/g)]
+    .map((m) => m[1]!)
+    // «diferencias» es una pantalla, no una ficha.
+    .filter((id) => id !== "diferencias");
 
 describe("/catalogo/marcos", () => {
   it("muestra los 14 marcos, uno por fila, con la instantánea y la fecha de consulta", () => {
