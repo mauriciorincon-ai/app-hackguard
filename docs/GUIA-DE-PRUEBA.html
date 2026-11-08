@@ -453,7 +453,8 @@
       <li data-origen="nuevo" data-minimo data-min="3" id="p-n1" data-cubre="D1"><input type="checkbox" id="n1"><label for="n1"><strong>¿Se entiende qué cambió entre dos instantáneas del catálogo?</strong> Desde <code>/catalogo/marcos</code> pulsa «Ver qué cambió entre dos instantáneas».
         Se abre <code>/catalogo/diferencias</code>: la instantánea oficial frente a una de demostración. Luego, en la terminal:
         <code>pnpm catalogo:diferencias datos/instantaneas/2026-10-05-*.json datos/instantaneas/demo/*.json</code>
-        (y otra vez con <code>--idioma en</code>). <strong>Respuesta esperada: la página dice «Demo, no oficial»; hay filas «entra»
+        (y otra vez con <code>--idioma en</code>). Arriba de la página hay un selector con las comparaciones entre instantáneas consecutivas (hoy una): pulsa su enlace y se abre
+        la misma comparación en su propia dirección. <strong>Respuesta esperada: el selector marca «la que ves» en la comparación abierta; la página dice «Demo, no oficial»; hay filas «entra»
         (PR-MD-DEMO-001 y PR-MD-DEMO-002), «sale» (PR-MD-LIM-001) y «cambia» (PR-MD-COH-001 y PR-MD-INV-001); cada «cambia» nombra el campo y la regla del
         validador que lo cuida, y un campo oculto por licencia dice «texto no mostrado» en vez de mostrarlo. La terminal da los mismos
         movimientos: «2 entran · 1 salen · 2 cambian» (en inglés «2 enter · 1 leave · 2 change»). «Se entiende», o la frase que cambiarías.</strong>

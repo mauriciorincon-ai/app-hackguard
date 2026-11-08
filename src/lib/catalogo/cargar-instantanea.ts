@@ -115,6 +115,27 @@ export async function cargarInstantaneaDemo(
 }
 
 /**
+ * TODAS las instantáneas, del pasado al presente: las oficiales por fecha de evaluación y, detrás de ellas, las demo (sintéticas, derivadas de la
+ * última oficial). Cada una comprobada como la oficial. De aquí salen los pares consecutivos que la pantalla «Qué cambió» enlaza.
+ */
+export async function cargarSecuenciaDeInstantaneas(
+  raiz: string = process.cwd(),
+): Promise<(InstantaneaCargada & { demo: boolean })[]> {
+  const secuencia: (InstantaneaCargada & { demo: boolean })[] = [];
+  for (const [carpeta, demo] of [
+    [join(raiz, "datos", "instantaneas"), false],
+    [join(raiz, CARPETA_DE_INSTANTANEA_DEMO), true],
+  ] as const) {
+    if (!existsSync(carpeta)) continue;
+    for (const archivo of readdirSync(carpeta)
+      .filter((n) => NOMBRE.test(n))
+      .sort())
+      secuencia.push({ ...(await leerYComprobar(carpeta, archivo)), demo });
+  }
+  return secuencia;
+}
+
+/**
  * La instantánea (oficial o demo) cuya huella es la dada: la que un plan cita. `null` si ninguna archivada la tiene. El pasado de un plan es
  * conocido solo si su instantánea sigue en `datos/instantaneas/`.
  */

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import type {
-  CampoDeCambioVista,
-  MovimientoVista,
-  VistaDeDiferencias,
+import {
+  rutaDeComparacion,
+  type CampoDeCambioVista,
+  type MovimientoVista,
+  type VistaDeDiferencias,
 } from "@/lib/catalogo/diferencias-vista";
 import { Chip, Estado, Huella, Sello } from "../estado";
 import { Cabeceras } from "../cabeceras";
@@ -189,6 +190,56 @@ export function DiferenciasPantalla({ v }: { v: VistaDeDiferencias }) {
           </li>
         </ul>
       </div>
+
+      {v.pares.length > 0 ? (
+        <nav aria-labelledby="rotulo-comparaciones" data-comparaciones>
+          <p id="rotulo-comparaciones" className="hg-oculto">
+            <T
+              t={{
+                es: "Comparaciones entre instantáneas consecutivas",
+                en: "Comparisons between consecutive snapshots",
+              }}
+            />
+          </p>
+          <ul className="hg-selector">
+            {v.pares.map((p) => (
+              <li key={`${p.de}..${p.a}`}>
+                <Link
+                  className="hg-opcion"
+                  href={rutaDeComparacion(p.de, p.a)}
+                  aria-current={p.activo ? "page" : undefined}
+                  data-par={`${p.de}..${p.a}`}
+                >
+                  <span className="hg-opcion-nombre">
+                    <Dato>{p.deFecha}</Dato> <span aria-hidden="true">→</span>{" "}
+                    <Dato>{p.aFecha}</Dato>
+                  </span>
+                  <span>
+                    {p.demo ? (
+                      <T
+                        t={{ es: "Demo, no oficial", en: "Demo, not official" }}
+                      />
+                    ) : (
+                      <T t={{ es: "Oficial", en: "Official" }} />
+                    )}
+                    {p.activo ? (
+                      <>
+                        {" · "}
+                        <T
+                          t={{
+                            es: "la que ves",
+                            en: "the one you are viewing",
+                          }}
+                        />
+                      </>
+                    ) : null}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
 
       {v.a.demo ? (
         <Sello etiqueta={v.etiquetas.demo}>
