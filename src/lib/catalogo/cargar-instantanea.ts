@@ -4,6 +4,7 @@
 // pantalla que muestra un catálogo que nadie firmó.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { comprobarInstantanea } from "../../engine/catalogo/esquema-de-instantanea.ts";
 import {
   FORMATO_DE_INSTANTANEA,
   huellaDeInstantanea,
@@ -44,9 +45,10 @@ export function listarInstantaneas(
     .sort()
     .reverse()
     .map((archivo) => {
-      const i = JSON.parse(
-        readFileSync(join(carpeta, archivo), "utf8"),
-      ) as Instantanea;
+      const i = comprobarInstantanea(
+        JSON.parse(readFileSync(join(carpeta, archivo), "utf8")),
+        archivo,
+      );
       return {
         nombre: archivo.replace(/\.json$/, ""),
         fecha: i.fecha_evaluacion,
@@ -61,14 +63,16 @@ async function leerYComprobar(
   carpeta: string,
   archivo: string,
 ): Promise<InstantaneaCargada> {
-  const instantanea = JSON.parse(
-    readFileSync(join(carpeta, archivo), "utf8"),
-  ) as Instantanea;
-  if (instantanea.formato !== FORMATO_DE_INSTANTANEA) {
+  const leida = JSON.parse(readFileSync(join(carpeta, archivo), "utf8")) as {
+    formato?: unknown;
+  };
+  if (leida.formato !== FORMATO_DE_INSTANTANEA) {
     throw new Error(
-      `${archivo}: formato «${String(instantanea.formato)}» desconocido / unknown format`,
+      `${archivo}: formato «${String(leida.formato)}» desconocido / unknown format`,
     );
   }
+  // La forma completa, con el esquema de cada sección, antes de fiarse de un solo campo (deuda del S10).
+  const instantanea = comprobarInstantanea(leida, archivo);
   const huella = await huellaDeInstantanea(instantanea);
   if (huella !== instantanea.huella) {
     throw new Error(
