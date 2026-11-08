@@ -20,7 +20,10 @@ import {
   cargarInstantaneaDemo,
   cargarInstantaneaOficial,
 } from "../../../src/lib/catalogo/cargar-instantanea.ts";
-import { cargarDatosDelPlanificador } from "../../../src/lib/activos/cargar-activos.ts";
+import {
+  cargarDatosDelPlanificador,
+  cargarPatrones,
+} from "../../../src/lib/activos/cargar-activos.ts";
 import { copia } from "./ayuda.ts";
 
 const RAIZ = process.cwd();
@@ -243,6 +246,31 @@ describe("el plan anterior debe poder reproducirse, y la fórmula y los entornos
     const entornos = copia(e.entornos);
     entornos.version = `${entornos.version}-otra`;
     expect(await codigo({ ...e, entornos })).toBe("entornos_distintos");
+  });
+
+  it("una fecha anterior a la emisión del plan que sustituye es un error de quien la pide", async () => {
+    const e = await entrada("demo");
+    expect(e.fecha >= e.plan.fecha_emision).toBe(true);
+    await expect(replanear({ ...e, fecha: "2026-10-06" })).rejects.toThrow(
+      RangeError,
+    );
+  });
+
+  it("el filtro de contenido marca el paquete nuevo si se le pasan patrones, y nunca rechaza el re-plan", async () => {
+    const e = await entrada("demo");
+    expect((await replanear(e)).marcas).toEqual([]);
+    const carnada = (await import("../../../datos/filtro/patrones.json"))
+      .default.patrones[0]!.carnadas[0]!;
+    const activoNuevo = copia(e.activoNuevo);
+    activoNuevo.alcance!.limites = { es: carnada, en: carnada };
+    const r = await replanear({
+      ...e,
+      activoNuevo,
+      patrones: cargarPatrones(RAIZ),
+    });
+    expect(r.marcas.length).toBeGreaterThan(0);
+    expect(r.marcas[0]?.campo).toMatch(/^alcance\.limites\./);
+    expect(r.plan.resumen.planeadas).toBeGreaterThan(0);
   });
 
   it("un activo anterior que no es el del plan no se re-planea", async () => {

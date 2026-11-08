@@ -211,6 +211,13 @@ describe("replanear", () => {
       raiz,
     );
     expect(r.codigo).toBe(3);
-    expect(r.errores).toContain("anterior a la instantánea");
+    expect(r.errores).toContain("anterior a la emisión del plan que sustituye");
+    // Con la base demo (instantánea del 2026-11-01), una fecha posterior al plan pero anterior a la instantánea también es de quien la pide.
+    const demo = correr(
+      ["replanear", CLASIFICADOR, "--fecha", "2026-10-20", "--demo"],
+      raiz,
+    );
+    expect(demo.codigo).toBe(3);
+    expect(demo.errores).toContain("anterior a la instantánea");
   });
 });

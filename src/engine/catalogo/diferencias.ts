@@ -117,7 +117,17 @@ export const REGLAS_NOMBRADAS: readonly IdRegla[] = [
   "control/equivalente-parcial-sin-nota",
   "herramienta/sin-registro",
 ];
-export const nombreDeRegla = (id: IdRegla) => REGLAS[id].nombre;
+/**
+ * El nombre con que se muestra la regla de un campo que cambió. La regla por omisión es la del esquema, cuyo nombre («Un campo no cumple el
+ * esquema») suena a fallo; aquí el campo solo CAMBIÓ, así que se dice qué lo cuida, sin sonar a error.
+ */
+export const nombreDeRegla = (id: IdRegla) =>
+  id === REGLA_POR_OMISION
+    ? {
+        es: "Forma del campo, según el esquema",
+        en: "Shape of the field, per the schema",
+      }
+    : REGLAS[id].nombre;
 
 interface Entrada {
   id: string;

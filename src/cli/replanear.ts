@@ -17,7 +17,10 @@ import {
 } from "../engine/planificador/informe-replan.ts";
 import { ErrorDeReplan, replanear } from "../engine/planificador/replanear.ts";
 import { cargarActivosDelBuild } from "../lib/activos/cargar.ts";
-import { CARPETA_DE_PLANES } from "../lib/activos/cargar-activos.ts";
+import {
+  CARPETA_DE_PLANES,
+  cargarPatrones,
+} from "../lib/activos/cargar-activos.ts";
 import {
   SinBaseParaReplanear,
   entradaDeReplan,
@@ -30,7 +33,12 @@ import { CARPETA_DE_PLANES_ARCHIVADOS } from "../lib/evidencia/cargar-evidencia.
 import { escribir } from "./escribir.ts";
 
 export class ErrorDeUso extends Error {}
-export const CODIGO_DE_REPLAN = { ok: 0, bloqueado: 2, uso: 3 } as const;
+export const CODIGO_DE_REPLAN = {
+  ok: 0,
+  con_advertencias: 1,
+  bloqueado: 2,
+  uso: 3,
+} as const;
 
 const imprimir = (valor: unknown) =>
   process.stdout.write(`${JSON.stringify(valor, null, 2)}\n`);
@@ -59,8 +67,9 @@ export async function replanearComando(
     throw new ErrorDeUso(
       `no hay un activo «${o.id}» / there is no asset “${o.id}”`,
     );
-  const bloqueado = (es: string, en: string) => {
-    process.stderr.write(`${es} / ${en}\n`);
+  // `es` puede venir ya bilingüe («es / en»), como los mensajes de ErrorDeReplan: `en` es opcional.
+  const bloqueado = (es: string, en?: string) => {
+    process.stderr.write(`${en === undefined ? es : `${es} / ${en}`}\n`);
     return CODIGO_DE_REPLAN.bloqueado;
   };
   if (cargado.veredicto?.estado !== "plan_desactualizado")
@@ -83,11 +92,11 @@ export async function replanearComando(
         nueva.instantanea,
         o.fecha,
         raiz,
-      ),
+      ).then((entrada) => ({ ...entrada, patrones: cargarPatrones(raiz) })),
     );
   } catch (error) {
     if (error instanceof ErrorDeReplan || error instanceof SinBaseParaReplanear)
-      return bloqueado(error.message, error.message);
+      return bloqueado(error.message);
     throw error;
   }
 
@@ -133,5 +142,13 @@ export async function replanearComando(
   }
   if (o.json) imprimir(salidaJsonDeReplan(resultado.replan, rutas));
   else process.stdout.write(informeDeReplan(resultado.replan, o.idioma, rutas));
+  if (resultado.marcas.length > 0) {
+    process.stderr.write(
+      o.idioma === "es"
+        ? `! El filtro de contenido marcó ${resultado.marcas.length} textos del dueño en el paquete nuevo; una persona los revisa.\n`
+        : `! The content filter flagged ${resultado.marcas.length} owner texts in the new package; a person reviews them.\n`,
+    );
+    return CODIGO_DE_REPLAN.con_advertencias;
+  }
   return CODIGO_DE_REPLAN.ok;
 }

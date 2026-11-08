@@ -7,6 +7,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   REGLAS_NOMBRADAS,
   SECCIONES,
+  nombreDeRegla,
   diferenciasEntreInstantaneas,
 } from "../../../src/engine/catalogo/diferencias.ts";
 import { informeDeDiferencias } from "../../../src/engine/catalogo/informe-diferencias.ts";
@@ -27,7 +28,9 @@ import { RAIZ, catalogoReal } from "./ayuda.ts";
 const LICENCIAS = (
   JSON.parse(
     readFileSync(path.join(RAIZ, "datos/propuestas/licencias.json"), "utf8"),
-  ) as { marcos: Record<string, "cita_con_atribucion" | "solo_identificadores"> }
+  ) as {
+    marcos: Record<string, "cita_con_atribucion" | "solo_identificadores">;
+  }
 ).marcos;
 
 const leerInstantanea = (relativa: string) =>
@@ -192,7 +195,9 @@ describe("diferenciasEntreInstantaneas", () => {
     const d = await diferenciasEntreInstantaneas(a, b);
     const clave = (m: { seccion: string; id: string }) =>
       `${SECCIONES.indexOf(m.seccion as (typeof SECCIONES)[number])}|${m.id}`;
-    expect(d.movimientos.map(clave)).toEqual([...d.movimientos.map(clave)].sort());
+    expect(d.movimientos.map(clave)).toEqual(
+      [...d.movimientos.map(clave)].sort(),
+    );
     const mezclada = structuredClone(b);
     mezclada.catalogo.pruebas.reverse();
     const e = await diferenciasEntreInstantaneas(a, mezclada);
@@ -292,5 +297,16 @@ describe("informeDeDiferencias", () => {
     const t = informeDeDiferencias(d, "es");
     expect(t).toContain("texto no mostrado");
     expect(t).not.toContain("Texto secreto del marco");
+  });
+});
+
+describe("el nombre de la regla de un campo que solo cambió", () => {
+  it("el campo sin regla propia no se muestra como un fallo del esquema", () => {
+    const n = nombreDeRegla("esquema/campo-invalido");
+    expect(n.es).not.toMatch(/no cumple/i);
+    expect(n.en).not.toMatch(/does not match/i);
+    expect(nombreDeRegla("prueba/sin-marco")).toEqual(
+      REGLAS["prueba/sin-marco"].nombre,
+    );
   });
 });

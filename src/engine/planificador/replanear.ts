@@ -22,6 +22,7 @@ import {
 } from "../activos/esquemas.ts";
 import { normalizarActivo } from "../activos/normalizar.ts";
 import type { Prueba } from "../catalogo/esquemas.ts";
+import type { Marca, PatronCompilado } from "../catalogo/filtro.ts";
 import type { Instantanea } from "../catalogo/instantanea.ts";
 import { huella } from "../huella.ts";
 import { decidirPrueba } from "./decision.ts";
@@ -73,6 +74,8 @@ export interface EntradaDeReplan {
   entornos: Entornos;
   /** Fecha de emisión del plan nuevo, AAAA-MM-DD: una entrada, nunca el reloj. */
   fecha: string;
+  /** Patrones del filtro de contenido: el paquete nuevo se marca como el de `plan emitir` (regla dura 3: marca, nunca rechaza). */
+  patrones?: readonly PatronCompilado[];
 }
 
 export interface Posicion {
@@ -129,6 +132,8 @@ export interface ResultadoDeReplan {
   /** El plan nuevo y su paquete, listos para escribir. */
   plan: Plan;
   paquete: Paquete;
+  /** Lo que el filtro de contenido marcó en el paquete nuevo (vacío si no se pasaron patrones). */
+  marcas: readonly Marca[];
 }
 
 // ── La cuenta de una prueba ─────────────────────────────────────────────────────────────────────
@@ -225,6 +230,11 @@ export async function replanear(
   e: EntradaDeReplan,
 ): Promise<ResultadoDeReplan> {
   const { plan, formula, entornos } = e;
+  // Un plan nuevo no puede nacer fechado antes del que sustituye: es un error de quien lo pide.
+  if (e.fecha < plan.fecha_emision)
+    throw new RangeError(
+      `la fecha del re-plan ${e.fecha} es anterior a la emisión del plan que sustituye (${plan.fecha_emision}) / the re-plan date ${e.fecha} is earlier than the issue date of the plan it replaces (${plan.fecha_emision})`,
+    );
   if (plan.formula.huella !== (await huella(formula)))
     throw new ErrorDeReplan(
       "formula_distinta",
@@ -259,6 +269,7 @@ export async function replanear(
     formula,
     entornos,
     fecha: e.fecha,
+    ...(e.patrones === undefined ? {} : { patrones: e.patrones }),
   });
   const antes = mundoDe(e.activoAnterior);
   const ahora = mundoDe(e.activoNuevo);
@@ -421,5 +432,6 @@ export async function replanear(
     },
     plan: nuevo.plan,
     paquete: nuevo.paquete,
+    marcas: nuevo.marcas,
   };
 }
