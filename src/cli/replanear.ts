@@ -5,7 +5,7 @@
 //   replanear <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]
 //
 // `--demo` re-planea contra la instantánea demo («no oficial») y solo muestra: un plan que cite la demo no se emite. `--sin-escribir` muestra
-// sin tocar nada. Códigos de salida: 0 re-planeado (o mostrado) · 2 bloqueado (el plan está vigente, no hay base que reproducir, la fórmula o
+// sin tocar nada. Códigos de salida: 0 re-planeado (o mostrado) · 1 re-planeado con textos del dueño marcados por el filtro (una persona los revisa) · 2 bloqueado (el plan está vigente, no hay base que reproducir, la fórmula o
 // los entornos cambiaron, o el activo no está autorizado; no escribe nada) · 3 error de uso o de lectura.
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";

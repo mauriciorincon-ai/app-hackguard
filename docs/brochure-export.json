@@ -12,14 +12,14 @@
     "enlaces.produccion": "null cuando la app no tiene URL pública. `razon` explica por qué, y es lo que la vitrina muestra en lugar del enlace. Nunca se rellena con un enlace de repositorio ni con una promesa."
   },
   "schema_version": "1.0.0",
-  "actualizado": "2026-10-27",
+  "actualizado": "2026-11-08",
   "app": {
     "slug": "hackguard",
     "nombre": "HackGuard",
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 9,
+    "sprints_cerrados": 10,
     "version_repo": "0.1.0"
   },
   "promesa": {
@@ -182,7 +182,7 @@
       "valor": 18,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 9 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o del modo público para terceros, y no se han construido."
+      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 10 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -190,7 +190,7 @@
       "valor": 38,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Archivos de datos/pruebas/ del 2026-10-13: 38 pruebas. Por familia: software 10, agente 9, modelo generativo 7 y modelo de decisión 12. `pnpm catalogo:validar` las da por publicables."
+      "detalle": "Archivos de datos/pruebas/ del 2026-11-08: 38 pruebas. Por familia: software 10, agente 9, modelo generativo 7 y modelo de decisión 12. `pnpm catalogo:validar` las da por publicables."
     },
     {
       "clave": "controles_iso_42001",
@@ -198,7 +198,7 @@
       "valor": 38,
       "unidad": "controles",
       "fuente": "medido",
-      "detalle": "Contados en datos/controles/iso42001-anexo-a.json del 2026-10-13. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
+      "detalle": "Contados en datos/controles/iso42001-anexo-a.json del 2026-11-08. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
     },
     {
       "clave": "fichas_de_prueba",
@@ -206,39 +206,39 @@
       "valor": 38,
       "unidad": "fichas",
       "fuente": "medido",
-      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-10-13. El build entero genera 116 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-08. El build entero genera 119 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
     },
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4392,
+      "valor": 4528,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas sobre b5acd4b: `pnpm test` del 2026-10-27, 3098 pruebas, y `pnpm test:e2e`, 1294 en Chromium, Firefox y WebKit sobre el build de producción (corrida del 2026-10-13; `playwright test --list` del 2026-10-27 da las mismas). El mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces."
+      "detalle": "Suma de dos corridas del 2026-11-08 sobre el árbol de este export: `pnpm test` 3220 pruebas, y `pnpm test:e2e` 1308 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3098,
+      "valor": 3220,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-10-27 sobre b5acd4b: 154 archivos, 3098 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-08 sobre el árbol de este export: 164 archivos, 3220 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1294,
+      "valor": 1308,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-10-13 (12 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-11-08 (14 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 97.54,
+      "valor": 96.79,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-10-13: 4713 de 4832 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-08: 5122 de 5292 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
@@ -254,7 +254,7 @@
       "valor": 14,
       "unidad": "marcos",
       "fuente": "medido",
-      "detalle": "Archivos de datos/marcos/ del 2026-10-13, cada uno con su versión; hay un mapa de equivalencias entre versiones."
+      "detalle": "Archivos de datos/marcos/ del 2026-11-08, cada uno con su versión; hay un mapa de equivalencias entre versiones."
     },
     {
       "clave": "herramientas",
@@ -262,7 +262,7 @@
       "valor": 13,
       "unidad": "herramientas",
       "fuente": "medido",
-      "detalle": "Archivos de datos/herramientas/ del 2026-10-13: 12 públicas con versión verificada y licencia, más 1 propia de HackGuard (la revisión documentada por una persona)."
+      "detalle": "Archivos de datos/herramientas/ del 2026-11-08: 12 públicas con versión verificada y licencia, más 1 propia de HackGuard (la revisión documentada por una persona)."
     },
     {
       "clave": "pruebas_de_software_sin_control",
