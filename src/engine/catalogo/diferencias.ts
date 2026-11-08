@@ -27,7 +27,7 @@ export interface CambioDeCampo {
   campo: string;
   /** La regla del validador que cuida este campo: la que lo rechazaría si quedara mal. */
   regla: IdRegla;
-  /** `null` si el campo no existía de ese lado, o si es `oculto`. */
+  /** `null` si el campo no existía de ese lado (o valía `null`), o si es `oculto`. */
   antes: unknown;
   despues: unknown;
   /** El marco solo permite citar identificadores: el valor no se muestra, solo que cambió. */
@@ -228,11 +228,13 @@ export async function diferenciasEntreInstantaneas(
           campos: [],
         });
       } else if (x !== undefined && y !== undefined && x.huella !== y.huella) {
-        const marco = y.marco ?? x.marco;
-        const oculto =
+        // La licencia manda si CUALQUIERA de los dos lados es de un marco que solo permite citar identificadores: el valor viejo de un marco
+        // restringido sigue siendo su texto aunque la entrada pase a uno que cita (regla dura 11).
+        const restringido = (marco: string | null) =>
           marco !== null &&
           (licencias[marco] ?? "solo_identificadores") ===
             "solo_identificadores";
+        const oculto = restringido(x.marco) || restringido(y.marco);
         const claves = [
           ...new Set([...Object.keys(x.valor), ...Object.keys(y.valor)]),
         ].sort(comparar);
@@ -240,7 +242,12 @@ export async function diferenciasEntreInstantaneas(
         for (const campo of claves) {
           const antesC = x.valor[campo];
           const despuesC = y.valor[campo];
+          // Ausente y `null` no son lo mismo para JCS: si la entrada cambió de huella solo por eso, el campo se nombra igual (un «cambia» nunca
+          // sale con la lista de campos vacía).
+          const mismaPresencia =
+            Object.hasOwn(x.valor, campo) === Object.hasOwn(y.valor, campo);
           if (
+            mismaPresencia &&
             (await huella(antesC ?? null)) === (await huella(despuesC ?? null))
           )
             continue;
