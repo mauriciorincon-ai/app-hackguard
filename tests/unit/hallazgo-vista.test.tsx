@@ -129,6 +129,112 @@ describe("el selector", () => {
   });
 });
 
+describe("la cadena con ciclos: una reapertura abre otro ciclo (D5)", () => {
+  const TITULOS = {
+    abierto: "■ Hallazgo abierto",
+    correccion: "■ Corrección declarada",
+    superada: "■ Re-prueba superada",
+    cerrado: "■ Cerrado por re-prueba",
+    reabierto: "■ Reabierto por una re-prueba que volvió a fallar",
+  };
+
+  it("HZ-0011 de la demo: cierra por re-prueba, una posterior que falla lo reabre y el segundo ciclo queda por hacer", () => {
+    expect(eslabones(mundoDeHallazgos, "HZ-0011")).toEqual([
+      TITULOS.abierto,
+      TITULOS.correccion,
+      TITULOS.superada,
+      TITULOS.cerrado,
+      TITULOS.reabierto,
+      "· Corrección pendiente",
+      "· Re-prueba pendiente",
+      "· Sin cerrar",
+    ]);
+    const v = vista(mundoDeHallazgos, "HZ-0011");
+    expect(v.estadoId).toBe("reabierto");
+    // La reapertura cuenta el sobre que falló, su huella, quién lo confirmó y el cierre que deshizo.
+    const reapertura = v.cadena[4]!;
+    expect(reapertura.pendiente).toBe(false);
+    expect(reapertura.lineas.map((l) => l.tipo)).toEqual([
+      "fecha",
+      "texto",
+      "texto",
+      "sobre",
+      "huella",
+      "firma",
+    ]);
+    expect(reapertura.lineas).toContainEqual({ tipo: "sobre", id: "SOB-0039" });
+    expect(JSON.stringify(reapertura.lineas)).toContain(
+      "Deshizo el cierre del 2026-09-25 (SOB-0038)",
+    );
+  });
+
+  it("corregido y re-probado otra vez: el segundo ciclo cierra y la cadena dice las dos cerraduras", async () => {
+    const m0 = await mundoDeLibro();
+    const otraVez = await nuevo(m0.sobres["SOB-0038"]!, "SOB-0100", {
+      fecha: "2026-10-05",
+      confirmacion: {
+        por: "Operador demo",
+        fecha: "2026-10-05",
+        modo: "individual",
+      },
+    });
+    const m = escenario({
+      libro: (l) => [...l, otraVez],
+      hallazgos: conEvento("HZ-0011", {
+        tipo: "correccion",
+        fecha: "2026-10-03",
+        por: "Operador demo",
+        nota: { es: "Se corrigió otra vez", en: "Fixed again" },
+      }),
+    });
+    expect(evaluacionDe(m, "HZ-0011").estado).toBe("cerrado");
+    expect(eslabones(m, "HZ-0011")).toEqual([
+      TITULOS.abierto,
+      TITULOS.correccion,
+      TITULOS.superada,
+      TITULOS.cerrado,
+      TITULOS.reabierto,
+      TITULOS.correccion,
+      TITULOS.superada,
+      TITULOS.cerrado,
+    ]);
+    // Cada ciclo muestra SU corrección y SU re-prueba, no la última de todas.
+    const v = vista(m, "HZ-0011");
+    expect(JSON.stringify(v.cadena[1]!.lineas)).toContain("2026-09-18");
+    expect(JSON.stringify(v.cadena[5]!.lineas)).toContain("2026-10-03");
+    expect(v.cadena[2]!.lineas).toContainEqual({
+      tipo: "sobre",
+      id: "SOB-0038",
+    });
+    expect(v.cadena[6]!.lineas).toContainEqual({
+      tipo: "sobre",
+      id: "SOB-0100",
+    });
+  });
+
+  it("reabierto y luego eliminado: el cierre alternativo cierra el último ciclo y la reapertura sigue a la vista", () => {
+    const m = escenario({
+      hallazgos: conEvento("HZ-0011", {
+        tipo: "eliminacion",
+        fecha: "2026-10-04",
+        por: "Operador demo",
+        justificacion: { es: "Ya no existe", en: "It no longer exists" },
+      }),
+    });
+    expect(evaluacionDe(m, "HZ-0011").estado).toBe("cerrado_por_eliminacion");
+    expect(eslabones(m, "HZ-0011")).toEqual([
+      TITULOS.abierto,
+      TITULOS.correccion,
+      TITULOS.superada,
+      TITULOS.cerrado,
+      TITULOS.reabierto,
+      "■ Cerrado por eliminación",
+      "· Sin re-prueba: este cierre no la pide",
+      "■ Cerrado sin re-prueba",
+    ]);
+  });
+});
+
 describe("la cadena de cierre en sus ramas", () => {
   it("la demo: abierto, corregido con re-prueba por confirmar, aceptado y cerrado por re-prueba", () => {
     expect(eslabones(mundoDeHallazgos, "HZ-0007")).toEqual([

@@ -10,6 +10,7 @@
 //   confirmar-lote    <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD [--separar <SOB-NNNN>]… | --revisar-uno-por-uno
 //   validar           [--json] [--idioma es|en]
 //   hallazgos-listar  --fecha AAAA-MM-DD [--json] [--idioma es|en]
+//   hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]
 //   hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD
 //                     --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]
 //
@@ -69,7 +70,9 @@ import {
 } from "../engine/hallazgos/validar.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
 import { cargarLibroValidado } from "../lib/evidencia/cargar-libro.ts";
+import { informeDeCadena } from "../lib/evidencia/informe-cadena.ts";
 import { situarParaListar } from "../lib/evidencia/situar.ts";
+import { construirCadena } from "../lib/evidencia/cadena.ts";
 import {
   CARPETA_DE_HALLAZGOS_DEMO,
   CARPETA_DE_HALLAZGOS_PRIVADA,
@@ -86,8 +89,8 @@ import {
 } from "../lib/evidencia/cargar-evidencia.ts";
 
 const USO = {
-  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
-  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgo-cadena <HZ-NNNN> --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
 };
 
 class ErrorDeUso extends Error {}
@@ -901,6 +904,57 @@ async function principal(argv: string[]): Promise<number> {
           L.hallazgos.estado === "con_advertencias"
         ? CODIGOS_DEL_LIBRO.con_advertencias
         : CODIGOS_DEL_LIBRO.ok;
+  }
+
+  if (o.comando === "hallazgo-cadena") {
+    const id = requerido(o.objetivo, "<HZ-NNNN>").toUpperCase();
+    const fecha = requerido(o.fecha, "--fecha AAAA-MM-DD");
+    const h = L.hallazgos.validos.find((x) => x.id === id);
+    if (h === undefined)
+      throw new ErrorDeUso(
+        `no hay un hallazgo «${id}» / there is no finding “${id}”`,
+      );
+    const { situaciones, omitidos } = situarParaListar(
+      [h],
+      L.libro.map((s) => s.sobre),
+      { escala: cargarEscalaIa(raiz), plazos: cargarPlazos(raiz), fecha },
+    );
+    const situacion = situaciones[0];
+    if (situacion === undefined)
+      throw new ErrorDeUso(
+        `${id}: ${omitidos[0]?.motivo ?? "?"} (${omitidos[0]?.detalle ?? ""})`,
+      );
+    // La misma cadena que dibuja la pantalla: una cuenta, un cálculo.
+    const etiquetas = cargarEtiquetasDeHallazgo(raiz);
+    const cadena = construirCadena(
+      h,
+      situacion,
+      etiquetas,
+      new Map(etiquetas.motivos_de_rechazo.map((m) => [m.id, m.nombre])),
+    );
+    const e = situacion.evaluacion;
+    if (o.json)
+      imprimir({
+        id,
+        fecha,
+        estado: e.estado,
+        reaperturas: e.reaperturas.length,
+        eslabones: cadena.length,
+        cadena,
+      });
+    else
+      escribirTexto(
+        informeDeCadena(
+          id,
+          nombreDeEstadoDeHallazgo(raiz, L.instantanea, e.estado)[o.idioma],
+          cadena,
+          e.reaperturas.length,
+          o.idioma,
+        ),
+      );
+    return L.sobres.estado === "invalido" || L.hallazgos.estado === "invalido"
+      ? CODIGOS_DEL_LIBRO.invalido
+      : CODIGOS_DEL_LIBRO.ok;
   }
 
   if (o.comando === "hallazgos-declarar") {

@@ -108,6 +108,12 @@ export function informeDeHallazgos(
       `  ${es ? "prueba" : "test"} ${e.prueba} · ${es ? "activo" : "asset"} ${e.activo} · ${es ? "abierto el" : "opened on"} ${e.apertura}`,
       `  ${es ? "severidad" : "severity"}: ${f.nivel[idioma]} (${detalleDeSeveridad(severidad, idioma)})`,
     );
+    for (const r of e.reaperturas)
+      lineas.push(
+        es
+          ? `  reabierto el ${r.fecha} por la re-prueba ${r.sobre}, que volvió a fallar (deshizo el cierre de ${r.cierre})`
+          : `  reopened on ${r.fecha} by retest ${r.sobre}, which failed again (it undid the closure by ${r.cierre})`,
+      );
     if (plazo.estado === "vencido")
       lineas.push(
         es
@@ -134,7 +140,10 @@ export function informeDeHallazgos(
       lineas.push(
         `  ${es ? "cierre" : "closure"}: ${e.cierre.tipo}${e.cierre.sobre !== null ? ` · ${e.cierre.sobre}` : ""} · ${e.cierre.fecha}`,
       );
-    for (const c of e.candidatas.filter((x) => x.motivos.length > 0))
+    // La re-prueba que reabrió el hallazgo ya se dijo arriba: no «falla en cerrar», hizo lo contrario.
+    for (const c of e.candidatas.filter(
+      (x) => x.motivos.length > 0 && !x.reabre,
+    ))
       lineas.push(
         `  ${es ? "re-prueba" : "re-test"} ${c.sobre.id} ${es ? "no cierra" : "does not close"}: ${c.motivos.join(", ")}`,
       );
@@ -160,6 +169,7 @@ export function salidaJsonDeHallazgos(
       activo: s.evaluacion.activo,
       prueba: s.evaluacion.prueba,
       apertura: s.evaluacion.apertura,
+      reaperturas: s.evaluacion.reaperturas,
       cierre: s.evaluacion.cierre,
       severidad: s.severidad,
       plazo: s.plazo,

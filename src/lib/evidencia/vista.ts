@@ -3,13 +3,10 @@
 // `situacionDeHallazgo` del motor (la misma función que usa el CLI y el e2e de determinismo); esta capa los lee, los
 // nombra con los textos del catálogo y de `datos/hallazgos/etiquetas.json`, y arma la cadena de cierre.
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
-import type { SobreEfectivo } from "../../engine/evidencia/esquemas.ts";
-import { cotaDeFalla } from "../../engine/evidencia/veredicto.ts";
 import type { EvaluacionDeHallazgo } from "../../engine/hallazgos/ciclo.ts";
 import type {
   EstadoDeHallazgo,
   EtiquetasDeHallazgo,
-  Hallazgo,
 } from "../../engine/hallazgos/esquemas.ts";
 import {
   situacionDeHallazgo,
@@ -20,6 +17,12 @@ import { nombreDeMetrica } from "../../engine/severidad/etiquetas-cvss.ts";
 import type { MundoDeActivos } from "../activos/cargar.ts";
 import { construirFicha, etiqueta } from "../catalogo/vista.ts";
 import type { MundoDeHallazgos } from "./cargar.ts";
+import {
+  conteoDeSobre,
+  construirCadena,
+  etiquetaPropia,
+  plural,
+} from "./cadena.ts";
 import { etiquetaDeEstadoDeHallazgo } from "./etiqueta-de-estado.ts";
 import { frasePorDias } from "../catalogo/etiquetas.ts";
 import { PISO_Y_TECHO } from "./etiquetas.ts";
@@ -28,248 +31,20 @@ import type {
   Bilingue,
   DetalleDeCvss,
   DetalleDeEscalaIa,
-  Etiqueta,
-  EslabonDeCadena,
   ItemDeSelectorDeHallazgo,
-  LineaDeEslabon,
   VistaDeHallazgo,
   VistaDePlazo,
   VistaDeRevision,
 } from "./tipos.ts";
 
+export { conteoDeSobre, construirCadena, etiquetaPropia };
+
 type Catalogo = Instantanea["catalogo"];
-
-const plural = (n: number, uno: string, varios: string) =>
-  n === 1 ? uno : varios;
-
-/** Una etiqueta propia de las pantallas de hallazgo (`datos/hallazgos/etiquetas.json`). */
-export function etiquetaPropia(
-  etiquetas: EtiquetasDeHallazgo,
-  id: string,
-): Etiqueta {
-  const e = etiquetas.etiquetas.find((x) => x.id === id);
-  if (e === undefined)
-    throw new Error(
-      `datos/hallazgos/etiquetas.json no tiene «${id}» / does not have “${id}”`,
-    );
-  return { rol: e.rol, simbolo: e.simbolo, nombre: e.nombre };
-}
-
-/** Lo que dio un sobre, en palabras: su razón, o su conteo con la cota si no falló nada, o lo que midió. */
-export function conteoDeSobre(s: SobreEfectivo): Bilingue {
-  if (s.razon !== null) return s.razon;
-  const { fallidas: f, evaluadas: n, alertas: a, metrica: m } = s.resultado;
-  if (f !== null && n !== null) {
-    if (f > 0)
-      return {
-        es: `${f} de ${n} salidas ${plural(f, "falló", "fallaron")}`,
-        en: `${f} of ${n} outputs failed`,
-      };
-    const cota = cotaDeFalla(n);
-    return {
-      es: `0 de ${n} fallaron · cota: hasta ${cota} %`,
-      en: `0 of ${n} failed · upper bound: ${cota}%`,
-    };
-  }
-  if (a !== null)
-    return {
-      es: `${a} ${plural(a, "alerta", "alertas")}`,
-      en: `${a} ${plural(a, "alert", "alerts")}`,
-    };
-  if (m !== null)
-    return {
-      es: `${m.nombre.es}: ${m.valor} (umbral ${m.umbral})`,
-      en: `${m.nombre.en}: ${m.valor} (threshold ${m.umbral})`,
-    };
-  return { es: "Sin conteo registrado", en: "No count recorded" };
-}
 
 const minusculas = (t: Bilingue): Bilingue => ({
   es: t.es.toLowerCase(),
   en: t.en.toLowerCase(),
 });
-
-function eslabon(
-  etiquetas: EtiquetasDeHallazgo,
-  id: string,
-  lineas: LineaDeEslabon[] = [],
-  pendiente = false,
-): EslabonDeCadena {
-  return { etiqueta: etiquetaPropia(etiquetas, id), pendiente, lineas };
-}
-
-const fecha = (valor: string): LineaDeEslabon => ({ tipo: "fecha", valor });
-const menor = (texto: Bilingue): LineaDeEslabon => ({
-  tipo: "texto",
-  menor: true,
-  texto,
-});
-
-/** El cuerpo de un eslabón que cuenta un sobre: fecha, lo que dio, su identificador, su huella y quién lo confirmó. */
-function lineasDeSobre(
-  s: SobreEfectivo,
-  firma: Etiqueta,
-  intermedio: LineaDeEslabon[] = [],
-): LineaDeEslabon[] {
-  return [
-    fecha(s.fecha),
-    menor(conteoDeSobre(s)),
-    ...intermedio,
-    { tipo: "sobre", id: s.id },
-    { tipo: "huella", hex: s.huellas.sobre },
-    ...(s.confirmacion === null
-      ? []
-      : [
-          {
-            tipo: "firma",
-            fecha: s.confirmacion.fecha,
-            etiqueta: firma,
-          } as const,
-        ]),
-  ];
-}
-
-/** La cadena de cierre: hallazgo → corrección → re-prueba → cierre. Lo que falta se ve punteado; lo hecho lleva fecha, sobre y firma. */
-export function construirCadena(
-  h: Hallazgo,
-  s: SituacionDeHallazgo,
-  etiquetas: EtiquetasDeHallazgo,
-  motivos: Map<string, Bilingue>,
-): EslabonDeCadena[] {
-  const e: EvaluacionDeHallazgo = s.evaluacion;
-  const origen = e.sobreOrigen;
-  const firma = etiquetaPropia(etiquetas, "firma_confirmada");
-  const abierto = eslabon(etiquetas, "cadena_abierto", [
-    fecha(e.apertura),
-    menor(conteoDeSobre(origen)),
-    { tipo: "sobre", id: origen.id },
-    { tipo: "huella", hex: origen.huellas.sobre },
-    { tipo: "firma", fecha: e.apertura, etiqueta: firma },
-  ]);
-
-  const decision = (tipo: "eliminacion" | "no_reproducible") =>
-    [...h.eventos].reverse().find((x) => x.tipo === tipo);
-
-  if (e.cierre !== null && e.cierre.tipo !== "reprueba") {
-    const ev = decision(e.cierre.tipo);
-    return [
-      abierto,
-      eslabon(
-        etiquetas,
-        e.cierre.tipo === "eliminacion"
-          ? "cadena_eliminacion"
-          : "cadena_no_reproducible",
-        [
-          fecha(e.cierre.fecha),
-          ...(ev !== undefined && "justificacion" in ev
-            ? [menor(ev.justificacion)]
-            : []),
-        ],
-      ),
-      eslabon(etiquetas, "cadena_sin_reprueba", [], true),
-      eslabon(etiquetas, "cadena_cerrado_sin_reprueba", [
-        fecha(e.cierre.fecha),
-      ]),
-    ];
-  }
-
-  const aceptado = e.estado === "aceptado_con_riesgo" && e.aceptacion !== null;
-  const segundo = aceptado
-    ? eslabon(etiquetas, "cadena_riesgo_aceptado", [
-        fecha(e.aceptacion!.fecha),
-        menor(e.aceptacion!.justificacion),
-      ])
-    : e.correccion !== null
-      ? eslabon(etiquetas, "cadena_correccion_declarada", [
-          fecha(e.correccion.fecha),
-          menor(e.correccion.nota),
-        ])
-      : eslabon(etiquetas, "cadena_correccion_pendiente", [], true);
-
-  const kDelOriginal = origen.k;
-  const valida =
-    e.cierre === null
-      ? null
-      : (e.candidatas.find((c) => c.sobre.id === e.cierre?.sobre)?.sobre ??
-        null);
-  const fallidas = e.candidatas.filter((c) => c.motivos.length > 0);
-  let tercero: EslabonDeCadena;
-  if (aceptado) {
-    tercero = eslabon(etiquetas, "cadena_sin_correccion_ni_reprueba", [], true);
-  } else if (valida !== null) {
-    tercero = eslabon(
-      etiquetas,
-      "cadena_reprueba_superada",
-      lineasDeSobre(valida, firma, [
-        menor(
-          kDelOriginal !== null && valida.k !== null
-            ? {
-                es: `Misma configuración, k = ${valida.k} (el original usó ${kDelOriginal}).`,
-                en: `Same configuration, k = ${valida.k} (the original used ${kDelOriginal}).`,
-              }
-            : {
-                es: "Misma configuración que la prueba original.",
-                en: "Same configuration as the original test.",
-              },
-        ),
-      ]),
-    );
-  } else if (e.porConfirmar.length > 0) {
-    const p = e.porConfirmar[0]!;
-    tercero = eslabon(etiquetas, "cadena_reprueba_por_confirmar", [
-      {
-        tipo: "sobre",
-        id: p.id,
-        ...(p.razon === null ? {} : { nota: p.razon }),
-      },
-      menor({
-        es: "Está sin confirmar: todavía no cuenta.",
-        en: "It is unconfirmed: it does not count yet.",
-      }),
-    ]);
-  } else if (fallidas.length > 0) {
-    const ultima = fallidas[fallidas.length - 1]!;
-    tercero = eslabon(
-      etiquetas,
-      "cadena_reprueba_no_cierra",
-      lineasDeSobre(ultima.sobre, firma, [
-        {
-          tipo: "motivos",
-          motivos: ultima.motivos.map(
-            (m) => motivos.get(m) ?? { es: m, en: m },
-          ),
-        },
-      ]),
-    );
-  } else {
-    tercero = eslabon(
-      etiquetas,
-      "cadena_reprueba_pendiente",
-      [
-        menor(
-          kDelOriginal !== null
-            ? {
-                es: `Misma configuración y al menos k = ${kDelOriginal}.`,
-                en: `Same configuration and at least k = ${kDelOriginal}.`,
-              }
-            : {
-                es: "Misma configuración que la prueba original.",
-                en: "Same configuration as the original test.",
-              },
-        ),
-      ],
-      true,
-    );
-  }
-
-  const cuarto =
-    e.cierre !== null
-      ? eslabon(etiquetas, "cadena_cerrado", [fecha(e.cierre.fecha)])
-      : aceptado
-        ? eslabon(etiquetas, "cadena_sin_cerrar_cuenta_como_falla", [], true)
-        : eslabon(etiquetas, "cadena_sin_cerrar", [], true);
-  return [abierto, segundo, tercero, cuarto];
-}
 
 export function vistaDePlazo(
   s: SituacionDeHallazgo,
