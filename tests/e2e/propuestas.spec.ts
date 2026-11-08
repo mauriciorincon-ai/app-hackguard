@@ -144,6 +144,29 @@ test.describe("/catalogo/propuestas", () => {
     );
   });
 
+  test("a 1024 px la tira de cifras reparte su ancho entre sus tres cifras, sin una cuarta celda gris vacía (devolución 026)", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1024, height: 640 });
+    await page.goto("/catalogo/propuestas");
+    const tira = page.locator(".hg-resumen:visible").first();
+    const celdas = await tira.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const hijos = [...el.children].map((h) => h.getBoundingClientRect());
+      const columnas = getComputedStyle(el).gridTemplateColumns.split(" ");
+      return {
+        columnas: columnas.length,
+        celdas: hijos.length,
+        derecha: Math.round(r.right - 1),
+        ultima: Math.round(hijos[hijos.length - 1]!.right),
+      };
+    });
+    expect(celdas.celdas).toBe(3);
+    // Una columna por cifra: con cuatro columnas y tres cifras la cuarta era el fondo gris de la tira.
+    expect(celdas.columnas).toBe(celdas.celdas);
+    expect(celdas.ultima).toBeGreaterThanOrEqual(celdas.derecha - 1);
+  });
+
   test("sin desborde horizontal a 380 px", async ({ page }) => {
     await page.setViewportSize({ width: 380, height: 800 });
     await page.goto("/catalogo/propuestas");

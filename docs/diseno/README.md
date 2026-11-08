@@ -325,6 +325,17 @@ y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa
 | `barra lateral` | «Propuestas» abre `/catalogo/propuestas`: ya no queda ninguna página «pronto» | La bandeja es del S8 |
 | `carga` | «Texto pegado» dice que el texto lo lee el extractor con `/extraer` sobre un archivo, y que desde el navegador no se pega nada | La skill existe; la pantalla sigue de solo lectura |
 
+## Decisiones de diseño del Sprint 10 (devolución 026, dos defectos a 1024 px)
+
+La vitrina midió el producto a 1024 px y encontró dos defectos que la maqueta compartía. Se corrigen en la fuente (`app.css` y el generador
+`scripts/maqueta/paginas/plan.mjs`), se regenera la maqueta (`pnpm maqueta`: solo cambian las dos páginas de plan) y cada uno lleva su e2e
+a 1024 px (`tests/e2e/activos-plan.spec.ts`, `tests/e2e/propuestas.spec.ts`).
+
+| Defecto | Causa | Decisión |
+|---|---|---|
+| «Descargar el paquete» (`/activos/<id>/plan`) se partía letra por letra (30 px de ancho, 367 de alto) | `.hg-decision` pone la columna `auto` al texto largo y deja la `minmax(0, 1fr)` al botón; con `overflow-wrap: anywhere` heredado del `body` la columna del botón mide 0 | Los botones van **primero**, en un `.hg-grupo` (columna `auto`), y el texto después (columna `1fr`): el mismo orden que ya usa la bandeja de propuestas. Vale para la maqueta y para el producto |
+| `/catalogo/propuestas` dejaba una cuarta celda gris vacía a 1024 px | La tira `.hg-resumen` fija cuatro columnas desde 720 px y la bandeja trae tres cifras; el fondo de la tira es la línea entre celdas | De 1 a 4 cifras la tira reparte su ancho entre las que tiene (`:has(> li:nth-child(5))` conserva las cuatro columnas con cinco o más) |
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |
