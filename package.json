@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/copiar-maqueta.mjs && next build",
-    "start": "serve out -l ${PORT:-3000} --config ../serve.json",
+    "start": "serve out -l tcp://127.0.0.1:${PORT:-3000} --config ../serve.json",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run --coverage",
@@ -33,6 +33,8 @@
     "prepare": "git config core.hooksPath githooks",
     "maqueta": "node scripts/maqueta/generar.mjs",
     "capturas:maqueta": "node scripts/capturar-maqueta.mjs",
+    "capturas:ficha": "node scripts/capturas-ficha.mjs",
+    "brochure": "node scripts/brochure.mjs",
     "tokens": "node scripts/paleta/generar-tokens.mjs",
     "design-sync:bundle": "node scripts/design-sync/generar.mjs"
   },
