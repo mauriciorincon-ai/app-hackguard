@@ -49,21 +49,22 @@ const editar = (
 };
 
 describe("el mundo de los hallazgos del build", () => {
-  it("carga los 16 sobres y los 4 hallazgos demo, en orden, con sus datos", async () => {
+  it("carga los 19 sobres y los 5 hallazgos demo, en orden, con sus datos", async () => {
     const m = await mundo();
     const c = await cargarHallazgosDelBuild(m.instantanea, RAIZ);
-    expect(c.libro).toHaveLength(16);
+    expect(c.libro).toHaveLength(19);
     expect(c.hallazgos.map((h) => h.id)).toEqual([
       "HZ-0003",
       "HZ-0005",
       "HZ-0007",
       "HZ-0009",
+      "HZ-0011",
     ]);
     expect(c.escala.version).toBe("1");
     expect(c.plazos.dias.alto).toBe(30);
     expect(c.etiquetas.orden_del_selector.slice(0, 2)).toEqual([
-      "reabierto",
       "abierto",
+      "reabierto",
     ]);
     expect(c.cvss.metricas).toHaveLength(11);
   });
@@ -99,7 +100,7 @@ describe("el mundo de los hallazgos del build", () => {
       "{ no es un sobre",
     );
     const build = await cargarHallazgosDelBuild(m.instantanea, raiz);
-    expect(build.libro).toHaveLength(16);
+    expect(build.libro).toHaveLength(19);
     const cli = await cargarLibroValidado(raiz, m.instantanea, {
       privados: true,
     });
@@ -157,12 +158,13 @@ describe("lo que comparten las páginas de hallazgo", () => {
     const p = await cargarParaPaginaDeHallazgo();
     expect(p.consulta >= p.instantanea.fecha_evaluacion).toBe(true);
     expect(p.activos.activos.length).toBeGreaterThan(0);
-    expect(p.mundo.hallazgos).toHaveLength(4);
+    expect(p.mundo.hallazgos).toHaveLength(5);
     expect(await idsDeHallazgos()).toEqual([
       "HZ-0003",
       "HZ-0005",
       "HZ-0007",
       "HZ-0009",
+      "HZ-0011",
     ]);
   });
 });

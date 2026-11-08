@@ -58,20 +58,20 @@ describe("la brecha del demo, tal como la calcula el motor", () => {
     expect(b.consulta).toBe("2026-10-05");
     expect(b.resumen).toEqual({
       planeadas: 25,
-      ejecutadas: 8,
+      ejecutadas: 9,
       superadas: 5,
-      fallidas: 3,
-      no_ejecutadas: 17,
+      fallidas: 4,
+      no_ejecutadas: 16,
     });
     expect(b.porActivo).toEqual([
       {
         activo: "act-demo-asistente",
         totales: {
           planeadas: 14,
-          ejecutadas: 6,
+          ejecutadas: 7,
           superadas: 3,
-          fallidas: 3,
-          no_ejecutadas: 8,
+          fallidas: 4,
+          no_ejecutadas: 7,
         },
       },
       {
@@ -108,7 +108,8 @@ describe("la brecha del demo, tal como la calcula el motor", () => {
       ["iso42001-A.6.2.2", "sin_evidencia", 1],
       ["iso42001-A.6.2.4", "con_fallas", 9],
       ["iso42001-A.6.2.6", "con_fallas", 3],
-      ["iso42001-A.6.2.8", "sin_evidencia", 1],
+      // D5: HZ-0011 (el registro de cada acción) se cerró y se reabrió: su última re-prueba falla.
+      ["iso42001-A.6.2.8", "con_fallas", 1],
       ["iso42001-A.7.4", "sin_evidencia", 0],
       ["iso42001-A.7.5", "sin_evidencia", 0],
       ["iso42001-A.9.2", "sin_evidencia", 3],

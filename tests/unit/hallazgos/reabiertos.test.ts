@@ -505,3 +505,57 @@ describe("la etiqueta de cada estado vive en UN solo lugar", () => {
     ).toThrow(/inventado/);
   });
 });
+
+describe("los ciclos: lo que la cadena dibuja", () => {
+  it("sin reaperturas hay un solo ciclo, con su corrección, su cierre y sus re-pruebas", async () => {
+    const e = await evaluar([]);
+    expect(e.ciclos).toHaveLength(1);
+    expect(e.ciclos[0]).toMatchObject({
+      reapertura: null,
+      correccion: { fecha: "2026-09-10" },
+      cierre: { sobre: "SOB-0027" },
+    });
+    expect(e.ciclos[0]!.candidatas.map((c) => c.sobre.id)).toEqual([
+      "SOB-0027",
+    ]);
+  });
+
+  it("una reapertura parte la historia en dos ciclos: el primero conserva su cierre, el segundo nace de la falla y la falla no cuenta como re-prueba del segundo", async () => {
+    const e = await evaluar([await sobre("SOB-0040")]);
+    expect(e.ciclos).toHaveLength(2);
+    expect(e.ciclos[0]!.cierre?.sobre).toBe("SOB-0027");
+    expect(e.ciclos[1]).toMatchObject({
+      reapertura: {
+        sobre: "SOB-0040",
+        fecha: "2026-10-05",
+        cierre: "SOB-0027",
+      },
+      correccion: null,
+      cierre: null,
+      candidatas: [],
+    });
+  });
+
+  it("cerrar de nuevo: el segundo ciclo guarda su corrección y su cierre", async () => {
+    const { h } = await base();
+    const e = await evaluar(
+      [
+        await sobre("SOB-0040"),
+        await sobre("SOB-0041", {
+          fecha: "2026-10-20",
+          resultado: resultado(0),
+          veredicto: "superada",
+          confirmacion: firma("2026-10-21"),
+        }),
+      ],
+      [...h.eventos, correccion("2026-10-10")],
+    );
+    expect(e.ciclos).toHaveLength(2);
+    expect(e.ciclos[0]!.correccion?.fecha).toBe("2026-09-10");
+    expect(e.ciclos[1]!.correccion?.fecha).toBe("2026-10-10");
+    expect(e.ciclos[1]!.cierre?.sobre).toBe("SOB-0041");
+    expect(e.ciclos[1]!.candidatas.map((c) => c.sobre.id)).toEqual([
+      "SOB-0041",
+    ]);
+  });
+});

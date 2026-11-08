@@ -123,9 +123,9 @@ describe("armar un lote desde el reporte de garak", () => {
       await entradaDe(ADAPTADOR_DE_GARAK, c, { zonaHoraria: "America/Bogota" }),
     );
     expect(sobres.map((s) => [s.id, s.prueba, s.veredicto])).toEqual([
-      ["SOB-0037", "PR-IA-CONT-001", "fallida"],
-      ["SOB-0038", "PR-IA-ENC-002", "superada"],
-      ["SOB-0039", "PR-IA-PINJ-001", "fallida"],
+      ["SOB-0040", "PR-IA-CONT-001", "fallida"],
+      ["SOB-0041", "PR-IA-ENC-002", "superada"],
+      ["SOB-0042", "PR-IA-PINJ-001", "fallida"],
     ]);
     // Nada nace confirmado y todos llevan el mismo crudo: la huella del archivo.
     for (const s of sobres) {

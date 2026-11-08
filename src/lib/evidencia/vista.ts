@@ -297,7 +297,8 @@ export function vistaDePlazo(
       dias: p.dias,
       atraso: p.atraso,
       vence: p.vence,
-      apertura: s.evaluacion.apertura,
+      // El día desde el que corre el plazo: la apertura o, en un reabierto, la reapertura que una persona confirmó (D5).
+      apertura: s.evaluacion.reapertura?.fecha ?? s.evaluacion.apertura,
       severidad: s.severidad.nivel,
       frase,
     };

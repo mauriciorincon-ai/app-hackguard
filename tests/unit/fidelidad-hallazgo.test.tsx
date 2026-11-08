@@ -3,6 +3,8 @@
 // sus estados, las celdas de la tabla y las métricas del vector son, en español y en inglés, los mismos que en la maqueta.
 // Lo que el producto hace distinto (la re-prueba que se registra por CLI, el reabrir que no existe, el aviso de revisión) se
 // declara abajo con su razón. Sin `out/`.
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { HallazgoPantalla } from "../../src/components/hallazgo/hallazgo-pantalla";
@@ -35,7 +37,27 @@ const SOLO_DEL_PRODUCTO = new Set([
 // PR-AG-LIM-001 sin control y el catálogo la une a iso42001-A.6.2.6, así que HZ-0005 muestra el control en vez del chip.
 const CONTROL_DEL_CATALOGO = new Set(["HZ-0005"]);
 
-describe.each(IDS_DE_HALLAZGOS)(
+// La maqueta aprobada dibuja cuatro hallazgos. HZ-0011 (el reabierto de D5, S11) nació en el producto y no tiene página en ella: su
+// forma es la misma pantalla con un eslabón más por ciclo (la cadena), que vigila su propio test en reabiertos y en la vista. Todo
+// hallazgo que no esté en esta lista está declarado aquí con su razón; uno nuevo sin página ni razón rompe la cuenta de abajo.
+const DEL_PRODUCTO_SIN_PAGINA_EN_LA_MAQUETA = ["HZ-0011"];
+const IDS_DE_LA_MAQUETA = IDS_DE_HALLAZGOS.filter(
+  (id) => !DEL_PRODUCTO_SIN_PAGINA_EN_LA_MAQUETA.includes(id),
+);
+
+describe("qué hallazgos comparan contra la maqueta", () => {
+  it("cada hallazgo o tiene su página en la maqueta o está declarado sin ella", () => {
+    for (const id of IDS_DE_HALLAZGOS)
+      expect(
+        existsSync(
+          path.join(RAIZ_MAQUETA, `hallazgo-${id.toLowerCase()}.html`),
+        ),
+        id,
+      ).toBe(!DEL_PRODUCTO_SIN_PAGINA_EN_LA_MAQUETA.includes(id));
+  });
+});
+
+describe.each(IDS_DE_LA_MAQUETA)(
   "fidelidad del hallazgo %s contra su página de la maqueta",
   (id) => {
     const maqueta = documentoDe(
@@ -45,6 +67,10 @@ describe.each(IDS_DE_HALLAZGOS)(
     const producto = documentoDelProducto(
       renderToStaticMarkup(<HallazgoPantalla v={v} />),
     );
+    // El selector del producto lista todos los hallazgos; la maqueta, los suyos. Se quitan del producto los declarados sin página.
+    for (const sin of DEL_PRODUCTO_SIN_PAGINA_EN_LA_MAQUETA)
+      for (const opcion of producto.querySelectorAll(".hg-selector .hg-opcion"))
+        if (opcion.textContent?.includes(sin)) opcion.remove();
     const de = (
       doc: Document,
       selector: string,
@@ -90,8 +116,12 @@ describe.each(IDS_DE_HALLAZGOS)(
       expect(de(producto, ".hg-cabecera-linea .hg-chip", new Set())).toEqual(
         de(maqueta, ".hg-cabecera-linea .hg-chip", new Set()),
       );
-      expect(de(producto, "h1", new Set())).toEqual(de(maqueta, "h1", SOLO_DE_LA_MAQUETA));
-      expect(de(producto, ".hg-bajada", new Set())).toEqual(de(maqueta, ".hg-bajada", new Set()));
+      expect(de(producto, "h1", new Set())).toEqual(
+        de(maqueta, "h1", SOLO_DE_LA_MAQUETA),
+      );
+      expect(de(producto, ".hg-bajada", new Set())).toEqual(
+        de(maqueta, ".hg-bajada", new Set()),
+      );
       for (const aviso of ["data-aviso-de-plazo", "data-aviso-de-revision"])
         expect(producto.querySelectorAll(`[${aviso}]`).length, aviso).toBe(
           maqueta.querySelectorAll(`.hg-principal [${aviso}]`).length,
@@ -122,9 +152,9 @@ describe.each(IDS_DE_HALLAZGOS)(
       expect(textos(producto, ".hg-metricas li")).toEqual(
         textos(maqueta, ".hg-metricas li"),
       );
-      expect(textos(producto, '[aria-labelledby="severidad"] .hg-vector')).toEqual(
-        textos(maqueta, '[aria-labelledby="severidad"] .hg-vector'),
-      );
+      expect(
+        textos(producto, '[aria-labelledby="severidad"] .hg-vector'),
+      ).toEqual(textos(maqueta, '[aria-labelledby="severidad"] .hg-vector'));
       expect(de(producto, ".hg-matriz thead th", new Set())).toEqual(
         de(maqueta, ".hg-matriz thead th", new Set()),
       );
@@ -139,7 +169,9 @@ describe.each(IDS_DE_HALLAZGOS)(
         );
       expect(celdas(producto)).toEqual(celdas(maqueta));
       expect(
-        producto.querySelector("[data-nivel-de-tabla]")?.getAttribute("data-nivel-de-tabla"),
+        producto
+          .querySelector("[data-nivel-de-tabla]")
+          ?.getAttribute("data-nivel-de-tabla"),
       ).toBe(
         maqueta
           .querySelector(".hg-principal [data-nivel-de-tabla]")
@@ -150,13 +182,21 @@ describe.each(IDS_DE_HALLAZGOS)(
     it("el control que falla y lo obtenido son los mismos (el nombre del control y lo esperado los manda el catálogo oficial)", () => {
       // La maqueta nombraba los controles y lo esperado con su propio diccionario; el producto lee la instantánea oficial.
       if (CONTROL_DEL_CATALOGO.has(id)) {
-        expect(textos(producto, '[aria-labelledby="control"] .hg-junto .hg-dato')).toEqual(["iso42001-A.6.2.6"]);
-        expect(textos(maqueta, '[aria-labelledby="control"] .hg-junto .hg-chip')[0]).toContain("Sin control asignado");
+        expect(
+          textos(producto, '[aria-labelledby="control"] .hg-junto .hg-dato'),
+        ).toEqual(["iso42001-A.6.2.6"]);
+        expect(
+          textos(maqueta, '[aria-labelledby="control"] .hg-junto .hg-chip')[0],
+        ).toContain("Sin control asignado");
       } else {
-        expect(textos(producto, '[aria-labelledby="control"] .hg-junto .hg-dato')).toEqual(
+        expect(
+          textos(producto, '[aria-labelledby="control"] .hg-junto .hg-dato'),
+        ).toEqual(
           textos(maqueta, '[aria-labelledby="control"] .hg-junto .hg-dato'),
         );
-        expect(textos(producto, '[aria-labelledby="control"] .hg-junto .hg-chip')).toEqual(
+        expect(
+          textos(producto, '[aria-labelledby="control"] .hg-junto .hg-chip'),
+        ).toEqual(
           textos(maqueta, '[aria-labelledby="control"] .hg-junto .hg-chip'),
         );
       }
@@ -165,7 +205,9 @@ describe.each(IDS_DE_HALLAZGOS)(
         ".hg-contraste .hg-rotulo",
       ])
         expect(textos(producto, s), s).toEqual(textos(maqueta, s));
-      expect(textos(producto, ".hg-contraste > div:nth-child(1) p:not(.hg-rotulo)")).toHaveLength(1);
+      expect(
+        textos(producto, ".hg-contraste > div:nth-child(1) p:not(.hg-rotulo)"),
+      ).toHaveLength(1);
     });
 
     it("las salidas del producto son un subconjunto de las de la maqueta, salvo las declaradas", () => {
@@ -175,7 +217,10 @@ describe.each(IDS_DE_HALLAZGOS)(
         ...nombres(maqueta, ".hg-acciones .hg-boton"),
         "Reabrir|Reopen",
       ]);
-      for (const n of nombres(producto, ".hg-tarjeta-accion .hg-junto > strong"))
+      for (const n of nombres(
+        producto,
+        ".hg-tarjeta-accion .hg-junto > strong",
+      ))
         if (!SOLO_DEL_PRODUCTO.has(n)) expect(delaMaqueta, n).toContain(n);
     });
   },

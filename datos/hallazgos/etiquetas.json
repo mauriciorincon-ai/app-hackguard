@@ -250,8 +250,8 @@
     }
   ],
   "orden_del_selector": [
-    "reabierto",
     "abierto",
+    "reabierto",
     "corregido",
     "re_probado",
     "aceptado_con_riesgo",

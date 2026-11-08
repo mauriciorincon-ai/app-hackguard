@@ -518,21 +518,22 @@ describe("los comandos y sus errores de uso", () => {
 });
 
 describe("los demo versionados", () => {
-  it("el libro demo valida con salida 0 y trae 16 sobres, 2 lotes y 4 hallazgos", () => {
+  it("el libro demo valida con salida 0 y trae 19 sobres, 2 lotes y 5 hallazgos", () => {
     const r = evidencia(["validar", "--json"], RAIZ);
     expect(r.codigo).toBe(0);
     const j = JSON.parse(r.salida);
-    expect(j.sobres.validos).toHaveLength(16);
+    expect(j.sobres.validos).toHaveLength(19);
     expect(j.lotes.validos).toEqual(["LOTE-0007", "LOTE-0008"]);
     expect(j.hallazgos.validos).toEqual([
       "HZ-0003",
       "HZ-0005",
       "HZ-0007",
       "HZ-0009",
+      "HZ-0011",
     ]);
   });
 
-  it("el listado lleva los cuatro estados de la maqueta", () => {
+  it("el listado lleva los cuatro estados de la maqueta y el reabierto del S11", () => {
     const j = JSON.parse(
       evidencia(["hallazgos-listar", "--fecha", "2026-10-12", "--json"], RAIZ)
         .salida,
@@ -544,6 +545,7 @@ describe("los demo versionados", () => {
       ["HZ-0005", "aceptado_con_riesgo"],
       ["HZ-0007", "abierto"],
       ["HZ-0009", "corregido"],
+      ["HZ-0011", "reabierto"],
     ]);
   });
 

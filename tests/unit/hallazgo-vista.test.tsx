@@ -92,8 +92,10 @@ describe("el motor y la maqueta aprobada dicen lo mismo de los cuatro hallazgos"
 describe("el selector", () => {
   it("pone primero lo que pide acción, y el primero es el que abre «Evidencia»", () => {
     const v = vista(mundoDeHallazgos, "HZ-0003");
+    // Un reabierto es una regresión: pide acción justo después del abierto.
     expect(v.selector.map((s) => s.id)).toEqual([
       "HZ-0007",
+      "HZ-0011",
       "HZ-0009",
       "HZ-0005",
       "HZ-0003",

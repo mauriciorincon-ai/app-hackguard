@@ -97,6 +97,7 @@ export type VistaDePlazo =
       dias: number;
       atraso: number;
       vence: string;
+      /** El día desde el que corre el plazo: la apertura, o la reapertura confirmada si el hallazgo se reabrió. */
       apertura: string;
       /** El id del nivel de severidad que fija el plazo. */
       severidad: string;

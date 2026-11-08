@@ -68,6 +68,18 @@ export interface CierreDeHallazgo {
   sobre: string | null;
 }
 
+/** Un ciclo del hallazgo: de que se abre (o se reabre) a que se cierra (o sigue abierto). La cadena se dibuja ciclo por ciclo. */
+export interface CicloDeHallazgo {
+  /** La reapertura que lo abrió; nulo en el primero (el que nace del sobre de origen). */
+  reapertura: ReaperturaDeHallazgo | null;
+  /** La última corrección declarada DENTRO de este ciclo. */
+  correccion: Correccion | null;
+  /** La re-prueba que lo cerró, aunque otra posterior lo reabriera; nulo si no lo cerró una re-prueba. */
+  cierre: CierreDeHallazgo | null;
+  /** Las re-pruebas confirmadas de este ciclo, en orden de fecha; la que lo reabrió no está aquí, está en `reapertura`. */
+  candidatas: CandidataDeReprueba[];
+}
+
 export interface EvaluacionDeHallazgo {
   id: string;
   activo: string;
@@ -80,6 +92,8 @@ export interface EvaluacionDeHallazgo {
   reapertura: { sobre: string; fecha: string } | null;
   /** Todas las veces que se reabrió, en orden. */
   reaperturas: ReaperturaDeHallazgo[];
+  /** Los ciclos, en orden: siempre hay al menos uno, y hay uno más por cada reapertura. */
+  ciclos: CicloDeHallazgo[];
   /** Todos los cierres por re-prueba, en orden; el último puede ser el vigente (`cierre`) o uno que una reapertura deshizo. */
   cierres: CierreDeHallazgo[];
   /** El sobre de origen tal como vale hoy (el último que lo corrige, si lo hay). */
@@ -378,6 +392,30 @@ export function evaluarHallazgo(
                 ultimaReapertura.confirmacion?.fecha ?? ultimaReapertura.fecha,
             },
       reaperturas,
+      ciclos: inicios.map((_, i): CicloDeHallazgo => {
+        const desde = inicios[i]?.fecha ?? null;
+        const hasta = inicios[i + 1]?.fecha ?? null;
+        const ultimoDelHallazgo = i === inicios.length - 1;
+        const cerro = ultimoDelHallazgo
+          ? estado === "cerrado"
+            ? ultimo(cierres)
+            : null
+          : (cierres.find((c) => c.sobre === reaperturas[i]?.cierre) ?? null);
+        return {
+          reapertura: reaperturas[i - 1] ?? null,
+          correccion: ultimo(
+            correcciones.filter(
+              (k) =>
+                (desde === null || k.fecha > desde) &&
+                (hasta === null || k.fecha <= hasta),
+            ),
+          ),
+          cierre: cerro,
+          candidatas: candidatas.filter(
+            (c, j) => llegadas[j]!.ciclo === i && !c.reabre,
+          ),
+        };
+      }),
       cierres,
       sobreOrigen: origen,
       correccion,

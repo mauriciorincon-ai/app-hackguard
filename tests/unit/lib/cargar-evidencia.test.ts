@@ -44,15 +44,16 @@ afterAll(() =>
 const modo = (ruta: string) => statSync(ruta).mode & 0o777;
 
 describe("lo que lee", () => {
-  it("los 16 sobres y los 4 hallazgos demo, con su ruta relativa y con «/»", () => {
+  it("los 19 sobres y los 5 hallazgos demo, con su ruta relativa y con «/»", () => {
     const sobres = cargarSobres(RAIZ);
-    expect(sobres).toHaveLength(16);
+    expect(sobres).toHaveLength(19);
     expect(sobres[0]!.ruta).toBe("datos/evidencia/demo/SOB-0003.json");
     expect(cargarHallazgos(RAIZ).map((h) => h.ruta)).toEqual([
       "datos/hallazgos/demo/HZ-0003.json",
       "datos/hallazgos/demo/HZ-0005.json",
       "datos/hallazgos/demo/HZ-0007.json",
       "datos/hallazgos/demo/HZ-0009.json",
+      "datos/hallazgos/demo/HZ-0011.json",
     ]);
   });
 
@@ -136,9 +137,9 @@ describe("el orden del selector de hallazgos", () => {
   it("nombra cada estado del ciclo de vida una vez, de lo que pide acción a lo cerrado", () => {
     const orden = cargarEtiquetasDeHallazgo(RAIZ).orden_del_selector;
     expect([...orden].sort()).toEqual([...ESTADOS_DE_HALLAZGO].sort());
-    // Un reabierto es una regresión: pide acción antes que un abierto (D5).
-    expect(orden[0]).toBe("reabierto");
-    expect(orden[1]).toBe("abierto");
+    // Un reabierto es una regresión: pide acción justo después de un abierto (D5), antes que un corregido.
+    expect(orden[0]).toBe("abierto");
+    expect(orden[1]).toBe("reabierto");
     expect(orden.indexOf("cerrado")).toBeGreaterThan(
       orden.indexOf("aceptado_con_riesgo"),
     );

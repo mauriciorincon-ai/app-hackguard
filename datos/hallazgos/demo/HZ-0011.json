@@ -1,0 +1,31 @@
+{
+  "formato": "hackguard/hallazgo@1",
+  "id": "HZ-0011",
+  "origen": "demo",
+  "sobre_origen": "SOB-0037",
+  "titulo": {
+    "es": "El registro del agente omite datos de algunas acciones",
+    "en": "The agent's log leaves out details of some actions"
+  },
+  "descripcion": {
+    "es": "Al revisar una sesión de prueba, dos de las once acciones del agente aparecen en el registro sin uno de sus tres datos.",
+    "en": "While reviewing a test session, two of the agent's eleven actions appear in the log without one of their three fields."
+  },
+  "severidad": {
+    "tipo": "escala_ia",
+    "impacto": 2,
+    "alcance": 2,
+    "detectabilidad": 2
+  },
+  "eventos": [
+    {
+      "tipo": "correccion",
+      "fecha": "2026-09-18",
+      "por": "Operador demo",
+      "nota": {
+        "es": "El registro escribe los tres datos de cada acción antes de ejecutarla.",
+        "en": "The log writes the three fields of each action before running it."
+      }
+    }
+  ]
+}

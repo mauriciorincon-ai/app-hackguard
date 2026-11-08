@@ -36,12 +36,12 @@ async function validar(h: Hallazgo | Record<string, unknown>, r?: string, ctx?: 
   };
 }
 
-it("los cuatro hallazgos demo son válidos", async () => {
+it("los cinco hallazgos demo son válidos", async () => {
   const m = await mundo();
   const r = validarHallazgos(m.archivosDeHallazgos, await contexto());
   expect(r.hallazgos).toEqual([]);
   expect(r.estado).toBe("ok");
-  expect(r.validos.map((h) => h.id)).toEqual(["HZ-0003", "HZ-0005", "HZ-0007", "HZ-0009"]);
+  expect(r.validos.map((h) => h.id)).toEqual(["HZ-0003", "HZ-0005", "HZ-0007", "HZ-0009", "HZ-0011"]);
 });
 
 describe("cada regla, con la mutación que la dispara", () => {
