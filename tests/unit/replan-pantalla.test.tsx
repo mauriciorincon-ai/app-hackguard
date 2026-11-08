@@ -17,13 +17,17 @@ const doc = (nodo: React.ReactElement) =>
   documentoDelProducto(renderToStaticMarkup(nodo));
 const CLASIFICADOR = "act-demo-clasificador";
 
-async function vista(id = CLASIFICADOR, conDemo = true) {
+async function vista(
+  id = CLASIFICADOR,
+  conDemo = true,
+  consulta = "2026-11-08",
+) {
   return construirVistaDeReplan(
     id,
     mundo,
     instantanea,
     nombreDeLaInstantanea,
-    "2026-11-08",
+    consulta,
     conDemo ? await cargarInstantaneaDemo() : null,
   );
 }
@@ -31,6 +35,11 @@ async function vista(id = CLASIFICADOR, conDemo = true) {
 describe("/activos/<id>/re-planear", () => {
   it("un activo con el plan vigente no tiene esta página", async () => {
     expect(await vista("act-demo-asistente")).toBeNull();
+  });
+
+  it("una fecha de consulta anterior al plan no rompe la vista previa: sube a la fecha del plan en vez de lanzar", async () => {
+    const v = (await vista(CLASIFICADOR, true, "2026-10-08"))!;
+    expect(v.bases.map((b) => b.clave)).toEqual(["oficial", "demo"]);
   });
 
   it("trae primero la base oficial y después la demo, rotulada «no oficial»", async () => {

@@ -162,10 +162,13 @@ export async function construirVistaDeReplan(
       cargado,
       mundo.datos,
       nueva.instantanea,
-      // La vista previa no tiene fecha de emisión propia: usa la de consulta, subida a la de la instantánea si esta es posterior.
-      consulta < nueva.instantanea.fecha_evaluacion
-        ? nueva.instantanea.fecha_evaluacion
-        : consulta,
+      // La vista previa no tiene fecha de emisión propia: usa la de consulta, subida a la de la instantánea y a la del plan que
+      // sustituye si estas son posteriores (un plan nuevo no puede nacer fechado antes: el motor lo rechaza con RangeError).
+      [
+        consulta,
+        nueva.instantanea.fecha_evaluacion,
+        cargado.plan.fecha_emision,
+      ].reduce((a, b) => (b > a ? b : a)),
       raiz,
     );
     const { replan, plan } = await replanear(entrada);
