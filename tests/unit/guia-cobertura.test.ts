@@ -10,10 +10,14 @@ interface Fila {
   id: string;
   estado: string;
   parada: string | null;
+  /** El N de «Parada N» que la matriz escribe en su enlace; `null` si el enlace no lo trae. */
+  numero: number | null;
 }
 interface Parada {
   ancla: string;
   cubre: string[];
+  /** El N de «Parada N de M» que la propia parada lleva escrito; `null` si no lo trae. */
+  n: number | null;
 }
 
 /** Las filas de la matriz y las paradas de un texto de guía. Se exporta para probar el propio gate con guías rotas. */
@@ -26,12 +30,20 @@ function leerGuia(html: string): { filas: Fila[]; paradas: Parada[] } {
     id: m[1]!,
     estado: m[2]!,
     parada: m[3]!.match(/href="#(p-[^"]+)"/)?.[1] ?? null,
+    numero: m[3]!.match(/>Parada (\d+)</)?.[1]
+      ? Number(m[3]!.match(/>Parada (\d+)</)![1])
+      : null,
   }));
   const paradas = [
-    ...html.matchAll(/<li [^>]*\bid="(p-[^"]+)"[^>]*\bdata-cubre="([^"]*)"/g),
+    ...html.matchAll(
+      /<li [^>]*\bid="(p-[^"]+)"[^>]*\bdata-cubre="([^"]*)"[^>]*>([\s\S]*?)<\/li>/g,
+    ),
   ].map((m) => ({
     ancla: m[1]!,
     cubre: m[2]!.split(",").filter((x) => x !== ""),
+    n: m[3]!.match(/Parada (\d+) de \d+/)?.[1]
+      ? Number(m[3]!.match(/Parada (\d+) de \d+/)![1])
+      : null,
   }));
   return { filas, paradas };
 }
@@ -64,6 +76,24 @@ function problemasDeCobertura(html: string): string[] {
     for (const id of p.cubre)
       if (!conocidos.has(id))
         problemas.push(`${p.ancla} cubre ${id}, que la matriz no conoce`);
+  // El «Parada N» de la matriz es el de la parada a la que apunta, y ese es su lugar real en el recorrido (B7 del S10).
+  for (const f of filas) {
+    if (f.numero === null || f.parada === null) continue;
+    const lugar = paradas.findIndex((p) => p.ancla === f.parada);
+    if (lugar === -1) {
+      problemas.push(`${f.id}: la matriz apunta a ${f.parada}, que no existe`);
+      continue;
+    }
+    if (f.numero !== lugar + 1)
+      problemas.push(
+        `${f.id}: la matriz dice «Parada ${f.numero}» y ${f.parada} es la parada ${lugar + 1} del recorrido`,
+      );
+    const escrito = paradas[lugar]!.n;
+    if (escrito !== null && escrito !== lugar + 1)
+      problemas.push(
+        `${f.parada} dice «Parada ${escrito}» y es la parada ${lugar + 1} del recorrido`,
+      );
+  }
   return problemas;
 }
 
@@ -95,6 +125,15 @@ describe("la matriz de cobertura de la guía de prueba", () => {
     expect(problemasDeCobertura(guia)).toEqual([]);
   });
 
+  it("cada construida enlaza a su parada con su número («Parada N»), y N es el lugar real de esa parada", () => {
+    for (const f of filas.filter((x) => x.estado === "construida")) {
+      expect(f.numero, `${f.id} sin «Parada N» en su enlace`).not.toBeNull();
+      const lugar = paradas.findIndex((p) => p.ancla === f.parada);
+      expect(f.numero, f.id).toBe(lugar + 1);
+      expect(paradas[lugar]!.n, f.id).toBe(lugar + 1);
+    }
+  });
+
   it("las construidas del S10 (D1, D3, D4) tienen su parada nueva", () => {
     for (const id of ["D1", "D3", "D4"]) {
       const fila = filas.find((f) => f.id === id);
@@ -124,6 +163,16 @@ describe("la matriz de cobertura de la guía de prueba", () => {
       expect(problemasDeCobertura(html)[0]).toBe(
         "C1 aparece en 2 paradas: p-a, p-b",
       );
+    });
+
+    it("un «Parada N» de la matriz que no es el lugar real de su parada", () => {
+      const filaConNumero = (id: string, parada: string, n: number) =>
+        `<tr data-id="${id}" data-estado="construida"><td>${id}</td><td>x</td><td>x</td><td><a href="#${parada}">Parada ${n}</a></td></tr>`;
+      const html =
+        filaConNumero("C1", "p-b", 1) + li("p-a", "") + li("p-b", "C1");
+      expect(problemasDeCobertura(html)).toEqual([
+        "C1: la matriz dice «Parada 1» y p-b es la parada 2 del recorrido",
+      ]);
     });
 
     it("una parada que cubre algo pendiente, o un id que la matriz no conoce", () => {

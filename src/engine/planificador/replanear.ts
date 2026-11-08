@@ -103,7 +103,7 @@ export interface Movimiento {
   fuera: "retirada_o_ausente" | MotivoDeExclusion | null;
   /** Todas las que apliquen, en el orden catálogo · regla · perfil. Vacío solo en una que se queda sin cambiar de verdad. */
   causas: Factor[];
-  /** Dos o más causas y ninguna basta sola: se mueve por las dos cosas a la vez. */
+  /** Dos o más causas (hasta las tres: catálogo, regla y perfil) y ninguna basta sola: se mueve por todas a la vez. */
   conjunta: boolean;
   /** Solo en «se queda»: qué cambió de ella. */
   cambios: CambioDeUnaQueSeQueda[];
