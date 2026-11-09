@@ -19,7 +19,7 @@
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 10,
+    "sprints_cerrados": 11,
     "version_repo": "0.1.0"
   },
   "promesa": {
@@ -226,7 +226,7 @@
       "valor": 24,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 24 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal, 5 del roadmap del H-2 (D1, D3, D4, D5 y D6) y 1 que el primer corte dejó al H-2 (el texto pegado), contadas contra 11 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido."
+      "detalle": "Las 24 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 6 del roadmap del H-2, contadas contra 11 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -250,39 +250,39 @@
       "valor": 38,
       "unidad": "fichas",
       "fuente": "medido",
-      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-08. El build entero genera 119 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-08. El build entero genera 122 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
     },
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4528,
+      "valor": 4895,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-11-08 sobre el árbol de este export: `pnpm test` 3220 pruebas, y `pnpm test:e2e` 1308 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-11-08 sobre el árbol de este export: `pnpm test` 3555 pruebas, y `pnpm test:e2e` 1340 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3220,
+      "valor": 3555,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-08 sobre el árbol de este export: 164 archivos, 3220 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-08 sobre el árbol de este export: 182 archivos, 3555 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1308,
+      "valor": 1340,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-11-08 (14 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-11-08 (16 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 96.79,
+      "valor": 97.82,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-08: 5122 de 5292 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-08: 5823 de 5953 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
