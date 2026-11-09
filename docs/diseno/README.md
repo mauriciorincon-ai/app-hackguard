@@ -324,6 +324,7 @@ y la maqueta las alcanza en el `design-sync` del hito. Cada control que se pulsa
 | `tablero` · `brecha` · `informe` · `marcos` | Los marcos con versión nueva se listan con su propuesta, o dicen «ninguno según la corrida X», o «sin registro» si ninguna corrida del investigador leyó las fuentes; en `marcos`, la fila del marco trae su aviso | Una cuenta, un cálculo: `avisosDeVersion` del motor; sin corrida, «ninguno» afirmaría lo que no se sabe |
 | `barra lateral` | «Propuestas» abre `/catalogo/propuestas`: ya no queda ninguna página «pronto» | La bandeja es del S8 |
 | `carga` | «Texto pegado» dice que el texto lo lee el extractor con `/extraer` sobre un archivo, y que desde el navegador no se pega nada | La skill existe; la pantalla sigue de solo lectura |
+| `carga` | «Texto pegado» (S11) deja de ser un aviso y pasa a ser la vía de la maqueta: se pega el reporte de Garak o de ZAP, se eligen activo y herramienta, y salen los sobres propuestos con el veredicto de la regla, los hallazgos que abrirían y **la brecha antes y después si lo confirmas**; el crudo vive solo en la página (sin red, sin almacenamiento) y nada cuenta hasta que una persona confirma con la CLI | Cierra lo que el H-1 dejó al H-2; la pantalla reutiliza las clases de la consola (panel, tabla, estado, huella): **sin CSS nuevo**, así que la maqueta no se regenera. Las pantallas nuevas del S11 (`/brecha/tendencia`, la cadena por ciclos del hallazgo) también se arman con piezas existentes |
 
 ## Decisiones de diseño del Sprint 10 (devolución 026, dos defectos a 1024 px)
 

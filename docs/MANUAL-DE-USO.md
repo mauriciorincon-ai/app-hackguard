@@ -317,7 +317,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
   plan de calidad (hasta 10 % de sobres malos aceptable y un riesgo de 5 % de aceptar un lote peor), la probabilidad de que un
   lote con 10 % de sobres malos pase la muestra sin encontrar ninguno es menor de 5 %. El sistema elige la muestra con una
   semilla que sale de la huella del lote: la misma en cualquier computadora y en cualquier navegador.
-- **Qué NO hace:** no admite activos demo (`importar` los rechaza: lo real va a un activo propio de `datos/privado/activos/`; la pantalla solo lee los lotes de ejemplo de `datos/lotes/demo`), no ejecuta herramientas, no lee el archivo en el navegador, no pega texto todavía (la pestaña lo dice),
+- **Qué NO hace:** no admite activos demo (`importar` los rechaza: lo real va a un activo propio de `datos/privado/activos/`; la pantalla solo lee los lotes de ejemplo de `datos/lotes/demo`), no ejecuta herramientas, no lee un archivo en el navegador (el texto se pega, ver «La evidencia en el tiempo · desde Sprint 011»), y lo pegado nunca cuenta solo (se confirma con los comandos de arriba),
   ningún modelo decide un veredicto y no guarda el contenido del reporte ni los ataques que usó la herramienta. Con ZAP, una
   regla sin constancia de que corrió aparece como **No ejecutada**, nunca como superada.
 - **Limitaciones conocidas:**
@@ -326,7 +326,7 @@ pantallas leen la misma cuenta de la evidencia confirmada. Desde el Sprint 8 tam
     resumen del mismo reporte.
   - Las estadísticas de ZAP se leen con el formato de su documentación. Todavía no se han probado con un reporte real de una
     corrida de ZAP.
-  - En la pantalla, «Texto pegado» todavía no carga nada, y «Sobre manual» muestra los pasos del CLI de arriba.
+  - En la pantalla, «Texto pegado» propone sobres pero no confirma ni guarda nada (desde el Sprint 011), y «Sobre manual» muestra los pasos del CLI de arriba.
   - La pantalla se prueba en español y en inglés (e2e `flujo-en`: sin texto en español visible y sin violaciones graves de axe); el texto de cada idioma lo juzga una persona en el gate.
 
 #### La brecha y el informe · desde Sprint 007
@@ -756,14 +756,14 @@ take snapshots of it, and a **demo classifier** for the decision-model family. S
   that quality plan (up to 10 % of bad envelopes acceptable, a 5 % risk of accepting a worse batch), the probability that a batch
   with 10 % bad envelopes passes the sample without finding one is under 5 %. The system chooses the sample with a seed that comes
   from the batch's fingerprint: the same on any computer and in any browser.
-- **What it does NOT do:** it does not accept demo assets (`importar` rejects them: real data goes to an own asset in `datos/privado/activos/`; the screen only reads the sample batches in `datos/lotes/demo`), it does not run tools, does not read the file in the browser, does not paste text yet (the tab says so),
+- **What it does NOT do:** it does not accept demo assets (`importar` rejects them: real data goes to an own asset in `datos/privado/activos/`; the screen only reads the sample batches in `datos/lotes/demo`), it does not run tools, does not read a file in the browser (the text is pasted, see “Evidence over time · since Sprint 011”), and pasted text never counts by itself (it is confirmed with the commands above),
   no model decides a verdict, and it does not keep the report's contents or the attacks the tool used. With ZAP, a rule with no
   proof that it ran appears as **Not run**, never as passed.
 - **Known limitations:**
   - Garak's report does not carry the threshold above which a test counts as failed. The app uses 0.5, Garak's default, and says
     so in the batch's warnings; it also checks that its counts match the summary lines of the same report.
   - ZAP's statistics are read with the format in its documentation. They have not yet been tried against a real ZAP run report.
-  - On the screen, “Pasted text” does not load anything yet, and “Manual envelope” shows the CLI steps above.
+  - On the screen, “Pasted text” proposes envelopes but does not confirm or save anything (since Sprint 011), and “Manual envelope” shows the CLI steps above.
   - The screen is tested in Spanish and in English (`flujo-en` e2e: no visible Spanish text and no serious axe violations); a person judges the wording of each language at the gate.
 
 #### The gap and the report · since Sprint 007

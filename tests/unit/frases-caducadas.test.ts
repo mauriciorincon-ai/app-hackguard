@@ -79,6 +79,22 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
     "src/lib/catalogo/paginacion.ts",
     /sin pasar el presupuesto de rendimiento/,
   ],
+  // S11: el texto pegado ya se lee en el navegador (propone, no confirma)
+  [
+    "S11-pegado",
+    "docs/MANUAL-DE-USO.md",
+    /«Texto pegado» todavía no carga nada|“Pasted text” does not load anything yet/,
+  ],
+  [
+    "S11-pegado",
+    "docs/MANUAL-DE-USO.md",
+    /no pega texto todavía|does not paste text yet/,
+  ],
+  [
+    "S11-pegado",
+    "src/components/carga/pegado-pantalla.tsx",
+    /aquí no hay campo ni botón|esa vía no existe en esta versión|there is no field or button here/,
+  ],
 ];
 
 /** Lo que el texto corregido SÍ tiene que decir: una frase que se borra sin reemplazo también es un hallazgo. */
@@ -105,6 +121,11 @@ const VIGENTES: readonly (readonly [string, string, RegExp])[] = [
     "ED-7",
     "docs/diseno/README.md",
     /verificar-salida-publicada\.mjs --publico/,
+  ],
+  [
+    "S11-pegado",
+    "docs/diseno/README.md",
+    /«Texto pegado» \(S11\) deja de ser un aviso/,
   ],
 ];
 
