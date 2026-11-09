@@ -333,9 +333,15 @@ export function evaluarHallazgo(
           : l.noReabre,
     };
   });
+  // La reapertura rige desde que una persona confirmó el sobre (es la fecha del plazo): una declaración hecha antes de esa confirmación
+  // se hizo sobre un hallazgo que seguía cerrado y no tapa la falla nueva.
+  const desdeReapertura =
+    ultimaReapertura === null
+      ? null
+      : (ultimaReapertura.confirmacion?.fecha ?? ultimaReapertura.fecha);
   const aceptacion = ultimo(
     aceptaciones.filter(
-      (e) => ultimaReapertura === null || e.fecha > ultimaReapertura.fecha,
+      (e) => desdeReapertura === null || e.fecha > desdeReapertura,
     ),
   );
 
@@ -347,7 +353,7 @@ export function evaluarHallazgo(
         (e.tipo === "eliminacion" ||
           e.tipo === "no_reproducible" ||
           e.tipo === "aceptacion") &&
-        (ultimaReapertura === null || e.fecha > ultimaReapertura.fecha),
+        (desdeReapertura === null || e.fecha > desdeReapertura),
     ),
   );
 

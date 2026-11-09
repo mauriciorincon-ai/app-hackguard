@@ -1009,8 +1009,8 @@ async function principal(argv: string[]): Promise<number> {
       );
       escribirTexto(
         o.idioma === "es"
-          ? `${id} ya está «${estado.es}»: no admite otra declaración. Si una prueba posterior vuelve a fallar, abre un hallazgo nuevo.\n`
-          : `${id} is already “${estado.en}”: it takes no further declaration. If a later test fails again, it opens a new finding.\n`,
+          ? `${id} ya está «${estado.es}»: no admite otra declaración. Si una re-prueba posterior de la misma configuración que lo cite vuelve a fallar y una persona la confirma, lo reabre; una falla que no lo cita abre un hallazgo nuevo.\n`
+          : `${id} is already “${estado.en}”: it takes no further declaration. If a later retest of the same configuration that cites it fails again and a person confirms it, it reopens it; a failure that does not cite it opens a new finding.\n`,
       );
       return CODIGOS_DEL_LIBRO.bloqueado;
     }

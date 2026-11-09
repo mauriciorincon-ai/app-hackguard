@@ -293,6 +293,7 @@ describe("lo que no se lee, se dice", () => {
       "falta_metrica",
       "fecha_con_formato_incorrecto",
       "posterior_a_la_consulta",
+      "lectura_fallida",
     ];
     for (const m of motivos) {
       const t = TEXTO_DE_MOTIVO[m];

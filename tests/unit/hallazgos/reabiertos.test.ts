@@ -349,6 +349,31 @@ describe("las declaraciones después de una reapertura", () => {
     expect(e.estado).toBe("aceptado_con_riesgo");
   });
 
+  it("una declaración hecha ENTRE el sobre y su confirmación no la tapa: la reapertura rige desde que una persona la confirmó", async () => {
+    const { h } = await base();
+    // El sobre es del 2026-10-05 pero una persona lo confirma el 2026-10-09; el 2026-10-07 el hallazgo seguía cerrado.
+    const reabre = await sobre("SOB-0040", {
+      confirmacion: firma("2026-10-09"),
+    });
+    const aceptar = (fecha: string): Evento => ({
+      tipo: "aceptacion",
+      fecha,
+      por: POR,
+      revision_en_dias: 30,
+      justificacion: nota,
+    });
+    const antes = await evaluar(
+      [reabre],
+      [...h.eventos, aceptar("2026-10-07")],
+    );
+    expect(antes.estado).toBe("reabierto");
+    const despues = await evaluar(
+      [reabre],
+      [...h.eventos, aceptar("2026-10-10")],
+    );
+    expect(despues.estado).toBe("aceptado_con_riesgo");
+  });
+
   it("una declaración ANTERIOR a la reapertura no la tapa: la reapertura manda", async () => {
     const { h } = await base();
     const e = await evaluar(

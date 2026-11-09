@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Etiqueta } from "@/lib/catalogo/tipos";
 import {
   proponerDesdeTexto,
@@ -417,7 +417,14 @@ export function PegadoPantalla({
   const [pegado, setPegado] = useState("");
   const [fecha, setFecha] = useState("");
   const [zona, setZona] = useState("");
-  const [estado, setEstado] = useState<Estado_>({ tipo: "quieto" });
+  const [estado, setEstadoCrudo] = useState<Estado_>({ tipo: "quieto" });
+  // Cuenta de lecturas: una lectura que termina después de que la persona volvió a empezar (borró, cambió de activo o de herramienta) no
+  // pisa el estado; descartar y volver a leer es siempre seguro.
+  const lectura = useRef(0);
+  const setEstado = (e: Estado_) => {
+    if (e.tipo === "quieto") lectura.current += 1;
+    setEstadoCrudo(e);
+  };
 
   if (delActivo === undefined)
     return (
@@ -442,15 +449,23 @@ export function PegadoPantalla({
     );
 
   const leer = async () => {
-    setEstado({ tipo: "leyendo" });
-    const resultado = await proponerDesdeTexto(mundo, {
-      texto: pegado,
-      activo,
-      herramienta,
-      fecha: fecha.trim() === "" ? null : fecha.trim(),
-      zona: zona.trim() === "" ? null : zona.trim(),
-    });
-    setEstado({ tipo: "listo", resultado });
+    const mia = ++lectura.current;
+    setEstadoCrudo({ tipo: "leyendo" });
+    let resultado: ResultadoDePegado;
+    try {
+      resultado = await proponerDesdeTexto(mundo, {
+        texto: pegado,
+        activo,
+        herramienta,
+        fecha: fecha.trim() === "" ? null : fecha.trim(),
+        zona: zona.trim() === "" ? null : zona.trim(),
+      });
+    } catch {
+      // Un error inesperado no deja la pantalla en «Leyendo…» para siempre: se dice, sin volcar el texto ni el error.
+      resultado = { ok: false, motivo: "lectura_fallida", detalle: null };
+    }
+    if (mia !== lectura.current) return;
+    setEstadoCrudo({ tipo: "listo", resultado });
   };
   const resultado = estado.tipo === "listo" ? estado.resultado : null;
 

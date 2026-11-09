@@ -210,8 +210,8 @@ export function accionesDe(
   )
     return {
       nada: {
-        es: "Nada: la evidencia confirmada es inmutable. Si una prueba posterior vuelve a fallar, esa falla abre un hallazgo nuevo con su propia evidencia.",
-        en: "Nothing: confirmed evidence is immutable. If a later test fails again, that failure opens a new finding with its own evidence.",
+        es: "Nada: la evidencia confirmada es inmutable. Si una re-prueba posterior de la misma configuración que cite este hallazgo vuelve a fallar y una persona la confirma, lo reabre; una falla que no lo cita abre un hallazgo nuevo con su propia evidencia.",
+        en: "Nothing: confirmed evidence is immutable. If a later retest of the same configuration that cites this finding fails again and a person confirms it, it reopens it; a failure that does not cite it opens a new finding with its own evidence.",
       },
       lista: [],
     };
@@ -221,6 +221,7 @@ export function accionesDe(
   // Un riesgo aceptado se corrige igual (aceptarlo no lo cierra): la corrección es lo que habilita la re-prueba que lo cierra.
   if (
     e.estado === "abierto" ||
+    e.estado === "reabierto" ||
     e.estado === "re_probado" ||
     e.estado === "aceptado_con_riesgo"
   )
@@ -236,7 +237,8 @@ export function accionesDe(
   if (
     e.estado === "corregido" ||
     e.estado === "re_probado" ||
-    (e.estado === "aceptado_con_riesgo" && e.correccion !== null)
+    ((e.estado === "aceptado_con_riesgo" || e.estado === "reabierto") &&
+      e.correccion !== null)
   )
     lista.push({
       id: "reprobar",

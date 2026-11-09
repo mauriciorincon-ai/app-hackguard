@@ -406,6 +406,10 @@ describe("la cadena entera, con un activo propio", () => {
     );
     expect(r.codigo).toBe(2);
     expect(r.salida).toContain("ya está «Cerrado por re-prueba»");
+    // Dice cómo vuelve a abrirse (una re-prueba que lo cite y falle) y cuándo nace uno nuevo.
+    expect(r.salida).toMatch(
+      /lo reabre; una falla que no lo cita abre un hallazgo nuevo/,
+    );
     expect(readFileSync(ruta, "utf8")).toBe(antes);
   });
 });

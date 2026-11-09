@@ -89,10 +89,15 @@ export type MotivoDePegado =
   | `no_leyo_${MotivoDeNoLeer}`
   | MotivoDeNoArmarLote
   | "fecha_con_formato_incorrecto"
-  | "posterior_a_la_consulta";
+  | "posterior_a_la_consulta"
+  | "lectura_fallida";
 
 /** Los textos de cada motivo, en los dos idiomas: lo que pasó y qué hacer. Nunca un código pelado. */
 export const TEXTO_DE_MOTIVO: Record<string, Bilingue> = {
+  lectura_fallida: {
+    es: "La lectura se interrumpió por un error inesperado: no se propuso ningún sobre. Vuelve a pegar el texto; si se repite, léelo con el CLI.",
+    en: "Reading stopped on an unexpected error: no envelope was proposed. Paste the text again; if it repeats, read it with the CLI.",
+  },
   sin_texto: {
     es: "No hay texto que leer: pega lo que devolvió la herramienta.",
     en: "There is no text to read: paste what the tool returned.",

@@ -605,10 +605,32 @@ describe("las salidas, según el estado", () => {
       accionesDe("HZ-0005", evaluacion("HZ-0005")).lista.map((x) => x.id),
     ).not.toContain("reprobar");
   });
-  it("cerrado: nada, y lo dice", () => {
+  it("cerrado: nada, y lo dice, y dice cómo se reabre y cuándo abre uno nuevo", () => {
     const a = accionesDe("HZ-0003", evaluacion("HZ-0003"));
     expect(a.lista).toEqual([]);
     expect(a.nada?.es).toContain("la evidencia confirmada es inmutable");
+    expect(a.nada?.es).toMatch(/lo reabre.*abre un hallazgo nuevo/);
+    expect(a.nada?.en).toMatch(/reopens it.*opens a new finding/);
+  });
+  it("reabierto: se ofrece corregir (el único camino hacia el re-cierre) y la re-prueba solo cuando ya hay una corrección nueva", () => {
+    const reabierto = evaluacionDe(mundoDeHallazgos, "HZ-0011");
+    expect(reabierto.estado).toBe("reabierto");
+    expect(reabierto.correccion).toBeNull();
+    const ids = accionesDe("HZ-0011", reabierto).lista.map((x) => x.id);
+    expect(ids).toContain("corregir");
+    expect(ids).not.toContain("reprobar");
+    const corregido = {
+      ...reabierto,
+      correccion: {
+        tipo: "correccion" as const,
+        fecha: "2026-10-08",
+        por: "Ana",
+        nota: { es: "n", en: "n" },
+      },
+    };
+    expect(accionesDe("HZ-0011", corregido).lista.map((x) => x.id)).toContain(
+      "reprobar",
+    );
   });
 });
 

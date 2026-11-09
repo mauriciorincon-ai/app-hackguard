@@ -168,6 +168,39 @@ describe("lo que no se puede proponer, se dice", () => {
     );
   });
 
+  it("un error inesperado al leer no deja la pantalla en «Leyendo…»: lo dice, sin volcar el texto", async () => {
+    const base = mundoDePegado(CONSULTA);
+    const roto = {
+      ...base,
+      activos: base.activos.map((a) => ({ ...a, emitido: null as never })),
+    };
+    const { container: c } = montar(roto);
+    escribir(c, "pegado-texto", textoDeFixture(GARAK));
+    escribir(c, "pegado-zona", "America/Bogota");
+    fireEvent.click(c.querySelector("[data-proponer]")!);
+    await waitFor(() =>
+      expect(
+        c
+          .querySelector("[data-pegado-error]")
+          ?.getAttribute("data-pegado-error"),
+      ).toBe("lectura_fallida"),
+    );
+    expect(c.querySelector("[data-leyendo]")).toBeNull();
+    expect(c.textContent).not.toContain("TypeError");
+  });
+
+  it("una lectura que termina después de borrar el texto no pisa la pantalla vacía", async () => {
+    const { container: c } = montar();
+    escribir(c, "pegado-texto", textoDeFixture(GARAK));
+    escribir(c, "pegado-zona", "America/Bogota");
+    fireEvent.click(c.querySelector("[data-proponer]")!);
+    expect(c.querySelector("[data-leyendo]")).not.toBeNull();
+    fireEvent.click(c.querySelector("[data-borrar-texto]")!);
+    await new Promise((r) => setTimeout(r, 300));
+    expect(c.querySelector("[data-pegado-resultado]")).toBeNull();
+    expect(c.querySelector("[data-leyendo]")).toBeNull();
+  });
+
   it("sin un activo con plan de Garak o de ZAP no hay formulario: dice por qué", () => {
     const { container: c } = montar({
       ...mundoDePegado(CONSULTA),
