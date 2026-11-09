@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { CargaPantalla } from "../../src/components/carga/carga-pantalla";
 import { conjunto, dentroDe, documentoDelProducto } from "./lib/fidelidad";
-import { vistaDeCarga } from "./lib/mundo-de-carga";
+import { pegadoDeCarga, vistaDeCarga } from "./lib/mundo-de-carga";
 import { RAIZ_MAQUETA, documentoDe, leerPagina } from "./lib/maqueta";
 
 const SOLO_DE_LA_MAQUETA = new Set([
@@ -21,14 +21,11 @@ const SOLO_DE_LA_MAQUETA = new Set([
   "Qué revisar y qué deberías ver|What to check and what you should see",
   "Fecha de consulta|Query date",
   "Instantánea del catálogo|Catalog snapshot",
-  // Los formularios de «Texto pegado» y de «Sobre manual» son de la maqueta: el producto es de solo lectura y esas vías se
-  // dicen con su estado y con los comandos del CLI.
-  "Proponer|Propose",
-  "Qué pasa con el texto|What happens to the text",
+  // El formulario de «Sobre manual» es de la maqueta: el producto no lo construye y esa vía se dice con los comandos del CLI.
+  // («Texto pegado» sí se construye desde el S11: sus rótulos son los de la maqueta.)
   "Guardar|Save",
   "El sobre mínimo|The minimum envelope",
-  // Los campos de esos formularios.
-  "Pega aquí lo que te devolvió la herramienta|Paste here what the tool returned",
+  // Los campos de ese formulario.
   "Prueba del plan|Test in the plan",
   "Veredicto|Verdict",
   "Fecha de ejecución|Run date",
@@ -45,8 +42,7 @@ const SOLO_DEL_PRODUCTO = new Set([
   "Confirmación|Confirmation",
   // «Confirmado» a secas: la persona que firma y la fecha vienen del lote, no de «ti».
   "Confirmado|Confirmed",
-  // Las dos vías que el producto no construye dicen su estado.
-  "Esta vía no existe en esta versión|This route does not exist in this version",
+  // La vía que el producto no construye dice sus comandos.
   "Registrar el resultado|Record the result",
   "Confirmarlo, uno por uno|Confirm it, one by one",
 ]);
@@ -55,7 +51,7 @@ describe("fidelidad de la carga contra su página de la maqueta", () => {
   const maqueta = documentoDe(leerPagina(RAIZ_MAQUETA, "evidencia.html"));
   const v = vistaDeCarga();
   const producto = documentoDelProducto(
-    renderToStaticMarkup(<CargaPantalla v={v} />),
+    renderToStaticMarkup(<CargaPantalla v={v} pegado={pegadoDeCarga()} />),
   );
   const de = (
     doc: Document,
@@ -258,11 +254,18 @@ describe("fidelidad de la carga contra su página de la maqueta", () => {
         comandos.every((c) => c?.startsWith("pnpm evidencia:confirmar-lote ")),
       ).toBe(true);
     }
-    // Los únicos botones son los que cambian lo que se ve: pestañas, selector y fila.
-    const botones = [...producto.querySelectorAll("button")];
+    // Fuera de «Texto pegado», los únicos botones son los que cambian lo que se ve: pestañas, selector y fila. Dentro de esa vía están
+    // sus dos botones (proponer y borrar) y sus campos: leen, no deciden, y nada de lo que proponen cuenta.
+    const fuera = (el: Element) =>
+      el.closest('[data-si-via="pegado"]') === null;
+    const botones = [...producto.querySelectorAll("button")].filter(fuera);
     expect(botones.length).toBeGreaterThan(0);
     expect(botones.every((b) => b.hasAttribute("aria-pressed"))).toBe(true);
-    expect(producto.querySelector("form, input, textarea, select")).toBeNull();
+    expect(
+      [...producto.querySelectorAll("form, input, textarea, select")].filter(
+        fuera,
+      ),
+    ).toEqual([]);
   });
 
   it("el plan de muestreo tiene las mismas filas que la maqueta, salvo el tramo que el cálculo exacto corrigió", () => {

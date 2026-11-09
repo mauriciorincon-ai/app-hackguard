@@ -15,13 +15,17 @@ import {
 } from "../../engine/brecha/esquemas.ts";
 import { estadoDeVigencia } from "../../engine/catalogo/semaforo.ts";
 import { diasEntre } from "../../engine/fecha.ts";
-import { ESTADOS_DE_HALLAZGO } from "../../engine/hallazgos/esquemas.ts";
+import {
+  ESTADOS_DE_HALLAZGO,
+  type EstadoDeHallazgo,
+} from "../../engine/hallazgos/esquemas.ts";
 import {
   situacionDeHallazgo,
   type SituacionDeHallazgo,
 } from "../../engine/hallazgos/situacion.ts";
 import { comparar } from "../../engine/planificador/orden.ts";
 import { etiqueta, porId } from "../catalogo/vista.ts";
+import { etiquetaDeEstadoDeHallazgo } from "../evidencia/etiqueta-de-estado.ts";
 import {
   construirCadena,
   conteoDeSobre,
@@ -30,6 +34,7 @@ import {
 } from "../evidencia/vista.ts";
 import { avisosDeMarco } from "../propuestas/avisos.ts";
 import { RUTA_DE_PROPUESTAS } from "../propuestas/etiquetas.ts";
+import type { Tendencia } from "../../engine/brecha/tendencia.ts";
 import { etiquetaDeBrecha } from "./etiquetas.ts";
 import type { MundoDeBrecha } from "./mundo.ts";
 import {
@@ -62,6 +67,7 @@ import type {
   VistaDeControles,
   VistaDeInforme,
   VistaDeTablero,
+  VistaDeTendencia,
 } from "./tipos.ts";
 
 const NORMA = "ISO/IEC 42001";
@@ -101,6 +107,7 @@ export const filtroDeVeredicto = (veredicto: string): string =>
 /** El orden en que el informe cuenta los hallazgos por estado. */
 const ORDEN_DE_ESTADO = [
   "abierto",
+  "reabierto",
   "corregido",
   "re_probado",
   "aceptado_con_riesgo",
@@ -116,6 +123,8 @@ function contexto(m: MundoDeBrecha) {
   const b = m.brecha;
   const et = (vocabulario: string, id: string): Etiqueta =>
     etiqueta(c, vocabulario, id);
+  const estadoDeHallazgo = (e: EstadoDeHallazgo): Etiqueta =>
+    etiquetaDeEstadoDeHallazgo(c, m.evidencia.etiquetas, e);
   const prop = (id: Parameters<typeof etiquetaDeBrecha>[1]): Etiqueta =>
     etiquetaDeBrecha(m.etiquetas, id);
   const texto = (id: IdDeTextoDeBrecha): Bilingue => m.etiquetas.textos[id];
@@ -185,7 +194,7 @@ function contexto(m: MundoDeBrecha) {
       id,
       titulo: hallazgo(id).titulo,
       severidad: et("severidad", s.severidad.nivel),
-      estado: et("estado_de_hallazgo", s.evaluacion.estado),
+      estado: estadoDeHallazgo(s.evaluacion.estado),
       estadoId: s.evaluacion.estado,
     };
   };
@@ -206,6 +215,7 @@ function contexto(m: MundoDeBrecha) {
     c,
     b,
     et,
+    estadoDeHallazgo,
     prop,
     texto,
     sit,
@@ -962,7 +972,7 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
     hallazgosPorEstado: ORDEN_DE_ESTADO.filter((e) =>
       b.hallazgos.some((h) => h.estado === e),
     ).map((e) => ({
-      etiqueta: k.et("estado_de_hallazgo", e),
+      etiqueta: k.estadoDeHallazgo(e),
       n: b.hallazgos.filter((h) => h.estado === e).length,
     })),
     hallazgos,
@@ -1019,6 +1029,113 @@ export function construirVistaDeInforme(m: MundoDeBrecha): VistaDeInforme {
       nombre: k.nombreDeActivo(activo),
       conPlan: totales !== null,
     })),
+  };
+}
+
+// ── Tendencia ───────────────────────────────────────────────────────────────────────────────────
+
+/**
+ * La vista de la tendencia. No calcula: nombra lo que `armarTendencia` calculó. Y comprueba que su último punto ES la brecha del mundo
+ * (la de las otras pantallas): si no coincide, se rompe en vez de mostrar dos cuentas (design-system § 9).
+ */
+export function construirVistaDeTendencia(
+  m: MundoDeBrecha,
+  t: Tendencia & { huella: string },
+): VistaDeTendencia {
+  const k = contexto(m);
+  const ultimo = t.puntos[t.puntos.length - 1];
+  if (
+    ultimo === undefined ||
+    ultimo.corte !== m.consulta ||
+    JSON.stringify(ultimo.resumen) !== JSON.stringify(k.b.resumen) ||
+    ultimo.controles.some(
+      (c) => k.b.controles.find((x) => x.id === c.id)?.estado !== c.estado,
+    )
+  )
+    throw new Error(
+      "la tendencia no termina en la brecha de la consulta / the trend does not end at the query-date gap",
+    );
+  const sentido = {
+    mejoro: k.prop("tendencia_mejoro"),
+    empeoro: k.prop("tendencia_empeoro"),
+    igual: k.prop("tendencia_igual"),
+  };
+  const estadoDeControl = (id: string) => k.et("estado_de_control", id);
+  const r = t.resumen;
+  return {
+    ...k.base,
+    huella: t.huella,
+    cortes: {
+      desde: t.cortes[0]!,
+      hasta: t.cortes[t.cortes.length - 1]!,
+      cuantos: t.cortes.length,
+    },
+    cifras: [
+      cifraDeEstado("tendencia-mejoraron", r.mejoraron, sentido.mejoro),
+      cifraDeEstado("tendencia-empeoraron", r.empeoraron, sentido.empeoro),
+      cifraDeEstado("tendencia-igual", r.igual, sentido.igual),
+      cifraDeEstado(
+        "tendencia-regresion",
+        r.conRegresion,
+        k.prop("tendencia_regresion"),
+      ),
+    ].map((c, i) => ({
+      ...c,
+      texto: k.texto(
+        (
+          [
+            "cifra_tendencia_mejoraron",
+            "cifra_tendencia_empeoraron",
+            "cifra_tendencia_igual",
+            "cifra_tendencia_regresion",
+          ] as const
+        )[i]!,
+      ),
+    })),
+    serie: t.puntos.map((p) => ({
+      corte: p.corte,
+      abiertos: p.abiertos,
+      reabiertos: p.reabiertos,
+      aceptados: p.aceptados,
+      cerrados: p.cerrados,
+      vencidos: p.vencidos,
+      controlesConFalla: p.controlesConFalla,
+    })),
+    controles: t.controles.map((c) => {
+      const primero = c.estados[0]!.estado;
+      const final = c.estados[c.estados.length - 1]!.estado;
+      return {
+        control: { id: c.id, nombre: k.control(c.id).nombre },
+        sentido: c.sentido,
+        marca: sentido[c.sentido],
+        primero: estadoDeControl(primero),
+        primeroId: primero,
+        ultimo: estadoDeControl(final),
+        ultimoId: final,
+        movimientos: c.movimientos.map((mv) => ({
+          corte: mv.corte,
+          marca: sentido[mv.sentido],
+          sentido: mv.sentido,
+          de: estadoDeControl(mv.de),
+          deId: mv.de,
+          a: estadoDeControl(mv.a),
+          aId: mv.a,
+          hallazgos: mv.hallazgos.map((h) => ({
+            hallazgo: k.enlace(h.id),
+            de: h.de === null ? null : k.estadoDeHallazgo(h.de),
+            a: h.a === null ? null : k.estadoDeHallazgo(h.a),
+          })),
+        })),
+        regresiones: c.regresiones.map((g) => ({
+          corte: g.corte,
+          hallazgo: k.enlace(g.hallazgo),
+        })),
+        movio:
+          c.hallazgoQueLoMovio === null ? null : k.enlace(c.hallazgoQueLoMovio),
+      };
+    }),
+    regresion: k.prop("tendencia_regresion"),
+    problemas: t.problemas,
   };
 }
 

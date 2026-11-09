@@ -4,7 +4,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ReplanPantalla } from "../../src/components/replan/replan-pantalla";
-import { construirVistaDeReplan } from "../../src/lib/activos/replan-vista";
+import {
+  construirVistaDeReplan,
+  notaDeCausaConjunta,
+} from "../../src/lib/activos/replan-vista";
 import { cargarInstantaneaDemo } from "../../src/lib/catalogo/cargar-instantanea";
 import { documentoDelProducto } from "./lib/fidelidad";
 import {
@@ -92,6 +95,46 @@ describe("/activos/<id>/re-planear", () => {
       ),
     ).not.toBeNull();
     expect(fila("PR-MD-LIM-001").textContent).not.toContain("n.º 0");
+  });
+
+  it("la nota de una causa conjunta dice cuántas causas actúan y cuáles, con dos o con tres factores", () => {
+    const dos = notaDeCausaConjunta(["catalogo", "perfil"]);
+    expect(dos.es).toBe(
+      "Conjunta: ninguna de las 2 basta por sí sola, se mueve por las dos a la vez (catálogo y perfil del activo).",
+    );
+    expect(dos.en).toContain("both at once (catalog and asset profile)");
+    const tres = notaDeCausaConjunta(["catalogo", "regla", "perfil"]);
+    expect(tres.es).toContain("ninguna de las 3");
+    expect(tres.es).toContain("por las tres a la vez");
+    expect(tres.es).toContain(
+      "(catálogo, regla de aplicabilidad y perfil del activo)",
+    );
+    expect(tres.en).toContain("none of the 3");
+    expect(tres.en).toContain("all three at once");
+    expect(tres.en).toContain(
+      "(catalog, applicability rule and asset profile)",
+    );
+  });
+
+  it("la pantalla pinta la nota de la vista, no una frase fija: una conjunta de tres factores dice «las tres»", async () => {
+    const v = (await vista())!;
+    const demo = v.bases.find((b) => b.clave === "demo")!;
+    const m = [...demo.entran, ...demo.salen, ...demo.seQuedan].find(
+      (x) => x.id === "PR-MD-DEMO-002",
+    )!;
+    expect(m.notaConjunta).not.toBeNull();
+    m.causas = [
+      { id: "catalogo", nombre: { es: "Catálogo", en: "Catalog" } },
+      { id: "regla", nombre: { es: "Regla", en: "Rule" } },
+      { id: "perfil", nombre: { es: "Perfil", en: "Profile" } },
+    ];
+    m.notaConjunta = notaDeCausaConjunta(["catalogo", "regla", "perfil"]);
+    const fila = doc(<ReplanPantalla v={v} />).querySelector(
+      '[data-base="demo"] [data-prueba="PR-MD-DEMO-002"]',
+    )!;
+    const nota = fila.querySelector("[data-conjunta-nota]")!;
+    expect(nota.textContent).toContain("las tres");
+    expect(nota.textContent).not.toContain("las dos");
   });
 
   it("el color nunca solo: cada estado lleva símbolo y texto, en los dos idiomas", async () => {

@@ -9,7 +9,8 @@ import { con, mundo, nuevo } from "../evidencia/ayuda.ts";
 describe("decidirApertura", () => {
   it("un sobre confirmado «fallida» sin hallazgo vivo abre uno", async () => {
     const m = await mundo();
-    const s = await nuevo(m.sobres["SOB-0016"]!, "SOB-0050", {
+    // PR-SW-TS-001 no tiene ningún hallazgo vivo (la de PR-AG-PERM-001 tiene HZ-0011, el que se cierra y se reabre).
+    const s = await nuevo(m.sobres["SOB-0022"]!, "SOB-0050", {
       resultado: { ejecutada: true, evaluadas: 20, fallidas: 4, alertas: null, metrica: null },
       veredicto: "fallida",
     });

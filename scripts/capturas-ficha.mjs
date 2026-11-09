@@ -4,7 +4,7 @@
 // la caja exacta de una unidad de la pantalla, hallada por su TEXTO (no por un selector frágil), con la navegación oculta y el puntero
 // apartado. Usa solo los activos, lotes, hallazgos y propuestas demo sintéticos del repo.
 //
-//   node scripts/capturas-ficha.mjs --salida <carpeta>            toma las 18 del build que ya está en out/
+//   node scripts/capturas-ficha.mjs --salida <carpeta>            toma las 24 del build que ya está en out/
 //   node scripts/capturas-ficha.mjs --salida <carpeta> --construir  construye antes con HACKGUARD_CONSULTA (2026-10-05 por defecto)
 //   node scripts/capturas-ficha.mjs --listar                        imprime la tabla (funcionalidad · ruta · ancla) sin abrir nada
 //
@@ -118,6 +118,43 @@ export const TOMAS = [
     ruta: "/tablero",
     ancla: "El instrumento pasó su validación",
     dentro: ".hg-sello",
+  },
+  {
+    f: "F19",
+    ruta: "/catalogo/diferencias",
+    ancla: "Lo que entra, lo que sale y lo que cambia",
+    dentro: "main",
+  },
+  {
+    f: "F20",
+    ruta: "/activos/act-demo-clasificador/historial",
+    ancla: "El plan se emitió con esta versión",
+    dentro: "main",
+  },
+  {
+    f: "F21",
+    ruta: "/activos/act-demo-clasificador/re-planear",
+    ancla: "Re-planear: qué cambiaría en el plan",
+    dentro: "main",
+  },
+  {
+    f: "F22",
+    ruta: "/evidencia/hallazgos/HZ-0011",
+    ancla: "Reabierto por una re-prueba que volvió a fallar",
+    dentro: "main",
+  },
+  {
+    f: "F23",
+    ruta: "/evidencia/carga",
+    ancla: "Texto de la herramienta",
+    dentro: "main",
+    pulsar: "Texto pegado",
+  },
+  {
+    f: "F24",
+    ruta: "/brecha/tendencia",
+    ancla: "Control por control",
+    dentro: "main",
   },
 ];
 

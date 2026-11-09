@@ -135,9 +135,20 @@ describe("estadoDelPlan", () => {
     ).toEqual({ estado: "vigente", por: [] });
   });
 
+  it("la fecha no vuelve desactualizado a un plan: es una comparación de huellas, no un reloj", () => {
+    const viejo = p();
+    viejo.fecha_emision = "2000-01-01";
+    expect(
+      estadoDelPlan(viejo, hoy(viejo.activo.huella, viejo.instantanea.huella)),
+    ).toEqual({ estado: "vigente", por: [] });
+  });
+
   it("desactualizado por perfil si el activo es otro", async () => {
     expect(
-      estadoDelPlan(p(), hoy(await huellaDelActivo(actual()), p().instantanea.huella)),
+      estadoDelPlan(
+        p(),
+        hoy(await huellaDelActivo(actual()), p().instantanea.huella),
+      ),
     ).toEqual({ estado: "plan_desactualizado", por: ["perfil"] });
   });
 
@@ -159,10 +170,7 @@ describe("estadoDelPlan", () => {
     const versiones = await versionesDe(historial(), actual());
     expect(versionDelPlan(versiones, p())?.n).toBe(1);
     expect(
-      estadoDelPlan(
-        p(),
-        hoy(versiones[0]!.huella, p().instantanea.huella),
-      ).por,
+      estadoDelPlan(p(), hoy(versiones[0]!.huella, p().instantanea.huella)).por,
     ).toEqual(["perfil"]);
   });
 

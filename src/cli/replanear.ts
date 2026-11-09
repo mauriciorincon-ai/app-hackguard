@@ -7,7 +7,7 @@
 // `--demo` re-planea contra la instantánea demo («no oficial») y solo muestra: un plan que cite la demo no se emite. `--sin-escribir` muestra
 // sin tocar nada. Códigos de salida: 0 re-planeado (o mostrado) · 1 re-planeado con textos del dueño marcados por el filtro (una persona los revisa) · 2 bloqueado (el plan está vigente, no hay base que reproducir, la fórmula o
 // los entornos cambiaron, o el activo no está autorizado; no escribe nada) · 3 error de uso o de lectura.
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { Idioma } from "../engine/catalogo/informe.ts";
 import {
@@ -16,9 +16,12 @@ import {
   type RutasDeReplan,
 } from "../engine/planificador/informe-replan.ts";
 import { ErrorDeReplan, replanear } from "../engine/planificador/replanear.ts";
-import { cargarActivosDelBuild } from "../lib/activos/cargar.ts";
 import {
-  CARPETA_DE_PLANES,
+  cargarActivosDelBuild,
+  carpetaDePlanes,
+} from "../lib/activos/cargar.ts";
+import {
+  CARPETA_PRIVADA,
   cargarPatrones,
 } from "../lib/activos/cargar-activos.ts";
 import {
@@ -29,7 +32,10 @@ import {
   cargarInstantaneaDemo,
   cargarInstantaneaOficial,
 } from "../lib/catalogo/cargar-instantanea.ts";
-import { CARPETA_DE_PLANES_ARCHIVADOS } from "../lib/evidencia/cargar-evidencia.ts";
+import {
+  CARPETA_DE_PLANES_ARCHIVADOS,
+  cerrarCarpetasPrivadas,
+} from "../lib/evidencia/cargar-evidencia.ts";
 import { escribir } from "./escribir.ts";
 
 export class ErrorDeUso extends Error {}
@@ -48,6 +54,8 @@ export interface OpcionesDeReplan {
   fecha: string | undefined;
   demo: boolean;
   sinEscribir: boolean;
+  /** Carpeta donde se escribe el plan nuevo; sin ella, la del plan que reemplaza. Un activo propio solo admite `datos/privado/`. */
+  salida?: string | undefined;
   json: boolean;
   idioma: Idioma;
 }
@@ -61,15 +69,26 @@ export async function replanearComando(
   if (o.fecha === undefined)
     throw new ErrorDeUso("--fecha AAAA-MM-DD / --fecha YYYY-MM-DD");
   const oficial = await cargarInstantaneaOficial(raiz);
-  const mundo = await cargarActivosDelBuild(oficial.instantanea, raiz);
+  // La CLI lee también los activos propios de `datos/privado/` (el build y las pantallas, no).
+  const mundo = await cargarActivosDelBuild(oficial.instantanea, raiz, {
+    privados: true,
+  });
   const cargado = mundo.activos.find((a) => a.activo.id === o.id);
   if (cargado === undefined)
     throw new ErrorDeUso(
       `no hay un activo «${o.id}» / there is no asset “${o.id}”`,
     );
   // `es` puede venir ya bilingüe («es / en»), como los mensajes de ErrorDeReplan: `en` es opcional.
+  // Con `--json` el motivo sale en stdout como JSON (quien parsea la salida no recibe un archivo vacío); sin él, como texto en stderr.
   const bloqueado = (es: string, en?: string) => {
-    process.stderr.write(`${en === undefined ? es : `${es} / ${en}`}\n`);
+    const motivo = en === undefined ? es : `${es} / ${en}`;
+    if (o.json)
+      imprimir({
+        bloqueado: true,
+        codigo: CODIGO_DE_REPLAN.bloqueado,
+        motivo,
+      });
+    else process.stderr.write(`${motivo}\n`);
     return CODIGO_DE_REPLAN.bloqueado;
   };
   if (cargado.veredicto?.estado !== "plan_desactualizado")
@@ -104,40 +123,89 @@ export async function replanearComando(
   let rutas: RutasDeReplan | null = null;
   if (!o.demo && !o.sinEscribir) {
     const plan = cargado.plan!;
-    const carpeta = path.join(raiz, CARPETA_DE_PLANES);
+    // Un activo válido en `datos/privado/activos/` es propio (el validador rechaza `demo` ahí): su derivado nace 700/600 (regla 17-bis).
+    const propio = cargado.activo.origen === "propio";
+    const origen = path.join(raiz, carpetaDePlanes(propio));
+    const privada = path.resolve(raiz, CARPETA_PRIVADA);
+    const carpeta = path.resolve(raiz, o.salida ?? origen);
+    const raizAbs = path.resolve(raiz);
+    const enPrivada =
+      carpeta === privada || carpeta.startsWith(`${privada}${path.sep}`);
+    const dentroDeRaiz =
+      carpeta === raizAbs || carpeta.startsWith(`${raizAbs}${path.sep}`);
+    if (propio && dentroDeRaiz && !enPrivada)
+      throw new ErrorDeUso(
+        "el plan de un activo propio solo se escribe en datos/privado/ / the plan of an own asset is only written in datos/privado/",
+      );
+    // Se archiva solo lo que se reemplaza: si la salida es otra carpeta, el plan anterior sigue donde estaba.
+    const reemplaza = carpeta === path.resolve(origen);
     const archivo = path.join(carpeta, CARPETA_DE_PLANES_ARCHIVADOS);
-    mkdirSync(archivo, { recursive: true, mode: 0o755 });
     const corto = plan.huella.slice(0, 12);
+    const modoDeCarpeta = propio ? 0o700 : 0o755;
+    const modo = propio ? 0o600 : 0o644;
     const de = (ext: string) => path.join(carpeta, `${o.id}.${ext}.json`);
+    const delOrigen = (ext: string) => path.join(origen, `${o.id}.${ext}.json`);
     const aparte = (ext: string) =>
       path.join(archivo, `${o.id}.${corto}.${ext}.json`);
-    for (const ext of ["plan", "paquete"]) {
-      const viejo = readFileSync(de(ext), "utf8");
-      // Un archivo archivado jamás se sobrescribe con otro contenido: si existe, debe ser el mismo.
-      if (
-        existsSync(aparte(ext)) &&
-        readFileSync(aparte(ext), "utf8") !== viejo
-      )
-        throw new Error(
-          `${aparte(ext)} ya existe con otro contenido: no se sobrescribe / already exists with other content: it is not overwritten`,
+    const abrir = (c: string) => {
+      mkdirSync(c, { recursive: true, mode: modoDeCarpeta });
+      // `mkdir` no corrige una carpeta que ya existía con otro modo (regla 17-bis).
+      if (propio) {
+        cerrarCarpetasPrivadas(raiz, c);
+        chmodSync(c, modoDeCarpeta);
+      }
+    };
+    const nuevos = {
+      plan: `${JSON.stringify(resultado.plan, null, 2)}\n`,
+      paquete: `${JSON.stringify(resultado.paquete, null, 2)}\n`,
+    };
+    try {
+      abrir(carpeta);
+      if (reemplaza) {
+        abrir(archivo);
+        for (const ext of ["plan", "paquete"] as const) {
+          const viejo = readFileSync(delOrigen(ext), "utf8");
+          // Un archivo archivado jamás se sobrescribe con otro contenido: si existe, debe ser el mismo.
+          if (
+            existsSync(aparte(ext)) &&
+            readFileSync(aparte(ext), "utf8") !== viejo
+          )
+            throw new Error(
+              `${aparte(ext)} ya existe con otro contenido: no se sobrescribe / already exists with other content: it is not overwritten`,
+            );
+          escribir(aparte(ext), viejo, modo);
+        }
+      } else {
+        // Otra carpeta: nada se reemplaza en silencio; un plan ajeno que ya esté ahí con otro contenido detiene la escritura.
+        for (const ext of ["plan", "paquete"] as const)
+          if (
+            existsSync(de(ext)) &&
+            readFileSync(de(ext), "utf8") !== nuevos[ext]
+          )
+            throw new ErrorDeUso(
+              `${de(ext)} ya existe con otro contenido: no se sobrescribe / already exists with other content: it is not overwritten`,
+            );
+      }
+      escribir(de("plan"), nuevos.plan, modo);
+      escribir(de("paquete"), nuevos.paquete, modo);
+    } catch (error) {
+      const codigo = (error as NodeJS.ErrnoException).code;
+      if (codigo === "EACCES" || codigo === "EPERM" || codigo === "EROFS")
+        throw new ErrorDeUso(
+          `no se pudo escribir en ${carpeta}: falta permiso, y no se escribió el plan nuevo / cannot write to ${carpeta}: permission denied, the new plan was not written`,
         );
-      escribir(aparte(ext), viejo, 0o644);
+      throw error;
     }
-    escribir(de("plan"), `${JSON.stringify(resultado.plan, null, 2)}\n`, 0o644);
-    escribir(
-      de("paquete"),
-      `${JSON.stringify(resultado.paquete, null, 2)}\n`,
-      0o644,
-    );
-    const relativa = (p: string) =>
-      path.relative(raiz, p).split(path.sep).join("/");
+    const mostrar = (p: string) =>
+      path.isAbsolute(o.salida ?? "")
+        ? p
+        : path.relative(raiz, p).split(path.sep).join("/");
     rutas = {
-      plan: relativa(de("plan")),
-      paquete: relativa(de("paquete")),
-      archivado: {
-        plan: relativa(aparte("plan")),
-        paquete: relativa(aparte("paquete")),
-      },
+      plan: mostrar(de("plan")),
+      paquete: mostrar(de("paquete")),
+      archivado: reemplaza
+        ? { plan: mostrar(aparte("plan")), paquete: mostrar(aparte("paquete")) }
+        : null,
     };
   }
   if (o.json) imprimir(salidaJsonDeReplan(resultado.replan, rutas));

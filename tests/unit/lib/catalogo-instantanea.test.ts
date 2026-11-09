@@ -85,6 +85,17 @@ describe("la instantánea oficial", () => {
     );
   });
 
+  it("rechaza una instantánea mutilada por su forma, antes de mirar la huella (deuda del S10)", async () => {
+    const raiz = raizCon((t) => {
+      const i = JSON.parse(t) as { catalogo: Record<string, unknown> };
+      delete i.catalogo.pruebas;
+      return JSON.stringify(i);
+    });
+    await expect(cargarInstantaneaOficial(raiz)).rejects.toThrow(
+      new RegExp(`${OFICIAL}.*pruebas`, "s"),
+    );
+  });
+
   it("rechaza una instantánea cuyo nombre no corresponde a su fecha y su huella", async () => {
     const raiz = raizCon(undefined, "2026-10-06-000000000000.json");
     await expect(cargarInstantaneaOficial(raiz)).rejects.toThrow(

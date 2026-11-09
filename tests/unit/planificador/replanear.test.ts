@@ -306,6 +306,57 @@ describe("el plan anterior debe poder reproducirse, y la fórmula y los entornos
   });
 });
 
+describe("«siguen fuera» cuenta las excluidas antes Y ahora", () => {
+  it("una excluida que antes no estaba en el catálogo no cuenta como «sigue fuera»", async () => {
+    const { planificar } =
+      await import("../../../src/engine/planificador/planificar.ts");
+    const b = await base();
+    const sinCambio = await replanear(
+      await entrada("oficial", { activoNuevo: b.v1 }),
+    );
+    const A = sinCambio.replan.siguen_fuera;
+    expect(A).toBeGreaterThan(0);
+    // Cada prueba aprobada del catálogo, retirada solo en la instantánea anterior: si estaba excluida en ambos lados, pasa de «fuera/fuera» a
+    // «ausente/fuera» y la cuenta baja en una; si estaba en el plan, entra y la cuenta no cambia. Una cuenta con «o» nunca baja.
+    const cuentas: number[] = [];
+    for (const p of b.oficial.catalogo.pruebas) {
+      if (p.estado_aprobacion !== "aprobada") continue;
+      if (!b.v1.familias.includes(p.familia)) continue;
+      const antes = {
+        ...b.oficial,
+        catalogo: {
+          ...b.oficial.catalogo,
+          pruebas: b.oficial.catalogo.pruebas.map((q) =>
+            q.id === p.id ? { ...q, estado_aprobacion: "retirada" as const } : q,
+          ),
+        },
+      } as Instantanea;
+      const r = await planificar({
+        activo: b.v1,
+        instantanea: antes,
+        formula: b.formula,
+        entornos: b.entornos,
+        fecha: b.plan.fecha_emision,
+      });
+      if (!r.emitido) throw new Error("no se emitió");
+      const { replan } = await replanear({
+        plan: r.plan,
+        activoAnterior: b.v1,
+        instantaneaAnterior: antes,
+        activoNuevo: b.v1,
+        instantaneaNueva: b.oficial,
+        formula: b.formula,
+        entornos: b.entornos,
+        fecha: "2026-11-08",
+      });
+      cuentas.push(replan.siguen_fuera);
+    }
+    expect(cuentas.length).toBeGreaterThan(0);
+    expect(cuentas.every((c) => c <= A)).toBe(true);
+    expect(cuentas).toContain(A - 1);
+  });
+});
+
 describe("determinista", () => {
   it("la misma entrada da los mismos bytes", async () => {
     const e = await entrada("demo");

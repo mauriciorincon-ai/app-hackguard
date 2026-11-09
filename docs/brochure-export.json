@@ -19,7 +19,7 @@
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 10,
+    "sprints_cerrados": 11,
     "version_repo": "0.1.0"
   },
   "promesa": {
@@ -29,8 +29,8 @@
     "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming (ataques simulados contra modelos de IA) encuentran fallas y las herramientas de gobierno llenan matrices de controles. HackGuard une las tres cosas en un solo hilo que se sigue de punta a punta: la prueba con su resultado esperado, el marco que la pide con su versión, el control de ISO/IEC 42001 que respalda cuando aplica, la evidencia sellada con su huella y el cierre que solo llega con una re-prueba. Ese hilo ya corre completo sobre apps de demostración: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Su núcleo es código determinista: con los mismos datos, cualquiera obtiene los mismos bytes. La IA solo propone, siempre bajo tu aprobación. Corre como web estática, sin servidor ni servicios de pago: operarla cuesta cero. Y nunca guarda una carga de ataque: describe qué se verifica, jamás cómo se rompe."
   },
   "funcionalidades": {
-    "total": 18,
-    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión",
+    "total": 24,
+    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 5 del roadmap del H-2 ya construidas (D1, D3, D4, D5 y D6) y la 1 que el primer corte dejó al H-2 (el texto pegado)",
     "descartadas": [],
     "grupos": [
       {
@@ -144,6 +144,18 @@
             "nombre": "Un extractor que cita antes de proponer",
             "que_hace": "Un asistente de IA lee el resultado que guardaste de una herramienta y te propone a qué prueba de tu plan corresponde. El código comprueba que cada cita aparezca literal en el texto. El veredicto lo calcula la regla, y tú confirmas.",
             "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
+          },
+          {
+            "id": "F22",
+            "nombre": "Un hallazgo cerrado puede reabrirse",
+            "que_hace": "Si una re-prueba que una persona confirmó, de la misma configuración y posterior al cierre, vuelve a fallar, el hallazgo se reabre y su plazo corre desde ese día. Lo ves con su historia entera: abre, corrige, cierra, reabre. Que algo ya no aparezca en un escaneo, o que una prueba no corra, nunca lo reabre ni lo cierra.",
+            "seccion_manual": "La evidencia en el tiempo · desde Sprint 011"
+          },
+          {
+            "id": "F23",
+            "nombre": "Pegar el resultado de una herramienta y ver qué cambiaría",
+            "que_hace": "Pegas en el navegador lo que te devolvió Garak o ZAP y ves el sobre que se propondría por cada prueba, el veredicto que calcula la regla, los hallazgos que abriría y la brecha de antes y de después si lo confirmas. El texto no sale de la página, no se guarda y nada cuenta hasta que lo confirmas tú.",
+            "seccion_manual": "La evidencia en el tiempo · desde Sprint 011"
           }
         ]
       },
@@ -172,6 +184,38 @@
             "seccion_manual": "La brecha y el informe · desde Sprint 007"
           }
         ]
+      },
+      {
+        "orden": 5,
+        "estrella": false,
+        "nombre": "Lo que cambió: qué se movió y por qué",
+        "linea": "Cuando el catálogo o tu app cambian, ves qué se movió y por qué antes de tocar tu plan.",
+        "features": [
+          {
+            "id": "F19",
+            "nombre": "Qué cambió entre dos versiones del catálogo",
+            "que_hace": "Pones dos instantáneas del catálogo una frente a otra y ves qué pruebas entran, cuáles salen y cuáles cambian, con los campos que difieren. Si la comparación usa una instantánea de demostración, la pantalla lo dice. Es solo lectura: nada se modifica.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          },
+          {
+            "id": "F20",
+            "nombre": "La historia de cada app y su plan al día",
+            "que_hace": "Cada app guarda sus versiones, cada una con su huella. Si la app cambió o el catálogo oficial es otro, su plan se marca «Plan desactualizado» con la causa: el perfil, el catálogo o las dos. El plan no se borra ni se vuelve a emitir solo.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          },
+          {
+            "id": "F21",
+            "nombre": "Re-planear con la causa de cada movimiento",
+            "que_hace": "Antes de cambiar un plan ves el nuevo junto al viejo, prueba por prueba: cuál entra, cuál sale y cuál se queda, con su causa (el catálogo, la regla de aplicabilidad o el perfil de la app) y los controles de ISO/IEC 42001 que ganan o pierden cobertura. El plan viejo se archiva, nunca se borra.",
+            "seccion_manual": "Lo que cambió: instantáneas, historial y re-planeación · desde Sprint 010"
+          },
+          {
+            "id": "F24",
+            "nombre": "La tendencia de la brecha, control por control",
+            "que_hace": "Ves la misma brecha en cada fecha en que algo cambió, y de cada control de ISO/IEC 42001 si mejoró, empeoró o quedó igual y qué hallazgo lo movió. Un hallazgo reabierto marca su control como regresión, para que un cierre que se deshizo no pase por mejora.",
+            "seccion_manual": "La evidencia en el tiempo · desde Sprint 011"
+          }
+        ]
       }
     ]
   },
@@ -179,10 +223,10 @@
     {
       "clave": "funcionalidades",
       "etiqueta": "Funcionalidades",
-      "valor": 18,
+      "valor": 24,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 18 funciones del primer corte que la visión aprueba para uso personal, contadas contra 10 secciones de docs/MANUAL-DE-USO.md. El resto son del roadmap o de la vitrina para terceros y no se han construido."
+      "detalle": "Las 24 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 6 del roadmap del H-2, contadas contra 11 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -206,39 +250,39 @@
       "valor": 38,
       "unidad": "fichas",
       "fuente": "medido",
-      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-08. El build entero genera 119 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-08. El build entero genera 122 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
     },
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 4528,
+      "valor": 4895,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-11-08 sobre el árbol de este export: `pnpm test` 3220 pruebas, y `pnpm test:e2e` 1308 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-11-08 sobre el árbol de este export: `pnpm test` 3555 pruebas, y `pnpm test:e2e` 1340 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3220,
+      "valor": 3555,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-08 sobre el árbol de este export: 164 archivos, 3220 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-08 sobre el árbol de este export: 182 archivos, 3555 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1308,
+      "valor": 1340,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-11-08 (14 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-11-08 (16 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 96.79,
+      "valor": 97.82,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-08: 5122 de 5292 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-08: 5823 de 5953 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",

@@ -10,6 +10,7 @@ import {
   type TipoDeMovimiento,
 } from "../../engine/catalogo/diferencias.ts";
 import type { Instantanea } from "../../engine/catalogo/instantanea.ts";
+import { paresConsecutivos } from "../../engine/catalogo/pares.ts";
 import { ETIQUETAS_DE_VISTAS } from "./etiquetas.ts";
 import type { Bilingue, Etiqueta } from "./tipos.ts";
 
@@ -41,12 +42,29 @@ export interface LadoVista {
   pruebas: number;
 }
 
+/** Una comparación disponible: dos instantáneas consecutivas, con su ruta ya hecha. */
+export interface ParVista {
+  de: string;
+  a: string;
+  deFecha: string;
+  aFecha: string;
+  demo: boolean;
+  /** Es la que se está viendo. */
+  activo: boolean;
+}
+
 export interface VistaDeDiferencias {
+  /** Todas las comparaciones consecutivas, de la más vieja a la más nueva. */
+  pares: ParVista[];
   de: LadoVista;
   a: LadoVista & { demo: boolean };
   resumen: Record<TipoDeMovimiento, number>;
   /** Solo las secciones donde algo cambió, en el orden del motor. */
-  secciones: { seccion: Seccion; rotulo: Bilingue; movimientos: MovimientoVista[] }[];
+  secciones: {
+    seccion: Seccion;
+    rotulo: Bilingue;
+    movimientos: MovimientoVista[];
+  }[];
   huella: string;
   etiquetas: {
     entra: Etiqueta;
@@ -130,10 +148,19 @@ function campoVista(c: CambioDeCampo): CampoDeCambioVista {
   };
 }
 
+export const rutaDeComparacion = (de: string, a: string) =>
+  `/catalogo/diferencias/${de}/${a}`;
+
 export function construirVistaDeDiferencias(
   d: DiferenciasEntreInstantaneas,
   de: { instantanea: Instantanea; nombre: string },
   a: { instantanea: Instantanea; nombre: string; demo: boolean },
+  /** La secuencia completa, del pasado al presente: de ella salen los pares del selector. Sin ella, solo el par que se ve. */
+  secuencia: {
+    instantanea: Instantanea;
+    nombre: string;
+    demo: boolean;
+  }[] = de.nombre === a.nombre ? [a] : [{ ...de, demo: false }, a],
 ): VistaDeDiferencias {
   const nombresDe_ = nombresDe(de.instantanea);
   const nombresA = nombresDe(a.instantanea);
@@ -156,6 +183,14 @@ export function construirVistaDeDiferencias(
     campos: m.campos.map(campoVista),
   });
   return {
+    pares: paresConsecutivos(secuencia).map((p) => ({
+      de: p.de.nombre,
+      a: p.a.nombre,
+      deFecha: p.de.instantanea.fecha_evaluacion,
+      aFecha: p.a.instantanea.fecha_evaluacion,
+      demo: p.a.demo,
+      activo: p.de.nombre === de.nombre && p.a.nombre === a.nombre,
+    })),
     de: {
       nombre: de.nombre,
       fecha: d.de.fecha,

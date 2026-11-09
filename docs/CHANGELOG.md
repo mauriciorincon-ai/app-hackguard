@@ -3,6 +3,28 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 011 — «La evidencia en el tiempo» (2026-11-08)
+
+The second sprint of milestone H-2: a finding and a report stop being a snapshot. The 13 debts the Sprint 10 audit left are paid first.
+
+### Added
+
+- **Reopened findings (D5):** a finding closed by retest reopens when a person confirms a later retest of the same configuration (k not lower) that fails; the cycle chains, the deadline runs from the reopening, and no absence, `no_ejecutada` or declaration ever reopens. The demo carries `HZ-0011` (closed by retest, reopened by a later failing one); `pnpm hallazgo:cadena <id> --fecha …` and the finding screen share one chain by cycles (`src/lib/evidencia/cadena.ts`).
+- **Gap trend (D6):** `/brecha/tendencia` and `pnpm brecha:tendencia` build the same `armarBrecha` at each date something changed in the ledger and say, control by control of ISO/IEC 42001, what improved, got worse or stayed, with the finding that moved it; a reopened finding is a regression.
+- **Pasted text in the browser:** a «Texto pegado» way in `/evidencia/carga` reads a Garak or ZAP report with the CLI's adapter, proposes one envelope per plan test with the rule's verdict, the findings that would open, and the gap before and after if confirmed; it downloads `sobre-propuesto.json` without the tool's text; no network, no storage, nothing counts until a person confirms.
+- **The instrument's assumptions:** S1 confirmed (20 quotes, 10 invented, 20 of 20), S2 extended to each skill (the researcher gets its own seeded cases), and the S3 kit (`docs/kit-de-prueba/supuesto-s3/`, 20 synthetic pasted results, blind sheet, `pnpm supuestos:s3`), the 20 `/extraer` list and the 200-text batch in 10 runs of 20 (`pnpm lotes:metricas`); the generator is the source and a drift gate keeps the kit honest. `/extraer` was not run.
+- **The 13 Sprint 10 debts are paid**, each with a test that failed before its fix (see the closing note).
+
+### Changed
+
+- **`docs/GUIA-DE-PRUEBA.html`** goes from 65 to 69 stops, each in its place in the one walk; D5 and D6 are built in the coverage matrix; the Sprint 10 origins become regression; the demo facts HZ-0011 changed (five findings, «5 · 4», «9 / 25») are corrected.
+- **The manual** gains «Evidence over time» in both languages; **the export** gains three functions (24) and **the BLUEPRINT** is as built.
+- **«Qué cambió»** generates every consecutive snapshot pair at build, with a link selector; `plan:replanear` honors `--salida`; a snapshot read from disk is checked with a strict schema.
+
+### Not in this sprint
+
+- The other roadmap items (D2, D8–D12), the public mode and static package (C19, C20) and the rehearsal of the milestone, a sprint of its own.
+
 ## Sprint 010 — «Lo que cambió» (2026-11-08)
 
 The first sprint of milestone H-2: what changed in the catalog, in an asset and in a plan, each with its cause; the guide becomes one walk; the closing devolución 026 is paid.

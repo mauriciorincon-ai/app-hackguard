@@ -1,0 +1,116 @@
+{
+  "@programName": "ZAP",
+  "@version": "2.17.0",
+  "@generated": "Mon, 12 Oct 2026 14:05:00",
+  "created": "2026-10-12T14:05:00.000000Z",
+  "site": [
+    {
+      "@name": "http://example.com",
+      "@host": "example.com",
+      "@port": "80",
+      "@ssl": "false",
+      "alerts": [
+        {
+          "pluginid": "10035",
+          "alertRef": "10035-1",
+          "alert": "Strict-Transport-Security Header Not Set",
+          "name": "Strict-Transport-Security Header Not Set",
+          "riskcode": "1",
+          "confidence": "3",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": ""
+            },
+            {
+              "id": "-1",
+              "uri": "http://example.com/login",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": ""
+            }
+          ],
+          "count": "2",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3"
+        },
+        {
+          "pluginid": "10020",
+          "alertRef": "10020-1",
+          "alert": "Missing Anti-clickjacking Header",
+          "name": "Missing Anti-clickjacking Header",
+          "riskcode": "2",
+          "confidence": "0",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": ""
+            }
+          ],
+          "count": "1",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3"
+        },
+        {
+          "pluginid": "10096",
+          "alertRef": "10096",
+          "alert": "Timestamp Disclosure - Unix",
+          "name": "Timestamp Disclosure - Unix",
+          "riskcode": "0",
+          "confidence": "1",
+          "riskdesc": "Medium (High)",
+          "desc": "Descripción de la alerta.",
+          "instances": [
+            {
+              "id": "-1",
+              "uri": "http://example.com/api",
+              "nodeName": null,
+              "method": "GET",
+              "param": "",
+              "attack": "ATAQUE-MARCADOR-NO-DEBE-PASAR",
+              "evidence": "EVIDENCIA-MARCADOR-NO-DEBE-PASAR",
+              "otherinfo": ""
+            }
+          ],
+          "count": "1",
+          "systemic": false,
+          "solution": "Solución.",
+          "otherinfo": "",
+          "reference": "Referencia.",
+          "cweid": "693",
+          "wascid": "15",
+          "sourceid": "3"
+        }
+      ]
+    }
+  ]
+}

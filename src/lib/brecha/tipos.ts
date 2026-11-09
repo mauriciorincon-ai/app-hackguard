@@ -376,3 +376,64 @@ export interface VistaDeInforme extends BaseDeVista {
   };
   activos: { id: string; nombre: Bilingue; conPlan: boolean }[];
 }
+
+// ── Tendencia ───────────────────────────────────────────────────────────────────────────────────
+
+/** Un hallazgo que movió un control entre dos cortes, con su estado antes y después (`null` = todavía no existía / ya no se lista). */
+export interface HallazgoQueMovio {
+  hallazgo: EnlaceAHallazgo;
+  de: Etiqueta | null;
+  a: Etiqueta | null;
+}
+
+/** Un control que cambió de estado entre dos cortes consecutivos. */
+export interface MovimientoDeControlVista {
+  corte: string;
+  marca: Etiqueta;
+  sentido: "mejoro" | "empeoro";
+  de: Etiqueta;
+  deId: string;
+  a: Etiqueta;
+  aId: string;
+  hallazgos: HallazgoQueMovio[];
+}
+
+export interface FilaDeControlEnElTiempo {
+  control: ObjetoNombrado;
+  sentido: "mejoro" | "empeoro" | "igual";
+  marca: Etiqueta;
+  /** El estado en el primer corte y en el último. */
+  primero: Etiqueta;
+  primeroId: string;
+  ultimo: Etiqueta;
+  ultimoId: string;
+  movimientos: MovimientoDeControlVista[];
+  /** Cada vez que un hallazgo de este control se reabrió. */
+  regresiones: { corte: string; hallazgo: EnlaceAHallazgo }[];
+  /** El último hallazgo que movió el control, si algún movimiento lo trae. */
+  movio: EnlaceAHallazgo | null;
+}
+
+export interface PuntoDeSerie {
+  corte: string;
+  abiertos: number;
+  reabiertos: number;
+  aceptados: number;
+  cerrados: number;
+  vencidos: number;
+  controlesConFalla: number;
+}
+
+/** `/brecha/tendencia`: la misma brecha en varias fechas de corte y lo que cambió control por control. */
+export interface VistaDeTendencia extends BaseDeVista {
+  /** Huella de la tendencia (JCS + SHA-256): la misma entrada da los mismos bytes en Node y en los navegadores. */
+  huella: string;
+  cortes: { desde: string; hasta: string; cuantos: number };
+  cifras: Cifra[];
+  serie: PuntoDeSerie[];
+  controles: FilaDeControlEnElTiempo[];
+  /** La marca de la regresión (un hallazgo reabierto), para los chips. */
+  regresion: Etiqueta;
+  /** Lo que alguna brecha de un corte no pudo calcular: nunca se esconde. */
+  problemas: string[];
+}

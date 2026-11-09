@@ -40,11 +40,11 @@ describe("plazoDe", () => {
     expect(plazoDe("alto", "abierto", "2026-08-17", "2026-10-03", m.plazos)).toMatchObject({ estado: "vencido", dias: 47, atraso: 17 });
   });
 
-  it("corre en abierto, corregido y re_probado; en los demás estados ya no corre", async () => {
+  it("corre en abierto, corregido, re_probado y reabierto; en los demás estados ya no corre", async () => {
     const m = await mundo();
     for (const e of ESTADOS_DE_HALLAZGO) {
       const p = plazoDe("alto", e, "2026-08-17", "2026-10-03", m.plazos);
-      if (["abierto", "corregido", "re_probado"].includes(e)) expect(p.estado, e).toBe("vencido");
+      if (["abierto", "corregido", "re_probado", "reabierto"].includes(e)) expect(p.estado, e).toBe("vencido");
       else expect(p, e).toEqual({ estado: "no_corre", total: 30, dias: 47, vence: null, atraso: 0 });
     }
   });

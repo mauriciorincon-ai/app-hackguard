@@ -280,9 +280,10 @@ describe("una re-prueba que SÍ cierra", () => {
     const e = evaluar(m.hallazgos["HZ-0003"]!, [...(await libroCon()), mala]);
     expect(e.estado).toBe("cerrado");
     expect(e.cierre?.sobre).toBe("SOB-0027");
+    // En orden de fecha (D5): la mala (15 de septiembre) llegó antes que la buena (24).
     expect(e.candidatas.map((c) => [c.sobre.id, c.motivos])).toEqual([
-      ["SOB-0027", []],
       ["SOB-0030", ["no_superada"]],
+      ["SOB-0027", []],
     ]);
   });
 
@@ -576,6 +577,7 @@ describe("los conjuntos de estados", () => {
       "aceptado_con_riesgo",
       "corregido",
       "re_probado",
+      "reabierto",
     ]);
     expect(
       ESTADOS_DE_HALLAZGO.filter((e) => !cuentaComoFalla(e)).sort(),
@@ -586,6 +588,7 @@ describe("los conjuntos de estados", () => {
       "abierto",
       "corregido",
       "re_probado",
+      "reabierto",
     ]);
   });
 });

@@ -15,6 +15,10 @@ import {
   calcularBrecha,
   type Brecha,
 } from "../../src/engine/brecha/calcular.ts";
+import {
+  calcularTendencia,
+  type Tendencia,
+} from "../../src/engine/brecha/tendencia.ts";
 import type { CatalogoEnBruto } from "../../src/engine/catalogo/tipos.ts";
 import type { evaluarConjunto } from "../../src/engine/demo/conjunto.ts";
 import { fechaMasDias } from "../../src/engine/fecha.ts";
@@ -101,6 +105,7 @@ interface Motor {
   libroEfectivo: typeof libroEfectivo;
   validarPlanDeMuestreo: typeof validarPlanDeMuestreo;
   calcularBrecha: typeof calcularBrecha;
+  calcularTendencia: typeof calcularTendencia;
 }
 
 function node(script: string, ...argumentos: string[]): string {
@@ -174,6 +179,7 @@ interface InsumosDeBrecha {
 }
 let insumosDeBrecha: InsumosDeBrecha;
 let brechaEnNode: Brecha;
+let tendenciaEnNode: Tendencia & { huella: string };
 const enNodeLotes = {} as {
   revisiones: Record<string, RevisionDelLote>;
   sintetico: RevisionDelLote;
@@ -401,7 +407,7 @@ test.beforeAll(async () => {
     "umbrales.json",
   );
   type EntradaDeBrecha = Parameters<typeof calcularBrecha>[0];
-  brechaEnNode = await calcularBrecha({
+  const entradaDeBrechaEnNode: EntradaDeBrecha = {
     consulta: FECHA_DEL_LIBRO,
     umbrales: umbralesDeBrecha as EntradaDeBrecha["umbrales"],
     vigencia: OFICIAL.catalogo.umbrales.vigencia,
@@ -421,7 +427,10 @@ test.beforeAll(async () => {
     lotes: lotesDeBrecha,
     escala: escalaDeBrecha as EntradaDeBrecha["escala"],
     plazos: plazosDeBrecha as EntradaDeBrecha["plazos"],
-  });
+  };
+  brechaEnNode = await calcularBrecha(entradaDeBrechaEnNode);
+  // La tendencia (S11): la misma entrada, la brecha en cada fecha en que algo cambió en el libro.
+  tendenciaEnNode = await calcularTendencia(entradaDeBrechaEnNode);
   insumosDeBrecha = {
     sobres: [...sobresDemo].reverse(),
     lotes: [...lotesDeBrecha].reverse(),
@@ -495,6 +504,7 @@ test.beforeAll(async () => {
         'export { libroEfectivo } from "./src/engine/lotes/efectivo.ts";',
         'export { validarPlanDeMuestreo } from "./src/engine/lotes/muestra.ts";',
         'export { calcularBrecha } from "./src/engine/brecha/calcular.ts";',
+        'export { calcularTendencia } from "./src/engine/brecha/tendencia.ts";',
       ].join("\n"),
       resolveDir: RAIZ,
       loader: "ts",
@@ -672,14 +682,14 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     browserName,
   }) => {
     await abrirMotor(page);
-    const b = await page.evaluate(async (e) => {
+    const { b, t } = await page.evaluate(async (e) => {
       const motor = (globalThis as unknown as { MotorHackGuard: Motor })
         .MotorHackGuard;
       type Entrada = Parameters<typeof motor.calcularBrecha>[0];
       const lotes = e.lotes as Parameters<typeof motor.libroEfectivo>[1];
       const sobres = e.sobres as Parameters<typeof motor.huellaDelLibro>[0];
       const planes = e.planes as { activo: { id: string } }[];
-      return motor.calcularBrecha({
+      const entrada: Entrada = {
         consulta: e.fecha,
         umbrales: e.umbralesDeBrecha as Entrada["umbrales"],
         vigencia: e.vigencia as Entrada["vigencia"],
@@ -695,7 +705,11 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
         lotes: lotes as Entrada["lotes"],
         escala: e.escala as Entrada["escala"],
         plazos: e.plazos as Entrada["plazos"],
-      });
+      };
+      return {
+        b: await motor.calcularBrecha(entrada),
+        t: await motor.calcularTendencia(entrada),
+      };
     }, insumosDeBrecha);
     console.log(
       `determinismo · ${browserName} · brecha ${b.huella.slice(0, 12)} · ${b.resumen.planeadas} planeadas, ${b.resumen.ejecutadas} ejecutadas`,
@@ -706,6 +720,16 @@ test.describe("el motor da en el navegador la misma huella que en Node", () => {
     expect(b.problemas).toEqual([]);
     expect(b.huella).toBe(brechaEnNode.huella);
     expect(JSON.stringify(b)).toBe(JSON.stringify(brechaEnNode));
+    // La tendencia: mismos cortes, mismos bytes y misma huella; y su último punto es la brecha de la consulta, no otra cuenta.
+    console.log(
+      `determinismo · ${browserName} · tendencia ${t.huella.slice(0, 12)} · ${t.cortes.length} cortes, ${t.resumen.conRegresion} con regresión`,
+    );
+    expect(t.cortes.length).toBeGreaterThan(2);
+    expect(t.resumen.conRegresion).toBeGreaterThan(0);
+    expect(t.problemas).toEqual([]);
+    expect(t.puntos.at(-1)!.resumen).toEqual(b.resumen);
+    expect(t.huella).toBe(tendenciaEnNode.huella);
+    expect(JSON.stringify(t)).toBe(JSON.stringify(tendenciaEnNode));
   });
 
   test("la muestra de cada lote, el libro efectivo y el plan de muestreo (lotes y sobres en otro orden)", async ({

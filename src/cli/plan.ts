@@ -37,6 +37,7 @@ import { planificar } from "../engine/planificador/planificar.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
 import {
   CARPETA_DE_PLANES,
+  CARPETA_PRIVADA,
   CARPETA_PRIVADA_DE_PLANES,
   cargarActivos,
   cargarDatosDelPlanificador,
@@ -44,8 +45,8 @@ import {
 } from "../lib/activos/cargar-activos.ts";
 
 const USO = {
-  es: "uso: plan activo-validar [<id>] [--json] [--idioma es|en]\n     plan emitir <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]\n     plan replanear <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]",
-  en: "usage: plan activo-validar [<id>] [--json] [--idioma es|en]\n       plan emitir <id> --fecha YYYY-MM-DD [--json] [--idioma es|en] [--salida <folder>]\n       plan replanear <id> --fecha YYYY-MM-DD [--demo] [--sin-escribir] [--json] [--idioma es|en]",
+  es: "uso: plan activo-validar [<id>] [--json] [--idioma es|en]\n     plan emitir <id> --fecha AAAA-MM-DD [--json] [--idioma es|en] [--salida <carpeta>]\n     plan replanear <id> --fecha AAAA-MM-DD [--demo] [--sin-escribir] [--salida <carpeta>] [--json] [--idioma es|en]",
+  en: "usage: plan activo-validar [<id>] [--json] [--idioma es|en]\n       plan emitir <id> --fecha YYYY-MM-DD [--json] [--idioma es|en] [--salida <folder>]\n       plan replanear <id> --fecha YYYY-MM-DD [--demo] [--sin-escribir] [--salida <folder>] [--json] [--idioma es|en]",
 };
 
 class ErrorDeUso extends Error {}
@@ -87,6 +88,7 @@ async function principal(argv: string[]): Promise<number> {
       fecha: o.fecha,
       demo: o.demo,
       sinEscribir: o["sin-escribir"],
+      salida: o.salida,
       json: o.json,
       idioma: o.idioma,
     });
@@ -148,7 +150,7 @@ async function principal(argv: string[]): Promise<number> {
       const propio =
         encontrado.activo.origen === "propio" ||
         ruta.startsWith("datos/privado/");
-      const privada = path.resolve(raiz, CARPETA_PRIVADA_DE_PLANES);
+      const privada = path.resolve(raiz, CARPETA_PRIVADA);
       const salida = path.resolve(
         raiz,
         o.salida ?? (propio ? CARPETA_PRIVADA_DE_PLANES : CARPETA_DE_PLANES),

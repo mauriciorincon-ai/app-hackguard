@@ -1,7 +1,14 @@
 // @vitest-environment node
 // Los CLI de D1 y D3 corren como una persona: un proceso de Node aparte sobre el `datos/` del repo.
 import { spawnSync } from "node:child_process";
-import { readdirSync, readFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { RAIZ } from "./ayuda.ts";
@@ -61,6 +68,35 @@ describe("catalogo diferencias", () => {
       catalogo("diferencias", OFICIAL, OFICIAL, "--json").salida,
     ) as { movimientos: unknown[] };
     expect(j.movimientos).toEqual([]);
+  });
+
+  it("una instantánea mutilada sale 3 y nombra lo que le falta, sin llegar a comparar (deuda del S10)", () => {
+    const raiz = mkdtempSync(path.join(tmpdir(), "hackguard-dif-"));
+    for (const c of ["instantaneas", "propuestas"])
+      cpSync(path.join(RAIZ, "datos", c), path.join(raiz, "datos", c), {
+        recursive: true,
+      });
+    const ruta = path.join(raiz, "datos", "instantaneas", `${OFICIAL}.json`);
+    const i = JSON.parse(readFileSync(ruta, "utf8")) as {
+      catalogo: Record<string, unknown>;
+    };
+    delete i.catalogo.pruebas;
+    writeFileSync(ruta, JSON.stringify(i));
+    const r = spawnSync(
+      process.execPath,
+      [
+        "--disable-warning=MODULE_TYPELESS_PACKAGE_JSON",
+        path.join(RAIZ, "src/cli/catalogo.ts"),
+        "diferencias",
+        OFICIAL,
+        DEMO,
+      ],
+      { cwd: raiz, encoding: "utf8" },
+    );
+    expect(r.status).toBe(3);
+    expect(r.stderr).toContain(OFICIAL);
+    expect(r.stderr).toContain("pruebas");
+    expect(r.stdout).toBe("");
   });
 
   it("una instantánea que no existe sale 3 con el uso", () => {

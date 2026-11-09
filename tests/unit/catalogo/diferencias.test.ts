@@ -123,6 +123,28 @@ describe("diferenciasEntreInstantaneas", () => {
     expect(d.movimientos).toEqual([]);
   });
 
+  it("lo que cambia es el CONTENIDO de las entradas: otra fecha de evaluación u otra huella del sobre no es un movimiento", async () => {
+    const otra = structuredClone(a);
+    otra.fecha_evaluacion = "2099-01-01";
+    otra.huella = "f".repeat(64);
+    const d = await diferenciasEntreInstantaneas(a, otra);
+    expect(d.movimientos).toEqual([]);
+    expect(d.resumen).toEqual({ entra: 0, sale: 0, cambia: 0 });
+    // Pero el encabezado sí dice de qué a qué se comparó.
+    expect(d.a.fecha).toBe("2099-01-01");
+    expect(d.de.fecha).toBe(a.fecha_evaluacion);
+  });
+
+  it("un cambio en UNA entrada es UN movimiento: ninguna otra entrada se marca de paso", async () => {
+    const otra = structuredClone(a);
+    const h = otra.catalogo.herramientas[0]!;
+    (h as Record<string, unknown>).campo_nuevo = "x";
+    const d = await diferenciasEntreInstantaneas(a, otra);
+    expect(d.movimientos.map((m) => `${m.seccion} ${m.id} ${m.tipo}`)).toEqual([
+      `herramientas ${h.id} cambia`,
+    ]);
+  });
+
   it("el orden de un ARREGLO sí es un cambio: es dato", async () => {
     const otra = structuredClone(a);
     const p = otra.catalogo.pruebas.find((x) => x.controles.length > 0)!;
@@ -208,6 +230,30 @@ describe("diferenciasEntreInstantaneas", () => {
   });
 });
 
+describe("un «cambia» siempre dice qué campo cambió", () => {
+  it("un campo que pasa de AUSENTE a null cambia la huella de la entrada y por eso se nombra (no queda una lista de campos vacía)", async () => {
+    const otra = structuredClone(a);
+    (otra.catalogo.herramientas[0] as Record<string, unknown>).campo_nuevo =
+      null;
+    const d = await diferenciasEntreInstantaneas(a, otra, {});
+    expect(d.movimientos).toHaveLength(1);
+    expect(d.movimientos[0]!.tipo).toBe("cambia");
+    expect(d.movimientos[0]!.campos.map((c) => c.campo)).toEqual([
+      "campo_nuevo",
+    ]);
+  });
+
+  it("entre la oficial y la demo, ningún «cambia» trae una lista de campos vacía", async () => {
+    const d = await diferenciasEntreInstantaneas(
+      oficial(),
+      demoVersionada(),
+      LICENCIAS,
+    );
+    for (const m of d.movimientos.filter((x) => x.tipo === "cambia"))
+      expect(m.campos.length, `${m.seccion} ${m.id}`).toBeGreaterThan(0);
+  });
+});
+
 describe("la licencia manda sobre lo que se muestra (regla dura 11)", () => {
   it("un cambio en un marco «solo_identificadores» dice que cambió, no qué decía", async () => {
     const otra = structuredClone(a);
@@ -244,6 +290,28 @@ describe("la licencia manda sobre lo que se muestra (regla dura 11)", () => {
       .campos.find((c) => c.campo === "nombre")!;
     expect(campo.oculto).toBe(false);
     expect(campo.despues).toBe("Un nombre nuevo de CWE");
+  });
+
+  it("si UNO de los dos lados es de un marco «solo_identificadores», nada se muestra, aunque el otro lado cite con atribución", async () => {
+    // Una prueba que pasa de un marco restringido a uno que cita: el valor viejo sigue siendo texto de la norma restringida.
+    const p0 = a.catalogo.pruebas.find((p) => p.marco_id !== "cwe")!;
+    const otra = structuredClone(a);
+    const p1 = otra.catalogo.pruebas.find((p) => p.id === p0.id)!;
+    p1.marco_id = "cwe";
+    p1.que_verifica = {
+      es: "Texto nuevo que verifica, del marco que cita",
+      en: "New verification text, from the framework that quotes",
+    };
+    const d = await diferenciasEntreInstantaneas(a, otra, {
+      [p0.marco_id]: "solo_identificadores",
+      cwe: "cita_con_atribucion",
+    });
+    const mov = d.movimientos.find((x) => x.id === p0.id)!;
+    expect(mov.campos.length).toBeGreaterThan(1);
+    expect(mov.campos.every((c) => c.oculto)).toBe(true);
+    const salida = JSON.stringify(d);
+    expect(salida).not.toContain("Texto nuevo que verifica");
+    expect(salida).not.toContain(p0.que_verifica.es);
   });
 
   it("el resumen de un control de ISO/IEC 42001 no se muestra: es su texto (los controles se aplanan por id)", async () => {

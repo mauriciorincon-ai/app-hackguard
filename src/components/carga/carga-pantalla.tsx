@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { useState } from "react";
 import type {
-  Etiqueta,
   FilaDeMuestreo,
   VistaDeCarga,
   VistaDeLote,
 } from "@/lib/evidencia/tipos-de-carga";
 import { Par } from "../activos/piezas";
-import { Aviso, Chip, Estado, Huella, Sello } from "../estado";
+import { Aviso, Chip, Estado, Huella } from "../estado";
 import { Simbolo } from "../simbolo";
 import { Dato, T } from "../texto";
+import type { MundoDePegado } from "@/lib/evidencia/pegado";
+import { PegadoPantalla } from "./pegado-pantalla";
 import { FichaDelSobre, Proporcion } from "./piezas";
 
 /**
@@ -575,43 +576,6 @@ function ViaAdaptador({
   );
 }
 
-function ViaPegada({ etiqueta }: { etiqueta: Etiqueta }) {
-  return (
-    <div className="hg-trabajo" data-formulario="">
-      <section className="hg-panel" aria-labelledby="pegado">
-        <div className="hg-panel-cab">
-          <h2 id="pegado">
-            <T t={{ es: "Texto de la herramienta", en: "Tool output" }} />
-          </h2>
-        </div>
-        <div className="hg-panel-cuerpo hg-pila">
-          <Sello
-            etiqueta={etiqueta}
-            atributos={{ "data-via-sin-construir": "" }}
-          >
-            <p>
-              <T
-                t={{
-                  es: "El texto que devolvió una herramienta lo lee el extractor, una skill de Claude Code que corres tú con /extraer sobre un archivo de texto: escribe solo en la bandeja de propuestas y nunca confirma nada. Desde el navegador no se pega nada: aquí no hay campo ni botón, porque esta pantalla no ejecuta nada.",
-                  en: "The text a tool returned is read by the extractor, a Claude Code skill that you run with /extraer on a text file: it writes only to the proposals inbox and never confirms anything. Nothing is pasted from the browser: there is no field or button here, because this screen runs nothing.",
-                }}
-              />
-            </p>
-          </Sello>
-          <p className="hg-menor">
-            <T
-              t={{
-                es: "Para un resultado que no viene de un archivo de Garak o de ZAP, usa «Sobre manual» o el extractor. El texto que lee el extractor nunca se guarda entero en el repositorio: solo su huella y un extracto redactado.",
-                en: "For a result that does not come from a Garak or ZAP file, use “Manual envelope” or the extractor. The text the extractor reads is never stored whole in the repository: only its fingerprint and a redacted excerpt.",
-              }}
-            />
-          </p>
-        </div>
-      </section>
-    </div>
-  );
-}
-
 function ViaManual({ etiquetas }: { etiquetas: VistaDeCarga["etiquetas"] }) {
   return (
     <div className="hg-trabajo" data-formulario="">
@@ -675,7 +639,13 @@ function ViaManual({ etiquetas }: { etiquetas: VistaDeCarga["etiquetas"] }) {
   );
 }
 
-export function CargaPantalla({ v }: { v: VistaDeCarga }) {
+export function CargaPantalla({
+  v,
+  pegado,
+}: {
+  v: VistaDeCarga;
+  pegado: MundoDePegado;
+}) {
   const [via, setVia] = useState<Via>("adaptador");
   const [lote, setLote] = useState(v.lotes[0]?.id ?? "");
   const [selecciones, setSelecciones] = useState<Record<string, string>>({});
@@ -803,7 +773,13 @@ export function CargaPantalla({ v }: { v: VistaDeCarga }) {
             data-si-via="pegado"
             hidden={via !== "pegado"}
           >
-            <ViaPegada etiqueta={v.etiquetas.via_sin_construir} />
+            <PegadoPantalla
+              mundo={pegado}
+              etiquetas={{
+                local: v.etiquetas.via_local,
+                sinSobre: v.etiquetas.pegado_sin_sobre,
+              }}
+            />
           </div>
           <div
             className="hg-pila"

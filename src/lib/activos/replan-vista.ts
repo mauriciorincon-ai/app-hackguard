@@ -27,6 +27,32 @@ const CAUSAS: Record<Factor, Bilingue> = {
   perfil: { es: "Perfil del activo", en: "Asset profile" },
 };
 
+const NUMERO: Record<number, Bilingue> = {
+  2: { es: "las dos", en: "both" },
+  3: { es: "las tres", en: "all three" },
+};
+const unir = (nombres: string[], y: string) =>
+  nombres.length < 2
+    ? nombres.join("")
+    : `${nombres.slice(0, -1).join(", ")} ${y} ${nombres.at(-1)}`;
+
+/**
+ * La nota de una causa «conjunta»: dice CUÁNTAS causas actúan a la vez y cuáles son, desde el dato (dos o tres: catálogo, regla y perfil),
+ * en vez de una frase fija de «las dos cosas».
+ */
+export function notaDeCausaConjunta(causas: readonly Factor[]): Bilingue {
+  const n = NUMERO[causas.length] ?? {
+    es: `las ${causas.length}`,
+    en: `all ${causas.length}`,
+  };
+  const nombres = (idioma: "es" | "en") =>
+    causas.map((c) => CAUSAS[c][idioma].toLowerCase());
+  return {
+    es: `Conjunta: ninguna de las ${causas.length} basta por sí sola, se mueve por ${n.es} a la vez (${unir(nombres("es"), "y")}).`,
+    en: `Joint: none of the ${causas.length} is enough on its own, it moves because of ${n.en} at once (${unir(nombres("en"), "and")}).`,
+  };
+}
+
 const CAMBIOS: Record<string, Bilingue> = {
   prioridad: { es: "Prioridad", en: "Priority" },
   lugar: { es: "Lugar en el plan", en: "Place in the plan" },
@@ -102,6 +128,7 @@ function baseVista(
           : E.movimiento_se_queda,
     causas: m.causas.map((id) => ({ id, nombre: CAUSAS[id] })),
     conjunta: m.conjunta,
+    notaConjunta: m.conjunta ? notaDeCausaConjunta(m.causas) : null,
     fuera: m.fuera === null ? null : (FUERA[m.fuera] ?? null),
     antes: lugar(m.antes),
     despues: lugar(m.despues),

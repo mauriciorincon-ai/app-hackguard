@@ -226,7 +226,7 @@ export function escribirDato(
 }
 
 /** Deja en 0700 `datos/privado` y cada carpeta que cuelga de ella hasta la del archivo. */
-function cerrarCarpetasPrivadas(raiz: string, carpeta: string): void {
+export function cerrarCarpetasPrivadas(raiz: string, carpeta: string): void {
   const base = path.join(raiz, "datos", "privado");
   const relativa = path.relative(base, carpeta);
   if (relativa.startsWith("..") || path.isAbsolute(relativa)) return;

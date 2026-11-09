@@ -26,6 +26,7 @@ import {
   diferenciasEntreInstantaneas,
   type Licencias,
 } from "../engine/catalogo/diferencias.ts";
+import { comprobarInstantanea } from "../engine/catalogo/esquema-de-instantanea.ts";
 import { informeDeDiferencias } from "../engine/catalogo/informe-diferencias.ts";
 import {
   construirInstantanea,
@@ -98,9 +99,15 @@ async function diferencias(
   if (a === undefined || b === undefined || sobra.length > 0)
     throw new ErrorDeUso("diferencias <A> <B>");
   const leer = async (quien: string) => {
-    const i = JSON.parse(
-      readFileSync(rutaDeInstantanea(raiz, quien), "utf8"),
-    ) as Instantanea;
+    const ruta = rutaDeInstantanea(raiz, quien);
+    let i: Instantanea;
+    try {
+      i = comprobarInstantanea(JSON.parse(readFileSync(ruta, "utf8")), quien);
+    } catch (error) {
+      throw new ErrorDeUso(
+        error instanceof Error ? error.message : String(error),
+      );
+    }
     if ((await huellaDeInstantanea(i)) !== i.huella)
       throw new ErrorDeUso(
         `${quien}: su huella declarada no es la de su contenido / its declared fingerprint is not its content's`,

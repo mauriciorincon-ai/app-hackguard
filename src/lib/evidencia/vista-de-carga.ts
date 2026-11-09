@@ -17,6 +17,7 @@ import {
 import type { MundoDeActivos } from "../activos/cargar.ts";
 import { etiqueta } from "../catalogo/vista.ts";
 import type { MundoDeHallazgos } from "./cargar.ts";
+import { etiquetaDeEstadoDeHallazgo } from "./etiqueta-de-estado.ts";
 import { conteoDeSobre } from "./vista.ts";
 import type {
   Bilingue,
@@ -220,7 +221,11 @@ function vistaDeLote(
       if (ev.ok)
         hallazgo = {
           id: hz.id,
-          estado: etiqueta(c, "estado_de_hallazgo", ev.evaluacion.estado),
+          estado: etiquetaDeEstadoDeHallazgo(
+            c,
+            mundo.etiquetas,
+            ev.evaluacion.estado,
+          ),
           titulo: hz.titulo,
         };
     }

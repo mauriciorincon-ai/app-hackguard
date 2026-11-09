@@ -3,7 +3,9 @@ import { Consola } from "@/components/consola/consola";
 import { SubnavDeEvidencia } from "@/components/hallazgo/piezas";
 import { PRIMER_HALLAZGO } from "@/lib/evidencia/etiquetas";
 import { cargarParaPaginaDeHallazgo } from "@/lib/evidencia/pagina";
+import { construirMundoDePegado } from "@/lib/evidencia/pegado-mundo";
 import { construirVistaDeCarga } from "@/lib/evidencia/vista-de-carga";
+import { cargarUmbralesDeBrecha } from "@/lib/brecha/cargar";
 import { titulo } from "@/lib/titulo";
 
 export const metadata = titulo("Carga de evidencia", "Evidence intake");
@@ -21,6 +23,13 @@ export default async function Carga() {
     nombre,
     consulta,
   );
+  const pegado = construirMundoDePegado(
+    instantanea,
+    activos,
+    mundo,
+    cargarUmbralesDeBrecha(),
+    consulta,
+  );
   return (
     <Consola
       seccion="evidencia"
@@ -32,7 +41,7 @@ export default async function Carga() {
       pie={{ instantanea: vista.instantanea, consulta: vista.consulta }}
       subnav={<SubnavDeEvidencia primero={PRIMER_HALLAZGO} actual="carga" />}
     >
-      <CargaPantalla v={vista} />
+      <CargaPantalla v={vista} pegado={pegado} />
     </Consola>
   );
 }

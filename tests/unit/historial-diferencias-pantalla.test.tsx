@@ -117,8 +117,60 @@ describe("/catalogo/diferencias", () => {
       expect(m.querySelector("svg"), m.textContent ?? "").not.toBeNull();
   });
 
-  it("de la oficial contra sí misma dice «sin cambios»", async () => {
+  it("el selector enlaza cada comparación consecutiva y marca la que se ve (aria-current y texto, no solo estilo)", async () => {
+    const d = doc(<DiferenciasPantalla v={await vista(true)} />);
+    const enlaces = [...d.querySelectorAll("[data-comparaciones] a[data-par]")];
+    expect(enlaces).toHaveLength(1);
+    const [de, a] = enlaces[0]!.getAttribute("data-par")!.split("..");
+    expect(enlaces[0]!.getAttribute("href")).toBe(
+      `/catalogo/diferencias/${de}/${a}`,
+    );
+    expect(enlaces[0]!.getAttribute("aria-current")).toBe("page");
+    expect(enlaces[0]!.textContent).toContain("la que ves");
+    expect(enlaces[0]!.textContent).toContain("the one you are viewing");
+    expect(enlaces[0]!.textContent).toContain("Demo, no oficial");
+  });
+
+  it("con N instantáneas hay N−1 enlaces y solo el de la comparación abierta lleva aria-current", async () => {
+    const oficial = await cargarInstantaneaOficial();
+    const demo = (await cargarInstantaneaDemo())!;
+    const d3 = { ...demo, nombre: "2026-12-01-aaaaaaaaaaaa" };
+    const d4 = { ...demo, nombre: "2026-12-15-bbbbbbbbbbbb" };
+    const secuencia = [
+      { ...oficial, demo: false },
+      { ...demo, demo: true },
+      { ...d3, demo: true },
+      { ...d4, demo: true },
+    ];
+    const d = await diferenciasEntreInstantaneas(
+      demo.instantanea,
+      d3.instantanea,
+      cargarLicenciasDeMarcos().marcos,
+    );
+    const v = construirVistaDeDiferencias(
+      d,
+      demo,
+      { ...d3, demo: true },
+      secuencia,
+    );
+    const doc3 = doc(<DiferenciasPantalla v={v} />);
+    const enlaces = [
+      ...doc3.querySelectorAll("[data-comparaciones] a[data-par]"),
+    ];
+    expect(enlaces.map((e) => e.getAttribute("data-par"))).toEqual([
+      `${oficial.nombre}..${demo.nombre}`,
+      `${demo.nombre}..${d3.nombre}`,
+      `${d3.nombre}..${d4.nombre}`,
+    ]);
+    expect(
+      enlaces.filter((e) => e.getAttribute("aria-current") === "page"),
+    ).toHaveLength(1);
+    expect(enlaces[1]!.getAttribute("aria-current")).toBe("page");
+  });
+
+  it("de la oficial contra sí misma dice «sin cambios» y no ofrece selector", async () => {
     const d = doc(<DiferenciasPantalla v={await vista(false)} />);
+    expect(d.querySelector("[data-comparaciones]")).toBeNull();
     expect(d.querySelector("[data-movimiento]")).toBeNull();
     expect(d.body.textContent).not.toContain("Demo, no oficial");
   });

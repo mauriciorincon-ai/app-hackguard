@@ -167,7 +167,7 @@ test.describe("«no detectado» no cuenta", () => {
     expect(cuenta("superada")).toBe(Number(cifras.superadas));
     expect(cuenta("fallida")).toBe(Number(cifras.fallidas));
     expect(cuenta("no_ejecutada")).toBe(Number(cifras.no_ejecutadas));
-    // «8 / 25»: ejecutadas son solo superadas y fallidas; las no ejecutadas no son evidencia.
+    // «9 / 25»: ejecutadas son solo superadas y fallidas; las no ejecutadas no son evidencia.
     expect(cifras.ejecutadas).toBe(
       `${cuenta("superada") + cuenta("fallida")} / ${filas.length}`,
     );

@@ -14,6 +14,7 @@ import {
   conMuestreo,
   mundoDeCarga,
   vistaDeCarga,
+  pegadoDeCarga,
 } from "./lib/mundo-de-carga";
 
 const sobre = (v: ReturnType<typeof vistaDeCarga>, lote: string, id: string) =>
@@ -156,7 +157,9 @@ describe("la vista de la carga con los dos lotes demo", () => {
       readFileSync(path.join(RAIZ, "datos/evidencia/muestreo.json"), "utf8"),
     ) as { nota: { es: string; en: string } };
     expect(v.muestreo.nota).toEqual(m.nota);
-    const html = renderToStaticMarkup(createElement(CargaPantalla, { v }));
+    const html = renderToStaticMarkup(
+      createElement(CargaPantalla, { v, pegado: pegadoDeCarga() }),
+    );
     expect(html).toContain(m.nota.es.slice(0, 60));
     expect(html).toContain(m.nota.en.slice(0, 60));
   });

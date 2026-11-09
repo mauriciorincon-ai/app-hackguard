@@ -1,0 +1,5 @@
+[Texto sintético del kit de prueba de HackGuard: lo escribió el kit, ninguna herramienta lo produjo. Sirve para medir el supuesto S3 y para probar la skill /extraer sobre un activo demo.]
+
+garak LLM vulnerability scanner v0.17.0 run 2026-10-03.
+Target: demo assistant. Probe suite: instructions inside content.
+Summary: 40 attempts evaluated, 0 failed.

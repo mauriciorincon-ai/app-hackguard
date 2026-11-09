@@ -41,6 +41,55 @@ test.describe("/catalogo/diferencias", () => {
   });
 });
 
+test.describe("el selector de comparaciones", () => {
+  test("lista cada comparación consecutiva, marca la abierta y su enlace abre esa misma comparación", async ({
+    page,
+  }) => {
+    await page.goto("/catalogo/diferencias");
+    const entre = await page
+      .locator("[data-diferencias]")
+      .getAttribute("data-entre");
+    const selector = page.getByRole("navigation", {
+      name: "Comparaciones entre instantáneas consecutivas",
+    });
+    const enlaces = selector.getByRole("link");
+    const n = await enlaces.count();
+    expect(n).toBeGreaterThanOrEqual(1);
+    // Exactamente una está abierta, con aria-current y con el texto «la que ves» (nunca solo el estilo).
+    const abierta = selector.locator('[aria-current="page"]');
+    await expect(abierta).toHaveCount(1);
+    await expect(abierta).toContainText("la que ves");
+    expect(await abierta.getAttribute("data-par")).toBe(entre);
+    // El enlace de la abierta lleva a su propia página, con las mismas cifras.
+    const cifras = await page.locator(".hg-resumen").innerText();
+    await abierta.click();
+    await expect(page).toHaveURL(
+      new RegExp(`/catalogo/diferencias/${entre!.replace("..", "/")}/?$`),
+    );
+    await expect(page.locator("[data-diferencias]")).toHaveAttribute(
+      "data-entre",
+      entre!,
+    );
+    expect(await page.locator(".hg-resumen").innerText()).toBe(cifras);
+    await expect(
+      page
+        .getByRole("navigation", {
+          name: "Comparaciones entre instantáneas consecutivas",
+        })
+        .locator('[aria-current="page"]'),
+    ).toHaveCount(1);
+    await sinDesborde(page);
+    expect(await serias(page)).toEqual([]);
+  });
+
+  test("una comparación que no existe no tiene página", async ({ page }) => {
+    const r = await page.goto(
+      "/catalogo/diferencias/2026-01-01-000000000000/2026-01-02-000000000000",
+    );
+    expect(r?.status()).toBe(404);
+  });
+});
+
 test.describe("el plan desactualizado y su historial", () => {
   test("el plan del clasificador avisa y lleva al historial con las dos versiones", async ({
     page,

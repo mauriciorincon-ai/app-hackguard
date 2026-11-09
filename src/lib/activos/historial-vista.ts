@@ -56,7 +56,7 @@ const esTexto = (v: unknown): v is Bilingue =>
   "en" in v;
 
 /** Un valor del activo puesto en palabras, en los dos idiomas. */
-function enPalabras(ruta: string, v: unknown): Bilingue {
+export function enPalabras(ruta: string, v: unknown): Bilingue {
   if (v === null || v === undefined) return SIN_DECLARAR;
   if (typeof v === "boolean") return v ? SI : NO;
   if (esTexto(v)) return v;

@@ -17,13 +17,13 @@ export const aceptaciones = BASE.hallazgos.flatMap((h) =>
       : [],
   ),
 );
-/** El día en que se abrió un hallazgo: lo da el ciclo de vida del hallazgo (ADR-008), no la brecha, que no lo necesita. */
+/** El día desde el que corre el plazo de un hallazgo (su apertura o, si se reabrió, la reapertura confirmada): lo da el ciclo de vida (ADR-008), no la brecha. */
 export const aperturaDe = (id: string): string => {
   const h = BASE.hallazgos.find((x) => x.id === id);
   if (h === undefined) throw new Error(`no hay hallazgo ${id}`);
   const r = evaluarHallazgo(h, BASE.libro);
   if (!r.ok) throw new Error(`${id}: ${r.motivo}`);
-  return r.evaluacion.apertura;
+  return r.evaluacion.reapertura?.fecha ?? r.evaluacion.apertura;
 };
 export const aperturas = armarBrecha(BASE).hallazgos.map((h) => ({
   ...h,

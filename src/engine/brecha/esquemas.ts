@@ -38,6 +38,10 @@ export const IDS_DE_ETIQUETAS_DE_BRECHA = [
   "sin_registro",
   "vacio",
   "evidencia_esperando",
+  "tendencia_mejoro",
+  "tendencia_empeoro",
+  "tendencia_igual",
+  "tendencia_regresion",
 ] as const;
 export type IdDeEtiquetaDeBrecha = (typeof IDS_DE_ETIQUETAS_DE_BRECHA)[number];
 
@@ -52,6 +56,10 @@ export const IDS_DE_TEXTOS_DE_BRECHA = [
   "cifra_ejecutadas",
   "comprobacion_cierres_prohibidos",
   "comprobacion_no_detectado",
+  "cifra_tendencia_mejoraron",
+  "cifra_tendencia_empeoraron",
+  "cifra_tendencia_igual",
+  "cifra_tendencia_regresion",
 ] as const;
 export type IdDeTextoDeBrecha = (typeof IDS_DE_TEXTOS_DE_BRECHA)[number];
 

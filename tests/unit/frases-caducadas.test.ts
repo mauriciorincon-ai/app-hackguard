@@ -68,6 +68,34 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
   ],
   // S10: la guía ya no tiene el tope del «gate corto ⭐⭐»
   ["S10-G1", "docs/GUIA-DE-PRUEBA.html", /⭐⭐ Parada \d+ de/],
+  // S11: un cerrado SÍ se reabre (D5); la frase vieja decía que toda falla posterior abría un hallazgo nuevo
+  [
+    "S11-reabre",
+    "docs/MANUAL-DE-USO.md",
+    /Si una prueba posterior vuelve a fallar, esa falla abre un/,
+  ],
+  [
+    "S11-reabre",
+    "docs/MANUAL-DE-USO.md",
+    /If a later test fails again, that failure opens a new finding/,
+  ],
+  [
+    "S11-reabre",
+    "src/lib/evidencia/vista.ts",
+    /Si una prueba posterior vuelve a fallar, esa falla abre/,
+  ],
+  [
+    "S11-reabre",
+    "src/cli/evidencia.ts",
+    /Si una prueba posterior vuelve a fallar, abre un hallazgo nuevo/,
+  ],
+  // S11: la carga ya tiene la vía del texto pegado; el README de diseño no dice que «no existe»
+  ["S11-pegado", "docs/diseno/README.md", /esa vía no existe en esta versión/],
+  [
+    "S11-pegado",
+    "docs/diseno/README.md",
+    /La skill existe; la pantalla sigue de solo lectura/,
+  ],
   // El código y sus comentarios
   [
     "S3-X",
@@ -78,6 +106,22 @@ const CADUCADAS: readonly (readonly [string, string, RegExp])[] = [
     "S3-B1",
     "src/lib/catalogo/paginacion.ts",
     /sin pasar el presupuesto de rendimiento/,
+  ],
+  // S11: el texto pegado ya se lee en el navegador (propone, no confirma)
+  [
+    "S11-pegado",
+    "docs/MANUAL-DE-USO.md",
+    /«Texto pegado» todavía no carga nada|“Pasted text” does not load anything yet/,
+  ],
+  [
+    "S11-pegado",
+    "docs/MANUAL-DE-USO.md",
+    /no pega texto todavía|does not paste text yet/,
+  ],
+  [
+    "S11-pegado",
+    "src/components/carga/pegado-pantalla.tsx",
+    /aquí no hay campo ni botón|esa vía no existe en esta versión|there is no field or button here/,
   ],
 ];
 
@@ -105,6 +149,11 @@ const VIGENTES: readonly (readonly [string, string, RegExp])[] = [
     "ED-7",
     "docs/diseno/README.md",
     /verificar-salida-publicada\.mjs --publico/,
+  ],
+  [
+    "S11-pegado",
+    "docs/diseno/README.md",
+    /«Texto pegado» \(S11\) deja de ser un aviso/,
   ],
 ];
 

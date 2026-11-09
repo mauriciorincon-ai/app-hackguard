@@ -7,6 +7,7 @@ import { CargaPantalla } from "../../src/components/carga/carga-pantalla";
 import {
   conLoteDecidido,
   mundoDeCarga,
+  pegadoDeCarga,
   vistaDeCarga,
 } from "./lib/mundo-de-carga";
 
@@ -25,7 +26,9 @@ const porTexto = (c: HTMLElement, selector: string, texto: string) =>
 
 describe("las pestañas de vía", () => {
   it("abre en «Archivo de herramienta»; cada pestaña muestra su vía y esconde las demás", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     const vias = ["adaptador", "pegado", "manual"] as const;
     const hay = () =>
       vias.map((x) => visible(container.querySelector(`[data-si-via="${x}"]`)));
@@ -47,16 +50,48 @@ describe("las pestañas de vía", () => {
     }
   });
 
-  it("«Texto pegado» dice que esa vía no existe en esta versión y no ofrece campo ni botón", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+  it("«Texto pegado» trae el campo para pegar, y proponer sin texto lo dice sin inventar un sobre", async () => {
+    const { container, findByText } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     fireEvent.click(porTexto(container, ".hg-pestana", "Texto pegado"));
     const via = container.querySelector('[data-si-via="pegado"]')!;
-    expect(via.textContent).toContain("Esta vía no existe en esta versión");
-    expect(via.querySelector("button, textarea, input")).toBeNull();
+    expect(via.querySelector("textarea#pegado-texto")).not.toBeNull();
+    expect(via.querySelector("select#pegado-activo")).not.toBeNull();
+    expect(via.querySelector("select#pegado-herramienta")).not.toBeNull();
+    expect(via.textContent).not.toContain("no existe en esta versión");
+    fireEvent.click(via.querySelector<HTMLButtonElement>("[data-proponer]")!);
+    await findByText(/No hay texto que leer/);
+    expect(
+      via
+        .querySelector("[data-pegado-error]")
+        ?.getAttribute("data-pegado-error"),
+    ).toBe("sin_texto");
+    expect(via.querySelector("[data-pegado-resultado]")).toBeNull();
+  });
+
+  it("«Borrar el texto» vacía el campo y quita lo propuesto", async () => {
+    const { container, findByText } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
+    fireEvent.click(porTexto(container, ".hg-pestana", "Texto pegado"));
+    const via = container.querySelector('[data-si-via="pegado"]')!;
+    const campo = via.querySelector<HTMLTextAreaElement>("#pegado-texto")!;
+    const borrar = via.querySelector<HTMLButtonElement>("[data-borrar-texto]")!;
+    expect(borrar.disabled).toBe(true);
+    fireEvent.change(campo, { target: { value: "no es un reporte" } });
+    expect(borrar.disabled).toBe(false);
+    fireEvent.click(via.querySelector<HTMLButtonElement>("[data-proponer]")!);
+    await findByText(/no tiene el formato de esa herramienta/);
+    fireEvent.click(borrar);
+    expect(campo.value).toBe("");
+    expect(via.querySelector("[data-pegado-error]")).toBeNull();
   });
 
   it("«Sobre manual» trae los dos comandos del CLI, en orden", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     fireEvent.click(porTexto(container, ".hg-pestana", "Sobre manual"));
     const via = container.querySelector('[data-si-via="manual"]')!;
     const comandos = [...via.querySelectorAll(".hg-vector")].map(
@@ -72,7 +107,9 @@ describe("las pestañas de vía", () => {
 
 describe("el selector de lote", () => {
   it("cambia de lote: el elegido queda pulsado y es el único que se ve", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     const zona = (id: string) => container.querySelector(`[data-lote="${id}"]`);
     expect([zona("LOTE-0007"), zona("LOTE-0008")].map(visible)).toEqual([
       true,
@@ -98,7 +135,9 @@ describe("el selector de lote", () => {
   });
 
   it("cambia todo: «no ejecutada» se distingue de «superada» y dice por qué no cuenta", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     fireEvent.click(
       porTexto(container, ".hg-selector .hg-opcion", "LOTE-0008"),
     );
@@ -116,7 +155,9 @@ describe("el selector de lote", () => {
 
 describe("la fila de un sobre", () => {
   it("al pulsar el identificador, la fila queda marcada y «Sobre seleccionado» muestra su regla, sus huellas y su hallazgo", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     const zona = container.querySelector('[data-lote="LOTE-0007"]')!;
     const fila = (id: string) => zona.querySelector(`tr[data-sobre="${id}"]`)!;
     // Abre en la primera fallida: SOB-0032.
@@ -143,7 +184,9 @@ describe("la fila de un sobre", () => {
   });
 
   it("la selección es de cada lote: cambiar de lote no la pierde", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     const z7 = container.querySelector('[data-lote="LOTE-0007"]')!;
     fireEvent.click(z7.querySelector('tr[data-sobre="SOB-0031"] button')!);
     fireEvent.click(
@@ -163,13 +206,15 @@ describe("la fila de un sobre", () => {
 
 describe("todos los controles dibujados", () => {
   it("cada botón está pulsado o se puede pulsar, y al pulsarlo algo cambia (ninguno está muerto)", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     const todos = botones(container);
     expect(todos.length).toBeGreaterThanOrEqual(3 + 2 + 6);
     const huella = () =>
       [
         ...container.querySelectorAll(
-          "[aria-pressed], [hidden], [data-seleccion], [data-via]",
+          "[aria-pressed], [hidden], [data-seleccion], [data-via], [data-leyendo]",
         ),
       ]
         .map((e) =>
@@ -178,11 +223,13 @@ describe("todos los controles dibujados", () => {
             e.hasAttribute("hidden"),
             e.getAttribute("data-seleccion"),
             e.getAttribute("data-via"),
+            e.hasAttribute("data-leyendo"),
           ].join("|"),
         )
         .join("/");
     for (const b of todos) {
-      if (pulsado(b)) continue;
+      // Un botón deshabilitado («Borrar el texto» sin texto) no se puede pulsar: su prueba es la de arriba.
+      if (pulsado(b) || b.disabled) continue;
       const antes = huella();
       fireEvent.click(b);
       expect(huella(), b.textContent ?? "").not.toBe(antes);
@@ -190,7 +237,9 @@ describe("todos los controles dibujados", () => {
   });
 
   it("no hay botón que decida: «Confirmar el lote» y «Revisar uno por uno» son comandos, no botones", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     for (const b of botones(container))
       expect(b.textContent).not.toMatch(
         /Confirmar el lote|Revisar uno por uno|Confirm the batch|Review one by one/,
@@ -201,7 +250,9 @@ describe("todos los controles dibujados", () => {
   });
 
   it("el árbol es el mismo en los dos idiomas: cada texto viaja en sus dos idiomas", () => {
-    const { container } = render(<CargaPantalla v={vistaDeCarga()} />);
+    const { container } = render(
+      <CargaPantalla v={vistaDeCarga()} pegado={pegadoDeCarga()} />,
+    );
     expect(container.querySelectorAll('[lang="es"]').length).toBe(
       container.querySelectorAll('[lang="en"]').length,
     );
@@ -219,7 +270,9 @@ describe("la pantalla con un lote decidido y sin lotes", () => {
         separados: ["SOB-0034"],
       }),
     );
-    const { container } = render(<CargaPantalla v={v} />);
+    const { container } = render(
+      <CargaPantalla v={v} pegado={pegadoDeCarga()} />,
+    );
     const zona = container.querySelector('[data-lote="LOTE-0008"]')!;
     expect(zona.getAttribute("data-decision")).toBe("confirmado");
     expect(zona.querySelector(".hg-consecuencia")?.textContent).toContain(
@@ -236,7 +289,9 @@ describe("la pantalla con un lote decidido y sin lotes", () => {
 
   it("sin lotes dice «No hay nada por confirmar» y no dibuja pestañas ni tablas", () => {
     const v = vistaDeCarga({ ...mundoDeCarga, lotes: [], revisiones: {} });
-    const { container } = render(<CargaPantalla v={v} />);
+    const { container } = render(
+      <CargaPantalla v={v} pegado={pegadoDeCarga()} />,
+    );
     expect(container.textContent).toContain("No hay nada por confirmar");
     expect(container.querySelector(".hg-pestana, table")).toBeNull();
     expect(container.querySelector(".hg-resumen .hg-cifra")?.textContent).toBe(

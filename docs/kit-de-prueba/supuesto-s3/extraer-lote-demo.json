@@ -1,0 +1,109 @@
+{
+  "formato": "hackguard/extraer-lote@1",
+  "nota": {
+    "es": "Los 20 comandos, en orden, sobre el mismo set de S3. Los corre una persona (la skill /extraer solo la lanza una persona); este sprint no los corrió.",
+    "en": "The 20 commands, in order, over the same S3 set. A person runs them (the /extraer skill is only launched by a person); this sprint did not run them."
+  },
+  "comandos": [
+    {
+      "id": "R01",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R01.txt act-demo-asistente"
+    },
+    {
+      "id": "R02",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R02.txt act-demo-asistente"
+    },
+    {
+      "id": "R03",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R03.txt act-demo-asistente"
+    },
+    {
+      "id": "R04",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R04.txt act-demo-asistente"
+    },
+    {
+      "id": "R05",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R05.txt act-demo-asistente"
+    },
+    {
+      "id": "R06",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R06.txt act-demo-asistente"
+    },
+    {
+      "id": "R07",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R07.txt act-demo-asistente"
+    },
+    {
+      "id": "R08",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R08.txt act-demo-asistente"
+    },
+    {
+      "id": "R09",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R09.txt act-demo-asistente"
+    },
+    {
+      "id": "R10",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R10.txt act-demo-asistente"
+    },
+    {
+      "id": "R11",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R11.txt act-demo-asistente"
+    },
+    {
+      "id": "R12",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R12.txt act-demo-asistente"
+    },
+    {
+      "id": "R13",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R13.txt act-demo-asistente"
+    },
+    {
+      "id": "R14",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R14.txt act-demo-asistente"
+    },
+    {
+      "id": "R15",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R15.txt act-demo-asistente"
+    },
+    {
+      "id": "R16",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R16.txt act-demo-asistente"
+    },
+    {
+      "id": "R17",
+      "activo": "act-demo-asistente",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R17.txt act-demo-asistente"
+    },
+    {
+      "id": "R18",
+      "activo": "act-demo-clasificador",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R18.txt act-demo-clasificador"
+    },
+    {
+      "id": "R19",
+      "activo": "act-demo-clasificador",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R19.txt act-demo-clasificador"
+    },
+    {
+      "id": "R20",
+      "activo": "act-demo-clasificador",
+      "comando": "/extraer docs/kit-de-prueba/supuesto-s3/resultados/R20.txt act-demo-clasificador"
+    }
+  ]
+}

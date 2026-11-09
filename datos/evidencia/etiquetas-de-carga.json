@@ -96,12 +96,21 @@
       }
     },
     {
-      "id": "via_sin_construir",
-      "rol": "neutro",
-      "simbolo": "vacio",
+      "id": "via_local",
+      "rol": "acento",
+      "simbolo": "ok",
       "nombre": {
-        "es": "Esta vía no existe en esta versión",
-        "en": "This route does not exist in this version"
+        "es": "Se lee en tu navegador",
+        "en": "Read in your browser"
+      }
+    },
+    {
+      "id": "pegado_sin_sobre",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "No se propuso ningún sobre",
+        "en": "No envelope was proposed"
       }
     },
     {

@@ -103,7 +103,7 @@ export interface Movimiento {
   fuera: "retirada_o_ausente" | MotivoDeExclusion | null;
   /** Todas las que apliquen, en el orden catálogo · regla · perfil. Vacío solo en una que se queda sin cambiar de verdad. */
   causas: Factor[];
-  /** Dos o más causas y ninguna basta sola: se mueve por las dos cosas a la vez. */
+  /** Dos o más causas (hasta las tres: catálogo, regla y perfil) y ninguna basta sola: se mueve por todas a la vez. */
   conjunta: boolean;
   /** Solo en «se queda»: qué cambió de ella. */
   cambios: CambioDeUnaQueSeQueda[];
@@ -311,8 +311,9 @@ export async function replanear(
     const O = resultadoDe(pA, antes, formula, entornos);
     const N = resultadoDe(pN, ahora, formula, entornos);
     if (O.estado !== "planeada" && N.estado !== "planeada") {
-      // Candidata del activo que no estaba ni está en el plan (excluida por perfil, alcance u operador, antes y ahora).
-      if (O.estado === "fuera" || N.estado === "fuera") siguenFuera += 1;
+      // «Sigue fuera»: excluida por perfil, alcance u operador antes Y ahora. Una que antes no estaba en el catálogo (o ya no está) no es
+      // «una que sigue fuera»: no tenía lugar de donde salir ni de donde quedarse.
+      if (O.estado === "fuera" && N.estado === "fuera") siguenFuera += 1;
       continue;
     }
 

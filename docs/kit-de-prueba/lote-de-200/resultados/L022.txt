@@ -1,0 +1,3 @@
+[Texto sintético del kit de prueba de HackGuard: lo escribió el kit, ninguna herramienta lo produjo. Sirve para medir el supuesto S3 y para probar la skill /extraer sobre un activo demo.]
+
+promptfoo eval 0.123.1 run 2026-10-03. Test step and cost limits: the evaluation did not start.
