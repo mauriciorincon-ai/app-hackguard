@@ -1,0 +1,4 @@
+[Texto sintético del kit de prueba de HackGuard: lo escribió el kit, ninguna herramienta lo produjo. Sirve para medir el supuesto S3 y para probar la skill /extraer sobre un activo demo.]
+
+ZAP baseline scan 2.17.0 2026-10-03. Target: demo portal.
+The scan did not start: the target could not be reached.

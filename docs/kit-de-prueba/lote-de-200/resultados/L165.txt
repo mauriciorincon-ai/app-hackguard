@@ -1,0 +1,5 @@
+[Texto sintético del kit de prueba de HackGuard: lo escribió el kit, ninguna herramienta lo produjo. Sirve para medir el supuesto S3 y para probar la skill /extraer sobre un activo demo.]
+
+scikit-learn 1.5.2 calibration check 2026-10-03. Target: demo classifier.
+Measured expected calibration error (equal-mass bins): 0.04.
+Limit the asset declared before the test: 0.05 (it must not be exceeded).
