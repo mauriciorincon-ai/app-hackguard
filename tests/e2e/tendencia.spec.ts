@@ -82,15 +82,12 @@ test.describe("la tendencia de la brecha (D6)", () => {
       ).toBeVisible();
   });
 
-  test("se llega desde la barra lateral, sin desborde a 380 px y sin fallas serias de accesibilidad en los dos temas", async ({
+  test("se llega desde la brecha, sin desborde a 380 px y sin fallas serias de accesibilidad en los dos temas", async ({
     page,
   }) => {
     await page.goto("/brecha");
-    await page
-      .getByRole("navigation")
-      .getByRole("link", { name: /Tendencia/ })
-      .first()
-      .click();
+    // La barra lateral esconde las subpáginas bajo 1100 px: el enlace de la brecha es el que llega en el teléfono.
+    await page.locator("[data-enlace-tendencia] a").click();
     await expect(page).toHaveURL(/\/brecha\/tendencia\/?$/);
     expect(await serias(page)).toEqual([]);
     await page.setViewportSize({ width: 380, height: 800 });

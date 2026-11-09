@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-// La pantalla de un hallazgo tal como la lee quien la abre, en español (el inglés llega al cierre del hito): los cuatro
+// La pantalla de un hallazgo tal como la lee quien la abre, en español (el inglés llega al cierre del hito): los cinco
 // estados del ciclo de vida, el aviso de plazo vencido, la cadena de cierre con sus eslabones pendientes, la severidad por
 // escala de IA y por CVSS 4.0, la salida «Qué puedes hacer» en solo lectura, el enlace desde la barra lateral, 380 px y
 // accesibilidad en los dos temas. Ninguna aserción fija una fecha de consulta: el plazo vencido de HZ-0007 ya venció en
@@ -11,7 +11,8 @@ const ABIERTO = "HZ-0007";
 const CORREGIDO = "HZ-0009";
 const ACEPTADO = "HZ-0005";
 const CERRADO = "HZ-0003";
-const TODOS = [ABIERTO, CORREGIDO, ACEPTADO, CERRADO];
+const REABIERTO = "HZ-0011";
+const TODOS = [ABIERTO, CORREGIDO, ACEPTADO, CERRADO, REABIERTO];
 
 const ruta = (id: string) => `/evidencia/hallazgos/${id}`;
 
@@ -28,7 +29,7 @@ const sinDesborde = async (page: Page) => {
   expect(ancho).toBeLessThanOrEqual(visible);
 };
 
-test.describe("los cuatro estados del ciclo de vida", () => {
+test.describe("los cinco estados del ciclo de vida", () => {
   test("cada hallazgo muestra su estado con su texto, y el estado de la página es el que calcula el motor", async ({
     page,
   }) => {
@@ -43,6 +44,7 @@ test.describe("los cuatro estados del ciclo de vida", () => {
         texto: "Aceptado con riesgo",
       },
       [CERRADO]: { estado: "cerrado", texto: "Cerrado por re-prueba" },
+      [REABIERTO]: { estado: "reabierto", texto: "Reabierto" },
     };
     for (const id of TODOS) {
       await page.goto(ruta(id));
@@ -210,7 +212,7 @@ test.describe("navegación", () => {
 });
 
 test.describe("en el móvil", () => {
-  test("sin desborde horizontal a 380 px, en los cuatro hallazgos", async ({
+  test("sin desborde horizontal a 380 px, en los cinco hallazgos", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 380, height: 800 });
@@ -222,7 +224,7 @@ test.describe("en el móvil", () => {
 });
 
 test.describe("accesibilidad", () => {
-  test("sin violaciones serias en los cuatro hallazgos, en los dos temas", async ({
+  test("sin violaciones serias en los cinco hallazgos, en los dos temas", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });

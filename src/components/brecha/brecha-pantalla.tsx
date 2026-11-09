@@ -608,6 +608,17 @@ export function BrechaPantalla({ v }: { v: VistaDeBrecha }) {
           />
           <MarcosConVersionNueva marcos={v.marcos} clase="hg-panel-pie" />
         </section>
+
+        <p className="hg-menor" data-enlace-tendencia="">
+          <Link href={RUTAS.tendencia}>
+            <T
+              t={{
+                es: "Ver cómo cambió la brecha en el tiempo",
+                en: "See how the gap changed over time",
+              }}
+            />
+          </Link>
+        </p>
       </div>
     </>
   );

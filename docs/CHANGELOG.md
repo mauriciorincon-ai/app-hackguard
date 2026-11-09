@@ -18,7 +18,7 @@ The second sprint of milestone H-2: a finding and a report stop being a snapshot
 ### Changed
 
 - **`docs/GUIA-DE-PRUEBA.html`** goes from 65 to 69 stops, each in its place in the one walk; D5 and D6 are built in the coverage matrix; the Sprint 10 origins become regression; the demo facts HZ-0011 changed (five findings, «5 · 4», «9 / 25») are corrected.
-- **The manual** gains «Evidence over time» in both languages; **the export** gains four functions (25) and **the BLUEPRINT** is as built.
+- **The manual** gains «Evidence over time» in both languages; **the export** gains three functions (24) and **the BLUEPRINT** is as built.
 - **«Qué cambió»** generates every consecutive snapshot pair at build, with a link selector; `plan:replanear` honors `--salida`; a snapshot read from disk is checked with a strict schema.
 
 ### Not in this sprint

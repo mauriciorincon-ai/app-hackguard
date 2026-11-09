@@ -43,12 +43,6 @@ function Comando({ texto: t }: { texto: string }) {
   );
 }
 
-const SIN_EVIDENCIA: Etiqueta = {
-  rol: "neutro",
-  simbolo: "vacio",
-  nombre: { es: "Sin evidencia", en: "No evidence" },
-};
-
 const FILAS: {
   clave: keyof CifrasDeBrecha;
   nombre: { es: string; en: string };
@@ -140,8 +134,9 @@ function Propuesta({
   const nombreDe = (id: string) => mundo.nombresDePruebas[id];
   const veredicto = (v: string | null): Etiqueta =>
     v === null
-      ? SIN_EVIDENCIA
-      : (mundo.etiquetas.veredictos[v] ?? SIN_EVIDENCIA);
+      ? mundo.etiquetas.controles.sin_evidencia
+      : (mundo.etiquetas.veredictos[v] ??
+        mundo.etiquetas.controles.sin_evidencia);
   return (
     <div className="hg-pila" data-pegado-resultado="">
       <section className="hg-panel" aria-labelledby="pegado-sobres">
@@ -638,7 +633,7 @@ export function PegadoPantalla({
               />
             </h2>
             <ol className="hg-cadena">
-              <li className="hg-eslabon es-neutro">
+              <li className="hg-eslabon">
                 <span className="hg-eslabon-titulo">
                   <T
                     t={{
@@ -656,7 +651,7 @@ export function PegadoPantalla({
                   />
                 </span>
               </li>
-              <li className="hg-eslabon es-neutro">
+              <li className="hg-eslabon">
                 <span className="hg-eslabon-titulo">
                   <T
                     t={{
@@ -674,7 +669,7 @@ export function PegadoPantalla({
                   />
                 </span>
               </li>
-              <li className="hg-eslabon es-neutro">
+              <li className="hg-eslabon">
                 <span className="hg-eslabon-titulo">
                   <T t={{ es: "Tú lo confirmas", en: "You confirm it" }} />
                 </span>
