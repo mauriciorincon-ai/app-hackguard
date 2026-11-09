@@ -73,3 +73,5 @@ export async function conMuestreo(
   );
   return { ...mundoDeHallazgos, muestreo, revisiones };
 }
+
+export { mundoDePegado as pegadoDeCarga } from "./mundo-de-pegado";
