@@ -5,7 +5,7 @@ hito: H-2 Producto completo
 opened: 2026-11-08
 closed: 2026-11-08
 branch: sprint-011/la-evidencia-en-el-tiempo
-pr: PR_N
+pr: 31
 ---
 
 # Sprint 011 · «La evidencia en el tiempo»
