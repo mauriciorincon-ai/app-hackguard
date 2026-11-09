@@ -107,6 +107,22 @@
     "F21": {
       "nombre": "Re-plan, with the cause of every movement",
       "que_hace": "Before you change a plan you see the new one next to the old one, test by test: which comes in, which goes out and which stays, with its cause (the catalog, the applicability rule or the app's profile) and the ISO/IEC 42001 controls that gain or lose coverage. The old plan is archived, never deleted."
+    },
+    "F22": {
+      "nombre": "A closed finding can reopen",
+      "que_hace": "If a retest that a person confirmed, with the same configuration and after the closing, fails again, the finding reopens and its deadline runs from that day. You see its whole story: opens, is corrected, closes, reopens. A finding that no longer shows up in a scan, or a test that did not run, never reopens or closes it."
+    },
+    "F23": {
+      "nombre": "Paste a tool's output and see what would change",
+      "que_hace": "You paste into the browser what Garak or ZAP gave you and see the envelope that would be proposed for each test, the verdict the rule calculates, the findings it would open and the gap before and after if you confirm it. The text never leaves the page, is not saved and nothing counts until you confirm it."
+    },
+    "F25": {
+      "nombre": "The instrument's assumptions, measured",
+      "que_hace": "The three assumptions the agents rest on are measured with a command: that the code verifies invented quotes, that no order hidden in a text changes what they propose, and that the rule's verdict matches a person's on at least nine in ten pasted results. Each one ends up proven or refuted, not assumed."
+    },
+    "F24": {
+      "nombre": "The gap trend, control by control",
+      "que_hace": "You see the same gap on each date something changed, and for each ISO/IEC 42001 control whether it improved, got worse or stayed the same and which finding moved it. A reopened finding marks its control as a regression, so a closing that was undone does not pass as an improvement."
     }
   }
 }
