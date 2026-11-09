@@ -139,6 +139,42 @@
         "es": "Hay evidencia esperando tu confirmación",
         "en": "There is evidence awaiting your confirmation"
       }
+    },
+    {
+      "id": "tendencia_mejoro",
+      "rol": "positivo",
+      "simbolo": "ok",
+      "nombre": {
+        "es": "Mejoró",
+        "en": "Improved"
+      }
+    },
+    {
+      "id": "tendencia_empeoro",
+      "rol": "falla",
+      "simbolo": "falla",
+      "nombre": {
+        "es": "Empeoró",
+        "en": "Got worse"
+      }
+    },
+    {
+      "id": "tendencia_igual",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Igual",
+        "en": "Unchanged"
+      }
+    },
+    {
+      "id": "tendencia_regresion",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Regresión: un hallazgo se reabrió",
+        "en": "Regression: a finding was reopened"
+      }
     }
   ],
   "textos": {
@@ -177,6 +213,22 @@
     "comprobacion_no_detectado": {
       "es": "«No detectado» no es verificado",
       "en": "“Not detected” is not verified"
+    },
+    "cifra_tendencia_mejoraron": {
+      "es": "controles mejoraron",
+      "en": "controls improved"
+    },
+    "cifra_tendencia_empeoraron": {
+      "es": "controles empeoraron",
+      "en": "controls got worse"
+    },
+    "cifra_tendencia_igual": {
+      "es": "controles igual",
+      "en": "controls unchanged"
+    },
+    "cifra_tendencia_regresion": {
+      "es": "controles con regresión",
+      "en": "controls with a regression"
     }
   }
 }

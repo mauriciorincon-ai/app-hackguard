@@ -38,6 +38,10 @@ test("cada página tiene un título propio, con el nombre de la app al final", a
     ],
     ["/brecha", /^Brecha \/ Gap · HackGuard$/],
     ["/brecha/informe", /^Informe de brecha \/ Gap report · HackGuard$/],
+    [
+      "/brecha/tendencia",
+      /^Tendencia de la brecha \/ Gap trend · HackGuard$/,
+    ],
     ["/evidencia/carga", /^Carga de evidencia \/ Evidence intake · HackGuard$/],
     [
       "/evidencia/hallazgos/HZ-0007",

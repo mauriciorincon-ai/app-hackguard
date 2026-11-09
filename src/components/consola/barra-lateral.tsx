@@ -144,6 +144,7 @@ const SUBPAGINAS: Record<
       ruta: "/brecha/control",
     },
     { nombre: { es: "Informe", en: "Report" }, ruta: "/brecha/informe" },
+    { nombre: { es: "Tendencia", en: "Trend" }, ruta: "/brecha/tendencia" },
   ],
   evidencia: [
     { nombre: { es: "Carga", en: "Intake" }, ruta: "/evidencia/carga" },

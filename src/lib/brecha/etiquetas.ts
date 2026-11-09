@@ -36,5 +36,6 @@ export const RUTAS = {
   brecha: "/brecha",
   controles: "/brecha/control",
   informe: "/brecha/informe",
+  tendencia: "/brecha/tendencia",
   carga: "/evidencia/carga",
 } as const;
