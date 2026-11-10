@@ -70,6 +70,10 @@ ya construidas (D1, D3, D4, D5 y D6) y la 1 que el primer corte dejó al H-2 (el
 | F22 | Un hallazgo cerrado puede reabrirse                       | La evidencia en el tiempo · desde Sprint 011                               | T3 · Evidencia que firmas tú        |
 | F23 | Pegar el resultado de una herramienta y ver qué cambiaría | La evidencia en el tiempo · desde Sprint 011                               | T3 · Evidencia que firmas tú        |
 | F24 | La tendencia de la brecha, control por control            | La evidencia en el tiempo · desde Sprint 011                               | T5 · Lo que cambió                  |
+| F25 | Resultados de promptfoo                                   | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F26 | Resultados de PyRIT e Inspect                             | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F27 | Tus hallazgos, listos para DefectDojo                     | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F28 | Un ejecutor opcional, apagado por defecto                 | Tus herramientas · desde Sprint 012                                        | T2 · Un plan que explica            |
 
 **Qué no cuenta y por qué:** el propio brochure (no se documenta a sí mismo), el kit de prueba y la guía (son del gate, no de la app) y las
 funciones `[roadmap]` de la visión que aún no se construyen (no existen todavía; viajan aparte, como roadmap votable, en el complemento de la ficha).
