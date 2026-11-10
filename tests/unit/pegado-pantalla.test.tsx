@@ -201,14 +201,18 @@ describe("lo que no se puede proponer, se dice", () => {
     expect(c.querySelector("[data-leyendo]")).toBeNull();
   });
 
-  it("sin un activo con plan de Garak o de ZAP no hay formulario: dice por qué", () => {
+  it("sin un activo con plan de una herramienta con adaptador no hay formulario: dice por qué", () => {
     const { container: c } = montar({
       ...mundoDePegado(CONSULTA),
       activos: [],
     });
     expect(c.querySelector("#pegado-texto")).toBeNull();
-    expect(c.textContent).toContain("Ningún activo con plan de Garak o de ZAP");
-    expect(c.textContent).toContain("No asset with a Garak or ZAP plan");
+    expect(c.textContent).toContain(
+      "Ningún activo con plan de una herramienta que HackGuard sepa leer",
+    );
+    expect(c.textContent).toContain(
+      "No asset with a plan for a tool HackGuard can read",
+    );
   });
 });
 

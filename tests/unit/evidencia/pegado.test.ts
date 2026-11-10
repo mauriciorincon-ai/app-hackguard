@@ -20,6 +20,7 @@ import {
 } from "../../../src/lib/evidencia/pegado.ts";
 import {
   GARAK,
+  PROMPTFOO,
   ZAP,
   mundoDePegado,
   textoDeFixture,
@@ -35,6 +36,14 @@ const garak = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
   herramienta: "garak",
   fecha: null,
   zona: "America/Bogota",
+  ...extra,
+});
+const promptfoo = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
+  texto: textoDeFixture(PROMPTFOO),
+  activo: ASISTENTE,
+  herramienta: "promptfoo",
+  fecha: null,
+  zona: null,
   ...extra,
 });
 const zap = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
@@ -101,6 +110,21 @@ describe("lo que propone el texto pegado", () => {
     expect(p.huellaDelCrudo).toBe(
       await huellaDelCrudo(new TextEncoder().encode(textoDeFixture(GARAK))),
     );
+    expect(p.noAplican).toBe(0);
+  });
+
+  it("un archivo de promptfoo también: sobres propuestos con el veredicto de la regla, jamás el de la herramienta", async () => {
+    const p = await propuesta(M, promptfoo());
+    expect(p.sobres).toHaveLength(3);
+    expect(p.sobres.every((s) => s.confirmacion === null)).toBe(true);
+    expect(p.fecha).toBe("2026-10-12");
+    // `is-json` salió 1 de 1 en la herramienta; la regla de la prueba (que pide más repeticiones) dice «parcial», no «superada».
+    // Una prueba cuyas filas terminaron todas en error y otra sin filas del plan no se dan por superadas.
+    expect(p.resumen.map((s) => [s.prueba, s.veredicto])).toEqual([
+      ["PR-AG-LIM-001", "no_ejecutada"],
+      ["PR-AG-PERM-001", "no_ejecutada"],
+      ["PR-IA-SAL-001", "parcial"],
+    ]);
     expect(p.noAplican).toBe(0);
   });
 
@@ -231,7 +255,7 @@ describe("lo que no se lee, se dice", () => {
     ],
     [
       "la herramienta no tiene adaptador",
-      garak({ herramienta: "promptfoo" }),
+      garak({ herramienta: "nikto" }),
       "activo_desconocido",
     ],
     [

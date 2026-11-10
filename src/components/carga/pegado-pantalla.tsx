@@ -29,7 +29,7 @@ type Estado_ =
   | { tipo: "listo"; resultado: ResultadoDePegado };
 
 const COMANDO_IMPORTAR =
-  "pnpm evidencia:importar --garak <report.jsonl> | --zap <report.json> --activo <tu-activo> --por <tu-nombre>";
+  "pnpm evidencia:importar --herramienta <herramienta> --archivo <ruta> --activo <tu-activo> --por <tu-nombre>";
 const COMANDO_CONFIRMAR =
   "pnpm evidencia:confirmar-lote <LOTE-NNNN> --por <tu-nombre> --fecha AAAA-MM-DD --revisados <n>";
 
@@ -432,15 +432,15 @@ export function PegadoPantalla({
         <Aviso
           etiqueta={etiquetas.sinSobre}
           titulo={{
-            es: "Ningún activo con plan de Garak o de ZAP",
-            en: "No asset with a Garak or ZAP plan",
+            es: "Ningún activo con plan de una herramienta que HackGuard sepa leer",
+            en: "No asset with a plan for a tool HackGuard can read",
           }}
         >
           <p>
             <T
               t={{
-                es: "El texto pegado se lee contra el plan de un activo: aquí no hay ninguno que corra Garak o ZAP.",
-                en: "Pasted text is read against an asset's plan: none here runs Garak or ZAP.",
+                es: "El texto pegado se lee contra el plan de un activo: aquí no hay ninguno cuyo plan use una herramienta con adaptador (Garak, ZAP o promptfoo).",
+                en: "Pasted text is read against an asset's plan: none here has a plan that uses a tool with an adapter (Garak, ZAP or promptfoo).",
               }}
             />
           </p>
@@ -561,8 +561,8 @@ export function PegadoPantalla({
               <span className="hg-menor" id="pegado-ayuda">
                 <T
                   t={{
-                    es: "Pega el reporte entero: para Garak el archivo report.jsonl, para ZAP el JSON del reporte.",
-                    en: "Paste the whole report: for Garak the report.jsonl file, for ZAP the report's JSON.",
+                    es: "Pega el reporte entero: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`.",
+                    en: "Paste the whole report: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes.",
                   }}
                 />
               </span>

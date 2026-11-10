@@ -6,7 +6,8 @@
 //   registrar         <resultado.json> --crudo <archivo>
 //   confirmar         <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]
 //                     [--titulo-es --titulo-en --descripcion-es --descripcion-en]
-//   importar          --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]
+//   importar          --herramienta <id> --archivo <ruta> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]
+//                     (--garak <ruta> y --zap <ruta> siguen valiendo como atajos de --herramienta garak|zap --archivo <ruta>)
 //   confirmar-lote    <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD [--separar <SOB-NNNN>]… | --revisar-uno-por-uno
 //   validar           [--json] [--idioma es|en]
 //   hallazgos-listar  --fecha AAAA-MM-DD [--json] [--idioma es|en]
@@ -89,8 +90,8 @@ import {
 } from "../lib/evidencia/cargar-evidencia.ts";
 
 const USO = {
-  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
-  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgo-cadena <HZ-NNNN> --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --herramienta <id> --archivo <ruta> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --herramienta <id> --archivo <path> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgo-cadena <HZ-NNNN> --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
 };
 
 class ErrorDeUso extends Error {}
@@ -107,6 +108,8 @@ function opciones(argv: string[]) {
       crudo: { type: "string" },
       garak: { type: "string" },
       zap: { type: "string" },
+      herramienta: { type: "string" },
+      archivo: { type: "string" },
       activo: { type: "string" },
       zona: { type: "string" },
       separar: { type: "string", multiple: true },
@@ -369,15 +372,33 @@ async function principal(argv: string[]): Promise<number> {
   }
 
   if (o.comando === "importar") {
-    const herramienta =
-      o.garak !== undefined ? "garak" : o.zap !== undefined ? "zap" : null;
-    if (herramienta === null || (o.garak !== undefined && o.zap !== undefined))
-      throw new ErrorDeUso("--garak <report.jsonl> | --zap <report.json>");
-    const archivoDeLaHerramienta = path.resolve(o.garak ?? o.zap ?? "");
+    // Una sola forma de decir qué se importa: los atajos --garak/--zap o el par --herramienta/--archivo.
+    const dados = [
+      o.garak !== undefined ? { herramienta: "garak", archivo: o.garak } : null,
+      o.zap !== undefined ? { herramienta: "zap", archivo: o.zap } : null,
+      o.herramienta !== undefined || o.archivo !== undefined
+        ? { herramienta: o.herramienta ?? "", archivo: o.archivo ?? "" }
+        : null,
+    ].filter((d) => d !== null);
+    const dado = dados[0];
+    if (
+      dados.length !== 1 ||
+      dado === undefined ||
+      dado.herramienta === "" ||
+      dado.archivo === ""
+    )
+      throw new ErrorDeUso(
+        "--herramienta <id> --archivo <ruta> (o --garak <ruta> | --zap <ruta>)",
+      );
+    const herramienta = dado.herramienta;
+    const archivoDeLaHerramienta = path.resolve(dado.archivo);
     const activo = requerido(o.activo, "--activo <id>");
     const por = requerido(o.por, "--por <persona>");
     const adaptador = adaptadorDe(herramienta);
-    if (adaptador === undefined) throw new ErrorDeUso(herramienta);
+    if (adaptador === undefined)
+      throw new ErrorDeUso(
+        `no hay un adaptador para «${herramienta}» / there is no adapter for “${herramienta}”`,
+      );
     // El archivo de la herramienta se lee UNA vez: se resume en una huella y se descarta (regla dura 4).
     const bytes = readFileSync(archivoDeLaHerramienta);
     const huellaDelArchivo = await huellaDelCrudo(bytes);

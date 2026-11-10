@@ -499,6 +499,45 @@ describe("importar: lo que se rechaza", () => {
     expect(readdirSync(path.join(raiz, "datos")).includes("lotes")).toBe(false);
   });
 
+  it("--herramienta y --archivo dicen lo mismo que el atajo --garak: llegan al mismo rechazo del activo demo (2)", () => {
+    for (const herramienta of ["garak", "promptfoo"]) {
+      const r = evidencia(
+        [
+          "importar",
+          "--herramienta",
+          herramienta,
+          "--archivo",
+          garak,
+          "--activo",
+          ASISTENTE,
+          ...base,
+          "--zona",
+          "UTC",
+        ],
+        raiz,
+      );
+      expect(r.codigo, herramienta).toBe(2);
+      expect(r.salida).toContain("Un activo demo no recibe archivos reales");
+    }
+  });
+
+  it("una herramienta sin adaptador, un par incompleto o dos maneras a la vez son de uso (3)", () => {
+    const con = (...banderas: string[]) =>
+      evidencia(
+        ["importar", ...banderas, "--activo", "mi-asistente", ...base],
+        raiz,
+      );
+    const sin = con("--herramienta", "nikto", "--archivo", garak);
+    expect(sin.codigo).toBe(3);
+    expect(sin.errores).toContain("nikto");
+    expect(con("--herramienta", "promptfoo").codigo).toBe(3);
+    expect(con("--archivo", garak).codigo).toBe(3);
+    expect(
+      con("--garak", garak, "--herramienta", "garak", "--archivo", garak)
+        .codigo,
+    ).toBe(3);
+  });
+
   it("un activo que no existe, y las banderas que faltan, son de uso (3)", () => {
     expect(
       evidencia(

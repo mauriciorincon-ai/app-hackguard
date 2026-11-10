@@ -46,7 +46,7 @@ export interface ActivoParaPegar {
   nombre: Bilingue;
   /** El plan emitido con su paquete, ya comprobado contra su huella por quien armó el mundo (el build). */
   emitido: PlanDeActivo;
-  /** La herramienta que el paquete corre y cuyo adaptador existe: «garak», «zap». */
+  /** La herramienta que el paquete corre y cuyo adaptador existe: «garak», «zap», «promptfoo». */
   herramientas: { id: string; nombre: Bilingue }[];
 }
 
@@ -107,16 +107,16 @@ export const TEXTO_DE_MOTIVO: Record<string, Bilingue> = {
     en: "That asset has no issued plan with this tool.",
   },
   herramienta_sin_adaptador: {
-    es: "HackGuard solo lee los reportes de Garak y de ZAP. Para otra herramienta usa «Sobre manual».",
-    en: "HackGuard only reads Garak and ZAP reports. For another tool use “Manual envelope”.",
+    es: "HackGuard solo lee los reportes de Garak, de ZAP y de promptfoo. Para otra herramienta usa «Sobre manual».",
+    en: "HackGuard only reads Garak, ZAP and promptfoo reports. For another tool use “Manual envelope”.",
   },
   ya_importado: {
     es: "Ese mismo texto ya se importó como un lote: la misma corrida no se importa dos veces.",
     en: "That same text was already imported as a batch: the same run is not imported twice.",
   },
   no_leyo_no_es_el_formato: {
-    es: "El texto no tiene el formato de esa herramienta. Pega el reporte entero, tal como lo escribió: para Garak el archivo report.jsonl, para ZAP el JSON del reporte.",
-    en: "The text does not have that tool's format. Paste the whole report as the tool wrote it: for Garak the report.jsonl file, for ZAP the report's JSON.",
+    es: "El texto no tiene el formato de esa herramienta. Pega el reporte entero, tal como lo escribió: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`.",
+    en: "The text does not have that tool's format. Paste the whole report as the tool wrote it: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes.",
   },
   no_leyo_version_incoherente: {
     es: "El reporte dice dos versiones de la herramienta que no coinciden: no se arma ningún sobre con un dato en el que el propio archivo no se pone de acuerdo.",
