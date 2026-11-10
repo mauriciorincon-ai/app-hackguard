@@ -5,7 +5,7 @@ hito: H-2 Producto completo
 opened: 2026-11-09
 closed: 2026-11-10
 branch: sprint-012/tus-herramientas
-pr: pendiente
+pr: 32
 ---
 
 # Sprint 012 · «Tus herramientas»
