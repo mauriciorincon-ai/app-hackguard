@@ -1,0 +1,335 @@
+{
+  "evalId": "eval-sintetico-0001",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-10-12T12:00:00.000Z",
+    "prompts": [
+      {
+        "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+        "label": "prompt",
+        "provider": "proveedor-sintetico"
+      }
+    ],
+    "results": [
+      {
+        "id": "fila-sintetica-0",
+        "promptIdx": 0,
+        "testIdx": 0,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": true,
+        "score": 1,
+        "failureReason": 0,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "prompt-extraction"
+          }
+        },
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "metadata": {
+            "pluginId": "prompt-extraction",
+            "strategyId": "basic"
+          }
+        }
+      },
+      {
+        "id": "fila-sintetica-1",
+        "promptIdx": 0,
+        "testIdx": 1,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": true,
+        "score": 1,
+        "failureReason": 0,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "prompt-extraction"
+          }
+        },
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "metadata": {
+            "pluginId": "prompt-extraction",
+            "strategyId": "basic"
+          }
+        }
+      },
+      {
+        "id": "fila-sintetica-2",
+        "promptIdx": 0,
+        "testIdx": 2,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": false,
+        "score": 0,
+        "failureReason": 1,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "prompt-extraction"
+          }
+        },
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "metadata": {
+            "pluginId": "prompt-extraction",
+            "strategyId": "basic"
+          }
+        }
+      },
+      {
+        "id": "fila-sintetica-3",
+        "promptIdx": 0,
+        "testIdx": 3,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": true,
+        "score": 1,
+        "failureReason": 0,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "indirect-prompt-injection"
+          }
+        },
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "metadata": {
+            "pluginId": "indirect-prompt-injection",
+            "strategyId": "basic"
+          }
+        }
+      },
+      {
+        "id": "fila-sintetica-4",
+        "promptIdx": 0,
+        "testIdx": 4,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": true,
+        "score": 1,
+        "failureReason": 0,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "indirect-prompt-injection"
+          }
+        },
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "metadata": {
+            "pluginId": "indirect-prompt-injection",
+            "strategyId": "basic"
+          }
+        }
+      },
+      {
+        "id": "fila-sintetica-5",
+        "promptIdx": 0,
+        "testIdx": 5,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": true,
+        "score": 1,
+        "failureReason": 0,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "assert": [
+            {
+              "type": "is-json"
+            }
+          ]
+        },
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "MOTIVO-MARCADOR-NO-DEBE-PASAR",
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "r",
+              "assertion": {
+                "type": "is-json"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "fila-sintetica-6",
+        "promptIdx": 0,
+        "testIdx": 6,
+        "promptId": "prompt-sintetico",
+        "provider": {
+          "id": "proveedor-sintetico",
+          "label": "sintetico"
+        },
+        "prompt": {
+          "raw": "PROMPT-MARCADOR-NO-DEBE-PASAR",
+          "label": "prompt"
+        },
+        "vars": {
+          "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+        },
+        "response": {
+          "output": "RESPUESTA-MARCADOR-NO-DEBE-PASAR"
+        },
+        "success": false,
+        "score": 0,
+        "failureReason": 2,
+        "latencyMs": 1,
+        "namedScores": {},
+        "testCase": {
+          "vars": {
+            "entrada": "VARIABLE-MARCADOR-NO-DEBE-PASAR"
+          },
+          "metadata": {
+            "pluginId": "bfla"
+          }
+        },
+        "error": "ERROR-MARCADOR-NO-DEBE-PASAR",
+        "gradingResult": null
+      }
+    ],
+    "stats": {
+      "successes": 5,
+      "failures": 1,
+      "errors": 1,
+      "tokenUsage": {
+        "total": 0
+      }
+    }
+  },
+  "config": {
+    "description": "CONFIG-MARCADOR-NO-DEBE-PASAR",
+    "providers": [
+      {
+        "id": "CLAVE-MARCADOR-NO-DEBE-PASAR"
+      }
+    ]
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.123.1",
+    "nodeVersion": "v22.18.0",
+    "platform": "sintetica",
+    "arch": "sintetica",
+    "exportedAt": "2026-10-12T12:00:01.000Z"
+  }
+}
