@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { RAIZ } from "./catalogo/ayuda.ts";
 
-/** Techo de CLAUDE.md en caracteres (la orden del S12: ≤ 15 000; antes 28 686). */
+/** Techo de CLAUDE.md en caracteres (la orden del S12: ≤ 15 000; antes 28 690). */
 const TECHO_CLAUDE_MD = 15_000;
 
 /** Las reglas duras de producto (1–12) y las del kit (1–29 y 17-bis) que el reparto debe conservar, una vez cada una. */
