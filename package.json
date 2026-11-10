@@ -17,6 +17,7 @@
     "activo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts activo-validar",
     "plan:emitir": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts emitir",
     "plan:replanear": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts replanear",
+    "ejecutor": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/ejecutor.ts",
     "exportar:defectdojo": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/exportar.ts defectdojo",
     "evidencia:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts validar",
     "evidencia:registrar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/evidencia.ts registrar",

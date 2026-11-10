@@ -49,6 +49,12 @@ const Alcance = z.strictObject({
   limites: Texto,
   // Pruebas concretas fuera del alcance, con su razón. «Canal» no existe en el catálogo: se dice por prueba.
   fuera: z.array(z.strictObject({ prueba: IdPrueba, razon: Texto })),
+  // Solo para el ejecutor opcional (S12, D11), y opcionales a propósito: un activo que no los trae conserva su huella.
+  // `objetivos`: lo que se autorizó atacar, legible por máquina (URL con esquema, host y puerto; un `http(s)://host[:puerto][/ruta]`
+  // por línea). Nada fuera de esta lista se lanza, jamás por parecido (ver `engine/ejecutor/objetivo.ts`).
+  objetivos: z.array(z.string().min(1)).min(1).optional(),
+  // Último día (incluido) en que el dueño autoriza correr herramientas contra el activo. Sin esto el ejecutor no corre.
+  vigente_hasta: Fecha.optional(),
 });
 
 const Regla = z.strictObject({ texto: Texto, cita_proveedor: z.boolean() });
