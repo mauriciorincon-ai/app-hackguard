@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "nota": {
+    "es": "Del estado que calcula el ciclo a las banderas de DefectDojo. Solo «cerrado» sale mitigado, y solo con una re-prueba confirmada; un reabierto sale activo; eliminar o «no se reproduce» cierra sin mitigar.",
+    "en": "From the state the cycle computes to DefectDojo's flags. Only “cerrado” is exported as mitigated, and only with a confirmed re-test; a reopened finding is exported active; removal or “not reproducible” closes without mitigating."
+  },
+  "fuente": "https://github.com/DefectDojo/django-DefectDojo/blob/3.5.100/dojo/tools/generic/json_parser.py",
+  "estados": {
+    "abierto": {
+      "active": true,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "corregido": {
+      "active": true,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "re_probado": {
+      "active": true,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "reabierto": {
+      "active": true,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "cerrado": {
+      "active": false,
+      "verified": true,
+      "is_mitigated": true,
+      "risk_accepted": false
+    },
+    "cerrado_por_eliminacion": {
+      "active": false,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "no_reproducible": {
+      "active": false,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": false
+    },
+    "aceptado_con_riesgo": {
+      "active": false,
+      "verified": true,
+      "is_mitigated": false,
+      "risk_accepted": true
+    }
+  },
+  "severidades": {
+    "critico": "Critical",
+    "alto": "High",
+    "medio": "Medium",
+    "bajo": "Low",
+    "informativo": "Info"
+  },
+  "etiquetas": {
+    "apertura": {
+      "es": "Apertura (sobre confirmado)",
+      "en": "Opening (confirmed envelope)"
+    },
+    "correccion": { "es": "Corrección declarada", "en": "Declared correction" },
+    "reprueba": { "es": "Re-prueba confirmada", "en": "Confirmed re-test" },
+    "cierre_por_reprueba": {
+      "es": "Cierre por re-prueba",
+      "en": "Closed by re-test"
+    },
+    "cierre_por_eliminacion": {
+      "es": "Cierre por eliminación (sin re-prueba, no mitigado)",
+      "en": "Closed by removal (no re-test, not mitigated)"
+    },
+    "cierre_no_reproducible": {
+      "es": "Cierre por no reproducible (sin re-prueba, no mitigado)",
+      "en": "Closed as not reproducible (no re-test, not mitigated)"
+    },
+    "reapertura": {
+      "es": "Reapertura por una re-prueba que falló",
+      "en": "Reopened by a re-test that failed"
+    },
+    "aceptacion": {
+      "es": "Riesgo aceptado (revisión en)",
+      "en": "Risk accepted (review in)"
+    },
+    "control": { "es": "Control", "en": "Control" },
+    "sin_control": {
+      "es": "sin control asociado",
+      "en": "no associated control"
+    },
+    "huellas": {
+      "es": "Huellas (sobre · resultado · crudo)",
+      "en": "Fingerprints (envelope · result · raw)"
+    },
+    "severidad": { "es": "Severidad calculada", "en": "Computed severity" }
+  }
+}
