@@ -1,0 +1,354 @@
+{
+  "id": "00000000-0000-4000-8000-0000000000aa",
+  "scenario_identifier": {
+    "name": "escenario-MARCADOR-NO-DEBE-PASAR"
+  },
+  "scenario_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+  "scenario_run_state": "COMPLETED",
+  "creation_time": "2026-10-12T11:40:00+00:00",
+  "completion_time": "2026-10-12T12:00:03+00:00",
+  "number_tries": 1,
+  "labels": {},
+  "metadata": {},
+  "scenario_name": "sintetico",
+  "scenario_version": 1,
+  "pyrit_version": "1.1.0",
+  "objective_target_identifier": {
+    "endpoint": "https://endpoint-MARCADOR-NO-DEBE-PASAR"
+  },
+  "objective_scorer_identifier": {
+    "x": "scorer-MARCADOR-NO-DEBE-PASAR"
+  },
+  "attack_results": {
+    "jailbreak": [
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": "true",
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "complete",
+          "score_type": "true_false",
+          "score_category": [
+            "jailbreak"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "success",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": "false",
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "complete",
+          "score_type": "true_false",
+          "score_category": [
+            "jailbreak"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "failure",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": "false",
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "complete",
+          "score_type": "true_false",
+          "score_category": [
+            "jailbreak"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "failure",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": "false",
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "complete",
+          "score_type": "true_false",
+          "score_category": [
+            "jailbreak"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "failure",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": null,
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "error",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": "error-MARCADOR-NO-DEBE-PASAR"
+      }
+    ],
+    "crescendo": [
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": "false",
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "complete",
+          "score_type": "true_false",
+          "score_category": [
+            "crescendo"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "failure",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "score_value": null,
+          "score_value_description": "descripcion-MARCADOR-NO-DEBE-PASAR",
+          "status": "undetermined",
+          "score_type": "true_false",
+          "score_category": [
+            "crescendo"
+          ],
+          "score_rationale": "rationale-MARCADOR-NO-DEBE-PASAR",
+          "score_metadata": {
+            "clave": "metadata-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorer_class_identifier": {
+            "system_prompt": "rubrica-MARCADOR-NO-DEBE-PASAR"
+          },
+          "scorable": null,
+          "scorable_content_id": null,
+          "prompt_request_response_id": "00000000-0000-4000-8000-000000000001",
+          "timestamp": "2026-10-12T11:59:00+00:00",
+          "objective": "objetivo-MARCADOR-NO-DEBE-PASAR"
+        },
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "undetermined",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": null
+      }
+    ],
+    "multi_turn": [
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": null,
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "error",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": "error-MARCADOR-NO-DEBE-PASAR"
+      },
+      {
+        "conversation_id": "c",
+        "objective": "objetivo-MARCADOR-NO-DEBE-PASAR",
+        "attack_result_id": "a",
+        "atomic_attack_identifier": {
+          "x": "identidad-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_response": {
+          "original_value": "respuesta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "last_score": null,
+        "executed_turns": 1,
+        "execution_time_ms": 10,
+        "outcome": "error",
+        "outcome_reason": "motivo-MARCADOR-NO-DEBE-PASAR",
+        "timestamp": "2026-10-12T11:59:00+00:00",
+        "metadata": {},
+        "labels": {
+          "clave": "etiqueta-MARCADOR-NO-DEBE-PASAR"
+        },
+        "error_message": "error-MARCADOR-NO-DEBE-PASAR"
+      }
+    ]
+  }
+}
