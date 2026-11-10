@@ -3,6 +3,27 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 012 — «Tus herramientas» (2026-11-10)
+
+The third sprint of milestone H-2: more tools in, findings out to DefectDojo, and an optional executor. HackGuard's promise changes from «it runs no tests» to **«it does not attack on its own: the optional executor runs your tools, on your machine, inside what you authorized»**.
+
+### Added
+
+- **promptfoo, PyRIT and Inspect adapters (D8, D10):** each reads its tool's official output (format cited to a pinned tag in the adapter's header), counts, and never decides: the verdict still comes from the test's rule. `evidencia:importar --herramienta <id> --archivo <path>` (`--garak`/`--zap` stay as shortcuts) and the pasted text accept all five.
+- **DefectDojo export (D9):** `pnpm exportar:defectdojo <asset> --fecha …` and a button on the finding write the «Generic Findings Import» JSON with each finding's chain, ISO/IEC 42001 control, severity and fingerprints, never the raw output. A finding is mitigated only with a confirmed retest (the exporter re-checks the closing envelope on its own and throws otherwise); a reopened one is active.
+- **The optional executor (D11):** `pnpm ejecutor <asset> --fecha … --objetivo <url> --config <tool>=<path> [--ejecutar --por <person>]`. Off by default (it only prints commands and guard rejections); with `--ejecutar` it spawns the user's own tools without a shell, reads the output with the usual adapter and leaves an unconfirmed batch. Guards: demo asset, no authorization, no plan, out-of-date plan, no `vigente_hasta`, expired authorization, no `objetivos`, invalid or out-of-scope target (exact match on scheme, host and port, path by segment), third-party infrastructure; per tool: not in the package, no adapter, no command, no configuration, not installed. The asset scope gains the optional `objetivos` and `vigente_hasta` (demo asset fingerprints unchanged). The web executes nothing (a boundary test).
+- **`src/lib/evidencia/importar.ts`:** the body of `evidencia importar`, now shared by both CLIs.
+- **`.claude/rules/<area>.md`:** `CLAUDE.md` split by folder (28 686 → 11 134 characters); `tests/unit/reglas-por-carpeta.test.ts` keeps each numbered rule in one file.
+
+### Changed
+
+- **The promise** in `CLAUDE.md`, the README, the manual, the BLUEPRINT, the brochure and its export. The export says «modo público» where it said «vitrina».
+- **The manual** gains «Tus herramientas» in both languages; **the export** gains four functions (28).
+
+### Not in this sprint
+
+- Running the executor against a real asset with a real tool (the tests use simulated tools against a local server): the rehearsal of the milestone.
+
 ## Sprint 011 — «La evidencia en el tiempo» (2026-11-08)
 
 The second sprint of milestone H-2: a finding and a report stop being a snapshot. The 13 debts the Sprint 10 audit left are paid first.

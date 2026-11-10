@@ -62,7 +62,7 @@
     },
     "F10": {
       "nombre": "Ready to run with your tools",
-      "que_hace": "You download a package that says, test by test, which tool to use, from which version, where to run it, within which limits and what result to expect. HackGuard runs nothing and ships no attack payloads: you run the tests yourself, outside."
+      "que_hace": "You download a package that says, test by test, which tool to use, from which version, where to run it, within which limits and what result to expect. HackGuard does not attack on its own and ships no attack payloads: you run the tests yourself, outside, or the optional executor launches your tools, on your machine and inside what you authorized."
     },
     "F11": {
       "nombre": "Evidence a person signs",
@@ -119,6 +119,22 @@
     "F24": {
       "nombre": "The gap trend, control by control",
       "que_hace": "You see the same gap on each date something changed, and for each ISO/IEC 42001 control whether it improved, got worse or stayed the same and which finding moved it. A reopened finding marks its control as a regression, so a closing that was undone does not pass as an improvement."
+    },
+    "F25": {
+      "nombre": "promptfoo results",
+      "que_hace": "You bring the file from `promptfoo eval` and it becomes a batch of envelopes to confirm. It counts assertions and plugins per plan test; if promptfoo marks “pass”, that is data, not the verdict: the test's rule calculates it."
+    },
+    "F26": {
+      "nombre": "PyRIT and Inspect results",
+      "que_hace": "You bring a PyRIT scenario dump or an Inspect evaluation log and it takes the same path as Garak and ZAP. An attack that errored or is undetermined counts as neither passed nor failed, and no tool decides the verdict."
+    },
+    "F27": {
+      "nombre": "Your findings, ready for DefectDojo",
+      "que_hace": "You download an asset's findings in DefectDojo's import format, with their opening, correction and retest chain, their ISO/IEC 42001 control, their severity and the fingerprints of their envelopes. Only a finding a confirmed retest closed comes out mitigated; a reopened one comes out active; the raw output never travels."
+    },
+    "F28": {
+      "nombre": "An optional executor, off by default",
+      "que_hace": "If you want, HackGuard runs your already-installed tools, on your machine and only against what you authorized: without the run flag it only shows the commands, it rejects a demo asset, a target outside the scope, an expired authorization or third-party infrastructure, and what it gets stays as proposed evidence a person confirms. The web executes nothing."
     }
   }
 }

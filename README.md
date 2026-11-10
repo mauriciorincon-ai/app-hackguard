@@ -1,13 +1,15 @@
 # HackGuard
 
 **Español.** HackGuard planea, gestiona y valida pruebas de seguridad para software y para sistemas de inteligencia
-artificial. No ejecuta pruebas: dice qué conviene verificar en un activo, con qué herramienta y qué resultado se
-espera, y recibe los resultados como evidencia que una persona confirma. Un hallazgo no es una vulnerabilidad: es
+artificial. No ataca por su cuenta: dice qué conviene verificar en un activo, con qué herramienta y qué resultado se
+espera, y recibe los resultados como evidencia que una persona confirma. Su ejecutor opcional, apagado por defecto,
+corre tus herramientas, en tu equipo, dentro de lo que autorizaste. Un hallazgo no es una vulnerabilidad: es
 evidencia de que un control falla.
 
 **English.** HackGuard plans, manages and validates security tests for software and for artificial intelligence
-systems. It runs no tests: it says what is worth checking on an asset, with which tool and what result is expected,
-and it takes in results as evidence that a person confirms. A finding is not a vulnerability: it is evidence that a
+systems. It does not attack on its own: it says what is worth checking on an asset, with which tool and what result is
+expected, and it takes in results as evidence that a person confirms. Its optional executor, off by default, runs your
+tools, on your machine, inside what you authorized. A finding is not a vulnerability: it is evidence that a
 control is failing.
 
 ## Empezar · Getting started

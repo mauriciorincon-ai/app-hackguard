@@ -12,7 +12,7 @@
   `design-system.md` § 1); una pieza que se agita contradice lo que promete.
 - **Identidad en una frase:** _la página se lee como un cuaderno de pruebas: cada cosa que dice lleva su fuente, su fecha o su firma._
 - **La decisión valiente (la que el usuario juzga en el gate):** el clímax es **lo que HackGuard se niega a hacer**. Cuatro negativas
-  (no ejecuta pruebas, no certifica cumplimiento, no decide un veredicto, no cierra un hallazgo porque dejó de aparecer) ocupan una
+  (no ataca por su cuenta, no certifica cumplimiento, no decide un veredicto, no cierra un hallazgo porque dejó de aparecer) ocupan una
   escena propia a media página, con el texto visible, en vez de un acordeón de «limitaciones» al pie. Se vende por lo que no hace.
 - **Excepciones a solo-`transform`/`opacity`:** (1) `stroke-dashoffset` para dibujar el hilo de la escena 2, un disparo, sobre un SVG
   decorativo `aria-hidden`; (2) `grid-template-rows` en la apertura de las tarjetas, con `visibility` en la transición para que lo

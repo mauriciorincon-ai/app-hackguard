@@ -146,7 +146,7 @@ test.describe("/conoce", () => {
     expect(["0px", "0", "none"]).toContain(trazo);
     // el clímax está a la vista, con sus cuatro negativas
     await expect(page.locator(".niega li")).toHaveCount(4);
-    await expect(page.getByText("No ejecuta tus pruebas.")).toBeVisible();
+    await expect(page.getByText("No ataca por su cuenta.")).toBeVisible();
   });
 
   for (const tema of ["light", "dark"] as const)
