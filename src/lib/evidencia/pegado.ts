@@ -107,8 +107,8 @@ export const TEXTO_DE_MOTIVO: Record<string, Bilingue> = {
     en: "That asset has no issued plan with this tool.",
   },
   herramienta_sin_adaptador: {
-    es: "HackGuard solo lee los reportes de Garak, de ZAP y de promptfoo. Para otra herramienta usa «Sobre manual».",
-    en: "HackGuard only reads Garak, ZAP and promptfoo reports. For another tool use “Manual envelope”.",
+    es: "HackGuard solo lee los reportes de Garak, ZAP, promptfoo, PyRIT e Inspect. Para otra herramienta usa «Sobre manual».",
+    en: "HackGuard only reads Garak, ZAP, promptfoo, PyRIT and Inspect reports. For another tool use “Manual envelope”.",
   },
   ya_importado: {
     es: "Ese mismo texto ya se importó como un lote: la misma corrida no se importa dos veces.",

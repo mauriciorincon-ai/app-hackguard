@@ -20,7 +20,9 @@ import {
 } from "../../../src/lib/evidencia/pegado.ts";
 import {
   GARAK,
+  INSPECT,
   PROMPTFOO,
+  PYRIT,
   ZAP,
   mundoDePegado,
   textoDeFixture,
@@ -46,6 +48,65 @@ const promptfoo = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
   zona: null,
   ...extra,
 });
+const inspect = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
+  texto: textoDeFixture(INSPECT),
+  activo: ASISTENTE,
+  herramienta: "inspect",
+  fecha: null,
+  zona: null,
+  ...extra,
+});
+const pyrit = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
+  texto: textoDeFixture(PYRIT),
+  activo: ASISTENTE,
+  herramienta: "pyrit",
+  fecha: null,
+  zona: null,
+  ...extra,
+});
+/**
+ * Ninguna prueba del catálogo recomienda hoy a PyRIT (cambiarlo es contenido del catálogo, que aprueba una persona). Para probar el camino
+ * completo de su adaptador, el plan del asistente gana EN MEMORIA un paquete de PyRIT para la prueba de jailbreak: `datos/` no cambia.
+ */
+function conPyritEnElPlan(m: MundoDePegado): MundoDePegado {
+  return {
+    ...m,
+    activos: m.activos.map((a) => {
+      if (a.id !== ASISTENTE) return a;
+      const prueba = a.emitido.paquete.herramientas
+        .flatMap((h) => h.pruebas)
+        .find((x) => x.prueba === "PR-IA-CONT-001")!;
+      return {
+        ...a,
+        herramientas: [
+          ...a.herramientas,
+          { id: "pyrit", nombre: { es: "PyRIT", en: "PyRIT" } },
+        ],
+        emitido: {
+          ...a.emitido,
+          paquete: {
+            ...a.emitido.paquete,
+            herramientas: [
+              ...a.emitido.paquete.herramientas,
+              {
+                herramienta: "pyrit",
+                entorno: "portatil",
+                version_minima: "1.1.0",
+                pruebas: [
+                  {
+                    ...prueba,
+                    selector: { tipo: "modulo", referencia: "jailbreak" },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      };
+    }),
+  };
+}
+
 const zap = (extra: Partial<PedidoDePegado> = {}): PedidoDePegado => ({
   texto: textoDeFixture("zap-traditional-json.derivada.json"),
   activo: ASISTENTE,
@@ -126,6 +187,40 @@ describe("lo que propone el texto pegado", () => {
       ["PR-IA-SAL-001", "parcial"],
     ]);
     expect(p.noAplican).toBe(0);
+  });
+
+  it("un log de Inspect también: la prueba del plan se lee por su tarea y el veredicto es el de la regla", async () => {
+    const p = await propuesta(M, inspect());
+    expect(p.sobres).toHaveLength(1);
+    expect(p.sobres.every((s) => s.confirmacion === null)).toBe(true);
+    expect(p.fecha).toBe("2026-10-12");
+    // 5 muestras evaluadas (la «N» y la que dio error no cuentan) y 2 no resistidas: la regla asimétrica da «fallida».
+    expect(p.resumen.map((s) => [s.prueba, s.veredicto])).toEqual([
+      ["PR-AG-HERR-001", "fallida"],
+    ]);
+    expect(p.resumen[0]?.resultado).toMatchObject({
+      evaluadas: 5,
+      fallidas: 2,
+    });
+  });
+
+  it("un resultado de PyRIT también (con PyRIT agregado al plan en memoria): `success` es el control que falló", async () => {
+    const p = await propuesta(conPyritEnElPlan(M), pyrit());
+    expect(p.sobres).toHaveLength(1);
+    expect(p.sobres.every((s) => s.confirmacion === null)).toBe(true);
+    expect(p.resumen.map((s) => [s.prueba, s.veredicto])).toEqual([
+      ["PR-IA-CONT-001", "fallida"],
+    ]);
+    expect(p.resumen[0]?.resultado).toMatchObject({
+      evaluadas: 4,
+      fallidas: 1,
+    });
+  });
+
+  it("sin PyRIT en el plan del activo, pegar un resultado de PyRIT no propone nada", async () => {
+    const r = await proponerDesdeTexto(M, pyrit());
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.motivo).toBe("activo_desconocido");
   });
 
   it("un reporte de ZAP también: «no ejecutada» no es «superada»", async () => {

@@ -727,8 +727,8 @@ export function CargaPantalla({
           <p>
             <T
               t={{
-                es: "Corre las pruebas del plan con tus herramientas e importa aquí el resultado: el archivo de Garak, de ZAP o de promptfoo, o un sobre hecho a mano.",
-                en: "Run the plan's tests with your tools and import the result here: the Garak, ZAP or promptfoo file, or an envelope made by hand.",
+                es: "Corre las pruebas del plan con tus herramientas e importa aquí el resultado: el archivo de Garak, ZAP, promptfoo, PyRIT o Inspect, o un sobre hecho a mano.",
+                en: "Run the plan's tests with your tools and import the result here: the Garak, ZAP, promptfoo, PyRIT or Inspect file, or an envelope made by hand.",
               }}
             />
           </p>

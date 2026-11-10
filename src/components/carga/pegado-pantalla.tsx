@@ -439,8 +439,8 @@ export function PegadoPantalla({
           <p>
             <T
               t={{
-                es: "El texto pegado se lee contra el plan de un activo: aquí no hay ninguno cuyo plan use una herramienta con adaptador (Garak, ZAP o promptfoo).",
-                en: "Pasted text is read against an asset's plan: none here has a plan that uses a tool with an adapter (Garak, ZAP or promptfoo).",
+                es: "El texto pegado se lee contra el plan de un activo: aquí no hay ninguno cuyo plan use una herramienta con adaptador (Garak, ZAP, promptfoo, PyRIT o Inspect).",
+                en: "Pasted text is read against an asset's plan: none here has a plan that uses a tool with an adapter (Garak, ZAP, promptfoo, PyRIT or Inspect).",
               }}
             />
           </p>
