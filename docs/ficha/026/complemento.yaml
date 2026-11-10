@@ -70,7 +70,7 @@ proceso:
   anotaciones:
     - { paso: autorizado, texto: "Sin alcance autorizado ni reglas de enfrentamiento no hay plan: nada se prueba sin permiso del dueño." }
     - { paso: planea, texto: "El catálogo lo mantiene al día un investigador de IA que solo propone; ninguna prueba entra sin tu aprobación." }
-    - { paso: paquete, texto: "HackGuard no ejecuta pruebas ni guarda cargas de ataque: describe qué se verifica, nunca cómo se rompe." }
+    - { paso: paquete, texto: "HackGuard no ataca por su cuenta ni guarda cargas de ataque: describe qué se verifica, nunca cómo se rompe." }
     - { paso: importa, texto: "Del reporte solo quedan su huella y un extracto; el veredicto lo calcula la regla de cada prueba, no la herramienta." }
     - { paso: supera, texto: "Que una falla deje de aparecer en un escaneo no cierra nada: solo la misma prueba, repetida, con éxito." }
 

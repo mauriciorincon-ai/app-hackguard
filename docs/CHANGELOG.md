@@ -13,7 +13,7 @@ The third sprint of milestone H-2: more tools in, findings out to DefectDojo, an
 - **DefectDojo export (D9):** `pnpm exportar:defectdojo <asset> --fecha …` and a button on the finding write the «Generic Findings Import» JSON with each finding's chain, ISO/IEC 42001 control, severity and fingerprints, never the raw output. A finding is mitigated only with a confirmed retest (the exporter re-checks the closing envelope on its own and throws otherwise); a reopened one is active.
 - **The optional executor (D11):** `pnpm ejecutor <asset> --fecha … --objetivo <url> --config <tool>=<path> [--ejecutar --por <person>]`. Off by default (it only prints commands and guard rejections); with `--ejecutar` it spawns the user's own tools without a shell, reads the output with the usual adapter and leaves an unconfirmed batch. Guards: demo asset, no authorization, no plan, out-of-date plan, no `vigente_hasta`, expired authorization, no `objetivos`, invalid or out-of-scope target (exact match on scheme, host and port, path by segment), third-party infrastructure; per tool: not in the package, no adapter, no command, no configuration, not installed. The asset scope gains the optional `objetivos` and `vigente_hasta` (demo asset fingerprints unchanged). The web executes nothing (a boundary test).
 - **`src/lib/evidencia/importar.ts`:** the body of `evidencia importar`, now shared by both CLIs.
-- **`.claude/rules/<area>.md`:** `CLAUDE.md` split by folder (28 686 → 11 134 characters); `tests/unit/reglas-por-carpeta.test.ts` keeps each numbered rule in one file.
+- **`.claude/rules/<area>.md`:** `CLAUDE.md` split by folder (28 686 → 11 508 characters); `tests/unit/reglas-por-carpeta.test.ts` keeps each numbered rule in one file.
 
 ### Changed
 

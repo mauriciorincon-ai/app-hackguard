@@ -30,7 +30,7 @@
   },
   "funcionalidades": {
     "total": 28,
-    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 9 del roadmap del H-2 ya construidas (D1, D3, D4, D5 y D6), las 4 del Sprint 012 (D8, D9, D10 y D11) y la 1 que el primer corte dejó al H-2 (el texto pegado)",
+    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 5 del roadmap del H-2 ya construidas (D1, D3, D4, D5 y D6), las 4 del Sprint 012 (D8, D9, D10 y D11) y la 1 que el primer corte dejó al H-2 (el texto pegado)",
     "descartadas": [],
     "grupos": [
       {
@@ -110,7 +110,7 @@
           {
             "id": "F28",
             "nombre": "Un ejecutor opcional, apagado por defecto",
-            "que_hace": "Si quieres, HackGuard corre tus herramientas ya instaladas, en tu equipo y solo contra lo que autorizaste: sin la bandera de ejecución solo muestra los comandos, rechaza un activo demo, un objetivo fuera del alcance, una autorización vencida o infraestructura de terceros, y lo que obtiene queda como evidencia propuesta que una persona confirma. La web no ejecuta nada.",
+            "que_hace": "Si quieres, HackGuard corre tus herramientas ya instaladas, en tu equipo y contra el objetivo que declaras, que comprueba contra lo que autorizaste (lo que apunte la configuración de tu herramienta lo verificas tú): sin la bandera de ejecución solo muestra los comandos, rechaza un activo demo, un objetivo fuera del alcance, una autorización vencida o infraestructura de terceros, y lo que obtiene queda como evidencia propuesta que una persona confirma. La web no ejecuta nada.",
             "seccion_manual": "Tus herramientas · desde Sprint 012"
           }
         ]
@@ -160,7 +160,7 @@
           {
             "id": "F23",
             "nombre": "Pegar el resultado de una herramienta y ver qué cambiaría",
-            "que_hace": "Pegas en el navegador lo que te devolvió Garak o ZAP y ves el sobre que se propondría por cada prueba, el veredicto que calcula la regla, los hallazgos que abriría y la brecha de antes y de después si lo confirmas. El texto no sale de la página, no se guarda y nada cuenta hasta que lo confirmas tú.",
+            "que_hace": "Pegas en el navegador lo que te devolvió Garak, ZAP, promptfoo, PyRIT o Inspect y ves el sobre que se propondría por cada prueba, el veredicto que calcula la regla, los hallazgos que abriría y la brecha de antes y de después si lo confirmas. El texto no sale de la página, no se guarda y nada cuenta hasta que lo confirmas tú.",
             "seccion_manual": "La evidencia en el tiempo · desde Sprint 011"
           },
           {

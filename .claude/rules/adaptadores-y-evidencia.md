@@ -27,9 +27,9 @@ Parte de la constitución de HackGuard (`CLAUDE.md`). Cada regla vive en un solo
 
 ## Regla del kit
 
-19. `[cambio]` **Todo puente entre dos lenguajes exige su gate de contrato** (fixture del serializador real, tipo validado del lado que lee, un e2e): aplica a los adaptadores Garak y ZAP del S3. — § 19
+19. `[cambio]` **Todo puente entre dos lenguajes exige su gate de contrato** (fixture del serializador real, tipo validado del lado que lee, un e2e): aplica a los cinco adaptadores (Garak y ZAP del S3; promptfoo, PyRIT e Inspect del S12). — § 19
 
 ## Patrones de dominio
 
-- **Sobre de evidencia** (S3): campos de § 6.7 + E-8 y **tres huellas** (crudo · sobre canónico · resultado sin identificadores de corrida, E-9). **Adaptadores** con interfaz común en `src/engine/adaptadores/`: Garak (`report.jsonl`/hitlog, rango probado 0.17.0) y ZAP (sin evidencia de ejecución sugiere `no_ejecutada`, nunca `superada`, E-6/E-7). Un adaptador solo traduce: el veredicto sale de la regla de la prueba (ADR-008).
+- **Sobre de evidencia** (S3): campos de § 6.7 + E-8 y **tres huellas** (crudo · sobre canónico · resultado sin identificadores de corrida, E-9). **Adaptadores** con interfaz común en `src/engine/adaptadores/`: Garak (`report.jsonl`/hitlog, rango probado 0.17.0) y ZAP (sin evidencia de ejecución sugiere `no_ejecutada`, nunca `superada`, E-6/E-7), más promptfoo 0.123.1 (`promptfoo eval -o`), PyRIT 1.1.0 (resultado del escenario) e Inspect 0.3.288 (registro de la evaluación), los tres S12 y con fixture sintético: una fila con error de la corrida no se evaluó y nunca cuenta como superada. Un adaptador solo traduce: el veredicto sale de la regla de la prueba (ADR-008).
 - **Vista por control:** «evidencia organizada», separada del nivel de aseguramiento; cadena hallazgo → corrección → re-prueba visible (E-16). **Brecha única de todos los activos**; tablero, brecha, vista por control e informe salen del mismo cálculo (decisión 21 de diseño).

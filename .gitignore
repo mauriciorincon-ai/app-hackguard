@@ -5,6 +5,7 @@ node_modules/
 out/
 build/
 coverage/
+.vitest/
 playwright-report/
 test-results/
 .env

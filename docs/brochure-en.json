@@ -114,7 +114,7 @@
     },
     "F23": {
       "nombre": "Paste a tool's output and see what would change",
-      "que_hace": "You paste into the browser what Garak or ZAP gave you and see the envelope that would be proposed for each test, the verdict the rule calculates, the findings it would open and the gap before and after if you confirm it. The text never leaves the page, is not saved and nothing counts until you confirm it."
+      "que_hace": "You paste into the browser what Garak, ZAP, promptfoo, PyRIT or Inspect gave you and see the envelope that would be proposed for each test, the verdict the rule calculates, the findings it would open and the gap before and after if you confirm it. The text never leaves the page, is not saved and nothing counts until you confirm it."
     },
     "F24": {
       "nombre": "The gap trend, control by control",
@@ -134,7 +134,7 @@
     },
     "F28": {
       "nombre": "An optional executor, off by default",
-      "que_hace": "If you want, HackGuard runs your already-installed tools, on your machine and only against what you authorized: without the run flag it only shows the commands, it rejects a demo asset, a target outside the scope, an expired authorization or third-party infrastructure, and what it gets stays as proposed evidence a person confirms. The web executes nothing."
+      "que_hace": "If you want, HackGuard runs your already-installed tools, on your machine and against the target you declare, which it checks against what you authorized (what your tool's configuration points at is yours to verify): without the run flag it only shows the commands, it rejects a demo asset, a target outside the scope, an expired authorization or third-party infrastructure, and what it gets stays as proposed evidence a person confirms. The web executes nothing."
     }
   }
 }
