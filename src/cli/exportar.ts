@@ -4,7 +4,7 @@
 // Un derivado jamás nace menos privado que su fuente (regla 17-bis): lo de un activo propio solo se escribe dentro de `datos/privado/`
 // (carpetas 0700, archivos 0600), jamás en `datos/` fuera de ella, `docs/` ni `out/`.
 // Códigos de salida: 0 ok · 2 bloqueado (lo que se exporta contradice una regla del libro; no escribe nada) · 3 error de uso o de lectura.
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { esFechaCivil } from "../engine/fecha.ts";
@@ -99,9 +99,19 @@ async function principal(argv: string[]): Promise<number> {
     process.stdout.write(texto);
     return CODIGOS_DE_EXPORTAR.ok;
   }
-  const salida = path.resolve(raiz, o.salida);
-  const raizAbs = path.resolve(raiz);
-  const privada = path.resolve(raiz, CARPETA_PRIVADA);
+  // Rutas REALES: un enlace simbólico (fuera del repo, apuntando a docs/) no esquiva la regla 17-bis (auditoría S12, B1).
+  const real = (p: string): string => {
+    let actual = path.resolve(p);
+    const resto: string[] = [];
+    while (!existsSync(actual)) {
+      resto.unshift(path.basename(actual));
+      actual = path.dirname(actual);
+    }
+    return path.join(realpathSync(actual), ...resto);
+  };
+  const salida = real(path.resolve(raiz, o.salida));
+  const raizAbs = real(raiz);
+  const privada = real(path.resolve(raiz, CARPETA_PRIVADA));
   const dentroDeRaiz =
     salida === raizAbs || salida.startsWith(`${raizAbs}${path.sep}`);
   const enPrivada =
@@ -127,9 +137,7 @@ principal(process.argv.slice(2)).then(
     const detalle = e instanceof Error ? e.message : String(e);
     if (e instanceof ErrorDeUso) process.stderr.write(`${detalle}\n`);
     else process.stderr.write(`error / error: ${detalle}\n`);
-    process.exitCode =
-      e instanceof ErrorDeUso
-        ? CODIGOS_DE_EXPORTAR.uso
-        : CODIGOS_DE_EXPORTAR.bloqueado;
+    // Un error inesperado (un JSON de datos roto) no es «bloqueado» por una regla: sale con el 3.
+    process.exitCode = CODIGOS_DE_EXPORTAR.uso;
   },
 );

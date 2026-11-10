@@ -435,3 +435,36 @@ describe("el archivo", () => {
     expect(TablaDeExportacion.parse(crudo)).toEqual(tabla);
   });
 });
+
+describe("un hallazgo de otro activo no bloquea el export de este (auditoría S12, B8)", () => {
+  // Un hallazgo cuyo sobre de origen es de OTRO activo y no está confirmado: no se puede situar.
+  const otro = mundoDeHallazgos.libro.find((x) => x.activo !== ASISTENTE)!;
+  const sinConfirmar = { ...otro, id: "SOB-9999", confirmacion: null };
+  const roto: Hallazgo = {
+    ...mundoDeHallazgos.hallazgos[0]!,
+    id: "HZ-9999",
+    sobre_origen: sinConfirmar.id,
+  };
+  const mundo = {
+    ...mundoDeHallazgos,
+    libro: [...mundoDeHallazgos.libro, sinConfirmar],
+    hallazgos: [...mundoDeHallazgos.hallazgos, roto],
+  };
+  it("el export del asistente sigue saliendo igual", () => {
+    const e = entradasDeExportacion(
+      ASISTENTE,
+      mundo,
+      activos,
+      instantanea,
+      FECHA,
+    );
+    expect(e.map((x) => x.hallazgo.id)).toEqual(
+      entradas.map((x) => x.hallazgo.id),
+    );
+  });
+  it("pero en el activo dueño del hallazgo roto SÍ falla, no se oculta", () => {
+    expect(() =>
+      entradasDeExportacion(otro.activo, mundo, activos, instantanea, FECHA),
+    ).toThrow(/HZ-9999/);
+  });
+});

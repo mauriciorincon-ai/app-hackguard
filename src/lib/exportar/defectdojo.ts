@@ -48,6 +48,9 @@ export function entradasDeExportacion(
   );
   const entradas: EntradaDeExportacion[] = [];
   for (const hallazgo of mundo.hallazgos) {
+    // Un hallazgo de OTRO activo no se sitúa aquí: si no se pudiera situar, no debe bloquear el export de este (auditoría S12, B8).
+    const origen = mundo.libro.find((x) => x.id === hallazgo.sobre_origen);
+    if (origen !== undefined && origen.activo !== activoId) continue;
     const r = situacionDeHallazgo(hallazgo, mundo.libro, datos);
     if (!r.ok)
       throw new Error(

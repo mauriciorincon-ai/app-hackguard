@@ -7,6 +7,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  symlinkSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -150,6 +151,18 @@ describe("la regla 17-bis, con un activo propio", () => {
         existsSync(path.join(raiz, salida, "mi-asistente.defectdojo.json")),
       ).toBe(false);
     }
+  });
+  it("un enlace simbólico fuera del repositorio que apunta a docs/ tampoco esquiva la regla", () => {
+    const fuera = mkdtempSync(
+      path.join(tmpdir(), "hackguard-exportar-enlace-"),
+    );
+    temporales.push(fuera);
+    mkdirSync(path.join(raiz, "docs"), { recursive: true });
+    symlinkSync(path.join(raiz, "docs"), path.join(fuera, "enlace"));
+    const r = exportar(args(path.join(fuera, "enlace", "sub")), raiz);
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain("datos/privado/");
+    expect(existsSync(path.join(raiz, "docs/sub"))).toBe(false);
   });
   it("en datos/privado/ nace 0600 en una carpeta 0700", () => {
     const r = exportar(args("datos/privado/exportaciones"), raiz);
