@@ -561,8 +561,8 @@ export function PegadoPantalla({
               <span className="hg-menor" id="pegado-ayuda">
                 <T
                   t={{
-                    es: "Pega el reporte entero: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`.",
-                    en: "Paste the whole report: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes.",
+                    es: "Pega el reporte entero: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`, para PyRIT el volcado JSON del resultado del escenario, para Inspect el registro de la evaluación (`inspect log dump`).",
+                    en: "Paste the whole report: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes, for PyRIT the JSON dump of the scenario result, for Inspect the evaluation log (`inspect log dump`).",
                   }}
                 />
               </span>

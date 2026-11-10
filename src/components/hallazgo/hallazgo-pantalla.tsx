@@ -49,7 +49,8 @@ function Linea({ l }: { l: LineaDeEslabon }) {
           <span className={`hg-firma es-${l.etiqueta.rol}`}>
             <Simbolo nombre={l.etiqueta.simbolo} />
             <span>
-              <T t={l.etiqueta.nombre} /> · <span data-neutro>{l.fecha}</span>
+              <T t={l.etiqueta.nombre} /> ·{" "}
+              <span data-neutro>{l.fecha}</span>
             </span>
           </span>
         </p>
@@ -69,9 +70,7 @@ function Linea({ l }: { l: LineaDeEslabon }) {
 
 export function Eslabon({ e }: { e: EslabonDeCadena }) {
   return (
-    <li
-      className={`hg-eslabon es-${e.pendiente ? "pendiente" : e.etiqueta.rol}`}
-    >
+    <li className={`hg-eslabon es-${e.pendiente ? "pendiente" : e.etiqueta.rol}`}>
       <Simbolo nombre={e.pendiente ? "vacio" : e.etiqueta.simbolo} />
       <span className="hg-eslabon-titulo">
         <T t={e.etiqueta.nombre} />
@@ -167,16 +166,16 @@ function SeveridadDeIa({ d }: { d: DetalleDeEscalaIa }) {
             <p>
               <strong data-neutro>{d.impacto.valor}</strong>{" "}
               <span className="hg-menor">
-                <T t={{ es: `de ${d.impacto.de}`, en: `of ${d.impacto.de}` }} />
+                <T
+                  t={{ es: `de ${d.impacto.de}`, en: `of ${d.impacto.de}` }}
+                />
               </span>
             </p>
             <p className="hg-menor">
               <T t={d.impacto.descripcion} />
             </p>
           </Par>
-          <Par
-            rotulo={{ es: "Frecuencia observada", en: "Observed frequency" }}
-          >
+          <Par rotulo={{ es: "Frecuencia observada", en: "Observed frequency" }}>
             <p>
               <strong data-neutro>{d.frecuencia.porCiento} %</strong>
             </p>
@@ -203,8 +202,8 @@ function SeveridadDeIa({ d }: { d: DetalleDeEscalaIa }) {
                     una comprobación que falla, falla en su única medición.
                   </span>
                   <span lang="en">
-                    Envelope <Dato>{d.frecuencia.sobre}</Dato> carries no count:
-                    a check that fails fails in its only measurement.
+                    Envelope <Dato>{d.frecuencia.sobre}</Dato> carries no
+                    count: a check that fails fails in its only measurement.
                   </span>
                 </>
               )}
@@ -359,9 +358,7 @@ export function Revision({ r }: { r: VistaDeRevision }) {
       data-desde={r.aceptadoEn}
       data-plazo={r.total}
       data-dias={r.dias}
-      data-estado-fechado={
-        r.estadoId === "toca_revisar" ? "toca_revisar" : "vigente"
-      }
+      data-estado-fechado={r.estadoId === "toca_revisar" ? "toca_revisar" : "vigente"}
     >
       <Estado etiqueta={r.etiqueta} />{" "}
       <span className="hg-menor">
@@ -542,9 +539,7 @@ export function HallazgoPantalla({ v }: { v: VistaDeHallazgo }) {
               <div className="hg-contraste">
                 <div>
                   <p className="hg-rotulo">
-                    <T
-                      t={{ es: "Lo que se esperaba", en: "What was expected" }}
-                    />
+                    <T t={{ es: "Lo que se esperaba", en: "What was expected" }} />
                   </p>
                   <p>
                     <T t={v.control.esperado} />
@@ -552,9 +547,7 @@ export function HallazgoPantalla({ v }: { v: VistaDeHallazgo }) {
                 </div>
                 <div>
                   <p className="hg-rotulo">
-                    <T
-                      t={{ es: "Lo que se obtuvo", en: "What was obtained" }}
-                    />
+                    <T t={{ es: "Lo que se obtuvo", en: "What was obtained" }} />
                   </p>
                   <p>
                     <Chip etiqueta={v.control.obtenido.veredicto} />

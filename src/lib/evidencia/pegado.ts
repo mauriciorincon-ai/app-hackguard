@@ -46,7 +46,7 @@ export interface ActivoParaPegar {
   nombre: Bilingue;
   /** El plan emitido con su paquete, ya comprobado contra su huella por quien armó el mundo (el build). */
   emitido: PlanDeActivo;
-  /** La herramienta que el paquete corre y cuyo adaptador existe: «garak», «zap», «promptfoo». */
+  /** La herramienta que el paquete corre y cuyo adaptador existe: «garak», «zap», «promptfoo», «pyrit», «inspect». */
   herramientas: { id: string; nombre: Bilingue }[];
 }
 
@@ -115,8 +115,8 @@ export const TEXTO_DE_MOTIVO: Record<string, Bilingue> = {
     en: "That same text was already imported as a batch: the same run is not imported twice.",
   },
   no_leyo_no_es_el_formato: {
-    es: "El texto no tiene el formato de esa herramienta. Pega el reporte entero, tal como lo escribió: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`.",
-    en: "The text does not have that tool's format. Paste the whole report as the tool wrote it: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes.",
+    es: "El texto no tiene el formato de esa herramienta. Pega el reporte entero, tal como lo escribió: para Garak el archivo report.jsonl, para ZAP el JSON del reporte, para promptfoo el archivo que escribe `promptfoo eval -o`, para PyRIT el volcado JSON del resultado del escenario, para Inspect el registro de la evaluación (`inspect log dump`).",
+    en: "The text does not have that tool's format. Paste the whole report as the tool wrote it: for Garak the report.jsonl file, for ZAP the report's JSON, for promptfoo the file `promptfoo eval -o` writes, for PyRIT the JSON dump of the scenario result, for Inspect the evaluation log (`inspect log dump`).",
   },
   no_leyo_version_incoherente: {
     es: "El reporte dice dos versiones de la herramienta que no coinciden: no se arma ningún sobre con un dato en el que el propio archivo no se pone de acuerdo.",

@@ -660,8 +660,8 @@ export function CargaPantalla({
           <p className="hg-bajada">
             <T
               t={{
-                es: "HackGuard no ejecuta pruebas: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
-                en: "HackGuard does not run tests: it receives what your tools produced. A result does not count until a person confirms it.",
+                es: "HackGuard no ataca por su cuenta: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
+                en: "HackGuard does not attack on its own: it receives what your tools produced. A result does not count until a person confirms it.",
               }}
             />
           </p>
