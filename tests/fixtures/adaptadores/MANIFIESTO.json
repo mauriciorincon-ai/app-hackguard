@@ -1,8 +1,8 @@
 {
   "version": "1",
   "nota": {
-    "es": "De dónde sale cada fixture de los adaptadores, qué se redactó y la huella de lo versionado. Ninguna lleva texto de ataque: la de garak sale de una corrida local contra el generador test.Repeat (sin terceros), con cada texto reemplazado por un marcador; las de ZAP son salidas oficiales de prueba o derivadas declaradas.",
-    "en": "Where each adapter fixture comes from, what was redacted and the fingerprint of what is versioned. None carries attack text: the garak one comes from a local run against the test.Repeat generator (no third party), with every text replaced by a marker; the ZAP ones are official test outputs or declared derivatives."
+    "es": "De dónde sale cada fixture de los adaptadores, qué se redactó y la huella de lo versionado. Ninguna lleva texto de ataque: la de garak sale de una corrida local contra el generador test.Repeat (sin terceros), con cada texto reemplazado por un marcador; las de ZAP son salidas oficiales de prueba o derivadas declaradas; la de promptfoo es sintética, hecha a mano con el formato oficial.",
+    "en": "Where each adapter fixture comes from, what was redacted and the fingerprint of what is versioned. None carries attack text: the garak one comes from a local run against the test.Repeat generator (no third party), with every text replaced by a marker; the ZAP ones are official test outputs or declared derivatives; the promptfoo one is synthetic, handwritten to the official format."
   },
   "fixtures": [
     {
@@ -55,6 +55,16 @@
       "licencia": "Apache-2.0 (derivada)",
       "redaccion": "Los campos attack, evidence, encabezados y cuerpos llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
       "huella": "e1ece813c26dfb8ab3e77bce8fc78e1466fffcafd3ea779842cd2774f84fd46a"
+    },
+    {
+      "archivo": "promptfoo-0.123.1.sintetico.json",
+      "herramienta": "promptfoo",
+      "version": "0.123.1",
+      "derivada": true,
+      "origen": "Sintética, escrita a mano con la forma de `promptfoo eval -o` (OutputFile y EvaluateSummaryV3 de https://github.com/promptfoo/promptfoo/blob/0.123.1/src/types/index.ts@0.123.1). NO es una corrida de promptfoo: aquí no se instala ni se corre.",
+      "licencia": "Propia del repo (sintética; el formato es de promptfoo, MIT)",
+      "redaccion": "Prompt, variables, respuesta, motivo del evaluador, error, configuración y clave llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "ee714d6634f3e2b6548dc68d68c70d0b60f11e71baa26a04084848efa49628c4"
     }
   ]
 }

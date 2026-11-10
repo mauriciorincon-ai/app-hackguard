@@ -57,6 +57,7 @@ describe("el manifiesto de fixtures", () => {
         .map((f) => f.archivo)
         .sort(),
     ).toEqual([
+      "promptfoo-0.123.1.sintetico.json",
       "zap-traditional-json-plus.derivada.json",
       "zap-traditional-json.derivada.json",
     ]);
