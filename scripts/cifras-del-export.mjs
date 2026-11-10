@@ -241,7 +241,7 @@ export function detalles(c, caras, fecha) {
   const caro = caras ?? {};
   return {
     funcionalidades: (n) =>
-      `Las ${n} funciones construidas: las 18 del primer corte que la visión aprueba para uso personal${n > 18 ? ` y ${n - 18} del roadmap del H-2` : ""}, contadas contra ${c.secciones_del_manual} secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido.`,
+      `Las ${n} funciones construidas: las 18 del primer corte que la visión aprueba para uso personal${n > 18 ? ` y ${n - 18} del roadmap del H-2` : ""}, contadas contra ${c.secciones_del_manual} secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y del modo público para terceros no se ha construido.`,
     pruebas_en_el_catalogo: () =>
       `Archivos de datos/pruebas/ del ${fecha}: ${c.pruebas_en_el_catalogo} pruebas. Por familia: ${enumerar(familias.map((x) => `${x.nombre} ${x.pruebas}`))}. \`pnpm catalogo:validar\` las da por publicables.`,
     controles_iso_42001: () =>

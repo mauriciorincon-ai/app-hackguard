@@ -226,7 +226,7 @@
       "valor": 24,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 24 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 6 del roadmap del H-2, contadas contra 11 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y de la vitrina para terceros no se ha construido."
+      "detalle": "Las 24 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 6 del roadmap del H-2, contadas contra 11 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y del modo público para terceros no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
