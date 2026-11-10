@@ -9,8 +9,12 @@
 // El crudo vive solo en esa carpeta temporal, que se borra al terminar; al libro solo llegan huellas y extractos (regla dura 4).
 // El ejecutor NO lee tu configuración: lo que ella apunte es tu responsabilidad; él exige `--objetivo`, lo compara con
 // `alcance.objetivos` y se lo pasa a la herramienta (como argumento o en HACKGUARD_OBJETIVO).
-// Códigos de salida: 0 ok · 1 con algo que mirar (una herramienta omitida o con fallo) · 2 rechazado (una guarda; no lanza nada) · 3 error de uso.
-import { spawnSync } from "node:child_process";
+// Lo que la herramienta recibe: SOLO las variables que `datos/ejecutor/comandos.json` le declara (la base y sus claves de proveedor),
+// más el objetivo; tokens y claves de nube del resto de tu entorno no viajan. La herramienta corre en su propio grupo de procesos: al
+// vencer `--tiempo`, o con Ctrl-C, se mata el grupo entero (también lo que ella lanzó) y la carpeta con el crudo se borra.
+// Con `--ejecutar`, `--fecha` debe ser la de hoy (±1 día): la vigencia de la autorización se compara con el reloj, no con lo que se escriba.
+// Códigos de salida: 0 ok · 1 con algo que mirar (una herramienta omitida o con fallo) · 2 rechazado (una guarda; no lanza nada) · 3 error de uso o error inesperado.
+import { spawn } from "node:child_process";
 import {
   accessSync,
   constants,
@@ -49,11 +53,94 @@ export const CODIGOS_DEL_EJECUTOR = {
   uso: 3,
 } as const;
 
+/** Qué pasó con el proceso lanzado. `bytesDeStderr` es solo una cuenta: lo que la herramienta escribe ahí no se muestra ni se guarda. */
+interface Termino {
+  error: string | null;
+  status: number | null;
+  signal: string | null;
+  bytesDeStderr: number;
+  vencio: boolean;
+}
+
+/** Lo que está corriendo ahora, para que una señal (Ctrl-C) mate el grupo y borre el crudo antes de salir. */
+const enCurso = new Set<{ pid: number; carpeta: string }>();
+
+function matarGrupo(pid: number | undefined): void {
+  if (pid === undefined) return;
+  try {
+    process.kill(-pid, "SIGKILL");
+  } catch {
+    try {
+      process.kill(pid, "SIGKILL");
+    } catch {
+      /* ya terminó */
+    }
+  }
+}
+
+for (const senal of ["SIGINT", "SIGTERM"] as const)
+  process.on(senal, () => {
+    for (const c of enCurso) {
+      matarGrupo(c.pid);
+      rmSync(c.carpeta, { recursive: true, force: true });
+    }
+    process.exit(senal === "SIGINT" ? 130 : 143);
+  });
+
+/** Lanza SIN shell, en su propio grupo de procesos. La salida estándar no se guarda en ninguna parte. */
+function lanzar(
+  orden: Orden,
+  carpeta: string,
+  env: Record<string, string>,
+  tiempoMs: number,
+): Promise<Termino> {
+  return new Promise((resolver) => {
+    const hijo = spawn(orden.ejecutable, orden.argumentos, {
+      shell: false,
+      cwd: carpeta,
+      env: env as NodeJS.ProcessEnv,
+      stdio: ["ignore", "ignore", "pipe"],
+      detached: true,
+    });
+    const registro = { pid: hijo.pid ?? -1, carpeta };
+    if (hijo.pid !== undefined) enCurso.add(registro);
+    let bytes = 0;
+    let vencio = false;
+    hijo.stderr.on("data", (d: Buffer) => {
+      bytes += d.length;
+    });
+    const reloj = setTimeout(() => {
+      vencio = true;
+      matarGrupo(hijo.pid);
+    }, tiempoMs);
+    const terminar = (t: Omit<Termino, "bytesDeStderr" | "vencio">) => {
+      clearTimeout(reloj);
+      // Lo que la herramienta dejó vivo (un daemon de ZAP, un hijo dormido) no sobrevive a la corrida.
+      matarGrupo(hijo.pid);
+      enCurso.delete(registro);
+      resolver({ ...t, bytesDeStderr: bytes, vencio });
+    };
+    hijo.on("error", (e) =>
+      terminar({ error: e.message, status: null, signal: null }),
+    );
+    hijo.on("close", (status, signal) =>
+      terminar({ error: null, status, signal }),
+    );
+  });
+}
+
+/** Hoy según el reloj del sistema (la única lectura del reloj del ejecutor; el motor sigue recibiendo la fecha como entrada). */
+const hoyDelSistema = () => new Date().toISOString().slice(0, 10);
+const DIA_MS = 24 * 60 * 60 * 1000;
+const diasEntre = (a: string, b: string) =>
+  Math.abs(Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) /
+  DIA_MS;
+
 const RUTA_DE_LOS_COMANDOS = "datos/ejecutor/comandos.json";
 const TIEMPO_POR_DEFECTO_S = 600;
 
 const USO =
-  "uso: ejecutor <activo> --fecha AAAA-MM-DD --objetivo <url> [--config herramienta=ruta]… [--herramienta <id>]… [--ejecutar --por <persona> [--zona <IANA>] [--tiempo <segundos>]]\nusage: ejecutor <asset> --fecha YYYY-MM-DD --objetivo <url> [--config tool=path]… [--herramienta <id>]… [--ejecutar --por <person> [--zona <IANA>] [--tiempo <seconds>]]\nSin --ejecutar solo muestra los comandos / Without --ejecutar it only shows the commands.";
+  "uso: ejecutor <activo> --fecha AAAA-MM-DD --objetivo <url> [--config herramienta=ruta]… [--herramienta <id>]… [--ejecutar --por <persona> [--zona <IANA>] [--tiempo <segundos>]] [--idioma es|en]\nusage: ejecutor <asset> --fecha YYYY-MM-DD --objetivo <url> [--config tool=path]… [--herramienta <id>]… [--ejecutar --por <person> [--zona <IANA>] [--tiempo <seconds>]] [--idioma es|en]\nSin --ejecutar solo muestra los comandos / Without --ejecutar it only shows the commands.";
 
 function opciones(argv: string[]) {
   const { values, positionals } = parseArgs({
@@ -68,6 +155,7 @@ function opciones(argv: string[]) {
       por: { type: "string" },
       zona: { type: "string" },
       tiempo: { type: "string" },
+      idioma: { type: "string", default: "es" },
     },
   });
   return {
@@ -100,6 +188,12 @@ function buscarEnElPath(
 const mostrar = (o: Orden) =>
   [o.ejecutable, ...o.argumentos].map((a) => JSON.stringify(a)).join(" ");
 
+/** Si el objetivo no viaja en los argumentos, la herramienta lo toma de TU configuración y HackGuard no puede verificarlo. */
+const avisoDelObjetivo = (o: Orden) =>
+  o.objetivo_en_argumento
+    ? ""
+    : `    ⚠ ${o.herramienta} toma su objetivo de TU configuración: HackGuard no puede verificarlo; asegúrate de que apunte a «${o.entorno.HACKGUARD_OBJETIVO ?? ""}» / ${o.herramienta} takes its target from YOUR configuration: HackGuard cannot verify it; make sure it points to that target\n`;
+
 const linea = (r: Rechazo) =>
   `  ✗ [${r.guarda}]${r.herramienta === null ? "" : ` ${r.herramienta}`}: ${r.mensaje.es}\n    ${r.mensaje.en}\n`;
 
@@ -129,6 +223,12 @@ async function principal(argv: string[]): Promise<number> {
       throw new ErrorDeUso(`--config herramienta=ruta (recibí «${c}»)`);
     configuraciones[c.slice(0, i)] = path.resolve(c.slice(i + 1));
   }
+  if (o.idioma !== "es" && o.idioma !== "en")
+    throw new ErrorDeUso("--idioma es|en");
+  if (o.ejecutar && diasEntre(o.fecha, hoyDelSistema()) > 1)
+    throw new ErrorDeUso(
+      `--fecha ${o.fecha} no es la de hoy (${hoyDelSistema()}): con --ejecutar la fecha de la corrida es la del reloj, porque la vigencia de la autorización se compara con ella / with --ejecutar the run date is the clock's, because the authorization's validity is compared with it`,
+    );
   if (o.ejecutar && (o.por === undefined || o.por.trim() === ""))
     throw new ErrorDeUso(
       "--por <persona>: quién lanza la corrida queda en el lote / who launches the run is recorded in the batch",
@@ -205,7 +305,7 @@ async function principal(argv: string[]): Promise<number> {
     );
     for (const orden of ensayo.ordenes)
       process.stdout.write(
-        `  → ${orden.herramienta} (${orden.pruebas.length} pruebas / tests): ${mostrar(orden)}\n`,
+        `  → ${orden.herramienta} (${orden.pruebas.length} pruebas / tests): ${mostrar(orden)}\n${avisoDelObjetivo(orden)}`,
       );
     process.stdout.write(ensayo.omitidas.map(linea).join(""));
     if (ensayo.ordenes.length === 0)
@@ -227,31 +327,35 @@ async function principal(argv: string[]): Promise<number> {
         : undefined;
       if (orden === undefined) continue;
       process.stdout.write(
-        `Lanzando / Launching ${orden.herramienta}: ${mostrar(orden)}\n`,
+        `Lanzando / Launching ${orden.herramienta}: ${mostrar(orden)}\n${avisoDelObjetivo(orden)}`,
       );
-      // Sin shell: el ejecutable y cada argumento viajan separados. La salida estándar no se guarda en ninguna parte.
-      const r = spawnSync(orden.ejecutable, orden.argumentos, {
-        shell: false,
-        cwd: carpeta,
-        env: { ...process.env, ...orden.entorno },
-        stdio: ["ignore", "ignore", "pipe"],
-        timeout: tiempoS * 1000,
-        killSignal: "SIGKILL",
-        maxBuffer: 1024 * 1024,
-        encoding: "utf8",
-      });
-      if (r.error !== undefined || r.status !== 0) {
+      // Entorno de la herramienta: solo lo que su comando declara, más el objetivo (M4: nada más de tu entorno viaja).
+      const env: Record<string, string> = {};
+      for (const nombre of orden.hereda)
+        if (process.env[nombre] !== undefined)
+          env[nombre] = process.env[nombre];
+      Object.assign(env, orden.entorno);
+      const r = await lanzar(orden, carpeta, env, tiempoS * 1000);
+      const salioBien =
+        r.error === null &&
+        !r.vencio &&
+        r.status !== null &&
+        orden.codigos_ok.includes(r.status);
+      if (!salioBien) {
         miralo = true;
-        const motivo =
-          r.error !== undefined
-            ? r.error.message
+        const motivo = r.vencio
+          ? `venció --tiempo (${tiempoS} s)`
+          : r.error !== null
+            ? r.error
             : `salió con código ${r.status ?? r.signal}`;
         process.stdout.write(
           `  ✗ ${orden.herramienta} no terminó bien (${motivo}); no se importó nada de ella / did not finish well; nothing was imported\n`,
         );
-        const cola = (r.stderr ?? "").slice(-400);
-        if (cola.trim() !== "")
-          process.stdout.write(`    stderr: ${cola.trim()}\n`);
+        // Lo que la herramienta escribe en stderr puede traer prompts, respuestas o claves: aquí solo su tamaño.
+        if (r.bytesDeStderr > 0)
+          process.stdout.write(
+            `    stderr: ${r.bytesDeStderr} bytes (no se muestran ni se guardan / not shown, not stored)\n`,
+          );
         continue;
       }
       const salida = archivoDeSalida(carpeta, orden);
@@ -272,7 +376,7 @@ async function principal(argv: string[]): Promise<number> {
         por: o.por!,
         fecha: o.fecha,
         zona: o.zona ?? null,
-        idioma: "es",
+        idioma: o.idioma,
       });
       if (r2.tipo === "uso") {
         miralo = true;
@@ -301,9 +405,7 @@ principal(process.argv.slice(2)).then(
     const detalle = e instanceof Error ? e.message : String(e);
     if (e instanceof ErrorDeUso) process.stderr.write(`${detalle}\n`);
     else process.stderr.write(`error / error: ${detalle}\n`);
-    process.exitCode =
-      e instanceof ErrorDeUso
-        ? CODIGOS_DEL_EJECUTOR.uso
-        : CODIGOS_DEL_EJECUTOR.rechazado;
+    // Un error inesperado (un JSON de datos roto, un archivo ilegible) no es un rechazo de guarda: sale con el 3, no con el 2.
+    process.exitCode = CODIGOS_DEL_EJECUTOR.uso;
   },
 );

@@ -55,6 +55,12 @@ export interface Orden {
   /** Nombre del archivo que escribe la herramienta dentro de la carpeta, o null = el único .json. */
   salida: string | null;
   entorno: Record<string, string>;
+  /** Nombres de las variables del entorno de la persona que la herramienta recibe (la base más las suyas); nada más se hereda. */
+  hereda: string[];
+  /** Códigos de salida con los que la herramienta dejó resultados. */
+  codigos_ok: number[];
+  /** ¿El objetivo viaja en sus argumentos? Si no, la herramienta lo toma de LA CONFIGURACIÓN del usuario y el motor no puede verificarlo. */
+  objetivo_en_argumento: boolean;
   pruebas: string[];
 }
 
@@ -277,6 +283,11 @@ export function decidirEjecucion(x: EntradaDeEjecucion): Decision {
       argumentos: comando.argumentos.map(puesto),
       salida,
       entorno: { [x.tabla.objetivo_en_el_entorno]: canonico },
+      hereda: [...new Set([...x.tabla.entorno_base, ...comando.entorno])],
+      codigos_ok: comando.codigos_ok,
+      objetivo_en_argumento: comando.argumentos.some((a) =>
+        a.includes("{objetivo}"),
+      ),
       pruebas: grupo.pruebas.map((p) => p.prueba),
     });
   }

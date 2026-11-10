@@ -45,6 +45,12 @@ describe("normalizarObjetivo", () => {
     ["http://ejemplo.test/?q=1", "consulta_o_fragmento"],
     ["http://ejemplo.test/#x", "consulta_o_fragmento"],
     ["http://ejemplo.test?", "consulta_o_fragmento"],
+    // Rutas que un servidor o un proxy decodifica y resuelven fuera de lo autorizado (auditoría S12, A2).
+    ["http://127.0.0.1:8080/api/..%2fadmin", "ruta_codificada"],
+    ["http://127.0.0.1:8080/api/%2e%2e%2fadmin", "ruta_codificada"],
+    ["http://127.0.0.1:8080/api/..;/admin", "ruta_codificada"],
+    ["http://127.0.0.1:8080/api/%2F..", "ruta_codificada"],
+    ["http://127.0.0.1:8080/api\\..\\admin", "ruta_codificada"],
   ])("rechaza %j (%s)", (texto, motivo) => {
     expect(normalizarObjetivo(texto)).toEqual({ invalido: motivo });
   });

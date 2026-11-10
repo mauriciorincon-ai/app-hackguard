@@ -4,9 +4,8 @@
 // cierra esta prueba (puerto dinámico). El CLI corre como proceso aparte con `execFile` asíncrono: con `spawnSync` el servidor,
 // que vive en este mismo proceso, no podría contestar. El PATH lleva primero la carpeta de simuladas (jamás una promptfoo real
 // del equipo) y la carpeta de `node`, que los scripts necesitan para arrancar.
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import {
-  chmodSync,
   cpSync,
   mkdirSync,
   mkdtempSync,
@@ -27,20 +26,36 @@ const ejecutarArchivo = promisify(execFile);
 const SIMULADAS = path.join(RAIZ, "tests/fixtures/herramientas");
 const FIXTURES = path.join(RAIZ, "tests/fixtures/adaptadores");
 const FECHA_DEL_PLAN = "2026-10-11";
-const HOY = "2026-11-10";
+// Con --ejecutar la fecha de la corrida es la del reloj (±1 día): las pruebas usan la de hoy y vigencias relativas a ella.
+const dia = (desplazamiento: number) =>
+  new Date(Date.now() + desplazamiento * 86_400_000).toISOString().slice(0, 10);
+const HOY = dia(0);
+// Variables que las herramientas simuladas leen: se declaran en el `entorno_base` de la raíz de juguete; nada más de este proceso llega.
+const VARIABLES_DE_LAS_SIMULADAS = [
+  "HG_FIXTURE",
+  "HG_FALLA",
+  "HG_SIN_SALIDA",
+  "HG_CODIGO_SALIDA",
+  "HG_STDERR",
+  "HG_VOLCADO",
+  "HG_NIETO",
+  "HG_DORMIR",
+];
 const PATH_CON_SIMULADAS = [SIMULADAS, path.dirname(process.execPath)].join(
   path.delimiter,
 );
 const PATH_SIN_SIMULADAS = path.dirname(process.execPath);
 
 let servidor: http.Server;
+// Carpeta temporal PROPIA de esta prueba (TMPDIR del CLI): lo que el ejecutor deja o borra se ve aquí sin mirar el tmp compartido.
+let TMP = "";
 let puerto = 0;
 const peticiones: string[] = [];
 const temporales: string[] = [];
 
 beforeAll(async () => {
-  for (const f of ["promptfoo", "zap-baseline.py"])
-    chmodSync(path.join(SIMULADAS, f), 0o755);
+  TMP = mkdtempSync(path.join(tmpdir(), "hackguard-tmp-de-la-prueba-"));
+  temporales.push(TMP);
   servidor = http.createServer((req, res) => {
     peticiones.push(String(req.headers["x-herramienta"] ?? "?"));
     res.end("ok");
@@ -75,7 +90,10 @@ async function cli(
         path.join(RAIZ, "src/cli", script),
         ...args,
       ],
-      { cwd, env: { ...process.env, PATH: PATH_CON_SIMULADAS, ...env } },
+      {
+        cwd,
+        env: { ...process.env, PATH: PATH_CON_SIMULADAS, TMPDIR: TMP, ...env },
+      },
     );
     return { codigo: 0, salida: r.stdout, errores: r.stderr };
   } catch (e) {
@@ -122,7 +140,7 @@ async function raizConPropio(cambiosDelAlcance: Record<string, unknown> = {}) {
   activo.id = "mi-asistente";
   activo.origen = "propio";
   activo.alcance.objetivos = [`http://127.0.0.1:${puerto}`];
-  activo.alcance.vigente_hasta = "2026-12-31";
+  activo.alcance.vigente_hasta = dia(30);
   Object.assign(activo.alcance, cambiosDelAlcance);
   for (const [k, v] of Object.entries(activo.alcance))
     if (v === undefined) delete activo.alcance[k];
@@ -138,6 +156,10 @@ async function raizConPropio(cambiosDelAlcance: Record<string, unknown> = {}) {
   );
   if (plan.codigo !== 0 && plan.codigo !== 1)
     throw new Error(`no se pudo emitir el plan: ${plan.salida}${plan.errores}`);
+  const tablaRuta = path.join(raiz, "datos/ejecutor/comandos.json");
+  const tabla = JSON.parse(readFileSync(tablaRuta, "utf8"));
+  tabla.entorno_base.push(...VARIABLES_DE_LAS_SIMULADAS);
+  writeFileSync(tablaRuta, JSON.stringify(tabla));
   writeFileSync(
     path.join(raiz, "config-promptfoo.yaml"),
     "# configuración del usuario\n",
@@ -175,9 +197,7 @@ const lotes = (raiz: string) =>
     f.includes(`${path.sep}datos${path.sep}privado${path.sep}lotes${path.sep}`),
   );
 const carpetasTemporales = () =>
-  readdirSync(tmpdir()).filter(
-    (n) => n.startsWith("hackguard-ejecutor-") && !n.includes("prueba"),
-  );
+  readdirSync(TMP).filter((n) => n.startsWith("hackguard-ejecutor-"));
 
 describe("sin --ejecutar: solo muestra, no lanza nada", () => {
   it("lista los comandos (con las herramientas que están en el PATH), nombra las omitidas y no toca el servidor", async () => {
@@ -370,7 +390,7 @@ describe("las guardas rechazan antes de lanzar nada, aun con --ejecutar", () => 
   });
 
   it("autorización vencida", async () => {
-    const raiz = await raizConPropio({ vigente_hasta: "2026-11-01" });
+    const raiz = await raizConPropio({ vigente_hasta: dia(-1) });
     const r = await ejecutor(raiz, conEjecutar);
     expect(r.codigo).toBe(2);
     expect(r.salida).toContain("[autorizacion_vencida]");
@@ -402,8 +422,8 @@ describe("las guardas rechazan antes de lanzar nada, aun con --ejecutar", () => 
     writeFileSync(ruta, JSON.stringify(a));
     const r = await ejecutor(raiz, conEjecutar);
     // El cargador de activos ya lo rechaza (y por eso nada se lanza); la guarda propia cubre el plan de una versión que el
-    // historial SÍ conoce (prueba unitaria `decidir.test.ts`).
-    expect(r.codigo).toBe(2);
+    // historial SÍ conoce (prueba unitaria `decidir.test.ts`). Es un error inesperado del cargador, no una guarda: sale con el 3.
+    expect(r.codigo).toBe(3);
     expect(r.errores).toContain("cambió desde que se emitió el plan");
     sinRastro(raiz);
   });
@@ -441,5 +461,217 @@ describe("las guardas rechazan antes de lanzar nada, aun con --ejecutar", () => 
       ).codigo,
     ).toBe(3);
     sinRastro(raiz);
+  });
+});
+
+const vivo = (pid: number) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+};
+const esperar = async (cond: () => boolean, ms = 8000) => {
+  const fin = Date.now() + ms;
+  while (!cond() && Date.now() < fin)
+    await new Promise((r) => setTimeout(r, 50));
+  return cond();
+};
+const PROMPTFOO = ["--herramienta", "promptfoo", "--ejecutar", "--por", "P"];
+const FIXTURE_PF = path.join(FIXTURES, "promptfoo-0.123.1.sintetico.json");
+
+describe("los códigos de salida con los que una herramienta deja resultados (auditoría S12, A1)", () => {
+  it("ZAP sale con 2 (WARN) y promptfoo con 100 (un caso falló): los resultados se importan igual", async () => {
+    const raiz = await raizConPropio();
+    const zap = await cli(
+      "ejecutor.ts",
+      [
+        "mi-asistente",
+        "--fecha",
+        HOY,
+        "--objetivo",
+        objetivo(),
+        "--herramienta",
+        "zap",
+        "--ejecutar",
+        "--por",
+        "P",
+      ],
+      raiz,
+      {
+        HG_FIXTURE: path.join(FIXTURES, "zap-traditional-json.derivada.json"),
+        HG_CODIGO_SALIDA: "2",
+      },
+    );
+    expect(zap.salida).not.toContain("no terminó bien");
+    expect(lotes(raiz)).toHaveLength(1);
+    const pf = await ejecutor(raiz, PROMPTFOO, {
+      HG_FIXTURE: FIXTURE_PF,
+      HG_CODIGO_SALIDA: "100",
+    });
+    expect(pf.salida).not.toContain("no terminó bien");
+    expect(lotes(raiz)).toHaveLength(2);
+  });
+
+  it("un código que el comando no declara (promptfoo con 5) es un fallo: no se importa nada", async () => {
+    const raiz = await raizConPropio();
+    const r = await ejecutor(raiz, PROMPTFOO, {
+      HG_FIXTURE: FIXTURE_PF,
+      HG_CODIGO_SALIDA: "5",
+    });
+    expect(r.codigo).toBe(1);
+    expect(r.salida).toContain("salió con código 5");
+    expect(lotes(raiz)).toEqual([]);
+  });
+});
+
+describe("lo que la herramienta recibe y lo que muestra el ejecutor (auditoría S12, M4 y M5)", () => {
+  it("recibe su base, su objetivo y sus claves declaradas; un token cualquiera del entorno no viaja", async () => {
+    const raiz = await raizConPropio();
+    const volcado = path.join(raiz, "entorno-visto.json");
+    await ejecutor(raiz, PROMPTFOO, {
+      HG_FIXTURE: FIXTURE_PF,
+      HG_VOLCADO: volcado,
+      SECRETO_X: "no-debe-viajar",
+      GITHUB_TOKEN: "tampoco",
+      OPENAI_API_KEY: "esta-si-esta-declarada",
+    });
+    const vistas = JSON.parse(readFileSync(volcado, "utf8")) as string[];
+    expect(vistas).toContain("PATH");
+    expect(vistas).toContain("HACKGUARD_OBJETIVO");
+    expect(vistas).toContain("OPENAI_API_KEY");
+    expect(vistas).not.toContain("SECRETO_X");
+    expect(vistas).not.toContain("GITHUB_TOKEN");
+  });
+
+  it("el stderr de la herramienta no se imprime: solo su tamaño", async () => {
+    const raiz = await raizConPropio();
+    const r = await ejecutor(raiz, PROMPTFOO, {
+      HG_FIXTURE: FIXTURE_PF,
+      HG_FALLA: "1",
+      HG_STDERR: "MARCADOR-DE-STDERR",
+    });
+    expect(r.codigo).toBe(1);
+    expect(r.salida + r.errores).not.toContain("MARCADOR-DE-STDERR");
+    expect(r.salida).toMatch(/stderr: \d+ bytes/);
+  });
+});
+
+describe("el tiempo y la interrupción matan el grupo entero (auditoría S12, M1)", () => {
+  it("al vencer --tiempo muere también lo que la herramienta lanzó, y la carpeta se borra", async () => {
+    const raiz = await raizConPropio();
+    const pidDelNieto = path.join(raiz, "nieto.pid");
+    const r = await ejecutor(raiz, [...PROMPTFOO, "--tiempo", "2"], {
+      HG_FIXTURE: FIXTURE_PF,
+      HG_NIETO: pidDelNieto,
+      HG_DORMIR: "1",
+    });
+    expect(r.codigo).toBe(1);
+    expect(r.salida).toContain("venció --tiempo");
+    const pid = Number(readFileSync(pidDelNieto, "utf8"));
+    expect(await esperar(() => !vivo(pid))).toBe(true);
+    expect(carpetasTemporales()).toEqual([]);
+    expect(lotes(raiz)).toEqual([]);
+  });
+
+  it("con Ctrl-C (SIGINT) sale con 130, mata el grupo y no deja el crudo en la carpeta temporal", async () => {
+    const raiz = await raizConPropio();
+    const pidDelNieto = path.join(raiz, "nieto.pid");
+    const hijo = spawn(
+      process.execPath,
+      [
+        "--disable-warning=MODULE_TYPELESS_PACKAGE_JSON",
+        path.join(RAIZ, "src/cli/ejecutor.ts"),
+        "mi-asistente",
+        "--fecha",
+        HOY,
+        "--objetivo",
+        objetivo(),
+        "--config",
+        `promptfoo=${path.join(raiz, "config-promptfoo.yaml")}`,
+        ...PROMPTFOO,
+      ],
+      {
+        cwd: raiz,
+        env: {
+          ...process.env,
+          PATH: PATH_CON_SIMULADAS,
+          TMPDIR: TMP,
+          HG_FIXTURE: FIXTURE_PF,
+          HG_NIETO: pidDelNieto,
+          HG_DORMIR: "1",
+        },
+        stdio: "ignore",
+      },
+    );
+    const termino = new Promise<number | null>((r) =>
+      hijo.on("close", (c) => r(c)),
+    );
+    expect(
+      await esperar(
+        () => peticiones.length > 0 && carpetasTemporales().length > 0,
+      ),
+    ).toBe(true);
+    await esperar(() => {
+      try {
+        return Number(readFileSync(pidDelNieto, "utf8")) > 0;
+      } catch {
+        return false;
+      }
+    });
+    hijo.kill("SIGINT");
+    expect(await termino).toBe(130);
+    const pid = Number(readFileSync(pidDelNieto, "utf8"));
+    expect(await esperar(() => !vivo(pid))).toBe(true);
+    expect(carpetasTemporales()).toEqual([]);
+  });
+});
+
+describe("la fecha de la corrida, el objetivo que no se ve y los errores (auditoría S12, M2 · M3 · B1b · B2)", () => {
+  it("con --ejecutar, una --fecha que no es la de hoy no lanza nada (la vigencia se compara con el reloj)", async () => {
+    const raiz = await raizConPropio();
+    const r = await cli(
+      "ejecutor.ts",
+      [
+        "mi-asistente",
+        "--fecha",
+        "2026-01-01",
+        "--objetivo",
+        objetivo(),
+        ...PROMPTFOO,
+      ],
+      raiz,
+      { HG_FIXTURE: FIXTURE_PF },
+    );
+    expect(r.codigo).toBe(3);
+    expect(r.errores).toContain("no es la de hoy");
+    expect(peticiones).toEqual([]);
+    expect(lotes(raiz)).toEqual([]);
+  });
+
+  it("el ensayo avisa, por herramienta, cuando su objetivo sale de TU configuración y no se puede verificar", async () => {
+    const raiz = await raizConPropio();
+    const r = await ejecutor(raiz, []);
+    expect(r.salida).toMatch(/promptfoo toma su objetivo de TU configuración/);
+    expect(r.salida).not.toMatch(/zap toma su objetivo/);
+  });
+
+  it("un error inesperado (el JSON de comandos roto) sale con 3, no con el 2 de una guarda", async () => {
+    const raiz = await raizConPropio();
+    writeFileSync(path.join(raiz, "datos/ejecutor/comandos.json"), "{ roto");
+    const r = await ejecutor(raiz, []);
+    expect(r.codigo).toBe(3);
+    expect(r.salida).not.toContain("RECHAZADO");
+  });
+
+  it("--idioma en escribe en inglés lo que importa el lote; un idioma que no existe es un error de uso", async () => {
+    const raiz = await raizConPropio();
+    const r = await ejecutor(raiz, [...PROMPTFOO, "--idioma", "en"], {
+      HG_FIXTURE: FIXTURE_PF,
+    });
+    expect(r.salida).toMatch(/Batch LOTE-\d+ built/);
+    const mal = await ejecutor(raiz, ["--idioma", "fr"]);
+    expect(mal.codigo).toBe(3);
   });
 });

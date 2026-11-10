@@ -13,7 +13,11 @@ export interface ObjetivoNormal {
 const PUERTO_POR_DEFECTO = { "http:": "80", "https:": "443" } as const;
 
 export type MotivoDeObjetivoInvalido =
-  "no_es_url" | "esquema" | "credenciales" | "consulta_o_fragmento";
+  | "no_es_url"
+  | "esquema"
+  | "credenciales"
+  | "consulta_o_fragmento"
+  | "ruta_codificada";
 
 /** Normaliza un objetivo o dice por qué no es uno. */
 export function normalizarObjetivo(
@@ -36,6 +40,10 @@ export function normalizarObjetivo(
     texto.includes("#")
   )
     return { invalido: "consulta_o_fragmento" };
+  // Una ruta con `%`, `;` o `\` se rechaza: un servidor o un proxy que decodifica `%2f`, `%2e` o `..;/` resuelve
+  // `/api/..%2fadmin` como `/admin`, fuera de lo autorizado, aunque aquí «empiece por /api». La comparación es de texto, no de recurso.
+  if (/[%;\\]/.test(u.pathname) || texto.includes("\\"))
+    return { invalido: "ruta_codificada" };
   const host = u.hostname.toLowerCase().replace(/\.$/, "");
   if (host === "") return { invalido: "no_es_url" };
   const ruta = u.pathname.replace(/\/+$/, "");
