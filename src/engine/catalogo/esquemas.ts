@@ -8,18 +8,16 @@
 import { z } from "zod";
 import { esFechaCivil, esFechaParcial } from "../fecha.ts";
 
-const MAX_TEXTO = 2000;
+import {
+  Nombre,
+  Texto as TextoBilingue,
+  textoNoVacio,
+} from "../selectores/primitivas.ts";
+import { Selector, TIPOS_DE_SELECTOR } from "../selectores/registro.ts";
 
-const textoNoVacio = z
-  .string()
-  .min(1)
-  .max(MAX_TEXTO)
-  .refine((s) => s.trim().length > 0, { message: "formato:en-blanco" });
-
-export const Texto = z.strictObject({ es: textoNoVacio, en: textoNoVacio });
+export { Nombre, Selector, TIPOS_DE_SELECTOR };
+export const Texto = TextoBilingue;
 export type Texto = z.infer<typeof Texto>;
-
-export const Nombre = textoNoVacio;
 
 export const Fecha = z
   .string()
@@ -324,16 +322,8 @@ export type CapaDeControles = z.infer<typeof CapaDeControles>;
 
 // ── Herramienta de prueba (§ 6.3, E-26) ──────────────────────────────────────────────────────────
 
-// Un adaptador trae su selector: agregar uno (promptfoo, PyRIT, Inspect) añade aquí su forma, que es el contrato
-// del adaptador. Es una lista declarada a propósito, no una cardinalidad oculta: en el S3, cuando lleguen los
-// adaptadores, cada selector pasa a `src/engine/adaptadores/<id>/selector.ts` y esta unión se arma desde ese
-// registro (ADR-002, decisión 6; hallazgo AU-16).
-export const TIPOS_DE_SELECTOR = [
-  "garak",
-  "zap",
-  "modulo",
-  "revision",
-] as const;
+// Un adaptador trae su selector (`src/engine/adaptadores/<id>/selector.ts`) y la unión se arma en `src/engine/selectores/registro.ts`:
+// agregar uno no toca este archivo (ADR-002, decisión 6 · regla 10).
 
 export const Herramienta = z.strictObject({
   id: IdMinusculas,
@@ -375,22 +365,6 @@ export const Herramienta = z.strictObject({
 export type Herramienta = z.infer<typeof Herramienta>;
 
 // ── Prueba: entrada del catálogo (§ 6.4 + E-2, E-7, E-15, E-23) ─────────────────────────────────
-
-export const Selector = z.discriminatedUnion("tipo", [
-  z.strictObject({
-    tipo: z.literal("garak"),
-    probes: z.array(Nombre).min(1),
-    detectores: z.array(Nombre).min(1),
-    agregacion: z.enum(["cualquier_detector", "todos_los_detectores"]),
-  }),
-  z.strictObject({
-    tipo: z.literal("zap"),
-    pluginids: z.array(z.int().positive()).min(1),
-    agregacion: z.enum(["cualquier_regla", "todas_las_reglas"]),
-  }),
-  z.strictObject({ tipo: z.literal("modulo"), referencia: Nombre }),
-  z.strictObject({ tipo: z.literal("revision"), que_se_revisa: Texto }),
-]);
 
 export const Prueba = z.strictObject({
   id: IdPrueba,

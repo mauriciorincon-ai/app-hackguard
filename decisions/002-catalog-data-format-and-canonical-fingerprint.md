@@ -57,14 +57,16 @@ the authoring format.
      - **From Sprint 2:** once plans cite snapshots, a schema change that rejects one needs a migration decided
        in its own ADR.
 6. **Tool selectors are part of the schema, one shape per adapter.**
-   - `TIPOS_DE_SELECTOR` in `esquemas.ts` knows four shapes: garak (probes and detectors), ZAP (`pluginid`), a
-     generic `modulo` reference, and a human `revision`.
-   - A third adapter (promptfoo, PyRIT or Inspect) adds its shape there. That is the adapter's contract, kept as a
-     declared constant rather than spread through the engine.
-   - The task for Sprint 3, when the adapters arrive: move each selector to
-     `src/engine/adaptadores/<id>/selector.ts`, and build the union from that registry. After that, adding an
-     adapter no longer touches the catalog schema (hard rule 10).
-   - Audit finding AU-16.
+   - Each adapter that has a selector of its own declares it in `src/engine/adaptadores/<id>/selector.ts` (garak:
+     probes and detectors; ZAP: `pluginid`). The shapes that belong to no adapter (`modulo`, a human `revision`)
+     live in `src/engine/selectores/manuales.ts`.
+   - `src/engine/selectores/registro.ts` builds the union and `TIPOS_DE_SELECTOR` from them. `esquemas.ts`
+     consumes the registry and declares no shape, so adding an adapter no longer touches the catalog schema
+     (hard rule 10).
+   - Neither the registry nor a selector imports `esquemas.ts` (the two text primitives they share live in
+     `src/engine/selectores/primitivas.ts`), so there is no import cycle.
+   - Audit finding AU-16. Promised for Sprint 3 and done in Sprint 13 (decision 9 of Sprint 12); the official
+     snapshot fingerprint did not change (`tests/unit/selectores/registro.test.ts`).
 7. **The CLI runs on Node's native TypeScript type stripping** (`node src/cli/catalogo.ts`), with `.ts` import
    extensions and `allowImportingTsExtensions`, instead of adding `tsx`. Only erasable syntax is used in
    `src/engine/` and `src/cli/`.

@@ -6,7 +6,7 @@
 // rutas locales y cuerpos de peticiones— y entrega SOLO conteos y un extracto que él mismo escribe con números e
 // identificadores. Ningún texto de la herramienta pasa al resultado.
 import type { z } from "zod";
-import type { Selector as EsquemaDeSelector } from "../catalogo/esquemas.ts";
+import type { Selector as EsquemaDeSelector } from "../selectores/registro.ts";
 import type { Resultado } from "../evidencia/esquemas.ts";
 
 export type Selector = z.infer<typeof EsquemaDeSelector>;
