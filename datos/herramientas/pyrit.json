@@ -18,7 +18,7 @@
   "entornos_soportados": [
     "portatil"
   ],
-  "tiene_adaptador": false,
+  "tiene_adaptador": true,
   "selector": "modulo",
   "version_verificada": "1.1.0",
   "registro": {

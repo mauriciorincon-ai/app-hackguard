@@ -20,7 +20,7 @@
     "plan_gratuito"
   ],
   "formato_salida": "results.json",
-  "tiene_adaptador": false,
+  "tiene_adaptador": true,
   "selector": "modulo",
   "version_verificada": "0.123.1",
   "registro": {

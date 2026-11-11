@@ -19,7 +19,7 @@
     "portatil"
   ],
   "formato_salida": ".eval",
-  "tiene_adaptador": false,
+  "tiene_adaptador": true,
   "selector": "modulo",
   "version_verificada": "0.3.276",
   "registro": {

@@ -6,7 +6,7 @@
   },
   "instantanea": {
     "fecha": "2026-10-05",
-    "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+    "huella": "d352e6afadfb52dd27712a31dfd85aa21d77652c1d0d10af2fb7e40287cb43ff"
   },
   "alcance": {
     "incluye": [
@@ -294,5 +294,5 @@
       ]
     }
   ],
-  "huella": "723f5396633c2ea2b1aab6c74b6a35e47f13294919c3fa37df3cd88f36be2038"
+  "huella": "7e95cc5775da0e0dc9d02ff69bb31f1b6a07b54a445a80eb2bd41060c02cb2d1"
 }

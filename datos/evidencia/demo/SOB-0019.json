@@ -5,10 +5,10 @@
   "activo": "act-demo-asistente",
   "prueba": "PR-IA-ENC-002",
   "plan": {
-    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+    "huella": "8b77e6f020d9848f41812e5665af873f520d10f788677bfe42e4c0163eb9c610"
   },
   "paquete": {
-    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+    "huella": "894f11f844c9575ea34c16e5a3d6795329edce7bec0d1847d355b57044d72976"
   },
   "herramienta": {
     "id": "garak",
@@ -49,7 +49,7 @@
   },
   "huellas": {
     "crudo": "97729d3b5e4ceb8859c9aede30dfd5edeb45aa2d508dc56035589d49645c6f12",
-    "sobre": "96a60ac1b9f415cf60b41050a50a44c877ad91e830d9c2e18fe24e0766039334",
+    "sobre": "431d57d8e017157f5270eec11389e9a94968be42cd14137d806fc11eb1f2b5e5",
     "resultado": "260e46f45efadab60504153851003d0d195b9fd73961941bd2b98eee060c0427"
   }
 }

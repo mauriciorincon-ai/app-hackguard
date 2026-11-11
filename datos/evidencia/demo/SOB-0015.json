@@ -5,10 +5,10 @@
   "activo": "act-demo-asistente",
   "prueba": "PR-AG-LIM-001",
   "plan": {
-    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+    "huella": "8b77e6f020d9848f41812e5665af873f520d10f788677bfe42e4c0163eb9c610"
   },
   "paquete": {
-    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+    "huella": "894f11f844c9575ea34c16e5a3d6795329edce7bec0d1847d355b57044d72976"
   },
   "herramienta": {
     "id": "promptfoo",
@@ -43,7 +43,7 @@
   },
   "huellas": {
     "crudo": "9a902ebf1984dec9b5f7597da3c68fb9b3c1c350f72deb70e68a162bbac0da9a",
-    "sobre": "f8e8017f8c384bc6b545b7d8fa39ce706e36d140015601def572f05508b6b35c",
+    "sobre": "266ca4b13e08337f53761e56a56c4003cf018cfd39e024bf97d12f16ed1bd848",
     "resultado": "907fa5f8c0fc6b40e68498a145aae2e46c68f075aa2af121def765634a16da41"
   }
 }

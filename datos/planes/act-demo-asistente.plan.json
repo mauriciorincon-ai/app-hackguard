@@ -6,7 +6,7 @@
   },
   "instantanea": {
     "fecha": "2026-10-05",
-    "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+    "huella": "d352e6afadfb52dd27712a31dfd85aa21d77652c1d0d10af2fb7e40287cb43ff"
   },
   "formula": {
     "version": "1",
@@ -686,7 +686,7 @@
     }
   ],
   "paquete": {
-    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+    "huella": "894f11f844c9575ea34c16e5a3d6795329edce7bec0d1847d355b57044d72976"
   },
-  "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+  "huella": "8b77e6f020d9848f41812e5665af873f520d10f788677bfe42e4c0163eb9c610"
 }
