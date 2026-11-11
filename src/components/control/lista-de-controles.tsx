@@ -12,7 +12,7 @@ import {
   Veredicto,
   rutaDePrueba,
 } from "../brecha/piezas";
-import { Aviso } from "../estado";
+import { Aviso, Chip, Estado } from "../estado";
 import { Dato, T } from "../texto";
 
 /**
@@ -200,6 +200,103 @@ export function ListaDeControles({ v }: { v: VistaDeControles }) {
               </tbody>
             </table>
           </section>
+
+          {v.capasPropias.map((capa) => (
+            <section
+              key={capa.id}
+              className="hg-panel"
+              aria-labelledby={`capa-propia-${capa.id}`}
+              data-capa="propia"
+            >
+              <div className="hg-panel-cab">
+                <h2 id={`capa-propia-${capa.id}`}>
+                  <T t={{ es: "Capa propia", en: "Own layer" }} />
+                </h2>
+                <p className="hg-menor">
+                  <T
+                    t={{
+                      es: "Aparte de los controles de la norma: no entra a sus cifras. Su estado sale del de los controles de la norma a los que se corresponde.",
+                      en: "Separate from the standard's controls: it is not in their figures. Its status comes from the status of the standard's controls it corresponds to.",
+                    }}
+                  />
+                </p>
+              </div>
+              <div className="hg-panel-cuerpo">
+                <p className="hg-menor">
+                  <T t={capa.nombre} />
+                </p>
+              </div>
+              <table className="hg-tabla">
+                <caption className="hg-oculto">
+                  <T t={{ es: "Capa propia", en: "Own layer" }} />
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      <T t={{ es: "Control propio", en: "Own control" }} />
+                    </th>
+                    <th scope="col">
+                      <T
+                        t={{ es: "Se corresponde con", en: "Corresponds to" }}
+                      />
+                    </th>
+                    <th scope="col">
+                      <T t={{ es: "Estado derivado", en: "Derived status" }} />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {capa.controles.map((c) => (
+                    <tr key={c.id} data-fila-propia={c.id}>
+                      <td data-celda="id">
+                        <Dato>{c.id}</Dato>
+                      </td>
+                      <td data-celda="principal">
+                        <p>
+                          <T t={c.nombre} />
+                        </p>
+                        <p className="hg-menor">
+                          {c.apunta.map((a, n) => (
+                            <span key={a.id}>
+                              {n > 0 ? " · " : ""}
+                              <Link
+                                className="hg-enlace-fila"
+                                href={rutaDeControl(a.id)}
+                              >
+                                <Dato>{a.id}</Dato>
+                              </Link>
+                            </span>
+                          ))}
+                        </p>
+                        {c.sinAplicables ? (
+                          <p className="hg-menor">
+                            <T
+                              t={{
+                                es: "Ninguno de esos controles aplica a los planes todavía.",
+                                en: "None of those controls applies to the plans yet.",
+                              }}
+                            />
+                          </p>
+                        ) : null}
+                      </td>
+                      <td data-celda="estado">
+                        <span
+                          data-control-propio={c.id}
+                          data-control-propio-estado={c.estadoId}
+                        >
+                          {c.estadoId === "con_evidencia_vigente" ? (
+                            <Estado etiqueta={c.estado} />
+                          ) : (
+                            <Chip etiqueta={c.estado} />
+                          )}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          ))}
 
           <section className="hg-panel" aria-labelledby="sin-control">
             <div className="hg-panel-cab">

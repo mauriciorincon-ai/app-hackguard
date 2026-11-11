@@ -37,6 +37,23 @@ export interface PruebaSinControl {
   queVerifica: Bilingue;
 }
 
+/** D12 · una capa propia de la organización: aparte de la de la norma, rotulada, con la correspondencia a sus controles. */
+export interface CapaPropiaDeVista {
+  id: string;
+  nombre: Bilingue;
+  descripcion: Bilingue;
+  /** «ISO/IEC 42001 2023»: el marco al que sus controles se corresponden. */
+  marco: string;
+  controles: {
+    id: string;
+    area: Bilingue;
+    nombre: Bilingue;
+    resumen: Bilingue;
+    /** A qué controles de la capa por defecto se corresponde (referencia en el marco). */
+    apunta: { referencia: string; incompleto: Etiqueta | null }[];
+  }[];
+}
+
 export interface VistaDeControles {
   instantanea: string;
   huella: string;
@@ -50,6 +67,8 @@ export interface VistaDeControles {
     /** Cuántos resúmenes todavía no se contrastaron con el texto de la norma. */
     sinContrastar: number;
   };
+  /** Las capas propias, cada una aparte de la por defecto; vacío si no hay ninguna. */
+  capasPropias: CapaPropiaDeVista[];
   areas: AreaDelAnexo[];
   conPruebas: ControlConPruebas[];
   sinControl: PruebaSinControl[];
@@ -83,6 +102,29 @@ export function construirVistaDeControles(
       controles: todos.length,
       sinContrastar: todos.filter((x) => !x.verificado_contra_norma).length,
     },
+    capasPropias: c.controles
+      .filter((x) => x.capa === "propia")
+      .map((p) => ({
+        id: p.id,
+        nombre: p.nombre,
+        descripcion: p.descripcion,
+        marco: `${porId(c.marcos, p.marco_id).nombre} ${p.version_marco}`,
+        controles: p.areas.flatMap((a) =>
+          a.controles.map((x) => ({
+            id: x.id,
+            area: a.nombre,
+            nombre: x.nombre,
+            resumen: x.resumen_llano,
+            apunta: x.controles_equivalentes.map((e) => ({
+              referencia: e.referencia_en_marco,
+              incompleto:
+                e.cobertura === "parcial"
+                  ? etiqueta(c, "equivalencia", "parcial")
+                  : null,
+            })),
+          })),
+        ),
+      })),
     areas: capa.areas.map((a) => ({
       id: a.id,
       nombre: a.nombre,

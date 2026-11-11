@@ -1,0 +1,143 @@
+{
+  "id": "org-demo",
+  "capa": "propia",
+  "nombre": {
+    "es": "Controles de la organización de ejemplo",
+    "en": "Example organization's controls"
+  },
+  "descripcion": {
+    "es": "Una capa propia, sintética, que muestra cómo una organización agrega sus controles encima de los de la norma sin tocarlos. Cada control dice con cuáles controles de ISO/IEC 42001 se corresponde; su estado sale del estado de esos controles.",
+    "en": "A synthetic own layer that shows how an organization adds its controls on top of the standard's without touching them. Each control says which ISO/IEC 42001 controls it corresponds to; its state comes from the state of those controls."
+  },
+  "marco_id": "iso-iec-42001",
+  "version_marco": "2023",
+  "fuentes_de_los_resumenes": [
+    {
+      "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+      "http": 200,
+      "consultada": "2026-10-04"
+    }
+  ],
+  "areas": [
+    {
+      "id": "O.1",
+      "nombre": {
+        "es": "Antes de publicar",
+        "en": "Before publishing"
+      },
+      "controles": [
+        {
+          "id": "org-demo-O.1.1",
+          "nombre": {
+            "es": "Se prueba el asistente antes de cada publicación",
+            "en": "The assistant is tested before every release"
+          },
+          "resumen_llano": {
+            "es": "Nadie publica una versión del asistente sin haber corrido antes sus pruebas de seguridad y haber leído el resultado.",
+            "en": "Nobody releases a version of the assistant without first running its security tests and reading the result."
+          },
+          "verificado_contra_norma": false,
+          "controles_equivalentes": [
+            {
+              "marco_id": "iso-iec-42001",
+              "version_marco": "2023",
+              "referencia_en_marco": "A.6.2.4",
+              "fuente": {
+                "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                "http": 200,
+                "consultada": "2026-10-04"
+              },
+              "cobertura": "parcial",
+              "nota_de_incompletitud": {
+                "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+              }
+            },
+            {
+              "marco_id": "iso-iec-42001",
+              "version_marco": "2023",
+              "referencia_en_marco": "A.6.2.6",
+              "fuente": {
+                "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                "http": 200,
+                "consultada": "2026-10-04"
+              },
+              "cobertura": "parcial",
+              "nota_de_incompletitud": {
+                "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+              }
+            }
+          ]
+        },
+        {
+          "id": "org-demo-O.1.2",
+          "nombre": {
+            "es": "Quien lo usa sabe que habla con una IA",
+            "en": "The people using it know they are talking to an AI"
+          },
+          "resumen_llano": {
+            "es": "La interfaz dice, en cada conversación, que quien responde es un sistema de IA y qué puede equivocarse.",
+            "en": "The interface says, in every conversation, that the one answering is an AI system and that it can be wrong."
+          },
+          "verificado_contra_norma": false,
+          "controles_equivalentes": [
+            {
+              "marco_id": "iso-iec-42001",
+              "version_marco": "2023",
+              "referencia_en_marco": "A.8.2",
+              "fuente": {
+                "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                "http": 200,
+                "consultada": "2026-10-04"
+              },
+              "cobertura": "parcial",
+              "nota_de_incompletitud": {
+                "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O.2",
+      "nombre": {
+        "es": "Datos de prueba",
+        "en": "Test data"
+      },
+      "controles": [
+        {
+          "id": "org-demo-O.2.1",
+          "nombre": {
+            "es": "Las pruebas usan datos sintéticos",
+            "en": "Tests use synthetic data"
+          },
+          "resumen_llano": {
+            "es": "Ninguna prueba de seguridad se corre con datos de clientes: se usan casos inventados.",
+            "en": "No security test runs with customer data: invented cases are used."
+          },
+          "verificado_contra_norma": false,
+          "controles_equivalentes": [
+            {
+              "marco_id": "iso-iec-42001",
+              "version_marco": "2023",
+              "referencia_en_marco": "A.7.4",
+              "fuente": {
+                "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                "http": 200,
+                "consultada": "2026-10-04"
+              },
+              "cobertura": "parcial",
+              "nota_de_incompletitud": {
+                "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

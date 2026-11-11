@@ -29,7 +29,9 @@ describe("la vista de controles dice lo que la instantánea oficial dice", () =>
     expect(vista.areas).toHaveLength(9);
     expect(vista.areas.flatMap((a) => a.controles)).toHaveLength(38);
     expect(vista.capa.controles).toBe(38);
-    expect(vista.capa.sinCapaPropia).toBe(true);
+    expect(vista.capa.sinCapaPropia).toBe(false);
+    expect(vista.capasPropias.map((c) => c.id)).toEqual(["org-demo"]);
+    expect(vista.capasPropias[0]!.controles.length).toBeGreaterThan(0);
   });
 
   it("dice cuántos resúmenes no se contrastaron con la norma: los de la instantánea", () => {

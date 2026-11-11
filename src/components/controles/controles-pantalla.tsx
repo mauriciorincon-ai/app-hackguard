@@ -351,6 +351,90 @@ export function ControlesPantalla({ vista }: { vista: VistaDeControles }) {
         </table>
       </section>
 
+      {vista.capasPropias.map((capa) => (
+        <section
+          key={capa.id}
+          className="hg-panel"
+          aria-labelledby={`capa-${capa.id}`}
+          data-capa="propia"
+        >
+          <div className="hg-panel-cab">
+            <h2 id={`capa-${capa.id}`}>
+              <T t={{ es: "Capa propia", en: "Own layer" }} />
+              {" · "}
+              <T t={capa.nombre} />
+            </h2>
+            <p className="hg-menor">
+              <T
+                t={{
+                  es: "Aparte de la capa de la norma: no la cambia ni cambia sus cifras.",
+                  en: "Separate from the standard's layer: it does not change it or its figures.",
+                }}
+              />
+            </p>
+          </div>
+          <div className="hg-panel-cuerpo">
+            <p className="hg-menor">
+              <T t={capa.descripcion} />
+            </p>
+            <p className="hg-menor">
+              <T
+                t={{ es: "Marco al que apunta", en: "Framework it points to" }}
+              />
+              {": "}
+              <span data-neutro>{capa.marco}</span>
+            </p>
+          </div>
+          <table className="hg-tabla">
+            <caption className="hg-oculto">
+              <T t={capa.nombre} />
+            </caption>
+            <Cabeceras
+              columnas={[
+                { es: "Control propio", en: "Own control" },
+                {
+                  es: "Qué exige, con palabras propias",
+                  en: "What it requires, in our own words",
+                },
+                { es: "Se corresponde con", en: "Corresponds to" },
+              ]}
+            />
+            <tbody>
+              {capa.controles.map((c) => (
+                <tr key={c.id} data-control-propio={c.id}>
+                  <td data-celda="id">
+                    <p>
+                      <Dato>{c.id}</Dato>
+                    </p>
+                    <p className="hg-menor">
+                      <T t={c.area} />
+                    </p>
+                  </td>
+                  <td>
+                    <p>
+                      <strong>
+                        <T t={c.nombre} />
+                      </strong>
+                    </p>
+                    <p className="hg-menor">
+                      <T t={c.resumen} />
+                    </p>
+                  </td>
+                  <td>
+                    {c.apunta.map((a) => (
+                      <p key={a.referencia}>
+                        <span data-neutro>{a.referencia}</span>{" "}
+                        {a.incompleto ? <Chip etiqueta={a.incompleto} /> : null}
+                      </p>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
+
       <section className="hg-panel" aria-labelledby="deuda">
         <div className="hg-panel-cab">
           <h2 id="deuda">

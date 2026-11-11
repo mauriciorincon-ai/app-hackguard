@@ -241,12 +241,33 @@ export interface PruebaSinControlDeLista {
   veredictoId: string;
 }
 
+/** D12 · un control de una capa propia en la brecha: aparte de los de la norma, con su estado derivado. */
+export interface FilaDeControlPropio {
+  id: string;
+  nombre: Bilingue;
+  area: { id: string; nombre: Bilingue };
+  /** Los controles de la norma a los que se corresponde, con el estado de cada uno si es aplicable. */
+  apunta: { id: string; estado: Etiqueta | null }[];
+  estado: Etiqueta;
+  estadoId: string;
+  /** Ninguno de los controles de la norma a los que apunta es aplicable: el estado es un piso, no una medición. */
+  sinAplicables: boolean;
+}
+
+export interface CapaPropiaDeLista {
+  id: string;
+  nombre: Bilingue;
+  controles: FilaDeControlPropio[];
+}
+
 export interface VistaDeControles extends BaseDeVista {
   veredictos: MarcasDeVeredicto;
   norma: string;
   capa: Bilingue;
   cifras: Cifra[];
   controles: FilaDeControlDeLista[];
+  /** Las capas propias, cada una aparte; sus controles no entran a las cifras ni a la lista de la norma. */
+  capasPropias: CapaPropiaDeLista[];
   sinControl: PruebaSinControlDeLista[];
 }
 

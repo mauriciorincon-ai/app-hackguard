@@ -128,6 +128,22 @@ ${conPruebas}
 </table>
 </section>
 
+<section class="hg-panel" aria-labelledby="capa-org-demo" data-capa="propia">
+<div class="hg-panel-cab"><h2 id="capa-org-demo">${t({ es: "Capa propia", en: "Own layer" })}</h2><p class="hg-menor">${t({ es: "Aparte de la capa de la norma: no la cambia ni cambia sus cifras.", en: "Separate from the standard's layer: it does not change it or its figures." })}</p></div>
+<div class="hg-panel-cuerpo"><p class="hg-menor">${t({ es: "Una capa propia sintética: cada control dice con cuáles controles de ISO/IEC 42001 se corresponde.", en: "A synthetic own layer: each control says which ISO/IEC 42001 controls it corresponds to." })}</p></div>
+<table class="hg-tabla">
+<caption class="hg-oculto">${t({ es: "Capa propia", en: "Own layer" })}</caption>
+${columnas([
+  { es: "Control propio", en: "Own control" },
+  { es: "Qué exige, con palabras propias", en: "What it requires, in our own words" },
+  { es: "Se corresponde con", en: "Corresponds to" },
+])}
+<tbody>
+<tr data-control-propio="org-demo-O.1.1"><td data-celda="id"><p>${dato("org-demo-O.1.1")}</p></td><td><p><strong>${t({ es: "Se prueba el asistente antes de cada publicación", en: "The assistant is tested before every release" })}</strong></p></td><td><p>${neutro("A.6.2.4")}</p></td></tr>
+</tbody>
+</table>
+</section>
+
 <section class="hg-panel" aria-labelledby="deuda">
 <div class="hg-panel-cab"><h2 id="deuda">${t({ es: "Pruebas sin control asignado", en: "Tests with no control assigned" })}</h2></div>
 <div class="hg-panel-cuerpo"><p class="hg-menor">${t({

@@ -76,7 +76,7 @@ export function cargarCatalogo(
     estados: leerUnico(raiz, RUTAS_UNICAS.estados),
     marcos: leerCarpeta(raiz, CARPETAS.marcos),
     equivalencias: leerCarpeta(raiz, CARPETAS.equivalencias),
-    controles: leerCarpeta(raiz, CARPETAS.controles),
+    controles: leerCarpeta(raiz, CARPETAS.controles, true),
     herramientas: leerCarpeta(raiz, CARPETAS.herramientas),
     pruebas: [
       ...leerCarpeta(raiz, CARPETAS.pruebas, true),
@@ -91,6 +91,8 @@ export function cargarCatalogo(
  * `src/lib/evidencia/cargar-evidencia.ts`. */
 const NO_SON_CATALOGO = [
   "datos/privado",
+  "datos/contratos",
+  "datos/fichas",
   "datos/instantaneas",
   "datos/activos",
   "datos/planes",
