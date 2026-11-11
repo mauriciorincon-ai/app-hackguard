@@ -1,5 +1,6 @@
+import { esRutaPublica, modoPublico } from "@/lib/publico/lista-blanca";
 import { T, Dato, type Bilingue } from "../texto";
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { PRIMER_ACTIVO } from "@/lib/activos/etiquetas";
 import { PRIMER_HALLAZGO } from "@/lib/evidencia/etiquetas";
 
@@ -186,7 +187,9 @@ export function BarraLateral({
           <T t={{ es: "Secciones", en: "Sections" }} />
         </span>
         <ul>
-          {SECCIONES.map((s) => {
+          {SECCIONES.filter(
+            (s) => !modoPublico() || (s.ruta !== null && esRutaPublica(s.ruta)),
+          ).map((s) => {
             const dentro = (
               <>
                 <Icono nombre={s.id} />
@@ -225,7 +228,11 @@ export function BarraLateral({
                 </Link>
                 {esAbierta && SUBPAGINAS[s.id] ? (
                   <ul className="hg-nav-sub">
-                    {SUBPAGINAS[s.id]!.map((pg) => (
+                    {SUBPAGINAS[s.id]!.filter(
+                      (pg) =>
+                        !modoPublico() ||
+                        (pg.ruta !== null && esRutaPublica(pg.ruta)),
+                    ).map((pg) => (
                       <li key={pg.nombre.es}>
                         {pg.ruta ? (
                           <Link

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import type { VistaDeActivo } from "@/lib/activos/tipos";
 import { Chip, Fechado, Sello } from "../estado";
 import { Dato, T } from "../texto";

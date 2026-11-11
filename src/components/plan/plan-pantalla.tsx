@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { pruebas } from "@/lib/catalogo/etiquetas";
 import type { Bilingue, FilaPlaneada, VistaDePlan } from "@/lib/activos/tipos";
 import {

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { useState } from "react";
 import { RUTAS, rutaDeControl } from "@/lib/brecha/etiquetas";
 import type { FilaDeEsperadoObtenido, VistaDeBrecha } from "@/lib/brecha/tipos";

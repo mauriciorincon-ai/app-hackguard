@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { frasePorDias } from "@/lib/catalogo/etiquetas";
 import { RUTAS, rutaDeControl } from "@/lib/brecha/etiquetas";
 import { plural } from "@/lib/brecha/textos";

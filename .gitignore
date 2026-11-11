@@ -43,3 +43,7 @@ propuestas/.lecturas/
 
 # Textos que una persona deja para que el extractor los lea (ADR-011): son salida de herramientas, nunca viajan al repositorio.
 propuestas/entradas/
+
+# Exportaciones del modo público y del paquete (C19, C20): derivados, jamás se versionan.
+dist/
+.next-publico/

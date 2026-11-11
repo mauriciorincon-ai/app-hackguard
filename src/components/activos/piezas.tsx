@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import type { ItemDeSelector } from "@/lib/activos/tipos";
 import { Chip, Sello } from "../estado";
 import { Dato, T, type Bilingue } from "../texto";
