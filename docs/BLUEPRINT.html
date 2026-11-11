@@ -71,7 +71,7 @@
 
   <h2>Diagrama</h2>
   <div class="diagrama">
-  <svg viewBox="0 0 960 470" role="img" aria-label="Diagrama de infraestructura de HackGuard: la persona, su máquina con la línea de comandos y los datos, Claude Code con las dos skills, GitHub con la integración continua, Vercel con el export estático, Sentry solo en el cliente y la ficha de CV Viva como pieza futura">
+  <svg viewBox="0 0 960 470" role="img" aria-label="Diagrama de infraestructura de HackGuard: la persona, su máquina con la línea de comandos y los datos, Claude Code con las dos skills, GitHub con la integración continua, Vercel con el export estático, Sentry solo en el cliente, el paquete de la vitrina ya construido y su entrega en CV Viva como paso futuro">
     <defs>
       <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" opacity="0.65"/>
@@ -120,11 +120,16 @@
     <text class="detalle-caja" x="115" y="405" text-anchor="middle">el conocimiento es dato</text>
     <text class="detalle-caja" x="115" y="422" text-anchor="middle">versionado en el repo</text>
     <!-- Futuro -->
-    <rect class="caja-futuro" x="650" y="330" width="290" height="110" rx="10"/>
-    <text class="titulo-caja detalle-futuro" x="795" y="360" text-anchor="middle">(futuro) ficha en CV Viva</text>
-    <text class="detalle-caja detalle-futuro" x="795" y="380" text-anchor="middle">export + complemento, después del merge</text>
-    <text class="detalle-caja detalle-futuro" x="795" y="397" text-anchor="middle">paquete: pnpm paquete:vitrina (S13)</text>
-    <text class="detalle-caja detalle-futuro" x="795" y="414" text-anchor="middle">pnpm paquete:verificar + manifiesto SHA-256</text>
+    <!-- Cumplido en el S13: el paquete se arma y se verifica aquí -->
+    <rect class="caja" x="650" y="280" width="290" height="50" rx="10"/>
+    <text class="titulo-caja" x="795" y="300" text-anchor="middle">Paquete de la vitrina (S13)</text>
+    <text class="detalle-caja" x="795" y="318" text-anchor="middle">paquete:vitrina · paquete:verificar · SHA-256</text>
+    <!-- Futuro: la entrega en CV Viva es un PR de la planeadora -->
+    <rect class="caja-futuro" x="650" y="344" width="290" height="96" rx="10"/>
+    <text class="titulo-caja detalle-futuro" x="795" y="370" text-anchor="middle">(futuro) entrega en CV Viva</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="391" text-anchor="middle">PR de contenido de la planeadora,</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="408" text-anchor="middle">después del merge: copiar la pieza</text>
+    <text class="detalle-caja detalle-futuro" x="795" y="425" text-anchor="middle">y declararla en simulaciones.yaml</text>
     <!-- Flechas -->
     <path class="flecha" d="M 190 205 L 285 220"/>
     <text class="etiqueta-flecha" x="235" y="200" text-anchor="middle">HTTPS</text>
@@ -136,7 +141,7 @@
     <text class="etiqueta-flecha" x="592" y="216" text-anchor="middle">errores (metadatos)</text>
     <path class="flecha" d="M 415 340 L 415 295"/>
     <text class="etiqueta-flecha" x="425" y="322">CI/CD → deploy</text>
-    <path class="flecha flecha-futura" d="M 545 390 L 645 385"/>
+    <path class="flecha flecha-futura" d="M 545 395 L 645 395"/>
   </svg>
 </div>
 
@@ -368,7 +373,7 @@
 <tr><td><code>quality</code></td><td>Construye como el proveedor: hace <code>vercel build</code> sin sesión, con un CLI fijado en el script, y exige que cada página publicada sea idéntica byte a byte a la de <code>out</code>, sin sobrantes ni faltantes.</td><td><code>node scripts/build-como-proveedor.mjs</code>, que usa <code>scripts/verificar-salida-publicada.mjs</code></td></tr>
 <tr><td><code>quality</code></td><td>Auditoría de dependencias: falla con vulnerabilidades de nivel alto.</td><td><code>pnpm audit --audit-level high</code></td></tr>
 <tr><td><code>quality</code></td><td>Regla 17, cero enlaces: ningún archivo versionado ni el campo <em>homepage</em> del repositorio en GitHub nombra un dominio de hosting de producción o de preview. Los dominios se leen de <code>cero-enlaces.json</code>; la prueba que demuestra el rojo es <code>tests/unit/cero-enlaces.test.ts</code>.</td><td><code>node scripts/cero-enlaces.mjs --homepage</code> con el valor que entrega <code>gh api</code> (<code>scripts/cero-enlaces.mjs</code>)</td></tr>
-<tr><td><code>e2e</code></td><td>Pruebas de extremo a extremo contra el build servido (nunca contra el servidor de desarrollo), con escaneos de accesibilidad de axe. Corre en Chromium móvil y de escritorio; Firefox y WebKit ejecutan solo <code>tests/e2e/determinismo.spec.ts</code> (la misma huella en los tres motores). Si falla, sube <code>test-results</code> como artefacto con retención de 7 días.</td><td><code>pnpm exec playwright install --with-deps chromium firefox webkit</code> y <code>pnpm test:e2e</code> (<code>playwright.config.ts</code>)</td></tr>
+<tr><td><code>e2e</code></td><td>Pruebas de extremo a extremo contra el build servido (nunca contra el servidor de desarrollo), con escaneos de accesibilidad de axe. Corre en Chromium móvil y de escritorio; Firefox y WebKit ejecutan solo <code>tests/e2e/determinismo.spec.ts</code> (la misma huella en los tres motores). Si falla, sube <code>test-results</code> como artefacto con retención de 7 días. Desde el Sprint 13 el mismo job corre, uno tras otro, cuatro pasos más, con dos <code>next build</code> extra además del de las pruebas normales: el modo público (<code>pnpm test:e2e:publico</code>, que construye <code>dist/publico</code> y lo sirve en el puerto 3212), el armado del paquete de la vitrina (<code>pnpm paquete:vitrina</code>, el segundo build extra), la verificación de su manifiesto (<code>pnpm paquete:verificar</code>) y su e2e (<code>pnpm test:e2e:paquete</code>, puerto 3213, ES/EN a 380 px con axe y toda petición fuera de 127.0.0.1 abortada). Todo en <code>127.0.0.1</code>.</td><td><code>pnpm exec playwright install --with-deps chromium firefox webkit</code>, <code>pnpm test:e2e</code> (<code>playwright.config.ts</code>), <code>pnpm test:e2e:publico</code>, <code>HACKGUARD_CONSULTA=2026-10-05 pnpm paquete:vitrina</code>, <code>pnpm paquete:verificar</code> y <code>pnpm test:e2e:paquete</code></td></tr>
 <tr><td><code>lighthouse</code></td><td>Presupuestos de rendimiento por ruta y las cuatro categorías (rendimiento, accesibilidad, buenas prácticas, SEO) con mínimo de 0,9. Una corrida por URL, con una medición previa de calentamiento sobre <em>/catalogo</em> que se descarta. Las URLs medidas están en <code>lighthouse-urls.json</code>.</td><td><code>lhci collect --numberOfRuns=1</code>, <code>lhci assert --budgetsFile=./perf-budget.json</code> y <code>lhci assert --config=./lighthouse-categorias.json</code></td></tr>
 <tr><td><code>lighthouse</code></td><td>Avisa (sin fallar) cuando un valor medido queda a menos del 10 % de su presupuesto, y falla si una URL medida no cae bajo ningún <code>path</code> de <code>perf-budget.json</code>.</td><td><code>node scripts/lighthouse-margen.mjs</code> (<code>scripts/lighthouse-margen.mjs</code>)</td></tr>
 <tr><td><code>un-pr-vivo</code> (workflow aparte)</td><td>Regla dura 18: un solo pull request vivo por app, Dependabot incluido. Falla si hay más de uno abierto y la primera línea del cuerpo de este no empieza con <code>complementa #N:</code> seguido de la razón. Solo necesita permiso de lectura de pull requests.</td><td><code>gh pr list --state open</code> dentro del workflow <code>.github/workflows/un-pr-vivo.yml</code></td></tr>

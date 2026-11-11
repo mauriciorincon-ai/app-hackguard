@@ -3,9 +3,9 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
-## Sprint 013 — «Lo tuyo y lo público» (2026-11-10)
+## Sprint 013 — «Lo tuyo y lo público» (2026-11-11)
 
-The last construction sprint of milestone H-2: the asset's profile from CV Viva's technical ficha, the organization's own controls, the public mode and the showcase package. This entry is written phase by phase: F1, F2 and F3 are below.
+The last construction sprint of milestone H-2: the asset's profile from CV Viva's technical ficha, the organization's own controls, the public mode and the showcase package.
 
 ### Added (F1 · lo tuyo)
 
