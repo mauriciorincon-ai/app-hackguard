@@ -2,6 +2,7 @@
 // `pnpm activo:desde-ficha`: propone con fragmento, guarda solo lo aceptado y solo en datos/privado/ (modo 600), y se niega
 // dentro de una sesión de Claude Code (confirmar lo hace una persona).
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   cpSync,
   mkdirSync,
@@ -9,6 +10,7 @@ import {
   readFileSync,
   rmSync,
   statSync,
+  symlinkSync,
   writeFileSync,
   existsSync,
 } from "node:fs";
@@ -161,6 +163,122 @@ describe("activo:desde-ficha", () => {
     expect(existsSync(join(temporal, "datos/activos/demo/fuera.json"))).toBe(
       false,
     );
+  });
+
+  it("el texto de la ficha va sin marcas de dirección ni de ancho cero (Trojan Source)", () => {
+    const sucia = JSON.parse(readFileSync(FICHA, "utf8"));
+    sucia.titular = "Asistente con herramientas \u202eODALUCXE\u202c \u200bfin";
+    const ruta = join(temporal, "bidi.json");
+    writeFileSync(ruta, JSON.stringify(sucia));
+    const r = correr(REPO, [ruta]);
+    expect(r.stdout).not.toMatch(/[\u200b-\u200f\u202a-\u202e\u2066-\u2069]/);
+    expect(r.stdout).toContain("ODALUCXE");
+  });
+
+  it("--aceptar vacío, un id o una fecha que no existen son errores de uso y no escriben nada", () => {
+    const fichas = (
+      aceptar: string,
+      id: string,
+      fecha: string,
+      salida: string,
+    ) => [
+      FICHA,
+      "--aceptar",
+      aceptar,
+      "--por",
+      "Ana",
+      "--id",
+      id,
+      "--fecha",
+      fecha,
+      "--salida",
+      salida,
+    ];
+    const vacio = correr(
+      temporal,
+      fichas(
+        "",
+        "act-vacio",
+        "2026-11-10",
+        "datos/privado/activos/vacio.perfil.json",
+      ),
+    );
+    expect(vacio.status).toBe(3);
+    expect(vacio.stderr).toMatch(/al menos un rasgo/);
+    const fecha = correr(
+      temporal,
+      fichas(
+        "todos",
+        "act-fecha",
+        "2026-13-45",
+        "datos/privado/activos/fecha.perfil.json",
+      ),
+    );
+    expect(fecha.status).toBe(3);
+    expect(fecha.stderr).toMatch(/fecha que exista/);
+    const id = correr(
+      temporal,
+      fichas(
+        "todos",
+        "Act Mayusculas",
+        "2026-11-10",
+        "datos/privado/activos/id.perfil.json",
+      ),
+    );
+    expect(id.status).toBe(3);
+    for (const n of ["vacio", "fecha", "id"])
+      expect(
+        existsSync(join(temporal, `datos/privado/activos/${n}.perfil.json`)),
+      ).toBe(false);
+  });
+
+  it("no escribe a través de un enlace simbólico, ni colgante", () => {
+    mkdirSync(join(temporal, "datos/privado/activos"), { recursive: true });
+    const destino = join(temporal, "afuera.json");
+    symlinkSync(
+      destino,
+      join(temporal, "datos/privado/activos/colgante.perfil.json"),
+    );
+    const r = correr(
+      temporal,
+      confirmar("datos/privado/activos/colgante.perfil.json"),
+    );
+    expect(r.status).toBe(2);
+    expect(existsSync(destino)).toBe(false);
+  });
+
+  it("una ficha de más de 1 MB no se lee", () => {
+    const ruta = join(temporal, "grande.json");
+    writeFileSync(ruta, " ".repeat(1_000_001));
+    const r = correr(REPO, [ruta]);
+    expect(r.status).toBe(3);
+    expect(r.stderr).toMatch(/pasa de 1000000 bytes/);
+  });
+
+  it("una ficha con BOM se lee igual y su huella es la de sus bytes crudos", () => {
+    const sin = readFileSync(FICHA);
+    const con = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), sin]);
+    const rutaSin = join(temporal, "sin-bom.json");
+    const rutaCon = join(temporal, "con-bom.json");
+    writeFileSync(rutaSin, sin);
+    writeFileSync(rutaCon, con);
+    expect(correr(REPO, [rutaCon]).stdout).toBe(correr(REPO, [rutaSin]).stdout);
+    const huellaGuardada = (ruta: string, id: string) => {
+      const argumentos = confirmar(`datos/privado/activos/${id}.perfil.json`);
+      argumentos[0] = ruta;
+      argumentos[argumentos.indexOf("act-propio-uno")] = id;
+      const r = correr(temporal, argumentos);
+      expect(r.status, r.stderr).toBe(0);
+      return JSON.parse(
+        readFileSync(
+          join(temporal, `datos/privado/activos/${id}.perfil.json`),
+          "utf8",
+        ),
+      ).ficha.huella as string;
+    };
+    const sha = (b: Buffer) => createHash("sha256").update(b).digest("hex");
+    expect(huellaGuardada(rutaCon, "con-bom")).toBe(sha(con));
+    expect(huellaGuardada(rutaSin, "sin-bom")).toBe(sha(sin));
   });
 
   it("una ficha que no cumple el contrato es un error de uso", () => {

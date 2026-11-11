@@ -7,6 +7,7 @@
 //
 // Lo que la ficha dice se trata como DATO inerte (regla dura 4): el fragmento es el texto tal cual y quien lo muestra lo escapa.
 import { z } from "zod";
+import { esFechaCivil } from "../fecha.ts";
 
 /** Los campos de la ficha que la tabla puede leer (rutas del contrato vendorizado, `datos/contratos/ficha-tecnica/`). */
 export const CAMPOS_LEIBLES = [
@@ -42,7 +43,11 @@ export const TablaFichaARasgos = z.strictObject({
 });
 export type TablaFichaARasgos = z.infer<typeof TablaFichaARasgos>;
 
-const Texto = z.string();
+/** El tope de texto del contrato de la ficha (el campo más largo, `promesa.intro`/`para_quien`, admite 400). */
+export const MAX_TEXTO_DE_FICHA = 400;
+/** Una ficha del contrato cabe de sobra en esto; más es otra cosa, y ni el CLI ni la pantalla la leen. */
+export const MAX_BYTES_DE_FICHA = 1_000_000;
+const Texto = z.string().max(MAX_TEXTO_DE_FICHA);
 const Elemento = z.object({
   nombre: Texto.optional(),
   papel: Texto.optional(),
@@ -115,6 +120,55 @@ export function contieneTermino(texto: string, termino: string): boolean {
     `(?<![a-z0-9])${escapar(plegar(termino))}(?![a-z0-9])`,
   );
   return patron.test(plegar(texto));
+}
+
+/**
+ * Los bytes de una ficha como texto: UTF-8, sin la marca de orden de bytes (BOM). El CLI y la pantalla pasan por aquí, así que la
+ * misma ficha da el mismo JSON y, con `sha256DeBytes` sobre los bytes crudos, la misma huella en los dos lados.
+ */
+export function textoDeFicha(bytes: Uint8Array): string {
+  return new TextDecoder("utf-8").decode(bytes); // quita el BOM por defecto
+}
+
+/**
+ * El texto de la ficha es dato ajeno: al imprimirlo en una terminal no puede llevar caracteres de control, secuencias de escape, ni
+ * marcas de dirección o de ancho cero (U+202A–202E, U+2066–2069, U+200B–200F, U+FEFF) que reordenan lo que se lee (Trojan Source).
+ */
+export const inerte = (texto: string): string =>
+  texto.replace(
+    /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g,
+    " ",
+  );
+
+/** Un valor como argumento de shell: tal cual si es seguro, entre comillas simples (con su escape) si no. */
+export const comillasDeShell = (valor: string): string =>
+  /^[A-Za-z0-9_.,:@%+=/-]+$/.test(valor)
+    ? valor
+    : `'${valor.replace(/'/g, `'\\''`)}'`;
+
+/** El patrón del id de un perfil: minúsculas, dígitos y guiones. */
+export const ID_DE_PERFIL = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+
+/**
+ * El comando de CLI que guarda lo aceptado. Lo que falta se muestra como marcador (`<id>`); lo que la persona escribió va entre
+ * comillas si hace falta, porque se copia a una terminal.
+ */
+export function comandoDeAceptar(e: {
+  aceptados: readonly string[];
+  por: string;
+  id: string;
+  fecha: string;
+}): string {
+  const por =
+    e.por.trim() === "" ? "<tu-nombre>" : comillasDeShell(e.por.trim());
+  const id = e.id === "" ? "<id>" : comillasDeShell(e.id);
+  const salida =
+    e.id === ""
+      ? "datos/privado/activos/<id>.perfil.json"
+      : comillasDeShell(`datos/privado/activos/${e.id}.perfil.json`);
+  return `pnpm activo:desde-ficha <ficha.json> --aceptar ${
+    e.aceptados.length === 0 ? "<rasgos>" : e.aceptados.join(",")
+  } --por ${por} --id ${id} --fecha ${e.fecha === "" ? "AAAA-MM-DD" : comillasDeShell(e.fecha)} --salida ${salida}`;
 }
 
 /** Los textos de la ficha que un campo nombra, en orden, con su ruta. */
@@ -215,14 +269,14 @@ export function proponerDesdeFicha(
 /** Lo que se guarda: solo los rasgos que una persona confirmó, con su cita. No es un activo: la ficha no responde el resto. */
 export const PerfilPropuesto = z.strictObject({
   formato: z.literal("perfil-propuesto/1"),
-  id: z.string().regex(/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/),
+  id: z.string().regex(ID_DE_PERFIL),
   origen: z.literal("propio"),
   ficha: z.strictObject({
     schema_version: z.string().regex(/^1\.\d+\.\d+$/),
     huella: z.string().regex(/^[0-9a-f]{64}$/),
   }),
   confirmado_por: z.string().min(1),
-  fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  fecha: z.string().refine(esFechaCivil, "fecha que no existe"),
   rasgos: z.record(z.string(), z.boolean()),
   citas: z.record(
     z.string(),
@@ -230,7 +284,7 @@ export const PerfilPropuesto = z.strictObject({
       regla: z.string(),
       campo: z.string(),
       ruta: z.string(),
-      texto: z.string(),
+      texto: z.string().max(MAX_TEXTO_DE_FICHA),
     }),
   ),
   sin_responder: z.array(z.string()),
@@ -245,7 +299,7 @@ export const NOTA_DEL_PERFIL = {
 
 /**
  * Arma el perfil que se guarda. Solo entran los rasgos propuestos que la persona confirmó; lo demás va a `sin_responder`.
- * Quien llama pasa la huella de la ficha (SHA-256 de sus bytes): la ficha misma no se guarda.
+ * Quien llama pasa la huella de la ficha (SHA-256 de sus bytes crudos, `sha256DeBytes`): la ficha misma no se guarda.
  */
 export function armarPerfilPropuesto(e: {
   id: string;

@@ -16,6 +16,7 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
@@ -32,12 +33,17 @@ import {
 } from "../engine/activos/historial.ts";
 import {
   FichaLeida,
+  ID_DE_PERFIL,
+  MAX_BYTES_DE_FICHA,
   TablaFichaARasgos,
   armarPerfilPropuesto,
+  inerte,
   proponerDesdeFicha,
+  textoDeFicha,
   type RasgoDeFicha,
 } from "../engine/activos/desde-ficha.ts";
-import { sha256 } from "../engine/huella.ts";
+import { esFechaCivil } from "../engine/fecha.ts";
+import { sha256DeBytes } from "../engine/huella.ts";
 import { Plan } from "../engine/planificador/esquemas.ts";
 import { puedeDecidir } from "../lib/propuestas/frontera.ts";
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
@@ -154,10 +160,6 @@ async function historial(
 const leerJson = (ruta: string): unknown =>
   JSON.parse(readFileSync(ruta, "utf8"));
 
-/** El texto de la ficha es dato ajeno: sin caracteres de control (ni secuencias de escape de terminal) al imprimirlo. */
-const inerte = (texto: string): string =>
-  texto.replace(/[\u0000-\u001f\u007f-\u009f]/g, " ");
-
 /** Una línea por rasgo: el rasgo, lo que se propone y el texto de la ficha que lo respalda (o por qué no se propone). */
 function lineaDeRasgo(r: RasgoDeFicha, idioma: Idioma): string {
   const t = (es: string, en: string) => (idioma === "es" ? es : en);
@@ -193,8 +195,12 @@ async function desdeFicha(
     throw new ErrorDeUso(
       `no existe la ficha ${rutaFicha} / the ficha ${rutaFicha} does not exist`,
     );
-  const bytes = readFileSync(rutaFicha, "utf8");
-  const ficha = FichaLeida.safeParse(JSON.parse(bytes));
+  if (statSync(rutaFicha).size > MAX_BYTES_DE_FICHA)
+    throw new ErrorDeUso(
+      `la ficha pasa de ${MAX_BYTES_DE_FICHA} bytes: no es una ficha del contrato / the ficha is over ${MAX_BYTES_DE_FICHA} bytes: it is not a contract ficha`,
+    );
+  const bytes = readFileSync(rutaFicha);
+  const ficha = FichaLeida.safeParse(JSON.parse(textoDeFicha(bytes)));
   if (!ficha.success)
     throw new ErrorDeUso(
       `la ficha no cumple el contrato 1.x de CV Viva / the ficha does not meet the CV Viva 1.x contract: ${ficha.error.issues
@@ -234,7 +240,9 @@ async function desdeFicha(
     return;
   }
 
-  // Confirmar lo hace una persona, no una sesión de Claude Code (regla dura 2).
+  // Confirmar lo hace una persona, no una sesión de Claude Code (regla dura 2). La guarda protege el repositorio REAL: con otra raíz (las
+  // pruebas, el kit) lo que se lee y se escribe vive bajo esa raíz y no toca `datos/privado/` de este repo; es el mismo diseño de
+  // `src/lib/propuestas/frontera.ts`, y un `cd` a otra carpeta no abre nada del repo.
   const frontera = puedeDecidir({
     raiz,
     repo: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."),
@@ -253,6 +261,14 @@ async function desdeFicha(
   ] as const)
     if (valor === undefined)
       throw new ErrorDeUso(`falta ${bandera} / ${bandera} is missing`);
+  if (!ID_DE_PERFIL.test(o.id!))
+    throw new ErrorDeUso(
+      `--id: minúsculas, dígitos y guiones / lowercase letters, digits and dashes: ${o.id}`,
+    );
+  if (!esFechaCivil(o.fecha!))
+    throw new ErrorDeUso(
+      `--fecha: una fecha que exista, AAAA-MM-DD / a date that exists, YYYY-MM-DD: ${o.fecha}`,
+    );
   const propuestosIds = new Set(
     propuestas.filter((p) => p.estado === "propuesto").map((p) => p.rasgo),
   );
@@ -265,6 +281,10 @@ async function desdeFicha(
             .map((x) => x.trim())
             .filter(Boolean),
         );
+  if (pedidos.size === 0)
+    throw new ErrorDeUso(
+      "--aceptar pide al menos un rasgo (o «todos») / --aceptar needs at least one trait (or “all”)",
+    );
   const noPropuestos = [...pedidos].filter((r) => !propuestosIds.has(r));
   if (noPropuestos.length > 0)
     throw new Bloqueado(
@@ -286,14 +306,24 @@ async function desdeFicha(
     por: o.por!,
     fecha: o.fecha!,
     fichaVersion: ficha.data.schema_version,
-    fichaHuella: await sha256(bytes),
+    fichaHuella: await sha256DeBytes(bytes),
     propuestas,
     confirmados: pedidos,
   });
   mkdirSync(path.dirname(salida), { recursive: true, mode: 0o700 });
-  writeFileSync(salida, `${JSON.stringify(perfil, null, 2)}\n`, {
-    mode: 0o600,
-  });
+  // `wx`: falla si la ruta existe, también si es un enlace simbólico (aunque apunte a nada): no se escribe a través de él.
+  try {
+    writeFileSync(salida, `${JSON.stringify(perfil, null, 2)}\n`, {
+      mode: 0o600,
+      flag: "wx",
+    });
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "EEXIST")
+      throw new Bloqueado(
+        `Ya existe ${o.salida}; no se sobrescribe / ${o.salida} already exists; it is not overwritten.`,
+      );
+    throw error;
+  }
   chmodSync(salida, 0o600);
   process.stdout.write(
     `${t(

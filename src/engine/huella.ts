@@ -70,8 +70,15 @@ export function canonicalizar(valor: unknown): string {
 
 /** SHA-256 en hexadecimal de los bytes UTF-8 de un texto. */
 export async function sha256(texto: string): Promise<string> {
-  const bytes = new TextEncoder().encode(texto);
-  const resumen = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return sha256DeBytes(new TextEncoder().encode(texto));
+}
+
+/** SHA-256 en hexadecimal de unos bytes tal cual (un archivo leído sin decodificar). */
+export async function sha256DeBytes(bytes: Uint8Array): Promise<string> {
+  const resumen = await globalThis.crypto.subtle.digest(
+    "SHA-256",
+    bytes as Uint8Array<ArrayBuffer>,
+  );
   return Array.from(new Uint8Array(resumen), (b) =>
     b.toString(16).padStart(2, "0"),
   ).join("");

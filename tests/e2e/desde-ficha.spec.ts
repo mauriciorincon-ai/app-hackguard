@@ -166,6 +166,42 @@ test.describe("D2 · el perfil de un activo desde la ficha", () => {
     expect(await serias(page)).toEqual([]);
   });
 
+  test("con solo el teclado: el selector de archivo recibe el foco y las casillas se aceptan con Espacio", async ({
+    page,
+  }) => {
+    await page.goto(RUTA);
+    // Tab desde el inicio llega al selector de archivo (un <input type=file> nativo: Enter/Espacio abre el diálogo del sistema).
+    let enfocado = false;
+    for (let i = 0; i < 30 && !enfocado; i++) {
+      await page.keyboard.press("Tab");
+      enfocado = await page.evaluate(
+        () =>
+          document.activeElement?.hasAttribute("data-ficha-entrada") ?? false,
+      );
+    }
+    expect(enfocado, "Tab llega al selector de archivo").toBe(true);
+    expect(
+      await page.evaluate(
+        () =>
+          getComputedStyle(document.activeElement as Element).outlineStyle !==
+          "none",
+      ),
+      "el foco se ve",
+    ).toBe(true);
+
+    await soltar(page, demo());
+    const casilla = page
+      .getByRole("checkbox", { name: /Aceptar: .*herramientas/i })
+      .first();
+    await casilla.focus();
+    const antes = await casilla.isChecked();
+    await page.keyboard.press("Space");
+    expect(await casilla.isChecked(), "Espacio la alterna").toBe(!antes);
+    await page.keyboard.press("Space");
+    expect(await casilla.isChecked(), "y la devuelve").toBe(antes);
+    expect(await serias(page)).toEqual([]);
+  });
+
   test("a 380 px no hay desplazamiento horizontal", async ({ page }) => {
     await page.setViewportSize({ width: 380, height: 800 });
     await page.goto(RUTA);

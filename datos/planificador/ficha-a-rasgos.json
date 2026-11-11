@@ -341,14 +341,15 @@
       "id": "acciones_irreversibles-no",
       "rasgo": "acciones_irreversibles",
       "valor": false,
-      "campos": [
-        "nunca[]",
-        "limites[]"
-      ],
+      "campos": ["nunca[]", "limites[]"],
       "terminos": [
-        "irreversible",
-        "irreversibles",
-        "irreversible actions"
+        "nunca hace acciones irreversibles",
+        "nunca ejecuta acciones irreversibles",
+        "no hace acciones irreversibles",
+        "no ejecuta acciones irreversibles",
+        "never takes irreversible actions",
+        "never performs irreversible actions",
+        "does not take irreversible actions"
       ],
       "razon": {
         "es": "La ficha pone entre sus «nunca» o sus límites las acciones irreversibles.",
@@ -465,15 +466,18 @@
       "id": "accede_a_datos_sensibles-no",
       "rasgo": "accede_a_datos_sensibles",
       "valor": false,
-      "campos": [
-        "nunca[]",
-        "limites[]"
-      ],
+      "campos": ["nunca[]", "limites[]"],
       "terminos": [
-        "datos sensibles",
-        "datos personales",
-        "sensitive data",
-        "personal data"
+        "nunca accede a datos sensibles",
+        "nunca accede a datos personales",
+        "nunca guarda datos sensibles",
+        "nunca guarda datos personales",
+        "no accede a datos sensibles",
+        "no accede a datos personales",
+        "never accesses sensitive data",
+        "never accesses personal data",
+        "never stores sensitive data",
+        "never stores personal data"
       ],
       "razon": {
         "es": "La ficha pone los datos sensibles o personales entre sus «nunca» o sus límites.",
@@ -574,12 +578,7 @@
         "bloques[].nombre",
         "bloques[].linea"
       ],
-      "terminos": [
-        "umbral",
-        "umbrales",
-        "threshold",
-        "thresholds"
-      ],
+      "terminos": ["umbral", "umbrales", "threshold", "thresholds"],
       "razon": {
         "es": "La ficha dice que decide con un umbral.",
         "en": "The ficha says it decides with a threshold."
@@ -614,15 +613,15 @@
       "id": "decisiones_de_alto_impacto-no",
       "rasgo": "decisiones_de_alto_impacto",
       "valor": false,
-      "campos": [
-        "nunca[]",
-        "limites[]"
-      ],
+      "campos": ["nunca[]", "limites[]"],
       "terminos": [
-        "alto impacto",
-        "decisiones criticas",
-        "high-impact",
-        "high impact"
+        "nunca toma decisiones de alto impacto",
+        "no toma decisiones de alto impacto",
+        "nunca toma decisiones criticas",
+        "no toma decisiones criticas",
+        "never makes high-impact decisions",
+        "does not make high-impact decisions",
+        "never makes high impact decisions"
       ],
       "razon": {
         "es": "La ficha pone las decisiones de alto impacto entre sus «nunca» o sus límites.",

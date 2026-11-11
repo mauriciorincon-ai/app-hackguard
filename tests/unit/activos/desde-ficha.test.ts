@@ -8,7 +8,11 @@ import {
   FichaLeida,
   TablaFichaARasgos,
   armarPerfilPropuesto,
+  comandoDeAceptar,
+  comillasDeShell,
   contieneTermino,
+  inerte,
+  textoDeFicha,
   fragmentosDe,
   plegar,
   proponerDesdeFicha,
@@ -320,5 +324,91 @@ describe("armarPerfilPropuesto", () => {
       huella: "a".repeat(64),
     });
     expect(p.nota.es).toMatch(/no es un activo/i);
+  });
+});
+
+describe("las negaciones de la tabla no se dejan engañar", () => {
+  const con = (nunca: string[]) =>
+    proponerDesdeFicha(
+      FichaLeida.parse({
+        ...json("datos/fichas/demo/ficha-demo-asistente.json"),
+        nunca,
+        limites: ["Atiende solo soporte.", "Responde en un turno."],
+      }),
+      tabla,
+      rasgos,
+    ).find((r) => r.rasgo === "acciones_irreversibles")!;
+
+  it("«nunca hace acciones irreversibles» propone «no»", () => {
+    const r = con(["Nunca hace acciones irreversibles.", "Nunca vende."]);
+    expect(r.estado === "propuesto" && r.valor === false).toBe(true);
+  });
+
+  it("«nunca omite confirmar las acciones irreversibles» NO propone «no»: dice lo contrario", () => {
+    const r = con([
+      "Nunca omite confirmar las acciones irreversibles.",
+      "Nunca vende.",
+    ]);
+    expect(r.estado).toBe("sin_responder");
+  });
+});
+
+describe("lo que la ficha dice es dato ajeno", () => {
+  it("el texto inerte no lleva control, dirección ni ancho cero", () => {
+    expect(inerte("a\u001b[31mb\u202ec\u200bd\u2066e")).toBe("a [31mb c d e");
+  });
+
+  it("los bytes con BOM dan el mismo texto que sin él", () => {
+    const sin = new TextEncoder().encode('{"a":1}');
+    const con = new Uint8Array([0xef, 0xbb, 0xbf, ...sin]);
+    expect(textoDeFicha(con)).toBe(textoDeFicha(sin));
+  });
+
+  it("un campo de la ficha más largo que el contrato no la deja pasar", () => {
+    const larga = {
+      ...json("datos/fichas/demo/ficha-demo-asistente.json"),
+      titular: "x".repeat(401),
+    };
+    expect(FichaLeida.safeParse(larga).success).toBe(false);
+  });
+
+  it("una fecha que no existe no arma un perfil", () => {
+    const propuestas = proponerDesdeFicha(ficha, tabla, rasgos);
+    expect(() =>
+      armarPerfilPropuesto({
+        id: "act-x",
+        por: "Ana",
+        fecha: "2026-13-45",
+        fichaVersion: "1.3.1",
+        fichaHuella: "a".repeat(64),
+        propuestas,
+        confirmados: new Set(),
+      }),
+    ).toThrow();
+  });
+});
+
+describe("el comando que se copia a una terminal", () => {
+  it("cita lo que la persona escribió: un nombre con espacio o con comillas no rompe el argumento", () => {
+    expect(comillasDeShell("Ana")).toBe("Ana");
+    expect(comillasDeShell("Mauricio Rincón")).toBe("'Mauricio Rincón'");
+    expect(comillasDeShell("a'b; rm -rf ~")).toBe(`'a'\\''b; rm -rf ~'`);
+    const c = comandoDeAceptar({
+      aceptados: ["usa_herramientas"],
+      por: "Mauricio Rincón",
+      id: "act-uno",
+      fecha: "2026-11-10",
+    });
+    expect(c).toContain(
+      "--por 'Mauricio Rincón' --id act-uno --fecha 2026-11-10 --salida datos/privado/activos/act-uno.perfil.json",
+    );
+  });
+
+  it("lo que falta se muestra como marcador", () => {
+    expect(
+      comandoDeAceptar({ aceptados: [], por: "", id: "", fecha: "" }),
+    ).toBe(
+      "pnpm activo:desde-ficha <ficha.json> --aceptar <rasgos> --por <tu-nombre> --id <id> --fecha AAAA-MM-DD --salida datos/privado/activos/<id>.perfil.json",
+    );
   });
 });

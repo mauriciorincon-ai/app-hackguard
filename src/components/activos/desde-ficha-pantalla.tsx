@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   armarPerfilPropuesto,
+  comandoDeAceptar,
   FichaLeida,
+  ID_DE_PERFIL,
+  inerte,
+  MAX_BYTES_DE_FICHA,
   proponerDesdeFicha,
+  textoDeFicha,
   type RasgoDeFicha,
   type TablaFichaARasgos,
 } from "@/engine/activos/desde-ficha";
-import { sha256 } from "@/engine/huella";
+import { esFechaCivil } from "@/engine/fecha";
+import { sha256DeBytes } from "@/engine/huella";
 import { ETIQUETAS_DE_VISTAS as E } from "@/lib/catalogo/etiquetas";
 import { en as texto, useIdioma } from "../consola/idioma";
 import { Aviso, Chip, Estado, Sello } from "../estado";
@@ -22,10 +28,6 @@ import { Dato, T } from "../texto";
  * y lo aceptado baja como un perfil, no como un activo: sin alcance autorizado y reglas de enfrentamiento no hay plan (regla dura 5).
  * El texto de la ficha es dato inerte: se muestra como texto, escapado (regla dura 4).
  */
-
-const MAX_BYTES = 1_000_000;
-const ID = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
-const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
 interface Rasgo {
   id: string;
@@ -69,7 +71,7 @@ function Fragmento({ ruta, texto: t }: { ruta: string; texto: string }) {
     <blockquote className="hg-menor" data-fragmento="">
       <Dato>{ruta}</Dato>
       {": "}
-      <q>{t}</q>
+      <q>{inerte(t)}</q>
     </blockquote>
   );
 }
@@ -87,7 +89,8 @@ function descargar(nombre: string, cuerpo: unknown) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  // Algunos navegadores (Safari) cortan la descarga si se libera la dirección en el mismo turno.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 export function DesdeFichaPantalla({
@@ -103,30 +106,39 @@ export function DesdeFichaPantalla({
   const [id, setId] = useState("");
   const [por, setPor] = useState("");
   const [fecha, setFecha] = useState("");
+  // Cuenta de lecturas: una ficha que termina de leerse después de que se eligió otra no pisa a la más nueva.
+  const lecturaActual = useRef(0);
 
   const nombreDe = (r: string) =>
     rasgos.find((x) => x.id === r)?.nombre ?? { es: r, en: r };
 
   const alElegir = async (archivo: File | undefined) => {
+    const mia = ++lecturaActual.current;
+    const vigente = () => mia === lecturaActual.current;
     setAceptados(new Set());
     if (archivo === undefined) return setLectura({ tipo: "quieto" });
-    if (archivo.size > MAX_BYTES)
+    if (archivo.size > MAX_BYTES_DE_FICHA)
       return setLectura({ tipo: "error", motivo: "grande" });
-    let bytes: string;
+    let bytes: Uint8Array;
     let json: unknown;
     try {
-      bytes = await archivo.text();
-      json = JSON.parse(bytes);
+      bytes = new Uint8Array(await archivo.arrayBuffer());
+      json = JSON.parse(textoDeFicha(bytes));
     } catch {
-      return setLectura({ tipo: "error", motivo: "no_json" });
+      if (vigente()) setLectura({ tipo: "error", motivo: "no_json" });
+      return;
     }
     const ficha = FichaLeida.safeParse(json);
-    if (!ficha.success)
-      return setLectura({ tipo: "error", motivo: "contrato" });
+    if (!ficha.success) {
+      if (vigente()) setLectura({ tipo: "error", motivo: "contrato" });
+      return;
+    }
+    const huella = await sha256DeBytes(bytes);
+    if (!vigente()) return;
     setLectura({
       tipo: "listo",
       version: ficha.data.schema_version,
-      huella: await sha256(bytes),
+      huella,
       propuestas: proponerDesdeFicha(ficha.data, tabla, rasgos),
     });
   };
@@ -136,11 +148,15 @@ export function DesdeFichaPantalla({
   const elegidos = propuestas.filter(
     (p) => p.estado === "propuesto" && aceptados.has(p.rasgo),
   );
-  const datosOk = ID.test(id) && por.trim() !== "" && FECHA.test(fecha);
+  const datosOk =
+    ID_DE_PERFIL.test(id) && por.trim() !== "" && esFechaCivil(fecha);
   const puedeBajar = lectura.tipo === "listo" && elegidos.length > 0 && datosOk;
-  const comando = `pnpm activo:desde-ficha <ficha.json> --aceptar ${
-    elegidos.map((p) => p.rasgo).join(",") || "<rasgos>"
-  } --por ${por.trim() || "<tu-nombre>"} --id ${id || "<id>"} --fecha ${fecha || "AAAA-MM-DD"} --salida datos/privado/activos/${id || "<id>"}.perfil.json`;
+  const comando = comandoDeAceptar({
+    aceptados: elegidos.map((p) => p.rasgo),
+    por,
+    id,
+    fecha,
+  });
 
   const alDescargar = () => {
     if (lectura.tipo !== "listo" || !puedeBajar) return;
@@ -450,7 +466,7 @@ export function DesdeFichaPantalla({
                     onChange={(e) => setId(e.target.value.trim())}
                     placeholder="act-mi-asistente"
                     autoComplete="off"
-                    aria-invalid={id !== "" && !ID.test(id)}
+                    aria-invalid={id !== "" && !ID_DE_PERFIL.test(id)}
                   />
                 </label>
                 <label className="hg-campo" htmlFor="ficha-por">
@@ -476,7 +492,7 @@ export function DesdeFichaPantalla({
                     onChange={(e) => setFecha(e.target.value.trim())}
                     placeholder="2026-11-10"
                     autoComplete="off"
-                    aria-invalid={fecha !== "" && !FECHA.test(fecha)}
+                    aria-invalid={fecha !== "" && !esFechaCivil(fecha)}
                   />
                 </label>
               </div>
