@@ -27,7 +27,7 @@ const sinClaude = Object.fromEntries(
 const correr = (
   cwd: string,
   args: string[],
-  env: NodeJS.ProcessEnv = sinClaude,
+  env: Record<string, string | undefined> = sinClaude,
 ) =>
   spawnSync(
     "node",

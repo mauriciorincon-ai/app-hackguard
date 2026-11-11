@@ -20,7 +20,9 @@ const json = (ruta: string) =>
 const tabla = TablaFichaARasgos.parse(
   json("datos/planificador/ficha-a-rasgos.json"),
 );
-const contrato = json("datos/contratos/ficha-tecnica/1.3.1.schema.json");
+const contrato: Esquema = json(
+  "datos/contratos/ficha-tecnica/1.3.1.schema.json",
+);
 const ficha = FichaLeida.parse(
   json("datos/activos/demo/fichas/ficha-demo-asistente.json"),
 );
@@ -31,16 +33,29 @@ const rasgos: { id: string; tipo: "booleano" | "opcion" }[] = json(
   tipo: r.tipo,
 }));
 
+interface Esquema {
+  type?: string;
+  enum?: unknown[];
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  minimum?: number;
+  exclusiveMinimum?: number;
+  minItems?: number;
+  maxItems?: number;
+  items?: Esquema;
+  required?: string[];
+  properties?: Record<string, Esquema>;
+  additionalProperties?: boolean;
+  anyOf?: Esquema[];
+}
+
 /** Un validador mínimo del subconjunto de JSON Schema que usa el contrato (no hay ajv en el repo). Devuelve los errores. */
-function validar(
-  valor: unknown,
-  esquema: Record<string, any>,
-  ruta = "$",
-): string[] {
+function validar(valor: unknown, esquema: Esquema, ruta = "$"): string[] {
   const errores: string[] = [];
   if (esquema.anyOf) {
     const ok = esquema.anyOf.some(
-      (s: Record<string, any>) => validar(valor, s, ruta).length === 0,
+      (s: Esquema) => validar(valor, s, ruta).length === 0,
     );
     return ok ? [] : [`${ruta}: ninguna alternativa`];
   }
@@ -80,9 +95,10 @@ function validar(
       errores.push(`${ruta}: pocos`);
     if (esquema.maxItems !== undefined && valor.length > esquema.maxItems)
       errores.push(`${ruta}: muchos`);
-    if (esquema.items)
+    const items = esquema.items;
+    if (items)
       valor.forEach((v, i) =>
-        errores.push(...validar(v, esquema.items, `${ruta}[${i}]`)),
+        errores.push(...validar(v, items, `${ruta}[${i}]`)),
       );
   }
   if (tipo === "object") {
@@ -100,15 +116,16 @@ function validar(
 }
 
 /** El esquema que describe una ruta de la tabla (`stack[].papel`) dentro del contrato, o null si no existe. */
-function esquemaDeCampo(campo: string): Record<string, any> | null {
-  let actual: Record<string, any> = contrato;
+function esquemaDeCampo(campo: string): Esquema | null {
+  let actual: Esquema = contrato;
   for (const parte of campo.split(".")) {
     const lista = parte.endsWith("[]");
     const nombre = lista ? parte.slice(0, -2) : parte;
     const sig = actual.properties?.[nombre];
     if (!sig) return null;
-    actual = lista ? sig.items : sig;
-    if (!actual) return null;
+    const siguiente = lista ? sig.items : sig;
+    if (!siguiente) return null;
+    actual = siguiente;
   }
   return actual;
 }
