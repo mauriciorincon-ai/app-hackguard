@@ -19,6 +19,20 @@ The last construction sprint of milestone H-2: the asset's profile from CV Viva'
 - **The snapshot keeps its evaluation date, 2026-10-05:** no test was re-verified, and moving the date would turn every demo to «por revisar». The demo plans were issued again (2026-10-11) and the 19 envelopes and 2 batches that cite them were sealed again; the replaced snapshots stay in git history.
 - **The maqueta** (generator, not the HTML) gains the «capa propia» section in `controles` and `control`; the fingerprints the guide and ADR-002 cite are the new ones.
 
+### Added (F2 · lo público)
+
+- **Public mode (C19), by allowlist (default ii):** `src/lib/publico/lista-blanca.ts` declares the routes (catalogue, test sheet, frameworks, controls and coverage, gap and gap-by-control) and the data (only `act-demo-*` assets). `pnpm build:publico` builds with `HACKGUARD_PUBLICO=1`, copies only the allowlisted pages and the `_next/static` files they name (transitively) to `dist/publico/`, and sweeps the result (HTML, RSC, JS, CSS, JSON): no route outside the list, no id that is not a versioned demo, no evidence format, scope or rules of engagement, no external host. Links that leave the list are inert (`Enlace`). The gap shows synthetic demo findings, envelopes and batches only; their ids pass only if they are in the versioned demo sets.
+- **Showcase package (C20):** `pnpm paquete:vitrina` builds under `/piezas/hackguard`, with explicit `.html` links (CV Viva serves `public/` by exact path, no clean URLs, no directory index) and no RSC files, and writes `manifiesto.json` (`hackguard-paquete/v1`: SHA-256 per file and its own JCS fingerprint). `pnpm paquete:verificar` checks the manifest, the base, every link, zero external hosts and zero deployment domains (`cero-enlaces.json`). `pnpm test:e2e:paquete` serves it on 127.0.0.1:3213 and aborts any request that leaves 127.0.0.1. Both new checks run inside the existing `e2e` job: no new job, the ruleset does not change.
+
+### Changed (F2)
+
+- **Decision 9 (ADR-002 §6, hard rule 10):** the selector union is built from a registry (`src/engine/selectores/registro.ts`); each adapter declares its selector (`adaptadores/<id>/selector.ts`) and the manual ones live in `selectores/manuales.ts`. `esquemas.ts` no longer declares any form. The official snapshot fingerprint (`d352e6af…`) does not change (test).
+
+### Fixed (F2)
+
+- **Dead link in D12:** the package verifier found that an own-layer control linked to `iso42001-a-8-2`, a page that does not exist; the link is drawn only when the equivalent ISO control has a state. Regression test in `cinco-pantallas`.
+- **The boundary uses the allowlist's own asset rule:** `PATRON_DE_ACTIVO_PUBLICO` was declared and used by nothing (the sweep had its own regex). A red demo that widened it to any `act-` passed the gate; now `esActivoPublico` is the single rule and has a test.
+
 ## Sprint 012 — «Tus herramientas» (2026-11-10)
 
 The third sprint of milestone H-2: more tools in, findings out to DefectDojo, and an optional executor. HackGuard's promise changes from «it runs no tests» to **«it does not attack on its own: the optional executor runs your tools, on your machine, inside what you authorized»**.
