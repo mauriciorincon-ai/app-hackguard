@@ -32,6 +32,10 @@ export const ARCHIVOS_DE_LA_RAIZ: readonly string[] = [
 /** Solo los activos demo sintéticos (`act-demo-*`) pueden aparecer en lo exportado. */
 export const PATRON_DE_ACTIVO_PUBLICO = /^act-demo-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/** ¿Este id de activo puede aparecer en lo exportado? Solo un demo sintético. La frontera y el paquete usan esta misma lista. */
+export const esActivoPublico = (id: string): boolean =>
+  PATRON_DE_ACTIVO_PUBLICO.test(id);
+
 /** `HACKGUARD_PUBLICO=1` en el build. Next lo inlinea en el JS del cliente (next.config.ts), así que vale en los dos lados. */
 export const modoPublico = (): boolean => process.env.HACKGUARD_PUBLICO === "1";
 

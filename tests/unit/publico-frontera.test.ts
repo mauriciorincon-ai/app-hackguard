@@ -15,6 +15,7 @@ import {
 import {
   archivoPermitido,
   enlaceVisible,
+  esActivoPublico,
   esRutaPublica,
   rutaDeArchivo,
 } from "../../src/lib/publico/lista-blanca.ts";
@@ -229,6 +230,17 @@ describe("los demos conocidos y los archivos estáticos", () => {
     expect(conocidos.sobres.has("SOB-0003")).toBe(true);
     expect(conocidos.lotes.has("LOTE-0007")).toBe(true);
     expect(conocidos.hallazgos.size).toBeGreaterThan(0);
+  });
+
+  it("la lista blanca de datos deja pasar solo un activo demo sintético, y la frontera la usa", () => {
+    for (const ok of ["act-demo-asistente", "act-demo-agente-uno"])
+      expect(esActivoPublico(ok), ok).toBe(true);
+    for (const no of ["act-mi-asistente", "act-demo", "act-demox-uno", "act-"])
+      expect(esActivoPublico(no), no).toBe(false);
+    const reglas = (t: string) =>
+      barrerTexto("catalogo.html", t, conocidos).map((h) => h.regla);
+    expect(reglas("act-demo-asistente")).toEqual([]);
+    expect(reglas("act-mi-asistente")).toEqual(["activo-no-demo"]);
   });
 
   it("de `_next/` solo viaja lo que las páginas permitidas nombran, y lo que eso nombra a su vez", () => {

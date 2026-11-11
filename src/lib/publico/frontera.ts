@@ -10,6 +10,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import {
   archivoPermitido,
+  esActivoPublico,
   esRutaPublica,
   normalizarRuta,
 } from "./lista-blanca.ts";
@@ -63,10 +64,6 @@ const MARCADORES: readonly {
   patron: RegExp;
   soloDatos?: true;
 }[] = [
-  {
-    regla: "activo-no-demo",
-    patron: /(?<![A-Za-z0-9_-])act-(?!demo-)[a-z0-9]+(?:-[a-z0-9]+)*/g,
-  },
   { regla: "dato-privado", patron: /datos\\?\/(?:privado|ejecutor)/g },
   {
     regla: "formato-de-evidencia",
@@ -116,6 +113,11 @@ export function barrerTexto(
   for (const { regla, patron, soloDatos } of MARCADORES)
     if (!(soloDatos && esCodigo))
       for (const m of texto.matchAll(patron)) marcar(regla, m[0]);
+  // Todo id con forma de activo se compara con la lista blanca de datos (lista-blanca.ts): solo pasa un `act-demo-*`.
+  for (const m of texto.matchAll(
+    /(?<![A-Za-z0-9_-])act-[a-z0-9]+(?:-[a-z0-9]+)*/g,
+  ))
+    if (!esActivoPublico(m[0])) marcar("activo-no-demo", m[0]);
   for (const [regla, patron, demo] of [
     ["hallazgo-no-demo", /(?<![A-Z0-9-])HZ-\d{4}/g, conocidos.hallazgos],
     ["sobre-no-demo", /(?<![A-Z0-9-])SOB-\d{4}/g, conocidos.sobres],
