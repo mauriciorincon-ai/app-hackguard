@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-// D2 en el navegador, en español (el inglés llega con el flujo en inglés del cierre): se suelta la ficha demo, se ve cada rasgo propuesto
+// D2 en el navegador, en español (el inglés vive en flujo-en.spec.ts): se suelta la ficha demo, se ve cada rasgo propuesto
 // con el fragmento de la ficha que lo respalda y cuáles quedan sin responder, se acepta lo que se quiere y se baja un perfil con solo
 // eso. La ficha se lee en la página: cero peticiones de red y cero escrituras de almacenamiento. El texto de la ficha es dato inerte.
 

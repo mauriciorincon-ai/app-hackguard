@@ -19,6 +19,7 @@ const PRIMERA_PRUEBA: string = JSON.parse(
 ).catalogo.pruebas[0].id;
 
 const ACTIVO = "act-demo-asistente";
+const FICHA = join("datos", "fichas", "demo", "ficha-demo-asistente.json");
 
 /** Lo que se ve en español fuera de un dato neutro: debe ser la lista vacía en cada pantalla. */
 const ESPANOL_VISIBLE = (page: Page) =>
@@ -89,6 +90,34 @@ test.describe("el flujo principal en inglés", () => {
 
   test("bandeja de propuestas", async ({ page }) => {
     await enIngles(page, "/catalogo/propuestas");
+  });
+
+  // S13. D2: la ficha demo se suelta con la interfaz en inglés. El texto de la ficha (dato de la ficha, en español) es el único que
+  // puede quedar en español y va en un dato neutro; todo lo que dice la aplicación sale en inglés.
+  test("D2: el perfil desde la ficha, en inglés, con la ficha ya leída", async ({
+    page,
+  }) => {
+    await enIngles(page, "/activos/desde-ficha");
+    await page.locator("[data-ficha-entrada]").setInputFiles(FICHA);
+    await expect(page.locator("[data-ficha-leida]")).toContainText(
+      /6 traits proposed and 19 unanswered/,
+    );
+    await expect(page.locator('tr[data-estado="propuesto"]')).toHaveCount(6);
+    expect(await ESPANOL_VISIBLE(page), "con la ficha leída").toEqual([]);
+    const scan = await new AxeBuilder({ page }).analyze();
+    expect(
+      scan.violations.filter(
+        (v) => v.impact === "critical" || v.impact === "serious",
+      ),
+    ).toEqual([]);
+  });
+
+  // S13. D12: la capa propia de la organización de ejemplo, aparte de la norma, en las dos pantallas que la muestran.
+  test("D12: la capa propia de controles, en inglés", async ({ page }) => {
+    await enIngles(page, "/catalogo/controles");
+    await expect(page.getByText("org-demo-O.1.1").first()).toBeVisible();
+    await enIngles(page, "/brecha/control");
+    await expect(page.getByText("org-demo-O.1.1").first()).toBeVisible();
   });
 
   test("el conmutador vuelve al español sin perder la página", async ({
