@@ -1302,6 +1302,9 @@ describe("el registro de adaptadores", () => {
   it("cada herramienta del paquete tiene el suyo, y una desconocida no", () => {
     expect(ADAPTADORES.map((a) => a.id).sort()).toEqual([
       "garak-report-jsonl",
+      "inspect-eval-log-json",
+      "promptfoo-eval-json",
+      "pyrit-scenario-result-json",
       "zap-traditional-json",
     ]);
     expect(adaptadorDe("garak")).toBe(ADAPTADOR_DE_GARAK);

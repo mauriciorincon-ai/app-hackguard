@@ -660,8 +660,8 @@ export function CargaPantalla({
           <p className="hg-bajada">
             <T
               t={{
-                es: "HackGuard no ejecuta pruebas: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
-                en: "HackGuard does not run tests: it receives what your tools produced. A result does not count until a person confirms it.",
+                es: "HackGuard no ataca por su cuenta: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
+                en: "HackGuard does not attack on its own: it receives what your tools produced. A result does not count until a person confirms it.",
               }}
             />
           </p>
@@ -727,8 +727,8 @@ export function CargaPantalla({
           <p>
             <T
               t={{
-                es: "Corre las pruebas del plan con tus herramientas e importa aquí el resultado: el archivo de Garak o de ZAP, o un sobre hecho a mano.",
-                en: "Run the plan's tests with your tools and import the result here: the Garak or ZAP file, or an envelope made by hand.",
+                es: "Corre las pruebas del plan con tus herramientas e importa aquí el resultado: el archivo de Garak, ZAP, promptfoo, PyRIT o Inspect, o un sobre hecho a mano.",
+                en: "Run the plan's tests with your tools and import the result here: the Garak, ZAP, promptfoo, PyRIT or Inspect file, or an envelope made by hand.",
               }}
             />
           </p>

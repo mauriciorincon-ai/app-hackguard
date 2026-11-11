@@ -1,8 +1,8 @@
 {
   "version": "1",
   "nota": {
-    "es": "De dónde sale cada fixture de los adaptadores, qué se redactó y la huella de lo versionado. Ninguna lleva texto de ataque: la de garak sale de una corrida local contra el generador test.Repeat (sin terceros), con cada texto reemplazado por un marcador; las de ZAP son salidas oficiales de prueba o derivadas declaradas.",
-    "en": "Where each adapter fixture comes from, what was redacted and the fingerprint of what is versioned. None carries attack text: the garak one comes from a local run against the test.Repeat generator (no third party), with every text replaced by a marker; the ZAP ones are official test outputs or declared derivatives."
+    "es": "De dónde sale cada fixture de los adaptadores, qué se redactó y la huella de lo versionado. Ninguna lleva texto de ataque: la de garak sale de una corrida local contra el generador test.Repeat (sin terceros), con cada texto reemplazado por un marcador; las de ZAP son salidas oficiales de prueba o derivadas declaradas; las de promptfoo, PyRIT e Inspect son sintéticas, hechas a mano con el formato oficial.",
+    "en": "Where each adapter fixture comes from, what was redacted and the fingerprint of what is versioned. None carries attack text: the garak one comes from a local run against the test.Repeat generator (no third party), with every text replaced by a marker; the ZAP ones are official test outputs or declared derivatives; the promptfoo, PyRIT and Inspect ones are synthetic, handwritten to the official format."
   },
   "fixtures": [
     {
@@ -55,6 +55,36 @@
       "licencia": "Apache-2.0 (derivada)",
       "redaccion": "Los campos attack, evidence, encabezados y cuerpos llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
       "huella": "e1ece813c26dfb8ab3e77bce8fc78e1466fffcafd3ea779842cd2774f84fd46a"
+    },
+    {
+      "archivo": "promptfoo-0.123.1.sintetico.json",
+      "herramienta": "promptfoo",
+      "version": "0.123.1",
+      "derivada": true,
+      "origen": "Sintética, escrita a mano con la forma de `promptfoo eval -o` (OutputFile y EvaluateSummaryV3 de https://github.com/promptfoo/promptfoo/blob/0.123.1/src/types/index.ts@0.123.1). NO es una corrida de promptfoo: aquí no se instala ni se corre.",
+      "licencia": "Propia del repo (sintética; el formato es de promptfoo, MIT)",
+      "redaccion": "Prompt, variables, respuesta, motivo del evaluador, error, configuración y clave llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "ee714d6634f3e2b6548dc68d68c70d0b60f11e71baa26a04084848efa49628c4"
+    },
+    {
+      "archivo": "pyrit-1.1.0.sintetico.json",
+      "herramienta": "pyrit",
+      "version": "1.1.0",
+      "derivada": true,
+      "origen": "Sintética, escrita a mano con la forma de `ScenarioResult.model_dump(mode=\"json\")` (https://github.com/microsoft/PyRIT/blob/v1.1.0/pyrit/models/results/scenario_result.py@v1.1.0, attack_result.py y score/score.py del mismo tag). NO es una corrida de PyRIT: aquí no se instala ni se corre. PyRIT v1.1.0 no trae un exportador de archivo de puntajes ni un ejemplo oficial de este JSON; los campos `creation_time`/`completion_time` y la serialización de `attack_results` como mapa salen de los tipos, sin un volcado real que los confirme.",
+      "licencia": "Propia del repo (sintética; el formato es de PyRIT, MIT)",
+      "redaccion": "Objetivo, conversación, motivo del juez, metadatos, identidad del evaluador y del objetivo, etiquetas y errores llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "3de5298f6697e939b85ad179dcbc667ff3e18c1aed74b2fa5e52c62a577b6f25"
+    },
+    {
+      "archivo": "inspect-0.3.288.sintetico.json",
+      "herramienta": "inspect",
+      "version": "0.3.288",
+      "derivada": true,
+      "origen": "Sintética, escrita a mano con la forma de `inspect log dump` (EvalLog de https://github.com/UKGovernmentBEIS/inspect_ai/blob/0.3.288/src/inspect_ai/log/_log.py@0.3.288; Score y Value de scorer/_metric.py del mismo tag; la versión viaja en eval.packages.inspect_ai según _eval/task/log.py). NO es una corrida de Inspect: aquí no se instala ni se corre. La constante NaN del «sin puntuar» no va en el archivo (no sería JSON válido): la prueba la inyecta.",
+      "licencia": "Propia del repo (sintética; el formato es de Inspect, MIT)",
+      "redaccion": "Entrada, meta, salida, mensajes, almacén, explicación del juez, modelo y sus argumentos, rutas, origen git y errores llevan marcadores *-MARCADOR-NO-DEBE-PASAR para comprobar que ningún sobre los recibe.",
+      "huella": "19f2e300203136e2543a0a714a3f3f3e81a8d7a9cef336a30b6b3e727e6d3b9f"
     }
   ]
 }

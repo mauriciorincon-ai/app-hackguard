@@ -12,6 +12,8 @@ describe("el kit de textos pegados es byte a byte el de los fixtures", () => {
   it.each([
     ["garak-0.17.0.report.redactado.jsonl"],
     ["zap-traditional-json.derivada.json"],
+    ["promptfoo-0.123.1.sintetico.json"],
+    ["inspect-0.3.288.sintetico.json"],
   ])("%s", (nombre) => {
     expect(leer(`docs/kit-de-prueba/textos-pegados/${nombre}`)).toBe(
       leer(`tests/fixtures/adaptadores/${nombre}`),

@@ -156,6 +156,34 @@ export const TOMAS = [
     ancla: "Control por control",
     dentro: "main",
   },
+  // S12: promptfoo, PyRIT e Inspect entran por la misma pantalla del texto pegado (la herramienta se elige en ella).
+  {
+    f: "F25",
+    ruta: "/evidencia/carga",
+    ancla: "Texto de la herramienta",
+    dentro: "main",
+    pulsar: "Texto pegado",
+  },
+  {
+    f: "F26",
+    ruta: "/evidencia/carga",
+    ancla: "Texto de la herramienta",
+    dentro: "main",
+    pulsar: "Texto pegado",
+  },
+  {
+    f: "F27",
+    ruta: "/evidencia/hallazgos/HZ-0003",
+    ancla: "Descargar para DefectDojo",
+    dentro: "[data-exportar]",
+  },
+  // El ejecutor no tiene pantalla (la web no ejecuta nada): su toma es la negativa de la página de presentación.
+  {
+    f: "F28",
+    ruta: "/conoce",
+    ancla: "No ataca por su cuenta",
+    dentro: "li",
+  },
 ];
 
 /** `--salida` no puede caer en `datos/` (regla 17-bis: un derivado jamás nace menos privado que su fuente). */

@@ -234,8 +234,8 @@ export function evidencia({ consulta, existentes }) {
 <div>
 <h1>${t({ es: "Carga de evidencia", en: "Evidence intake" })}</h1>
 <p class="hg-bajada">${t({
-    es: "HackGuard no ejecuta pruebas: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
-    en: "HackGuard does not run tests: it receives what your tools produced. A result does not count until a person confirms it.",
+    es: "HackGuard no ataca por su cuenta: recibe lo que tus herramientas produjeron. Un resultado no cuenta hasta que una persona lo confirma.",
+    en: "HackGuard does not attack on its own: it receives what your tools produced. A result does not count until a person confirms it.",
   })}</p>
 <p class="hg-cabecera-meta" data-si="datos"><span>${t({ es: "Activo", en: "Asset" })}: <strong>${t(a.nombre)}</strong></span><span>${t({ es: "Plan", en: "Plan" })} ${enlace(archivoDePlan(activo), dato(a.plan.id), existentes)}</span></p>
 </div>

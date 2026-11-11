@@ -28,3 +28,6 @@ export const textoDeFixture = (nombre: string): string =>
 
 export const GARAK = "garak-0.17.0.report.redactado.jsonl";
 export const ZAP = "zap-traditional-json.oficial.json";
+export const PROMPTFOO = "promptfoo-0.123.1.sintetico.json";
+export const PYRIT = "pyrit-1.1.0.sintetico.json";
+export const INSPECT = "inspect-0.3.288.sintetico.json";

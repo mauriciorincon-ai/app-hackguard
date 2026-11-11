@@ -103,6 +103,8 @@ const NO_SON_CATALOGO = [
   "datos/lotes",
   "datos/severidad",
   "datos/vistas",
+  "datos/ejecutor",
+  "datos/exportacion",
 ];
 
 /**

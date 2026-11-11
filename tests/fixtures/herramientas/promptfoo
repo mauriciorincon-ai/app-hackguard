@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+// promptfoo SIMULADO (ver _simulada.mjs): `promptfoo eval --config <c> --output <o>`; el objetivo llega en HACKGUARD_OBJETIVO.
+import { despues, simular } from "./_simulada.mjs";
+
+const a = process.argv.slice(2);
+await simular({
+  nombre: "promptfoo",
+  objetivo: process.env.HACKGUARD_OBJETIVO,
+  config: despues(a, "--config"),
+  salida: despues(a, "--output"),
+});

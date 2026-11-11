@@ -46,6 +46,12 @@ describe("docs/brochure-export.json", () => {
     expect(new Set(claves).size).toBe(claves.length);
   });
 
+  it("el detalle de «funcionalidades» nombra el «modo público», no la «vitrina» (S12: ahí la palabra nombraba el modo público de HackGuard)", () => {
+    const { detalle } = metrica("funcionalidades");
+    expect(detalle).toContain("modo público para terceros");
+    expect(detalle.toLowerCase()).not.toContain("vitrina");
+  });
+
   it("la versión del repo es la de package.json y el brochure aún no está sellado", () => {
     expect(datos.app.version_repo).toBe(
       JSON.parse(leer("package.json")).version,

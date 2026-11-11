@@ -6,7 +6,8 @@
 //   registrar         <resultado.json> --crudo <archivo>
 //   confirmar         <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]
 //                     [--titulo-es --titulo-en --descripcion-es --descripcion-en]
-//   importar          --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]
+//   importar          --herramienta <id> --archivo <ruta> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]
+//                     (--garak <ruta> y --zap <ruta> siguen valiendo como atajos de --herramienta garak|zap --archivo <ruta>)
 //   confirmar-lote    <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD [--separar <SOB-NNNN>]… | --revisar-uno-por-uno
 //   validar           [--json] [--idioma es|en]
 //   hallazgos-listar  --fecha AAAA-MM-DD [--json] [--idioma es|en]
@@ -33,7 +34,6 @@ import {
   salidaJsonDeHallazgos,
   type FilaDeListadoDeHallazgo,
 } from "../engine/evidencia/informe.ts";
-import { adaptadorDe } from "../engine/adaptadores/index.ts";
 import { huella } from "../engine/huella.ts";
 import {
   confirmar,
@@ -54,9 +54,7 @@ import {
 import { evaluarHallazgo } from "../engine/hallazgos/ciclo.ts";
 import type { EstadoDeHallazgo } from "../engine/hallazgos/esquemas.ts";
 import { etiquetaDeEstadoDeHallazgo } from "../lib/evidencia/etiqueta-de-estado.ts";
-import { armarLote, siguienteIdDeLote } from "../engine/lotes/armar.ts";
 import { confirmarLote } from "../engine/lotes/confirmar.ts";
-import { revisionDelLote } from "../engine/lotes/revision.ts";
 import { fallasSinHallazgo, validarLotes } from "../engine/lotes/validar.ts";
 import { motivoDeVectorInvalido } from "../engine/severidad/cvss.ts";
 import {
@@ -71,13 +69,12 @@ import {
 import { cargarInstantaneaOficial } from "../lib/catalogo/cargar-instantanea.ts";
 import { cargarLibroValidado } from "../lib/evidencia/cargar-libro.ts";
 import { informeDeCadena } from "../lib/evidencia/informe-cadena.ts";
+import { importarCorrida } from "../lib/evidencia/importar.ts";
 import { situarParaListar } from "../lib/evidencia/situar.ts";
 import { construirCadena } from "../lib/evidencia/cadena.ts";
 import {
   CARPETA_DE_HALLAZGOS_DEMO,
   CARPETA_DE_HALLAZGOS_PRIVADA,
-  CARPETA_DE_LOTES_DEMO,
-  CARPETA_DE_LOTES_PRIVADA,
   CARPETA_DE_SOBRES_DEMO,
   CARPETA_DE_SOBRES_PRIVADA,
   cargarEscalaIa,
@@ -89,8 +86,8 @@ import {
 } from "../lib/evidencia/cargar-evidencia.ts";
 
 const USO = {
-  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
-  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --garak <report.jsonl> | --zap <report.json> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgo-cadena <HZ-NNNN> --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  es: "uso: evidencia registrar <resultado.json> --crudo <archivo>\n     evidencia importar --herramienta <id> --archivo <ruta> --activo <id> --por <persona> [--zona <IANA>] [--fecha AAAA-MM-DD]\n     evidencia confirmar-lote <LOTE-NNNN> --por <persona> --fecha AAAA-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n     evidencia confirmar <SOB-NNNN> --por <persona> --fecha AAAA-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n     evidencia validar [--json] [--idioma es|en]\n     evidencia hallazgos-listar --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgo-cadena <HZ-NNNN> --fecha AAAA-MM-DD [--json] [--idioma es|en]\n     evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <persona> --fecha AAAA-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
+  en: "usage: evidencia registrar <result.json> --crudo <file>\n       evidencia importar --herramienta <id> --archivo <path> --activo <id> --por <person> [--zona <IANA>] [--fecha YYYY-MM-DD]\n       evidencia confirmar-lote <LOTE-NNNN> --por <person> --fecha YYYY-MM-DD --revisados <n> [--separar <SOB-NNNN>]… | --revisar-uno-por-uno\n       evidencia confirmar <SOB-NNNN> --por <person> --fecha YYYY-MM-DD [--cvss <vector> | --impacto n --alcance n --detectabilidad n]\n       evidencia validar [--json] [--idioma es|en]\n       evidencia hallazgos-listar --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgo-cadena <HZ-NNNN> --fecha YYYY-MM-DD [--json] [--idioma es|en]\n       evidencia hallazgos-declarar <HZ-NNNN> <corregido|aceptado|eliminado|no-reproducible> --por <person> --fecha YYYY-MM-DD --justificacion-es <texto> --justificacion-en <text> [--revision-en-dias n]",
 };
 
 class ErrorDeUso extends Error {}
@@ -107,6 +104,8 @@ function opciones(argv: string[]) {
       crudo: { type: "string" },
       garak: { type: "string" },
       zap: { type: "string" },
+      herramienta: { type: "string" },
+      archivo: { type: "string" },
       activo: { type: "string" },
       zona: { type: "string" },
       separar: { type: "string", multiple: true },
@@ -369,159 +368,41 @@ async function principal(argv: string[]): Promise<number> {
   }
 
   if (o.comando === "importar") {
-    const herramienta =
-      o.garak !== undefined ? "garak" : o.zap !== undefined ? "zap" : null;
-    if (herramienta === null || (o.garak !== undefined && o.zap !== undefined))
-      throw new ErrorDeUso("--garak <report.jsonl> | --zap <report.json>");
-    const archivoDeLaHerramienta = path.resolve(o.garak ?? o.zap ?? "");
+    // Una sola forma de decir qué se importa: los atajos --garak/--zap o el par --herramienta/--archivo.
+    const dados = [
+      o.garak !== undefined ? { herramienta: "garak", archivo: o.garak } : null,
+      o.zap !== undefined ? { herramienta: "zap", archivo: o.zap } : null,
+      o.herramienta !== undefined || o.archivo !== undefined
+        ? { herramienta: o.herramienta ?? "", archivo: o.archivo ?? "" }
+        : null,
+    ].filter((d) => d !== null);
+    const dado = dados[0];
+    if (
+      dados.length !== 1 ||
+      dado === undefined ||
+      dado.herramienta === "" ||
+      dado.archivo === ""
+    )
+      throw new ErrorDeUso(
+        "--herramienta <id> --archivo <ruta> (o --garak <ruta> | --zap <ruta>)",
+      );
     const activo = requerido(o.activo, "--activo <id>");
     const por = requerido(o.por, "--por <persona>");
-    const adaptador = adaptadorDe(herramienta);
-    if (adaptador === undefined) throw new ErrorDeUso(herramienta);
-    // El archivo de la herramienta se lee UNA vez: se resume en una huella y se descarta (regla dura 4).
-    const bytes = readFileSync(archivoDeLaHerramienta);
-    const huellaDelArchivo = await huellaDelCrudo(bytes);
-    const textoDelArchivo = bytes.toString("utf8");
-    const origen = origenDelActivo(raiz, activo);
-    if (origen === null)
-      throw new ErrorDeUso(
-        `no hay un activo «${activo}» / there is no asset “${activo}”`,
-      );
-    if (origen === "demo") {
-      escribirTexto(
-        `Un activo demo no recibe archivos reales de una herramienta: lo real va a un activo propio (datos/privado/activos/).\nA demo asset takes no real tool files: real data goes to an own asset (datos/privado/activos/).\n`,
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    const emitido = L.planes[activo];
-    if (emitido === undefined) {
-      escribirTexto(
-        `El activo «${activo}» no tiene plan emitido: sin plan no hay evidencia que importar.\nAsset “${activo}” has no issued plan: with no plan there is no evidence to import.\n`,
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    const minima =
-      emitido.paquete.herramientas.find((h) => h.herramienta === herramienta)
-        ?.version_minima ?? null;
-    const lectura = adaptador.leer(textoDelArchivo, minima);
-    if (!lectura.ok) {
-      escribirTexto(
-        `No se armó ningún lote: el archivo no se pudo leer como ${adaptador.id} (${lectura.motivo}): ${lectura.detalle}.\nNo batch was built: the file could not be read as ${adaptador.id} (${lectura.motivo}): ${lectura.detalle}.\n`,
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    const previo = L.lotes.lotes.find(
-      (l) =>
-        l.lote.activo === activo && l.lote.huellas.archivo === huellaDelArchivo,
-    );
-    if (previo !== undefined) {
-      escribirTexto(
-        `Ese archivo ya se importó como ${previo.lote.id}: la misma corrida no se importa dos veces.\nThat file was already imported as ${previo.lote.id}: the same run is not imported twice.\n`,
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    const idsDe = (archivos: { ruta: string }[]) =>
-      archivos.map((a) => ({
-        id: nombreDeArchivo(a.ruta).replace(/\.json$/, ""),
-      }));
-    const armado = await armarLote({
-      adaptador,
-      corrida: lectura.corrida,
-      archivo: {
-        nombre: path.basename(archivoDeLaHerramienta),
-        huella: huellaDelArchivo,
-      },
+    // La lógica vive en `lib/evidencia/importar.ts`: la comparte con el ejecutor opcional (S12, D11).
+    const r = await importarCorrida({
+      raiz,
+      libro: L,
+      herramienta: dado.herramienta,
+      archivo: dado.archivo,
       activo,
-      origen,
-      emitido,
-      pruebas: L.contexto.pruebas,
-      idDeLote: siguienteIdDeLote(idsDe(L.archivosDeLotes)),
-      existentes: idsDe(L.archivosDeSobres),
-      ejecutadoPor: por,
+      por,
       fecha: o.fecha ?? null,
-      zonaHoraria: o.zona ?? null,
+      zona: o.zona ?? null,
+      idioma: o.idioma,
     });
-    if (!armado.ok) {
-      if (armado.motivo === "falta_fecha")
-        throw new ErrorDeUso(
-          "--fecha AAAA-MM-DD (el reporte no trae la fecha)",
-        );
-      if (armado.motivo === "falta_zona")
-        throw new ErrorDeUso(
-          "--zona <IANA> (el reporte no declara su zona horaria)",
-        );
-      escribirTexto(
-        `No se armó ningún lote: ${armado.motivo}${armado.prueba === undefined ? "" : ` (${armado.prueba})`}.\nNo batch was built: ${armado.motivo}${armado.prueba === undefined ? "" : ` (${armado.prueba})`}.\n`,
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    const carpetaDeSobres =
-      origen === "propio" ? CARPETA_DE_SOBRES_PRIVADA : CARPETA_DE_SOBRES_DEMO;
-    const rutaDelLote = `${origen === "propio" ? CARPETA_DE_LOTES_PRIVADA : CARPETA_DE_LOTES_DEMO}/${armado.lote.id}.json`;
-    const nuevosSobres = armado.sobres.map((x) => ({
-      ruta: `${carpetaDeSobres}/${x.id}.json`,
-      texto: json(x),
-    }));
-    // Todo se valida con el libro entero ANTES de escribir nada.
-    const pruebaDeSobres = await validarEvidencia(
-      [...L.archivosDeSobres, ...nuevosSobres],
-      L.contexto,
-    );
-    const nuevosSuyos = pruebaDeSobres.hallazgos.filter((h) =>
-      nuevosSobres.some((n) => n.ruta === h.ruta),
-    );
-    const pruebaDeLotes = await validarLotes(
-      [...L.archivosDeLotes, { ruta: rutaDelLote, texto: json(armado.lote) }],
-      { sobres: pruebaDeSobres.sobres, planes: L.planes, muestreo: L.muestreo },
-    );
-    const loteSuyo = pruebaDeLotes.hallazgos.filter(
-      (h) => h.ruta === rutaDelLote,
-    );
-    const errores = [...nuevosSuyos, ...loteSuyo].filter(
-      (h) => h.severidad === "error",
-    );
-    if (errores.length > 0) {
-      escribirTexto(
-        informeDeValidacion(
-          { es: "Lote", en: "Batch" },
-          "invalido",
-          { es: armado.lote.id, en: armado.lote.id },
-          [...nuevosSuyos, ...loteSuyo],
-          o.idioma,
-        ),
-      );
-      return CODIGOS_DEL_LIBRO.bloqueado;
-    }
-    // Los sobres y su lote son uno: si el lote no se escribe, no quedan propuestas huérfanas.
-    escribirDatosJuntos(raiz, [
-      ...nuevosSobres.map((n) => ({
-        relativa: n.ruta,
-        contenido: n.texto,
-        privado: origen === "propio",
-      })),
-      {
-        relativa: rutaDelLote,
-        contenido: json(armado.lote),
-        privado: origen === "propio",
-      },
-    ]);
-    const revision = await revisionDelLote(
-      armado.lote,
-      new Map(armado.sobres.map((x) => [x.id, x])),
-      L.muestreo,
-    );
-    const cuenta = (v: string) =>
-      armado.sobres.filter((x) => x.veredicto === v).length;
-    escribirTexto(
-      o.idioma === "es"
-        ? `Lote ${armado.lote.id} armado en ${rutaDelLote} con ${armado.sobres.length} sobres (${cuenta("fallida")} fallidas, ${cuenta("parcial")} parciales, ${cuenta("no_ejecutada")} no ejecutadas, ${cuenta("superada")} superadas), SIN confirmar (no cuentan).\nSe revisan siempre ${revision.siempre.length} y ${revision.muestra.length} de los otros ${revision.resto}: ${revision.revisados.join(", ")}.\nConfírmalo con: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <persona> --fecha AAAA-MM-DD --revisados ${revision.revisados.length}\n`
-        : `Batch ${armado.lote.id} built at ${rutaDelLote} with ${armado.sobres.length} envelopes (${cuenta("fallida")} failed, ${cuenta("parcial")} partial, ${cuenta("no_ejecutada")} not run, ${cuenta("superada")} passed), NOT confirmed (they do not count).\n${revision.siempre.length} are always reviewed, plus ${revision.muestra.length} of the other ${revision.resto}: ${revision.revisados.join(", ")}.\nConfirm it with: pnpm evidencia:confirmar-lote ${armado.lote.id} --por <person> --fecha YYYY-MM-DD --revisados ${revision.revisados.length}\n`,
-    );
-    return [...nuevosSuyos, ...loteSuyo].some(
-      (h) => h.severidad === "advertencia",
-    )
-      ? CODIGOS_DEL_LIBRO.con_advertencias
-      : CODIGOS_DEL_LIBRO.ok;
+    if (r.tipo === "uso") throw new ErrorDeUso(r.mensaje);
+    escribirTexto(r.texto);
+    return r.codigo;
   }
 
   if (o.comando === "confirmar-lote") {

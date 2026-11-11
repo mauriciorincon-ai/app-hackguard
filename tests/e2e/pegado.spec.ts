@@ -18,6 +18,18 @@ const garak = () =>
     path.join(process.cwd(), KIT, "garak-0.17.0.report.redactado.jsonl"),
     "utf8",
   ).replaceAll("2026-10-12", "2026-10-02");
+// El archivo de promptfoo del kit (sintético, formato `promptfoo eval -o`), con la fecha corrida al día del lote demo.
+const promptfoo = () =>
+  readFileSync(
+    path.join(process.cwd(), KIT, "promptfoo-0.123.1.sintetico.json"),
+    "utf8",
+  ).replaceAll("2026-10-12", "2026-10-02");
+// El log de Inspect del kit (sintético, formato `inspect log dump`), con la fecha corrida al día del lote demo.
+const inspect = () =>
+  readFileSync(
+    path.join(process.cwd(), KIT, "inspect-0.3.288.sintetico.json"),
+    "utf8",
+  ).replaceAll("2026-10-12", "2026-10-02");
 const garakDelKit = () =>
   readFileSync(
     path.join(process.cwd(), KIT, "garak-0.17.0.report.redactado.jsonl"),
@@ -104,6 +116,50 @@ const serias = async (page: Page) =>
   (await new AxeBuilder({ page }).analyze()).violations.filter(
     (v) => v.impact === "critical" || v.impact === "serious",
   );
+
+test.describe("pegar el archivo de promptfoo del kit", () => {
+  test("propone un sobre por prueba del plan, con el veredicto de la regla y no el de la herramienta", async ({
+    page,
+  }) => {
+    await alPegado(page);
+    await page.locator("#pegado-herramienta").selectOption("promptfoo");
+    await pegarYProponer(page, promptfoo(), "");
+    const sobres = page.locator("[data-sobre-propuesto]");
+    await expect(sobres).toHaveCount(3);
+    // `is-json` salió 1 de 1 en promptfoo, pero la regla de la prueba pide más repeticiones: «Parcial», no «Superada».
+    await expect(sobres.filter({ hasText: "PR-IA-SAL-001" })).toContainText(
+      /Parcial|Partial/,
+    );
+    // Todas las filas de `bfla` terminaron en error de la corrida: no se evaluó, no se da por superada.
+    await expect(sobres.filter({ hasText: "PR-AG-PERM-001" })).toContainText(
+      /No ejecutada|Not run/,
+    );
+    await expect(page.locator("[data-pegado-resultado]")).toContainText(
+      "pnpm evidencia:importar",
+    );
+    expect((await serias(page)).map((v) => v.id)).toEqual([]);
+  });
+});
+
+test.describe("pegar el log de Inspect del kit", () => {
+  test("propone el sobre de la prueba del agente, con el veredicto de la regla y no el de la herramienta", async ({
+    page,
+  }) => {
+    await alPegado(page);
+    await page.locator("#pegado-herramienta").selectOption("inspect");
+    await pegarYProponer(page, inspect(), "");
+    const sobres = page.locator("[data-sobre-propuesto]");
+    await expect(sobres).toHaveCount(1);
+    // 5 muestras evaluadas y 2 no resistidas: la regla de la prueba dice «Fallida». La «N» y la muestra con error no cuentan.
+    await expect(sobres.filter({ hasText: "PR-AG-HERR-001" })).toContainText(
+      /Fallida|Failed/,
+    );
+    await expect(page.locator("[data-pegado-resultado]")).toContainText(
+      "pnpm evidencia:importar",
+    );
+    expect((await serias(page)).map((v) => v.id)).toEqual([]);
+  });
+});
 
 test.describe("pegar el reporte de Garak del kit", () => {
   test("propone un sobre por prueba, con el veredicto de la regla, y dice la brecha antes y después", async ({

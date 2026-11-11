@@ -12,7 +12,7 @@
   `design-system.md` § 1); una pieza que se agita contradice lo que promete.
 - **Identidad en una frase:** _la página se lee como un cuaderno de pruebas: cada cosa que dice lleva su fuente, su fecha o su firma._
 - **La decisión valiente (la que el usuario juzga en el gate):** el clímax es **lo que HackGuard se niega a hacer**. Cuatro negativas
-  (no ejecuta pruebas, no certifica cumplimiento, no decide un veredicto, no cierra un hallazgo porque dejó de aparecer) ocupan una
+  (no ataca por su cuenta, no certifica cumplimiento, no decide un veredicto, no cierra un hallazgo porque dejó de aparecer) ocupan una
   escena propia a media página, con el texto visible, en vez de un acordeón de «limitaciones» al pie. Se vende por lo que no hace.
 - **Excepciones a solo-`transform`/`opacity`:** (1) `stroke-dashoffset` para dibujar el hilo de la escena 2, un disparo, sobre un SVG
   decorativo `aria-hidden`; (2) `grid-template-rows` en la apertura de las tarjetas, con `visibility` en la transición para que lo
@@ -30,8 +30,8 @@
 | --- | --------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------- | ----- | ---------------------------------------------------------- | ---------------------------------------------- |
 | E1  | Portada                     | «Un hallazgo no es una vulnerabilidad: es la prueba de que un control falla.»                          | G3 · alzar sin fundido (el `h1` es candidato LCP)        | la frase sube y se asienta una vez: es la tesis, no un adorno           | ninguno                 | 1 KB  | `transform`                                                | frase y apoyo visibles, quietos                |
 | E2  | El hilo                     | Cada prueba queda atada a un marco con versión, a un control, a una evidencia con huella y a un cierre | G3 · dibujar el trazo (un disparo)                       | el hilo se traza de la prueba al cierre: la trazabilidad ES el producto | SVG propio, cinco nodos | 3 KB  | `stroke-dashoffset` (excepción 1)                          | el hilo ya dibujado                            |
-| E3  | Qué hace                    | Veintiuna funciones en cinco tarjetas, cada una explicada al abrirla                                   | G2 · apertura de tarjeta                                 | la tarjeta se abre solo si quieres: nadie lee lo que no pidió           | 5 iconos de trazo       | 10 KB | `grid-template-rows` (excepción 2), `opacity`, `transform` | tarjetas con la misma apertura, sin transición |
-| E4  | **Clímax · lo que no hace** | Se vende por lo que se niega a hacer                                                                   | G3 · alzar escalonado, la primera negativa un beat antes | el orden importa: lo primero que lees es «no ejecuta pruebas»           | ninguno                 | 1 KB  | `transform`, `opacity`                                     | las cuatro negativas visibles, quietas         |
+| E3  | Qué hace                    | Veintiocho funciones en cinco tarjetas, cada una explicada al abrirla                                   | G2 · apertura de tarjeta                                 | la tarjeta se abre solo si quieres: nadie lee lo que no pidió           | 5 iconos de trazo       | 10 KB | `grid-template-rows` (excepción 2), `opacity`, `transform` | tarjetas con la misma apertura, sin transición |
+| E4  | **Clímax · lo que no hace** | Se vende por lo que se niega a hacer                                                                   | G3 · alzar escalonado, la primera negativa un beat antes | el orden importa: lo primero que lees es «no ataca por su cuenta»           | ninguno                 | 1 KB  | `transform`, `opacity`                                     | las cuatro negativas visibles, quietas         |
 | E5  | Lo fino                     | Cifras con su fuente, requisitos, privacidad y el mapa de rutas                                        | G2 · `details` nativos                                   | baja la voz a propósito después del clímax                              | ninguno                 | 6 KB  | ninguna                                                    | igual                                          |
 
 - **Ritmo:** E1 quieta · E2 media · E3 media · **E4 clímax** · E5 baja la voz. Toda escena clímax es ninguna lo es: solo E4.
@@ -40,8 +40,8 @@
 
 ## Cuadre de mensajes n/n
 
-Las **24 funcionalidades** del export (`docs/brochure-export.json`, cuadradas con las 18 `[MVP · personal]` de la visión, las 5 del roadmap del H-2
-ya construidas (D1, D3, D4, D5 y D6) y la 1 que el primer corte dejó al H-2 (el texto pegado) y con las funcionalidades del manual, cada una con su sección en `seccion_manual`) caben en las cinco tarjetas de E3; ninguna se omite.
+Las **28 funcionalidades** del export (`docs/brochure-export.json`, cuadradas con las 18 `[MVP · personal]` de la visión, las 5 del roadmap del H-2
+ya construidas (D1, D3, D4, D5 y D6), las 4 del Sprint 012 (D8, D9, D10 y D11) y la 1 que el primer corte dejó al H-2 (el texto pegado) y con las funcionalidades del manual, cada una con su sección en `seccion_manual`) caben en las cinco tarjetas de E3; ninguna se omite.
 `tests/unit/documentos-del-hito.test.ts` exige que cada una esté en el HTML.
 
 | Id  | Funcionalidad                                             | Sección del manual                                                         | Tarjeta                             |
@@ -70,6 +70,10 @@ ya construidas (D1, D3, D4, D5 y D6) y la 1 que el primer corte dejó al H-2 (el
 | F22 | Un hallazgo cerrado puede reabrirse                       | La evidencia en el tiempo · desde Sprint 011                               | T3 · Evidencia que firmas tú        |
 | F23 | Pegar el resultado de una herramienta y ver qué cambiaría | La evidencia en el tiempo · desde Sprint 011                               | T3 · Evidencia que firmas tú        |
 | F24 | La tendencia de la brecha, control por control            | La evidencia en el tiempo · desde Sprint 011                               | T5 · Lo que cambió                  |
+| F25 | Resultados de promptfoo                                   | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F26 | Resultados de PyRIT e Inspect                             | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F27 | Tus hallazgos, listos para DefectDojo                     | Tus herramientas · desde Sprint 012                                        | T3 · Evidencia que firmas tú        |
+| F28 | Un ejecutor opcional, apagado por defecto                 | Tus herramientas · desde Sprint 012                                        | T2 · Un plan que explica            |
 
 **Qué no cuenta y por qué:** el propio brochure (no se documenta a sí mismo), el kit de prueba y la guía (son del gate, no de la app) y las
 funciones `[roadmap]` de la visión que aún no se construyen (no existen todavía; viajan aparte, como roadmap votable, en el complemento de la ficha).
@@ -82,6 +86,6 @@ comprueba que con el idioma en inglés no queda español visible.
 ## Lo que el gate juzga
 
 1. ¿La decisión valiente funciona, o la pieza se lee mejor con las limitaciones al pie?
-2. ¿Las 24 funciones se entienden con los nombres de las tarjetas, sin abrir el manual?
+2. ¿Las 28 funciones se entienden con los nombres de las tarjetas, sin abrir el manual?
 3. ¿El inglés suena a inglés?
 4. El movimiento mínimo: ¿es demasiado poco?

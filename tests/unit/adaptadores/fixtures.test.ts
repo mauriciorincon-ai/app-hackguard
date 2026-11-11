@@ -57,6 +57,9 @@ describe("el manifiesto de fixtures", () => {
         .map((f) => f.archivo)
         .sort(),
     ).toEqual([
+      "inspect-0.3.288.sintetico.json",
+      "promptfoo-0.123.1.sintetico.json",
+      "pyrit-1.1.0.sintetico.json",
       "zap-traditional-json-plus.derivada.json",
       "zap-traditional-json.derivada.json",
     ]);

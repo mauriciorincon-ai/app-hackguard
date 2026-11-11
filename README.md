@@ -1,13 +1,15 @@
 # HackGuard
 
 **Español.** HackGuard planea, gestiona y valida pruebas de seguridad para software y para sistemas de inteligencia
-artificial. No ejecuta pruebas: dice qué conviene verificar en un activo, con qué herramienta y qué resultado se
-espera, y recibe los resultados como evidencia que una persona confirma. Un hallazgo no es una vulnerabilidad: es
+artificial. No ataca por su cuenta: dice qué conviene verificar en un activo, con qué herramienta y qué resultado se
+espera, y recibe los resultados como evidencia que una persona confirma. Su ejecutor opcional, apagado por defecto,
+corre tus herramientas, en tu equipo, dentro de lo que autorizaste. Un hallazgo no es una vulnerabilidad: es
 evidencia de que un control falla.
 
 **English.** HackGuard plans, manages and validates security tests for software and for artificial intelligence
-systems. It runs no tests: it says what is worth checking on an asset, with which tool and what result is expected,
-and it takes in results as evidence that a person confirms. A finding is not a vulnerability: it is evidence that a
+systems. It does not attack on its own: it says what is worth checking on an asset, with which tool and what result is
+expected, and it takes in results as evidence that a person confirms. Its optional executor, off by default, runs your
+tools, on your machine, inside what you authorized. A finding is not a vulnerability: it is evidence that a
 control is failing.
 
 ## Empezar · Getting started
@@ -31,7 +33,7 @@ pnpm build && pnpm start   # y abre /tablero, /brecha o /brecha/informe · and o
 
 ## Dónde vive el código · Where the code lives
 
-- `src/engine/`: el núcleo determinista (catálogo, huellas, semáforo, clasificador demo, activos, planificador, libro de evidencia, lotes, adaptadores de Garak y ZAP, hallazgos, severidad y brecha) · the deterministic core (catalog, fingerprints, traffic light, demo classifier, assets, planner, evidence ledger, batches, Garak and ZAP adapters, findings, severity and gap).
+- `src/engine/`: el núcleo determinista (catálogo, huellas, semáforo, clasificador demo, activos, planificador, libro de evidencia, lotes, adaptadores de Garak, ZAP, promptfoo, PyRIT e Inspect, hallazgos, severidad y brecha) · the deterministic core (catalog, fingerprints, traffic light, demo classifier, assets, planner, evidence ledger, batches, Garak, ZAP, promptfoo, PyRIT and Inspect adapters, findings, severity and gap).
 - `src/engine/severidad/`: CVSS 4.0 con la referencia de FIRST fijada por commit (`c5b0d40`), su validador estricto y la tabla de prioridad de IA · CVSS 4.0 with FIRST's reference pinned by commit (`c5b0d40`), its strict validator and the AI priority table.
 - `src/cli/`: los comandos que leen `datos/` y llaman al núcleo · the commands that read `datos/` and call the core.
 - `src/app/` y `src/components/`: la interfaz, hoy el catálogo, sus fichas, los marcos, los controles, los activos, sus planes, la carga de evidencia, los hallazgos, el tablero, la brecha, la vista por control y el informe (Next.js, exportación estática) · the interface, today the catalog, its records, the frameworks, the controls, the assets, their plans, the evidence intake, the findings, the dashboard, the gap, the control view and the report (Next.js, static export).

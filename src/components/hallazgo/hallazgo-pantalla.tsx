@@ -598,6 +598,28 @@ export function HallazgoPantalla({ v }: { v: VistaDeHallazgo }) {
                 </ul>
               </div>
             )}
+            <div className="hg-pila" data-exportar="">
+              <p className="hg-menor">
+                <T
+                  t={{
+                    es: "Exportar a DefectDojo: los hallazgos de este activo con su cadena, su control y sus huellas; nunca el crudo. Solo sale «mitigado» lo que tiene una re-prueba confirmada.",
+                    en: "Export to DefectDojo: this asset's findings with their chain, control and fingerprints; never the raw output. Only what has a confirmed re-test is exported as “mitigated”.",
+                  }}
+                />
+              </p>
+              <a
+                className="hg-boton"
+                href={`/activos/${p.activo.id}/defectdojo.json`}
+                download
+              >
+                <T
+                  t={{
+                    es: "Descargar para DefectDojo",
+                    en: "Download for DefectDojo",
+                  }}
+                />
+              </a>
+            </div>
           </section>
           <section className="hg-tarjeta" aria-labelledby="propiedades">
             <h2 className="hg-tarjeta-titulo" id="propiedades">

@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "nota": {
+    "es": "Cómo se lanza cada herramienta que HackGuard sabe leer. El ejecutor opcional corre ESTAS líneas, sin shell, en tu equipo y contra el objetivo que declaras y que comprueba contra lo que autorizaste (lo que apunte tu configuración lo verificas tú); no trae cargas ni configuración de ataque: la configuración es tuya (--config herramienta=ruta). Son plantillas: si tu versión de la herramienta usa otras banderas, edítalas aquí. `codigos_ok` son los códigos de salida con los que la herramienta deja resultados (ZAP sale con 1 o 2 si encuentra algo; promptfoo con 100 si un caso falla); `entorno` son las variables de tu entorno que recibe además de `entorno_base`: nada más se hereda (tokens y claves de nube no viajan). Una herramienta con comando null no se puede lanzar desde aquí (se importa su archivo con evidencia:importar).",
+    "en": "How each tool HackGuard can read is launched. The optional executor runs THESE lines, with no shell, on your machine and against the target you declare, which it checks against what you authorized (what your configuration points at is yours to verify); it ships no payloads or attack configuration: the configuration is yours (--config tool=path). They are templates: if your tool version uses other flags, edit them here. `codigos_ok` are the exit codes with which the tool leaves results (ZAP exits 1 or 2 when it finds something; promptfoo 100 if a case fails); `entorno` are the variables of your environment it receives besides `entorno_base`: nothing else is inherited (tokens and cloud keys do not travel). A tool whose command is null cannot be launched from here (import its file with evidencia:importar)."
+  },
+  "marcadores": {
+    "{config}": "la ruta de la configuración del usuario (--config herramienta=ruta)",
+    "{objetivo}": "el objetivo (--objetivo), ya comprobado contra el alcance y en su forma canónica",
+    "{carpeta}": "la carpeta temporal 0700 de la corrida; se borra al terminar",
+    "{salida}": "el archivo que escribe la herramienta, dentro de {carpeta}"
+  },
+  "objetivo_en_el_entorno": "HACKGUARD_OBJETIVO",
+  "entorno_base": [
+    "PATH",
+    "HOME",
+    "USER",
+    "LANG",
+    "LC_ALL",
+    "TMPDIR",
+    "TZ",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "NO_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "no_proxy",
+    "SSL_CERT_FILE",
+    "REQUESTS_CA_BUNDLE",
+    "JAVA_HOME"
+  ],
+  "herramientas": {
+    "garak": {
+      "ejecutable": "garak",
+      "argumentos": [
+        "--config",
+        "{config}",
+        "--report_prefix",
+        "{carpeta}/garak"
+      ],
+      "salida": "garak.report.jsonl",
+      "codigos_ok": [0],
+      "entorno": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GOOGLE_API_KEY",
+        "AZURE_API_KEY",
+        "AZURE_OPENAI_API_KEY",
+        "MISTRAL_API_KEY",
+        "COHERE_API_KEY",
+        "GROQ_API_KEY",
+        "HF_TOKEN"
+      ]
+    },
+    "inspect": {
+      "ejecutable": "inspect",
+      "argumentos": [
+        "eval",
+        "{config}",
+        "--log-dir",
+        "{carpeta}",
+        "--log-format",
+        "json"
+      ],
+      "salida": null,
+      "codigos_ok": [0],
+      "entorno": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GOOGLE_API_KEY",
+        "AZURE_API_KEY",
+        "AZURE_OPENAI_API_KEY",
+        "MISTRAL_API_KEY",
+        "COHERE_API_KEY",
+        "GROQ_API_KEY",
+        "HF_TOKEN"
+      ]
+    },
+    "promptfoo": {
+      "ejecutable": "promptfoo",
+      "argumentos": ["eval", "--config", "{config}", "--output", "{salida}"],
+      "salida": "resultado.json",
+      "codigos_ok": [0, 100],
+      "entorno": [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GOOGLE_API_KEY",
+        "AZURE_API_KEY",
+        "AZURE_OPENAI_API_KEY",
+        "MISTRAL_API_KEY",
+        "COHERE_API_KEY",
+        "GROQ_API_KEY",
+        "HF_TOKEN"
+      ]
+    },
+    "pyrit": null,
+    "zap": {
+      "ejecutable": "zap-baseline.py",
+      "argumentos": ["-t", "{objetivo}", "-J", "{salida}"],
+      "salida": "informe.json",
+      "codigos_ok": [0, 1, 2],
+      "entorno": []
+    }
+  },
+  "infraestructura_de_terceros": {
+    "nota": {
+      "es": "Suelo, no el límite: dominios de APIs de proveedores de modelos y de nubes que nunca son tuyos (E-24). El límite verdadero es lo que declaraste en alcance.objetivos; el proveedor de tu activo puede alojarse en un dominio que no está aquí.",
+      "en": "A floor, not the limit: domains of model-provider and cloud APIs that are never yours (E-24). The real limit is what you declared in scope.objetivos; your asset's provider may be hosted on a domain that is not listed here."
+    },
+    "dominios": [
+      "amazonaws.com",
+      "anthropic.com",
+      "azure.com",
+      "azure-api.net",
+      "cohere.com",
+      "cohere.ai",
+      "deepseek.com",
+      "googleapis.com",
+      "groq.com",
+      "huggingface.co",
+      "mistral.ai",
+      "openai.com",
+      "openai.azure.com",
+      "perplexity.ai",
+      "replicate.com",
+      "together.ai",
+      "together.xyz",
+      "x.ai"
+    ]
+  }
+}
