@@ -1,0 +1,9 @@
+{
+  "contrato": "ficha-tecnica",
+  "version": "1.3.1",
+  "archivo": "1.3.1.schema.json",
+  "origen": "app-hoja-de-vida/docs/contrato-ficha-tecnica/ficha-tecnica.schema.json",
+  "lectura": "solo lectura: esta copia se trae a mano; nada se escribe en app-hoja-de-vida",
+  "sha256_bytes": "2380c4f593d473f2dd4eb09481769038b98b02b4a47a70c510282ee570b6a2e3",
+  "huella_jcs": "0e85d91cf8607ac79749aabf2daeed65786364df419373e4fd5d5132625fa77a"
+}

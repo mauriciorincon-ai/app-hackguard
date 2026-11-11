@@ -16,7 +16,7 @@ const leer = (ruta: string) => readFileSync(join(RAIZ, ruta), "utf8");
 const exportado = JSON.parse(leer("docs/brochure-export.json"));
 // Contrato de la ficha técnica de CV Viva (app-hoja-de-vida): copia literal, como el esquema del export (ver el último test).
 const contratoFicha = JSON.parse(
-  leer("tests/unit/lib/ficha-tecnica.schema.json"),
+  leer("datos/contratos/ficha-tecnica/1.3.1.schema.json"),
 );
 const datos = brochureExportSchema.parse(exportado);
 const metrica = (clave: string) =>
@@ -214,7 +214,7 @@ describe("docs/brochure-export.json", () => {
       "Code/app-hoja-de-vida/docs/contrato-ficha-tecnica/ficha-tecnica.schema.json",
     );
     if (!existsSync(original)) return;
-    expect(leer("tests/unit/lib/ficha-tecnica.schema.json")).toBe(
+    expect(leer("datos/contratos/ficha-tecnica/1.3.1.schema.json")).toBe(
       readFileSync(original, "utf8"),
     );
   });
