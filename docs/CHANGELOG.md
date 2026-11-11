@@ -5,7 +5,7 @@ from.
 
 ## Sprint 013 — «Lo tuyo y lo público» (2026-11-10)
 
-The last construction sprint of milestone H-2: the asset's profile from CV Viva's technical ficha, the organization's own controls, the public mode and the showcase package. This entry is written phase by phase; F1 is below.
+The last construction sprint of milestone H-2: the asset's profile from CV Viva's technical ficha, the organization's own controls, the public mode and the showcase package. This entry is written phase by phase: F1, F2 and F3 are below.
 
 ### Added (F1 · lo tuyo)
 
@@ -32,6 +32,22 @@ The last construction sprint of milestone H-2: the asset's profile from CV Viva'
 
 - **Dead link in D12:** the package verifier found that an own-layer control linked to `iso42001-a-8-2`, a page that does not exist; the link is drawn only when the equivalent ISO control has a state. Regression test in `cinco-pantallas`.
 - **The boundary uses the allowlist's own asset rule:** `PATRON_DE_ACTIVO_PUBLICO` was declared and used by nothing (the sweep had its own regex). A red demo that widened it to any `act-` passed the gate; now `esActivoPublico` is the single rule and has a test.
+
+### Changed (F3 · the allowlist, after the advisor)
+
+- **The public allowlist is fixed (default ii), no longer a draft:** own-layer controls pass the boundary only when they are the demo ones (`esControlPropioPublico`, `org-demo…`); the demo evidence folders are declared (`CARPETAS_DE_EVIDENCIA_DEMO`); a new boundary rule `control-propio-no-demo` fails any other `org-` id. A test (`publico-cargadores`) pins that no public screen loads `datos/privado/`: the gap shows synthetic demo ids because the screens load with `privados: false`, which is the real guard (the id sweep only accepts what the demo sets declare).
+- **CI:** the `e2e` job also runs `test:e2e:publico`, `paquete:vitrina`, `paquete:verificar` and `test:e2e:paquete`. No new job, so the ruleset does not change.
+
+### Added (F3 · the tour, the manual and the captures)
+
+- **The guide is a tour:** four new stops in their place in the flow (D2 after creating the asset and before the plan, D12 in the gap, C19 and C20 at the end because they change the build), none repeated; every feature has its stop in the `cubre` matrix. The S12 stops move to regression. English shows by switching language.
+- **Manual ES/EN, brochure (32 features: D2, D12, C19, C20 added), `BROCHURE-guion.md` and the as-built BLUEPRINT.** The design README records the own-layer sections and `/activos/desde-ficha`; the maqueta was regenerated, never edited by hand.
+- **Ficha 026 captures F19–F32,** one per feature that has a screen, 1536×960 WebP of 80 KB or less (23–63 KB), each read as an image; `tests/unit/capturas-026.test.ts` keeps the cap, the size and the pairing with the export. The promptfoo and Inspect shots paste their own kit file, so no two shots are the same screen.
+- **English e2e** for D2 (ficha read, no Spanish left outside a neutral datum) and D12 (the own layer in the controls screens).
+
+### Known limit (F3)
+
+- **D12 reads only the versioned demo layer:** a real own layer would live in `datos/privado/`, which the catalogue does not read, because own layers travel inside the snapshot. Documented in the manual; the closing note asks the owner for a decision.
 
 ## Sprint 012 — «Tus herramientas» (2026-11-10)
 
