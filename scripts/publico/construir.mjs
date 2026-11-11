@@ -2,14 +2,10 @@
 // `dist/publico/` SOLO lo que la lista blanca permite (src/lib/publico/lista-blanca.ts) y barre lo copiado con la frontera. Sentry va
 // sin DSN. Termina con 1 si algo cruza la frontera. No abre ningún servidor.
 import { spawnSync } from "node:child_process";
-import { copyFileSync, mkdirSync, readdirSync, rmSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { rmSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { cierreDeEstaticos } from "../../src/lib/publico/estaticos.ts";
-import {
-  archivoPermitido,
-  rutaDeArchivo,
-} from "../../src/lib/publico/lista-blanca.ts";
+import { copiarExportacion } from "../../src/lib/publico/copiar.ts";
 import {
   barrerCarpeta,
   conocidosDeDemo,
@@ -18,11 +14,6 @@ import {
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const EXPORTADO = join(RAIZ, ".next-publico");
 const DESTINO = join(RAIZ, "dist", "publico");
-
-const archivosDe = (dir) =>
-  readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? archivosDe(join(dir, e.name)) : [join(dir, e.name)],
-  );
 
 export function construirPublico({
   env = process.env,
@@ -36,33 +27,8 @@ export function construirPublico({
     env: { ...env, HACKGUARD_PUBLICO: "1", NEXT_PUBLIC_SENTRY_DSN: "" },
   });
   if (r.status !== 0) throw new Error("next build falló");
-
   rmSync(destino, { recursive: true, force: true });
-  const copiar = (rel) => {
-    mkdirSync(dirname(join(destino, rel)), { recursive: true });
-    copyFileSync(join(exportado, rel), join(destino, rel));
-  };
-  // 1) Las rutas de la lista blanca y los archivos sueltos de la raíz. El directorio de construcción de Next comparte carpeta con el
-  //    export: lo que no está en la lista no viaja. 2) De `_next/`, solo lo que esas páginas nombran (y lo que eso nombra).
-  const todos = archivosDe(exportado).map((a) =>
-    relative(exportado, a).split("\\").join("/"),
-  );
-  const paginas = todos.filter(
-    (rel) => rutaDeArchivo(rel) !== null && archivoPermitido(rel),
-  );
-  const sueltos = todos.filter(
-    (rel) =>
-      rutaDeArchivo(rel) === null &&
-      !rel.startsWith("_next/") &&
-      archivoPermitido(rel),
-  );
-  const semillas = [...paginas, ...sueltos].filter((rel) =>
-    /\.(?:html|txt)$/.test(rel),
-  );
-  const estaticos = cierreDeEstaticos(exportado, semillas);
-  for (const rel of [...paginas, ...sueltos, ...estaticos]) copiar(rel);
-  const copiados = paginas.length + sueltos.length + estaticos.length;
-  const omitidos = todos.length - copiados;
+  const { copiados, omitidos } = copiarExportacion(exportado, destino);
   const fuera = barrerCarpeta(destino, conocidosDeDemo(RAIZ));
   return { copiados, omitidos, fuera };
 }

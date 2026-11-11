@@ -47,3 +47,4 @@ propuestas/entradas/
 # Exportaciones del modo público y del paquete (C19, C20): derivados, jamás se versionan.
 dist/
 .next-publico/
+.next-paquete/

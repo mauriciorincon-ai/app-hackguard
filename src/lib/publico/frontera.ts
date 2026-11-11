@@ -20,6 +20,18 @@ export interface HallazgoDeFrontera {
   detalle: string;
 }
 
+/** Lo que añade el paquete (C20) al barrido del modo público. */
+export interface OpcionesDeBarrido {
+  /** La base en que se monta la pieza (`/piezas/hackguard`): todo enlace y todo recurso interno debe llevarla. */
+  base?: string;
+  /** Los dominios de hosting de `cero-enlaces.json`: no pueden aparecer en ningún archivo. */
+  dominios?: readonly string[];
+  /** ¿Existe este archivo (ruta relativa a la pieza) en el paquete? Con ella, un enlace que no lleva a un archivo falla. */
+  existe?: (relativo: string) => boolean;
+  /** Un paquete no lleva archivos RSC (`.txt`), mapas ni documentos: su navegación es la del navegador. */
+  paquete?: true;
+}
+
 export interface ConocidosPublicos {
   /** Los ids de los demos versionados (`datos/hallazgos/demo/`, `datos/evidencia/demo/`, `datos/lotes/demo/`): los únicos que pueden aparecer. */
   hallazgos: ReadonlySet<string>;
@@ -68,7 +80,7 @@ const MARCADORES: readonly {
   },
 ];
 
-const ENLACES_INTERNOS = /href\\*"?[:=]\\*"(\/[^"\\#?]*)/g;
+const ENLACES_INTERNOS = /(?:href|src)\\*"?[:=]\\*"(\/[^"\\#?]*)/g;
 const DIRECCIONES =
   /https?:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)+(?::\d+)?[^\s"'\\<>)`]*/gi;
 
@@ -94,6 +106,7 @@ export function barrerTexto(
   archivo: string,
   texto: string,
   conocidos: ConocidosPublicos,
+  opciones: OpcionesDeBarrido = {},
 ): HallazgoDeFrontera[] {
   const fuera: HallazgoDeFrontera[] = [];
   const marcar = (regla: string, detalle: string) =>
@@ -114,15 +127,47 @@ export function barrerTexto(
     if (!PREFIJOS_DEL_FRAMEWORK.some((p) => m[0].startsWith(p)))
       marcar("host-externo", m[0]);
   if (/\.(?:html|txt)$/.test(archivo))
-    for (const m of texto.matchAll(ENLACES_INTERNOS)) {
-      const ruta = normalizarRuta(m[1]!);
+    // Next añade `<link rel="preconnect" href="/">` junto a las fuentes: es el mismo origen, no un enlace de la aplicación.
+    for (const m of texto
+      .replace(/<link rel="preconnect" href="\/"[^>]*>/g, "")
+      .matchAll(ENLACES_INTERNOS)) {
+      let ruta = m[1]!;
+      const { base } = opciones;
+      if (base !== undefined) {
+        if (ruta !== base && !ruta.startsWith(`${base}/`)) {
+          marcar("enlace-sin-la-base", ruta);
+          continue;
+        }
+        ruta = ruta.slice(base.length) || "/";
+        // En el paquete cada enlace de la aplicación es un archivo `.html` que existe (los recursos de `_next/` y el icono, también).
+        if (!ruta.startsWith("/_next/") && ruta !== "/favicon.ico") {
+          if (!ruta.endsWith(".html")) {
+            marcar("enlace-sin-extension", m[1]!);
+            continue;
+          }
+          if (opciones.existe && !opciones.existe(ruta.slice(1)))
+            marcar("enlace-roto", m[1]!);
+          ruta = ruta.replace(/\/?index\.html$/, "/").replace(/\.html$/, "");
+        } else if (opciones.existe && !opciones.existe(ruta.slice(1)))
+          marcar("enlace-roto", m[1]!);
+      }
+      const normal = normalizarRuta(ruta);
       if (
-        !esRutaPublica(ruta) &&
-        !ruta.startsWith("/_next/") &&
-        ruta !== "/favicon.ico"
+        !esRutaPublica(normal) &&
+        !normal.startsWith("/_next/") &&
+        normal !== "/favicon.ico"
       )
         marcar("enlace-fuera-de-la-lista", m[1]!);
     }
+  if (opciones.paquete) {
+    if (!esCodigo && /localhost|127\.0\.0\.1/i.test(texto))
+      marcar("direccion-local", "localhost o 127.0.0.1");
+    for (const d of opciones.dominios ?? [])
+      if (texto.toLowerCase().includes(d.toLowerCase()))
+        marcar("dominio-de-despliegue", d);
+    if (/@[a-z0-9.-]*sentry\.io|ingest\.[a-z0-9.-]*sentry/i.test(texto))
+      marcar("dsn-de-sentry", "una dirección de Sentry");
+  }
   return fuera;
 }
 
@@ -136,9 +181,15 @@ function archivosDe(dir: string): string[] {
 export function barrerCarpeta(
   dir: string,
   conocidos: ConocidosPublicos,
+  opciones: OpcionesDeBarrido = {},
 ): HallazgoDeFrontera[] {
   const fuera: HallazgoDeFrontera[] = [];
-  for (const abs of archivosDe(dir)) {
+  const todos = archivosDe(dir);
+  const presentes = new Set(
+    todos.map((a) => relative(dir, a).split("\\").join("/")),
+  );
+  opciones = { ...opciones, existe: (rel) => presentes.has(rel) };
+  for (const abs of todos) {
     const rel = relative(dir, abs).split("\\").join("/");
     if (!archivoPermitido(rel)) {
       fuera.push({
@@ -148,8 +199,18 @@ export function barrerCarpeta(
       });
       continue;
     }
+    if (opciones.paquete && /\.(?:txt|map|md)$/.test(rel)) {
+      fuera.push({
+        archivo: rel,
+        regla: "archivo-que-no-viaja",
+        detalle: "el paquete no lleva RSC, mapas ni documentos",
+      });
+      continue;
+    }
     if (EXTENSIONES_DE_TEXTO.has(extension(rel)))
-      fuera.push(...barrerTexto(rel, readFileSync(abs, "utf8"), conocidos));
+      fuera.push(
+        ...barrerTexto(rel, readFileSync(abs, "utf8"), conocidos, opciones),
+      );
   }
   return fuera;
 }
