@@ -1,6 +1,7 @@
 # Capturas de HackGuard para su ficha en CV Viva (pedido 026, 2026-10-27). Build de producción de b5acd4b en una copia
 # aislada, con la fecha de consulta del commit (2026-10-14), tema claro, interfaz en español; tomas con propósito (2026-10-31): cada pieza completa, centrada sobre el fondo de la app, con margen, y ampliada hasta llenar el lienzo de 1536×960 (a DPR 3, en el ancho de ventana que más llena); la barra de navegación no entra en ninguna.
 # Datos: solo los activos, lotes, hallazgos y propuestas demo sintéticos del repo. Ninguna muestra una carga ni un ataque.
+# S13 (2026-11-11): F19–F32 se tomaron del build del sprint 13, con la fecha de consulta 2026-10-05, mismo lienzo y mismo tema; F29 sale de la pantalla de la ficha con la ficha demo sintética, F31 de la exportación pública y F32 del paquete. F01–F18 conservan su toma original.
 portada: entrada.webp
 capturas:
   - { funcionalidad: F01, archivo: F01.webp, pie: { es: "Una prueba completa: qué se espera, cómo se decide y cuándo aplica", en: "A complete test: what is expected, how it is decided and when it applies" } }
@@ -21,4 +22,18 @@ capturas:
   - { funcionalidad: F16, archivo: F16.webp, pie: { es: "La brecha: lo planeado contra lo ejecutado, por activo", en: "The gap: planned against run, by asset" } }
   - { funcionalidad: F17, archivo: F17.webp, pie: { es: "Un control con fallas: sus tres pruebas, la evidencia y el hallazgo", en: "A failing control: its three tests, the evidence and the finding" } }
   - { funcionalidad: F18, archivo: F18.webp, pie: { es: "Las comprobaciones del instrumento, todas en verde", en: "The instrument's checks, all green" } }
+  - { funcionalidad: F19, archivo: F19.webp, pie: { es: "Qué cambió entre dos instantáneas del catálogo: entra, sale y cambia", en: "What changed between two catalog snapshots: what enters, leaves and changes" } }
+  - { funcionalidad: F20, archivo: F20.webp, pie: { es: "El historial de un activo: cada versión con su huella y su plan", en: "An asset's history: each version with its fingerprint and its plan" } }
+  - { funcionalidad: F21, archivo: F21.webp, pie: { es: "Re-planear: qué cambiaría en el plan y por qué, sin escribir nada", en: "Re-plan: what would change in the plan and why, without writing anything" } }
+  - { funcionalidad: F22, archivo: F22.webp, pie: { es: "Un hallazgo reabierto por una re-prueba que volvió a fallar", en: "A finding reopened by a retest that failed again" } }
+  - { funcionalidad: F23, archivo: F23.webp, pie: { es: "Texto pegado: la herramienta se lee en tu navegador y no se guarda", en: "Pasted text: the tool output is read in your browser and never stored" } }
+  - { funcionalidad: F24, archivo: F24.webp, pie: { es: "La tendencia de la brecha, control por control, con las regresiones", en: "The gap trend, control by control, with the regressions" } }
+  - { funcionalidad: F25, archivo: F25.webp, pie: { es: "Un archivo de promptfoo propone sobres; el veredicto lo da la regla", en: "A promptfoo file proposes envelopes; the rule gives the verdict" } }
+  - { funcionalidad: F26, archivo: F26.webp, pie: { es: "Un log de Inspect: una prueba fallida y lo que cambiaría en la brecha", en: "An Inspect log: a failed test and what would change in the gap" } }
+  - { funcionalidad: F27, archivo: F27.webp, pie: { es: "Exportar a DefectDojo: hallazgos con su cadena, nunca el crudo", en: "Export to DefectDojo: findings with their chain, never the raw output" } }
+  - { funcionalidad: F28, archivo: F28.webp, pie: { es: "No ataca por su cuenta: tus herramientas, en tu equipo, ejecutor apagado", en: "It never attacks on its own: your tools, your machine, executor off" } }
+  - { funcionalidad: F29, archivo: F29.webp, pie: { es: "El perfil desde la ficha: cada rasgo con el texto que lo respalda", en: "The profile from the ficha: each trait with the text that backs it" } }
+  - { funcionalidad: F30, archivo: F30.webp, pie: { es: "Una capa propia de controles, aparte de la norma y sin cambiarla", en: "Your own controls layer, apart from the standard and never changing it" } }
+  - { funcionalidad: F31, archivo: F31.webp, pie: { es: "El modo público: la cobertura sobre activos demo, sin evidencia real", en: "Public mode: coverage over demo assets, with no real evidence" } }
+  - { funcionalidad: F32, archivo: F32.webp, pie: { es: "El paquete de la vitrina: la vigencia por familia, verificada por huella", en: "The showcase package: currency by family, verified by fingerprint" } }
 sin_pantalla: []
