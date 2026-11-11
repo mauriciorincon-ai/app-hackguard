@@ -24,7 +24,7 @@ const contrato: Esquema = json(
   "datos/contratos/ficha-tecnica/1.3.1.schema.json",
 );
 const ficha = FichaLeida.parse(
-  json("datos/activos/demo/fichas/ficha-demo-asistente.json"),
+  json("datos/fichas/demo/ficha-demo-asistente.json"),
 );
 const rasgos: { id: string; tipo: "booleano" | "opcion" }[] = json(
   "datos/rasgos-de-perfil.json",
@@ -182,10 +182,7 @@ describe("la tabla ficha → rasgos", () => {
 describe("la ficha demo", () => {
   it("cumple el contrato vendorizado (el que lee CV Viva)", () => {
     expect(
-      validar(
-        json("datos/activos/demo/fichas/ficha-demo-asistente.json"),
-        contrato,
-      ),
+      validar(json("datos/fichas/demo/ficha-demo-asistente.json"), contrato),
     ).toEqual([]);
   });
 });

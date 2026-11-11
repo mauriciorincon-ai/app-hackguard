@@ -18,7 +18,7 @@ import { afterAll, describe, expect, it } from "vitest";
 
 const REPO = process.cwd();
 const CLI = join(REPO, "src/cli/activo.ts");
-const FICHA = join(REPO, "datos/activos/demo/fichas/ficha-demo-asistente.json");
+const FICHA = join(REPO, "datos/fichas/demo/ficha-demo-asistente.json");
 const sinClaude = Object.fromEntries(
   Object.entries(process.env).filter(
     ([k]) => k !== "CLAUDECODE" && !k.startsWith("CLAUDE_CODE_"),
@@ -39,7 +39,7 @@ const correr = (
     ],
     {
       cwd,
-      env,
+      env: env as NodeJS.ProcessEnv,
       encoding: "utf8",
     },
   );
