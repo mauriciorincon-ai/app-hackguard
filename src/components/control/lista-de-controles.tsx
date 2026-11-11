@@ -259,12 +259,17 @@ export function ListaDeControles({ v }: { v: VistaDeControles }) {
                           {c.apunta.map((a, n) => (
                             <span key={a.id}>
                               {n > 0 ? " · " : ""}
-                              <Link
-                                className="hg-enlace-fila"
-                                href={rutaDeControl(a.id)}
-                              >
+                              {/* Un control de la norma que ningún plan aplica no tiene página de brecha: se nombra, no se enlaza. */}
+                              {a.estado === null ? (
                                 <Dato>{a.id}</Dato>
-                              </Link>
+                              ) : (
+                                <Link
+                                  className="hg-enlace-fila"
+                                  href={rutaDeControl(a.id)}
+                                >
+                                  <Dato>{a.id}</Dato>
+                                </Link>
+                              )}
                             </span>
                           ))}
                         </p>
