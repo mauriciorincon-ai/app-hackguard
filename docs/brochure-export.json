@@ -303,34 +303,34 @@
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 5085,
+      "valor": 5233,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-11-10 sobre el árbol de este export: `pnpm test` 3735 pruebas, y `pnpm test:e2e` 1350 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-11-11 sobre el árbol de este export: `pnpm test` 3869 pruebas, y `pnpm test:e2e` 1364 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3735,
+      "valor": 3869,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-10 sobre el árbol de este export: 192 archivos, 3735 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-11 sobre el árbol de este export: 201 archivos, 3869 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1350,
+      "valor": 1364,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-11-10 (17 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-11-11 (18 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 96.92,
+      "valor": 95.78,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-10: 6235 de 6433 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-11: 6538 de 6826 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
