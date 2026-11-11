@@ -2,7 +2,13 @@
 // C20 · el paquete de la vitrina: la base de CV Viva en cada enlace, el manifiesto con el SHA-256 de cada archivo y su verificación, que
 // falla con un archivo cambiado, uno de más, uno que falta, un enlace roto o sin la base, un host externo, una dirección local o un
 // dominio de despliegue.
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -19,7 +25,12 @@ import {
 } from "../../src/lib/publico/paquete.ts";
 
 const conocidos = conocidosDeDemo(process.cwd());
-const DOMINIOS = ["vercel.app", "pages.dev", "github.io"];
+// Los dominios salen de cero-enlaces.json: ni este test lleva uno escrito (regla 17).
+const DOMINIOS = (
+  JSON.parse(readFileSync("cero-enlaces.json", "utf8")) as {
+    dominios: string[];
+  }
+).dominios;
 const temporales: string[] = [];
 afterAll(() =>
   temporales.forEach((d) => rmSync(d, { recursive: true, force: true })),
@@ -170,7 +181,7 @@ describe("la verificación del paquete", () => {
     for (const [texto, regla] of [
       ["<a>https://ejemplo.org/x</a>", "host-externo"],
       ["<p>localhost:3000</p>", "direccion-local"],
-      ["<p>mi-app.vercel.app</p>", "dominio-de-despliegue"],
+      [`<p>mi-app.${DOMINIOS[0]}</p>`, "dominio-de-despliegue"],
       ["<p>abc@o123.ingest.sentry.io/1</p>", "dsn-de-sentry"],
     ] as const)
       expect(

@@ -19,6 +19,10 @@ const eslintConfig = defineConfig([
     "public/diseno/**",
     // Salida de `vercel build` (scripts/build-como-proveedor.mjs, kit v1.39.0).
     ".vercel/**",
+    // Salidas de build del modo público y del paquete (S13): se generan, no se editan.
+    "dist/**",
+    ".next-publico/**",
+    ".next-paquete/**",
     // Código de FIRST copiado sin tocar un byte (BSD-2, G-Plan P2) y el módulo que lo envuelve: no es nuestro y no se edita.
     "src/engine/severidad/vendor/**",
   ]),
@@ -45,7 +49,11 @@ const eslintConfig = defineConfig([
           "self",
           "document",
           "location",
-        ].map((name) => ({ name, message: "El núcleo es determinista: recibe lo que necesita como entrada (regla dura 1)." })),
+        ].map((name) => ({
+          name,
+          message:
+            "El núcleo es determinista: recibe lo que necesita como entrada (regla dura 1).",
+        })),
       ],
       // `no-restricted-globals` no ve los accesos por `globalThis` ni `crypto.randomUUID()`: del entorno global, el
       // núcleo solo toca `globalThis.crypto.subtle`. Y no importa nada en tiempo de ejecución.
@@ -57,25 +65,61 @@ const eslintConfig = defineConfig([
           "MemberExpression[object.property.name='crypto'][property.name!='subtle']",
         ].map((selector) => ({
           selector,
-          message: "Del entorno global, el núcleo solo usa globalThis.crypto.subtle (regla dura 1).",
+          message:
+            "Del entorno global, el núcleo solo usa globalThis.crypto.subtle (regla dura 1).",
         })),
-        { selector: "ImportExpression", message: "El núcleo no importa en tiempo de ejecución (regla dura 1)." },
+        {
+          selector: "ImportExpression",
+          message:
+            "El núcleo no importa en tiempo de ejecución (regla dura 1).",
+        },
       ],
       "no-restricted-properties": [
         "error",
-        { object: "Math", property: "random", message: "Sin azar en el núcleo: una muestra se siembra con una huella (regla dura 1)." },
-        ...["localeCompare", "toLocaleString", "toLocaleDateString", "toLocaleTimeString", "toLocaleUpperCase", "toLocaleLowerCase"].map(
-          (property) => ({ property, message: "Depende del idioma del sistema: compara por unidades UTF-16 (regla dura 1)." }),
-        ),
+        {
+          object: "Math",
+          property: "random",
+          message:
+            "Sin azar en el núcleo: una muestra se siembra con una huella (regla dura 1).",
+        },
+        ...[
+          "localeCompare",
+          "toLocaleString",
+          "toLocaleDateString",
+          "toLocaleTimeString",
+          "toLocaleUpperCase",
+          "toLocaleLowerCase",
+        ].map((property) => ({
+          property,
+          message:
+            "Depende del idioma del sistema: compara por unidades UTF-16 (regla dura 1).",
+        })),
       ],
       "no-restricted-imports": [
         "error",
         {
-          paths: ["fs", "fs/promises", "path", "os", "crypto", "child_process", "url", "util", "process"].map((name) => ({
+          paths: [
+            "fs",
+            "fs/promises",
+            "path",
+            "os",
+            "crypto",
+            "child_process",
+            "url",
+            "util",
+            "process",
+          ].map((name) => ({
             name,
-            message: "El núcleo no usa módulos de Node: corre también en el navegador (regla dura 1).",
+            message:
+              "El núcleo no usa módulos de Node: corre también en el navegador (regla dura 1).",
           })),
-          patterns: [{ group: ["node:*"], message: "El núcleo no usa módulos de Node: corre también en el navegador (regla dura 1)." }],
+          patterns: [
+            {
+              group: ["node:*"],
+              message:
+                "El núcleo no usa módulos de Node: corre también en el navegador (regla dura 1).",
+            },
+          ],
         },
       ],
     },
