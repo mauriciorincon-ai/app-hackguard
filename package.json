@@ -14,6 +14,7 @@
     "catalogo:instantanea": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts instantanea",
     "catalogo:diferencias": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts diferencias",
     "activo:historial": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/activo.ts historial",
+    "activo:desde-ficha": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/activo.ts desde-ficha",
     "activo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts activo-validar",
     "plan:emitir": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts emitir",
     "plan:replanear": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts replanear",

@@ -1,0 +1,714 @@
+{
+  "version": 1,
+  "nota": {
+    "es": "Tabla, no IA: cada regla liga un rasgo del perfil con términos que deben aparecer, literales, en un campo de la ficha. Sin fragmento no hay propuesta. Los términos se comparan sin tildes ni mayúsculas, como palabra o frase completa.",
+    "en": "A table, not an AI: each rule ties a profile trait to terms that must appear, verbatim, in a ficha field. No fragment, no proposal. Terms are compared without accents or case, as a whole word or phrase."
+  },
+  "reglas": [
+    {
+      "id": "expone_texto_libre_a_modelo-si",
+      "rasgo": "expone_texto_libre_a_modelo",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "texto libre",
+        "lenguaje natural",
+        "prompt",
+        "prompts",
+        "chat con un modelo",
+        "free text",
+        "natural language"
+      ],
+      "razon": {
+        "es": "La ficha dice que una persona escribe texto libre que llega a un modelo.",
+        "en": "The ficha says a person writes free text that reaches a model."
+      }
+    },
+    {
+      "id": "procesa_contenido_externo-si",
+      "rasgo": "procesa_contenido_externo",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "contenido de terceros",
+        "paginas de terceros",
+        "documentos de terceros",
+        "correos",
+        "archivos adjuntos",
+        "adjuntos",
+        "contenido externo",
+        "third-party content",
+        "attachments"
+      ],
+      "razon": {
+        "es": "La ficha dice que lee contenido que no escribió quien lo usa.",
+        "en": "The ficha says it reads content its user did not write."
+      }
+    },
+    {
+      "id": "usa_herramientas-si",
+      "rasgo": "usa_herramientas",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "herramientas",
+        "tool calling",
+        "function calling",
+        "llama a servicios",
+        "tools"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo llama herramientas o servicios que actúan fuera de la conversación.",
+        "en": "The ficha says the asset calls tools or services that act outside the conversation."
+      }
+    },
+    {
+      "id": "tiene_interfaz_web-si",
+      "rasgo": "tiene_interfaz_web",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "interfaz web",
+        "aplicacion web",
+        "app web",
+        "navegador",
+        "web app",
+        "web interface",
+        "browser"
+      ],
+      "razon": {
+        "es": "La ficha dice que se usa desde un navegador.",
+        "en": "The ficha says it is used from a browser."
+      }
+    },
+    {
+      "id": "devuelve_decision_tipada-si",
+      "rasgo": "devuelve_decision_tipada",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "clasificador",
+        "clasifica",
+        "probabilidades",
+        "decision tipada",
+        "classifier",
+        "probabilities"
+      ],
+      "razon": {
+        "es": "La ficha dice que devuelve probabilidades u opciones definidas, no texto.",
+        "en": "The ficha says it returns probabilities or defined options, not text."
+      }
+    },
+    {
+      "id": "muestra_datos_del_usuario-si",
+      "rasgo": "muestra_datos_del_usuario",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "contenido de los usuarios",
+        "lo que escriben los usuarios",
+        "comentarios de usuarios",
+        "contenido generado por usuarios",
+        "user-generated content",
+        "user comments"
+      ],
+      "razon": {
+        "es": "La ficha dice que muestra de vuelta lo que escriben sus usuarios.",
+        "en": "The ficha says it shows back what its users write."
+      }
+    },
+    {
+      "id": "usa_base_de_datos-si",
+      "rasgo": "usa_base_de_datos",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "base de datos",
+        "bases de datos",
+        "postgres",
+        "postgresql",
+        "mysql",
+        "mongodb",
+        "supabase",
+        "database"
+      ],
+      "razon": {
+        "es": "La ficha nombra una base de datos.",
+        "en": "The ficha names a database."
+      }
+    },
+    {
+      "id": "tiene_sesiones-si",
+      "rasgo": "tiene_sesiones",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "sesion de usuario",
+        "sesiones de usuario",
+        "inicio de sesion",
+        "cuentas de usuario",
+        "login",
+        "user sessions",
+        "sign-in"
+      ],
+      "razon": {
+        "es": "La ficha dice que hay sesiones o cuentas de usuario.",
+        "en": "The ficha says there are user sessions or accounts."
+      }
+    },
+    {
+      "id": "distingue_permisos-si",
+      "rasgo": "distingue_permisos",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "permisos por rol",
+        "roles de usuario",
+        "permisos entre usuarios",
+        "control de acceso por rol",
+        "role-based",
+        "user roles"
+      ],
+      "razon": {
+        "es": "La ficha dice que los usuarios tienen permisos distintos.",
+        "en": "The ficha says users have different permissions."
+      }
+    },
+    {
+      "id": "se_publica_en_internet-si",
+      "rasgo": "se_publica_en_internet",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "publicada en internet",
+        "publicado en internet",
+        "expuesta a internet",
+        "expuesto a internet",
+        "abierta al publico",
+        "publicly accessible",
+        "exposed to the internet"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo está expuesto en internet.",
+        "en": "The ficha says the asset is exposed on the internet."
+      }
+    },
+    {
+      "id": "usa_dependencias_de_terceros-si",
+      "rasgo": "usa_dependencias_de_terceros",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "librerias de terceros",
+        "dependencias de terceros",
+        "scripts de terceros",
+        "third-party libraries",
+        "third-party scripts",
+        "cdn"
+      ],
+      "razon": {
+        "es": "La ficha dice que carga librerías o scripts de terceros.",
+        "en": "The ficha says it loads third-party libraries or scripts."
+      }
+    },
+    {
+      "id": "acciones_irreversibles-si",
+      "rasgo": "acciones_irreversibles",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "acciones irreversibles",
+        "irreversible",
+        "irreversibles",
+        "borra datos",
+        "elimina cuentas",
+        "irreversible actions"
+      ],
+      "razon": {
+        "es": "La ficha dice que puede hacer acciones que no se deshacen.",
+        "en": "The ficha says it can take actions that cannot be undone."
+      }
+    },
+    {
+      "id": "acciones_irreversibles-no",
+      "rasgo": "acciones_irreversibles",
+      "valor": false,
+      "campos": [
+        "nunca[]",
+        "limites[]"
+      ],
+      "terminos": [
+        "irreversible",
+        "irreversibles",
+        "irreversible actions"
+      ],
+      "razon": {
+        "es": "La ficha pone entre sus «nunca» o sus límites las acciones irreversibles.",
+        "en": "The ficha lists irreversible actions among its «never» or limits."
+      }
+    },
+    {
+      "id": "actua_en_nombre_de_usuarios-si",
+      "rasgo": "actua_en_nombre_de_usuarios",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "en nombre del usuario",
+        "en nombre de los usuarios",
+        "en nombre de usuarios",
+        "actua por el usuario",
+        "on behalf of users",
+        "on behalf of the user"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo actúa en nombre de sus usuarios.",
+        "en": "The ficha says the asset acts on behalf of its users."
+      }
+    },
+    {
+      "id": "coopera_con_otros_agentes-si",
+      "rasgo": "coopera_con_otros_agentes",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "multiagente",
+        "varios agentes",
+        "orquesta agentes",
+        "agentes que cooperan",
+        "multi-agent",
+        "several agents"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo coopera con otros agentes.",
+        "en": "The ficha says the asset cooperates with other agents."
+      }
+    },
+    {
+      "id": "tiene_memoria_persistente-si",
+      "rasgo": "tiene_memoria_persistente",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "memoria persistente",
+        "recuerda entre sesiones",
+        "memoria de largo plazo",
+        "persistent memory",
+        "long-term memory"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo recuerda entre sesiones.",
+        "en": "The ficha says the asset remembers across sessions."
+      }
+    },
+    {
+      "id": "accede_a_datos_sensibles-si",
+      "rasgo": "accede_a_datos_sensibles",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "datos sensibles",
+        "datos personales",
+        "historiales clinicos",
+        "sensitive data",
+        "personal data"
+      ],
+      "razon": {
+        "es": "La ficha dice que el activo accede a datos sensibles o personales.",
+        "en": "The ficha says the asset reaches sensitive or personal data."
+      }
+    },
+    {
+      "id": "accede_a_datos_sensibles-no",
+      "rasgo": "accede_a_datos_sensibles",
+      "valor": false,
+      "campos": [
+        "nunca[]",
+        "limites[]"
+      ],
+      "terminos": [
+        "datos sensibles",
+        "datos personales",
+        "sensitive data",
+        "personal data"
+      ],
+      "razon": {
+        "es": "La ficha pone los datos sensibles o personales entre sus «nunca» o sus límites.",
+        "en": "The ficha lists sensitive or personal data among its «never» or limits."
+      }
+    },
+    {
+      "id": "usa_recuperacion_de_documentos-si",
+      "rasgo": "usa_recuperacion_de_documentos",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "recuperacion de documentos",
+        "busqueda semantica",
+        "embeddings",
+        "rag",
+        "document retrieval",
+        "semantic search"
+      ],
+      "razon": {
+        "es": "La ficha dice que busca documentos para responder.",
+        "en": "The ficha says it searches documents to answer."
+      }
+    },
+    {
+      "id": "otro_sistema_usa_su_salida-si",
+      "rasgo": "otro_sistema_usa_su_salida",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "su salida alimenta",
+        "exporta a",
+        "webhook",
+        "integra con",
+        "feeds another system",
+        "exports to"
+      ],
+      "razon": {
+        "es": "La ficha dice que otro sistema consume lo que produce.",
+        "en": "The ficha says another system consumes what it produces."
+      }
+    },
+    {
+      "id": "atiende_a_varios_usuarios-si",
+      "rasgo": "atiende_a_varios_usuarios",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "varios usuarios",
+        "multiusuario",
+        "equipos de personas",
+        "multi-user",
+        "several users"
+      ],
+      "razon": {
+        "es": "La ficha dice que lo usan varias personas.",
+        "en": "The ficha says several people use it."
+      }
+    },
+    {
+      "id": "usa_umbral_de_decision-si",
+      "rasgo": "usa_umbral_de_decision",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "umbral",
+        "umbrales",
+        "threshold",
+        "thresholds"
+      ],
+      "razon": {
+        "es": "La ficha dice que decide con un umbral.",
+        "en": "The ficha says it decides with a threshold."
+      }
+    },
+    {
+      "id": "decisiones_de_alto_impacto-si",
+      "rasgo": "decisiones_de_alto_impacto",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "alto impacto",
+        "decisiones criticas",
+        "high-impact",
+        "high impact"
+      ],
+      "razon": {
+        "es": "La ficha dice que sus decisiones tienen alto impacto.",
+        "en": "The ficha says its decisions are high-impact."
+      }
+    },
+    {
+      "id": "decisiones_de_alto_impacto-no",
+      "rasgo": "decisiones_de_alto_impacto",
+      "valor": false,
+      "campos": [
+        "nunca[]",
+        "limites[]"
+      ],
+      "terminos": [
+        "alto impacto",
+        "decisiones criticas",
+        "high-impact",
+        "high impact"
+      ],
+      "razon": {
+        "es": "La ficha pone las decisiones de alto impacto entre sus «nunca» o sus límites.",
+        "en": "The ficha lists high-impact decisions among its «never» or limits."
+      }
+    },
+    {
+      "id": "opera_en_varios_idiomas-si",
+      "rasgo": "opera_en_varios_idiomas",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "bilingue",
+        "espanol e ingles",
+        "varios idiomas",
+        "multilingue",
+        "bilingual",
+        "several languages"
+      ],
+      "razon": {
+        "es": "La ficha dice que opera en más de un idioma.",
+        "en": "The ficha says it works in more than one language."
+      }
+    },
+    {
+      "id": "modelo_de_terceros-si",
+      "rasgo": "modelo_de_terceros",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "modelo de un proveedor",
+        "modelo de terceros",
+        "api de un proveedor",
+        "modelo por api",
+        "third-party model",
+        "provider's model"
+      ],
+      "razon": {
+        "es": "La ficha dice que depende de un modelo que opera otra organización.",
+        "en": "The ficha says it depends on a model another organization runs."
+      }
+    },
+    {
+      "id": "dispone_de_casos_etiquetados-si",
+      "rasgo": "dispone_de_casos_etiquetados",
+      "valor": true,
+      "campos": [
+        "titular",
+        "promesa.tagline",
+        "promesa.intro",
+        "promesa.para_quien",
+        "stack[].nombre",
+        "stack[].papel",
+        "bloques[].nombre",
+        "bloques[].linea"
+      ],
+      "terminos": [
+        "casos etiquetados",
+        "conjunto etiquetado",
+        "casos con la respuesta correcta",
+        "labeled cases",
+        "labelled cases",
+        "labeled dataset"
+      ],
+      "razon": {
+        "es": "La ficha dice que hay casos con la respuesta correcta conocida.",
+        "en": "The ficha says there are cases with a known correct answer."
+      }
+    }
+  ]
+}

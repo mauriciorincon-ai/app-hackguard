@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.3.1",
+  "actualizado": "2026-11-10",
+  "pieza": {
+    "slug": "asistente-demo-de-soporte",
+    "nombre": "Asistente demo de soporte",
+    "frente": "agentes",
+    "estado": "sellado",
+    "ciclo": "demo",
+    "version": "0.1.0",
+    "sellado_en": "2026-11-01",
+    "sprints_cerrados": 3
+  },
+  "promesa": {
+    "tagline": "Responde preguntas de soporte y abre solicitudes",
+    "intro": "Un asistente sintético para el ejemplo del producto: una persona le escribe texto libre y él responde, consulta el estado de una solicitud o crea una nueva.",
+    "para_quien": "Equipos de soporte que quieren ver cómo se perfila un activo desde su ficha."
+  },
+  "titular": "Asistente de soporte con un modelo por API y herramientas propias, publicado en internet",
+  "stack": [
+    { "nombre": "Aplicación web", "papel": "Interfaz que se abre desde un navegador, sin cuentas." },
+    { "nombre": "Agente", "papel": "Llama a herramientas propias para consultar y crear solicitudes." },
+    { "nombre": "Modelo por API", "papel": "Un modelo de un proveedor que redacta las respuestas." }
+  ],
+  "cifras": [
+    { "clave": "herramientas", "valor": 2, "etiqueta": "Herramientas del agente", "fuente": "declarado", "detalle": "Consultar el estado de una solicitud y crear una solicitud." },
+    { "clave": "canales", "valor": 3, "etiqueta": "Canales de entrada", "fuente": "declarado", "detalle": "Texto libre, archivos adjuntos y respuestas de herramientas." },
+    { "clave": "idiomas", "valor": 1, "etiqueta": "Idiomas", "fuente": "declarado", "detalle": "Atiende en español." }
+  ],
+  "bloques": [
+    { "orden": 1, "nombre": "Conversación", "linea": "Recibe texto libre de la persona y lo pasa al modelo.", "cuenta": 1 },
+    { "orden": 2, "nombre": "Solicitudes", "linea": "Crea y consulta solicitudes de soporte con sus herramientas.", "cuenta": 2 },
+    { "orden": 3, "nombre": "Datos de clientes", "linea": "Muestra datos personales de clientes cuando la solicitud los menciona.", "cuenta": 1 }
+  ],
+  "limites": [
+    "Solo atiende solicitudes de soporte, nada de ventas.",
+    "No recuerda nada entre una conversación y la siguiente."
+  ],
+  "nunca": [
+    "Nunca hace acciones irreversibles: no borra solicitudes.",
+    "Nunca guarda datos personales fuera de la solicitud."
+  ],
+  "hitos": [
+    { "valor": "Ejemplo", "etiqueta": "Sintético" },
+    { "valor": "3", "etiqueta": "Sprints" },
+    { "valor": "0", "etiqueta": "Datos reales" }
+  ]
+}
