@@ -3,6 +3,22 @@
 The app's own changelog, one entry per sprint. The root `CHANGELOG.md` belongs to the kit the repo was stamped
 from.
 
+## Sprint 013 — «Lo tuyo y lo público» (2026-11-10)
+
+The last construction sprint of milestone H-2: the asset's profile from CV Viva's technical ficha, the organization's own controls, the public mode and the showcase package. This entry is written phase by phase; F1 is below.
+
+### Added (F1 · lo tuyo)
+
+- **The ficha contract, vendored (default i):** `datos/contratos/ficha-tecnica/1.3.1.schema.json` with its version, byte hash and JCS hash in `contrato.json`; a test fails if the bytes change without a new version.
+- **D2 · the profile from the ficha:** `src/engine/activos/desde-ficha.ts` is a table, not a model. Each rule of `datos/planificador/ficha-a-rasgos.json` ties a profile trait to literal terms in a ficha field; **no fragment, no proposal**, and two rules that disagree leave the trait unanswered with both citations. `pnpm activo:desde-ficha <ficha.json>` prints each trait with its fragment; with `--aceptar … --por … --id … --fecha … --salida datos/privado/activos/<id>.perfil.json` it saves only what a person accepted (mode 600, refuses inside a Claude Code session). `/activos/desde-ficha` does the same in the browser: the ficha is read on the page and never leaves it. What it saves is a profile, not an asset: no authorized scope and no rules of engagement, so no plan (hard rule 5).
+- **D12 · own control layers:** `datos/controles/propios/org-demo.json` (synthetic). A layer of the organization maps its controls to ISO/IEC 42001 ones through `controles_equivalentes`; its status is the least favourable of the ISO controls it points to (`src/engine/brecha/propios.ts`). It shows apart, labelled, in `/catalogo/controles` and `/brecha/control`, and it never changes an ISO control, a figure or the report hash. A private layer under `datos/privado/` is never read by the catalog. The ISO layer's JCS hash is pinned by a test.
+- **A new official snapshot:** `datos/instantaneas/2026-10-05-d352e6afadfb.json` (demo `2026-11-01-c5126b8ed8ac`). `promptfoo`, `pyrit` and `inspect` now say `tiene_adaptador: true`. No `modelo_generativo` test recommends PyRIT by rule. Differences against `2026-10-05-010a8c56f706`: 3 enter (`controles/org-demo-O.1.1`, `O.1.2`, `O.2.1`), 0 leave, 3 change (the three tools, field `tiene_adaptador`).
+
+### Changed (F1)
+
+- **The snapshot keeps its evaluation date, 2026-10-05:** no test was re-verified, and moving the date would turn every demo to «por revisar». The demo plans were issued again (2026-10-11) and the 19 envelopes and 2 batches that cite them were sealed again; the replaced snapshots stay in git history.
+- **The maqueta** (generator, not the HTML) gains the «capa propia» section in `controles` and `control`; the fingerprints the guide and ADR-002 cite are the new ones.
+
 ## Sprint 012 — «Tus herramientas» (2026-11-10)
 
 The third sprint of milestone H-2: more tools in, findings out to DefectDojo, and an optional executor. HackGuard's promise changes from «it runs no tests» to **«it does not attack on its own: the optional executor runs your tools, on your machine, inside what you authorized»**.
