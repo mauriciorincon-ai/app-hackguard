@@ -93,8 +93,7 @@ export const ConjuntoDeReferencia = z
       if (x.nota.es === x.nota.en)
         ctx.addIssue({
           code: "custom",
-          message:
-            "la nota es igual en los dos idiomas / the note is the same in both languages",
+          message: "la nota es igual en los dos idiomas / the note is the same in both languages",
           path: ["casos", i, "nota"],
         });
     });
@@ -102,8 +101,7 @@ export const ConjuntoDeReferencia = z
     if (!(desde <= umbral && umbral <= hasta))
       ctx.addIssue({
         code: "custom",
-        message:
-          "la banda no contiene el umbral / the band does not contain the threshold",
+        message: "la banda no contiene el umbral / the band does not contain the threshold",
         path: ["parametros", "banda"],
       });
   });
