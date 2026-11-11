@@ -70,17 +70,61 @@ const RANGO: Record<NivelDeSeveridad, number> = {
 // ── Validación de la tabla ───────────────────────────────────────────────────────────────────────
 
 export const REGLAS_DE_ESCALA = {
-  "escala/impacto-no-contiguo": regla("error", "Los impactos de la escala no van de 1 en 1 desde el 1", "The scale's impacts do not run from 1 up with no gaps"),
-  "escala/alcance-no-contiguo": regla("error", "Los niveles de alcance no van de 1 en 1 desde el 1", "The reach levels do not run from 1 up with no gaps"),
-  "escala/detectabilidad-no-contigua": regla("error", "Los niveles de detectabilidad no van de 1 en 1 desde el 1", "The detectability levels do not run from 1 up with no gaps"),
-  "escala/frecuencia-desordenada": regla("error", "Las bandas de frecuencia no empiezan en 0, no van de 1 en 1 o no crecen", "The frequency bands do not start at 0, run without gaps or grow"),
-  "escala/tabla-incompleta": regla("error", "La tabla no tiene una fila por impacto con un nivel por banda", "The table lacks a row per impact with a level per band"),
-  "escala/no-monotona": regla("error", "Más impacto o más frecuencia no pueden dar un nivel menor", "More impact or more frequency cannot give a lower level"),
-  "escala/limite-sin-fila": regla("error", "Un piso o un techo habla de un impacto que la tabla no tiene", "A floor or ceiling names an impact the table does not have"),
-  "escala/sin-piso": regla("error", "El impacto mayor no declara su piso: lo grave no se puede minimizar", "The highest impact declares no floor: what is grave cannot be minimised"),
-  "escala/sin-techo": regla("error", "El impacto menor no declara su techo: lo menor no se puede exagerar", "The lowest impact declares no ceiling: what is minor cannot be inflated"),
-  "escala/viola-piso": regla("error", "Una celda queda por debajo del piso de su fila", "A cell falls below its row's floor"),
-  "escala/viola-techo": regla("error", "Una celda queda por encima del techo de su fila", "A cell rises above its row's ceiling"),
+  "escala/impacto-no-contiguo": regla(
+    "error",
+    "Los impactos de la escala no van de 1 en 1 desde el 1",
+    "The scale's impacts do not run from 1 up with no gaps",
+  ),
+  "escala/alcance-no-contiguo": regla(
+    "error",
+    "Los niveles de alcance no van de 1 en 1 desde el 1",
+    "The reach levels do not run from 1 up with no gaps",
+  ),
+  "escala/detectabilidad-no-contigua": regla(
+    "error",
+    "Los niveles de detectabilidad no van de 1 en 1 desde el 1",
+    "The detectability levels do not run from 1 up with no gaps",
+  ),
+  "escala/frecuencia-desordenada": regla(
+    "error",
+    "Las bandas de frecuencia no empiezan en 0, no van de 1 en 1 o no crecen",
+    "The frequency bands do not start at 0, run without gaps or grow",
+  ),
+  "escala/tabla-incompleta": regla(
+    "error",
+    "La tabla no tiene una fila por impacto con un nivel por banda",
+    "The table lacks a row per impact with a level per band",
+  ),
+  "escala/no-monotona": regla(
+    "error",
+    "Más impacto o más frecuencia no pueden dar un nivel menor",
+    "More impact or more frequency cannot give a lower level",
+  ),
+  "escala/limite-sin-fila": regla(
+    "error",
+    "Un piso o un techo habla de un impacto que la tabla no tiene",
+    "A floor or ceiling names an impact the table does not have",
+  ),
+  "escala/sin-piso": regla(
+    "error",
+    "El impacto mayor no declara su piso: lo grave no se puede minimizar",
+    "The highest impact declares no floor: what is grave cannot be minimised",
+  ),
+  "escala/sin-techo": regla(
+    "error",
+    "El impacto menor no declara su techo: lo menor no se puede exagerar",
+    "The lowest impact declares no ceiling: what is minor cannot be inflated",
+  ),
+  "escala/viola-piso": regla(
+    "error",
+    "Una celda queda por debajo del piso de su fila",
+    "A cell falls below its row's floor",
+  ),
+  "escala/viola-techo": regla(
+    "error",
+    "Una celda queda por encima del techo de su fila",
+    "A cell rises above its row's ceiling",
+  ),
 } as const;
 export type IdReglaDeEscala = keyof typeof REGLAS_DE_ESCALA;
 export type HallazgoDeEscala = HallazgoDeValidacion<IdReglaDeEscala>;

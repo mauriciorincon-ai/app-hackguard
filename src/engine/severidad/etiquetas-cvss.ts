@@ -51,8 +51,7 @@ export const REGLAS_DE_ETIQUETAS_DE_CVSS = {
     "An optional metric is in no group, or in two",
   ),
 } as const;
-export type IdReglaDeEtiquetasDeCvss =
-  keyof typeof REGLAS_DE_ETIQUETAS_DE_CVSS;
+export type IdReglaDeEtiquetasDeCvss = keyof typeof REGLAS_DE_ETIQUETAS_DE_CVSS;
 
 /** Cada métrica base y cada uno de sus valores con nombre; cada opcional en un grupo; nada que el estándar no tenga. */
 export function validarEtiquetasDeCvss(
@@ -122,7 +121,10 @@ export function nombreDeMetrica(
   e: EtiquetasDeCvss,
   clave: string,
   valor: string,
-): { metrica: { es: string; en: string }; valor: { es: string; en: string } | null } {
+): {
+  metrica: { es: string; en: string };
+  valor: { es: string; en: string } | null;
+} {
   const m = e.metricas.find((x) => x.clave === clave);
   if (m !== undefined)
     return {

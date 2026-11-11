@@ -16,6 +16,8 @@ export interface ControlPropioDeBrecha {
   estado: EstadoDeControl;
   /** `true` si ninguno de los controles ISO a los que apunta es aplicable (el estado es un piso, no una medición). */
   sinAplicables: boolean;
+  /** `true` si alguna de las equivalencias con un control ISO aplicable es `parcial`: el estado es un TOPE (lo que la norma muestra), no que el control propio quede cubierto entero. */
+  cubreParte: boolean;
 }
 
 export interface CapaPropiaDeBrecha {
@@ -59,7 +61,13 @@ export function brechaDeCapasPropias(
               const iso = isoPorReferencia.get(e.referencia_en_marco);
               return iso === undefined
                 ? []
-                : [{ id: iso, estado: estadoDeIso.get(iso) ?? null }];
+                : [
+                    {
+                      id: iso,
+                      estado: estadoDeIso.get(iso) ?? null,
+                      parcial: e.cobertura === "parcial",
+                    },
+                  ];
             });
           const aplicables = apunta.flatMap((a) =>
             a.estado === null ? [] : [a.estado],
@@ -67,9 +75,10 @@ export function brechaDeCapasPropias(
           return {
             id: c.id,
             area: area.id,
-            apunta,
+            apunta: apunta.map(({ id, estado }) => ({ id, estado })),
             estado: peorEstado(aplicables),
             sinAplicables: aplicables.length === 0,
+            cubreParte: apunta.some((a) => a.estado !== null && a.parcial),
           };
         }),
       ),

@@ -918,7 +918,12 @@ export async function validarCatalogo(
   ];
   for (const { ruta, datos } of resto) {
     for (const m of filtrar(datos, patrones)) {
-      registro.agregar("filtro/marcada", ruta, m.campo, patronMarcado(m.patron));
+      registro.agregar(
+        "filtro/marcada",
+        ruta,
+        m.campo,
+        patronMarcado(m.patron),
+      );
     }
   }
 

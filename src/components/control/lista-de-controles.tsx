@@ -283,13 +283,24 @@ export function ListaDeControles({ v }: { v: VistaDeControles }) {
                             />
                           </p>
                         ) : null}
+                        {c.cubreParte ? (
+                          <p className="hg-menor" data-cubre-parte="">
+                            <T
+                              t={{
+                                es: "Cubre solo una parte de esos controles: el estado es un tope, no que el control propio quede cubierto entero.",
+                                en: "It covers only part of those controls: the status is a ceiling, not proof that the own control is fully covered.",
+                              }}
+                            />
+                          </p>
+                        ) : null}
                       </td>
                       <td data-celda="estado">
                         <span
                           data-control-propio={c.id}
                           data-control-propio-estado={c.estadoId}
                         >
-                          {c.estadoId === "con_evidencia_vigente" ? (
+                          {c.estadoId === "con_evidencia_vigente" &&
+                          !c.cubreParte ? (
                             <Estado etiqueta={c.estado} />
                           ) : (
                             <Chip etiqueta={c.estado} />

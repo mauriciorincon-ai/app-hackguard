@@ -103,6 +103,34 @@ describe("el estado de un control propio sale de los controles ISO a los que apu
     expect(primero.sinAplicables).toBe(false);
   });
 
+  it("una equivalencia parcial se dice: el estado es un tope, no la cobertura entera", () => {
+    const todos = propia.areas
+      .flatMap((a) => a.controles)
+      .flatMap((c) => c.controles_equivalentes);
+    expect(todos.length).toBeGreaterThan(0);
+    expect(todos.every((e) => e.cobertura === "parcial")).toBe(true);
+    const idsIso = iso.areas
+      .flatMap((a) => a.controles)
+      .map((c) => c.id)
+      .filter((id) =>
+        todos.some((e) => e.referencia_en_marco === referenciaDeControl(id)),
+      );
+    const vigente = estadoDe(
+      ...idsIso.map((id): [string, EstadoDeControl] => [
+        id,
+        "con_evidencia_vigente",
+      ]),
+    );
+    const [salida] = brechaDeCapasPropias([propia], iso, vigente);
+    for (const c of salida!.controles) {
+      expect(c.estado).toBe("con_evidencia_vigente");
+      expect(c.cubreParte).toBe(true);
+    }
+    // Sin controles ISO aplicables no hay nada que acotar: no es «parcial», es «sin aplicables».
+    const [vacia] = brechaDeCapasPropias([propia], iso, estadoDe());
+    expect(vacia!.controles.every((c) => !c.cubreParte)).toBe(true);
+  });
+
   it("sin ningún control ISO aplicable el estado es sin_evidencia y lo dice", () => {
     const [salida] = brechaDeCapasPropias([propia], iso, estadoDe());
     for (const c of salida!.controles) {

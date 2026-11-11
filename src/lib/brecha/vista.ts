@@ -645,6 +645,7 @@ function capasPropiasDeLista(
           estado: k.et("estado_de_control", c.estado),
           estadoId: c.estado,
           sinAplicables: c.sinAplicables,
+          cubreParte: c.cubreParte,
         };
       }),
     };

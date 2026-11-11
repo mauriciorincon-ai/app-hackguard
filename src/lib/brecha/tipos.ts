@@ -252,6 +252,8 @@ export interface FilaDeControlPropio {
   estadoId: string;
   /** Ninguno de los controles de la norma a los que apunta es aplicable: el estado es un piso, no una medición. */
   sinAplicables: boolean;
+  /** Alguna equivalencia es parcial: el estado es un tope, no la cobertura entera del control propio. */
+  cubreParte: boolean;
 }
 
 export interface CapaPropiaDeLista {
