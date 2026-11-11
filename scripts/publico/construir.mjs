@@ -2,7 +2,7 @@
 // `dist/publico/` SOLO lo que la lista blanca permite (src/lib/publico/lista-blanca.ts) y barre lo copiado con la frontera. Sentry va
 // sin DSN. Termina con 1 si algo cruza la frontera. No abre ningún servidor.
 import { spawnSync } from "node:child_process";
-import { rmSync } from "node:fs";
+import { readFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { copiarExportacion } from "../../src/lib/publico/copiar.ts";
@@ -12,6 +12,8 @@ import {
 } from "../../src/lib/publico/frontera.ts";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const dominiosDeCeroEnlaces = () =>
+  JSON.parse(readFileSync(join(RAIZ, "cero-enlaces.json"), "utf8")).dominios;
 const EXPORTADO = join(RAIZ, ".next-publico");
 const DESTINO = join(RAIZ, "dist", "publico");
 
@@ -29,7 +31,9 @@ export function construirPublico({
   if (r.status !== 0) throw new Error("next build falló");
   rmSync(destino, { recursive: true, force: true });
   const { copiados, omitidos } = copiarExportacion(exportado, destino);
-  const fuera = barrerCarpeta(destino, conocidosDeDemo(RAIZ));
+  const fuera = barrerCarpeta(destino, conocidosDeDemo(RAIZ), {
+    dominios: dominiosDeCeroEnlaces(),
+  });
   return { copiados, omitidos, fuera };
 }
 

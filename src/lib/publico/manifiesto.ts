@@ -80,8 +80,8 @@ export async function armarManifiesto(e: {
         en: "Declare the piece in data/simulaciones.yaml with folder hackguard and entry index.html for es and en.",
       },
       {
-        es: "Corre pnpm paquete:verificar en HackGuard contra este paquete antes de copiarlo.",
-        en: "Run pnpm paquete:verificar in HackGuard against this package before copying it.",
+        es: "Corre pnpm paquete:verificar --entrega en HackGuard contra este paquete antes de copiarlo: exige un árbol limpio y el commit que se entrega.",
+        en: "Run pnpm paquete:verificar --entrega in HackGuard against this package before copying it: it requires a clean tree and the commit being delivered.",
       },
     ],
     n_archivos: Object.keys(archivos).length,
@@ -96,6 +96,8 @@ export async function verificarPaquete(
   raiz: string,
   conocidos: ConocidosPublicos,
   dominios: readonly string[],
+  /** Con `entrega`, el paquete debe venir de un árbol limpio y del commit que se entrega; sin ella solo se registran (armar en local es legítimo). */
+  entrega?: { commit: string },
 ): Promise<HallazgoDeFrontera[]> {
   const fuera: HallazgoDeFrontera[] = [];
   const marcar = (archivo: string, regla: string, detalle: string) =>
@@ -117,6 +119,31 @@ export async function verificarPaquete(
       "manifiesto",
       "su huella no es la de su contenido",
     );
+
+  if (entrega !== undefined) {
+    if (m.arbol_limpio !== true)
+      marcar(
+        "manifiesto.json",
+        "arbol-sucio",
+        "el paquete se armó con cambios sin commitear",
+      );
+    if (m.commit !== entrega.commit)
+      marcar(
+        "manifiesto.json",
+        "commit-distinto",
+        `el paquete es del commit ${String(m.commit).slice(0, 12)}, no de ${entrega.commit.slice(0, 12)}`,
+      );
+  }
+  // El manifiesto solo cubre la pieza: nada más puede viajar en la carpeta del paquete (salvo el manifiesto mismo).
+  for (const abs of archivosDe(raiz)) {
+    const rel = relative(raiz, abs).split("\\").join("/");
+    if (rel !== "manifiesto.json" && !rel.startsWith(`${CARPETA_DE_LA_PIEZA}/`))
+      marcar(
+        rel,
+        "archivo-fuera-de-la-pieza",
+        "no es la pieza ni el manifiesto",
+      );
+  }
 
   const { archivos } = hashesDeLaPieza(raiz);
   for (const [rel, h] of Object.entries(m.archivos)) {

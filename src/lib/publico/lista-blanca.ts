@@ -38,13 +38,12 @@ export const PATRON_DE_ACTIVO_PUBLICO = /^act-demo-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const esActivoPublico = (id: string): boolean =>
   PATRON_DE_ACTIVO_PUBLICO.test(id);
 
-/** La capa propia de controles que puede viajar: la demo sintética (`org-demo`, `org-demo-O.1.1`…). Una capa real vive en `datos/privado/`. */
-export const PATRON_DE_CONTROL_PROPIO_PUBLICO =
-  /^org-demo(?:-[A-Za-z0-9.]+)*$/i;
-
-/** ¿Este id de control de la capa propia puede aparecer en lo exportado? Solo el de la capa demo. */
-export const esControlPropioPublico = (id: string): boolean =>
-  PATRON_DE_CONTROL_PROPIO_PUBLICO.test(id);
+/**
+ * La capa propia de controles que puede viajar: solo la demo sintética, y solo los ids que ESE archivo declara (la capa, sus controles).
+ * No es un patrón: `org-demo-acme-prod` no es un id de la demo aunque lo parezca. Una capa real vive en `datos/privado/`.
+ */
+export const ARCHIVO_DE_CAPA_PROPIA_DEMO =
+  "datos/controles/propios/org-demo.json";
 
 /**
  * De dónde salen los ids de evidencia que pueden aparecer (hallazgos, sobres y lotes): solo carpetas `demo/` versionadas. Un id

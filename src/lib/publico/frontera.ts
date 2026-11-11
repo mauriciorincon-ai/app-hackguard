@@ -11,8 +11,8 @@ import { join, relative } from "node:path";
 import {
   archivoPermitido,
   CARPETAS_DE_EVIDENCIA_DEMO,
+  ARCHIVO_DE_CAPA_PROPIA_DEMO,
   esActivoPublico,
-  esControlPropioPublico,
   esRutaPublica,
   normalizarRuta,
 } from "./lista-blanca.ts";
@@ -27,7 +27,7 @@ export interface HallazgoDeFrontera {
 export interface OpcionesDeBarrido {
   /** La base en que se monta la pieza (`/piezas/hackguard`): todo enlace y todo recurso interno debe llevarla. */
   base?: string;
-  /** Los dominios de hosting de `cero-enlaces.json`: no pueden aparecer en ningún archivo. */
+  /** Los dominios de hosting de `cero-enlaces.json`: no pueden aparecer en ningún archivo (modo público y paquete). */
   dominios?: readonly string[];
   /** ¿Existe este archivo (ruta relativa a la pieza) en el paquete? Con ella, un enlace que no lleva a un archivo falla. */
   existe?: (relativo: string) => boolean;
@@ -40,6 +40,8 @@ export interface ConocidosPublicos {
   hallazgos: ReadonlySet<string>;
   sobres: ReadonlySet<string>;
   lotes: ReadonlySet<string>;
+  /** Los ids de la capa propia demo (`datos/controles/propios/org-demo.json`): la capa y sus controles; ningún otro `org-…` puede viajar. */
+  controlesPropios: ReadonlySet<string>;
 }
 
 /**
@@ -120,11 +122,12 @@ export function barrerTexto(
     /(?<![A-Za-z0-9_-])act-[a-z0-9]+(?:-[a-z0-9]+)*/g,
   ))
     if (!esActivoPublico(m[0])) marcar("activo-no-demo", m[0]);
-  // Lo mismo con la capa propia de controles: solo la demo (`org-demo…`) puede viajar.
+  // Lo mismo con la capa propia de controles: solo los ids que declara el archivo de la demo pueden viajar.
   for (const m of texto.matchAll(
     /(?<![A-Za-z0-9_-])org-[a-z0-9]+(?:-[A-Za-z0-9.]+)*/gi,
   ))
-    if (!esControlPropioPublico(m[0])) marcar("control-propio-no-demo", m[0]);
+    if (!conocidos.controlesPropios.has(m[0]))
+      marcar("control-propio-no-demo", m[0]);
   for (const [regla, patron, demo] of [
     ["hallazgo-no-demo", /(?<![A-Z0-9-])HZ-\d{4}/g, conocidos.hallazgos],
     ["sobre-no-demo", /(?<![A-Z0-9-])SOB-\d{4}/g, conocidos.sobres],
@@ -168,15 +171,15 @@ export function barrerTexto(
       )
         marcar("enlace-fuera-de-la-lista", m[1]!);
     }
-  if (opciones.paquete) {
-    if (!esCodigo && /localhost|127\.0\.0\.1/i.test(texto))
-      marcar("direccion-local", "localhost o 127.0.0.1");
-    for (const d of opciones.dominios ?? [])
-      if (texto.toLowerCase().includes(d.toLowerCase()))
-        marcar("dominio-de-despliegue", d);
-    if (/@[a-z0-9.-]*sentry\.io|ingest\.[a-z0-9.-]*sentry/i.test(texto))
-      marcar("dsn-de-sentry", "una dirección de Sentry");
-  }
+  // Lo que no puede viajar en NINGUNA exportación pública (el modo público y el paquete): una dirección local, un dominio de
+  // despliegue (`cero-enlaces.json`) o un DSN de Sentry.
+  if (!esCodigo && /localhost|127\.0\.0\.1/i.test(texto))
+    marcar("direccion-local", "localhost o 127.0.0.1");
+  for (const d of opciones.dominios ?? [])
+    if (texto.toLowerCase().includes(d.toLowerCase()))
+      marcar("dominio-de-despliegue", d);
+  if (/@[a-z0-9.-]*sentry\.io|ingest\.[a-z0-9.-]*sentry/i.test(texto))
+    marcar("dsn-de-sentry", "una dirección de Sentry");
   return fuera;
 }
 
@@ -224,6 +227,17 @@ export function barrerCarpeta(
   return fuera;
 }
 
+/** La capa propia demo y los controles que declara, tal cual están en su archivo. */
+function idsDeCapaPropia(raiz: string): ReadonlySet<string> {
+  const capa = JSON.parse(
+    readFileSync(join(raiz, ARCHIVO_DE_CAPA_PROPIA_DEMO), "utf8"),
+  ) as { id: string; areas: { controles: { id: string }[] }[] };
+  return new Set([
+    capa.id,
+    ...capa.areas.flatMap((a) => a.controles.map((c) => c.id)),
+  ]);
+}
+
 /** Los ids de los demos versionados, por el nombre de su archivo (`HZ-0007.json`, `SOB-0003.json`, `LOTE-0007.json`). */
 export function conocidosDeDemo(raiz: string): ConocidosPublicos {
   const ids = (carpeta: string, prefijo: string) =>
@@ -236,5 +250,6 @@ export function conocidosDeDemo(raiz: string): ConocidosPublicos {
     hallazgos: ids(CARPETAS_DE_EVIDENCIA_DEMO.hallazgos, "HZ"),
     sobres: ids(CARPETAS_DE_EVIDENCIA_DEMO.sobres, "SOB"),
     lotes: ids(CARPETAS_DE_EVIDENCIA_DEMO.lotes, "LOTE"),
+    controlesPropios: idsDeCapaPropia(raiz),
   };
 }

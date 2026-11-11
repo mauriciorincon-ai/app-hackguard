@@ -13,6 +13,9 @@
 // vaya a mostrar a terceros jamás la lleva, ni nada de `privado/`. Se corre sobre el paquete que se publique, nunca sobre
 // el `out/` del despliegue privado (que SÍ lleva la maqueta):
 //   node scripts/verificar-salida-publicada.mjs --publico <carpeta-del-paquete>
+// Desde el S13 el gate del modo público (C19) y del paquete (C20) es la frontera por lista blanca (`src/lib/publico/frontera.ts`, vía
+// `build:publico` y `paquete:verificar`, ambos en la CI). Este modo `--publico` queda como lectura manual, más simple y por lista negra,
+// sobre cualquier carpeta que alguien vaya a mostrar: no la reemplaza ni la CI lo corre.
 // Patrón: wiki/patterns/lo-que-el-proveedor-publica.md (planeadora, RO).
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";

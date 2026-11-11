@@ -17,7 +17,6 @@ import {
   enlaceVisible,
   CARPETAS_DE_EVIDENCIA_DEMO,
   esActivoPublico,
-  esControlPropioPublico,
   esRutaPublica,
   rutaDeArchivo,
 } from "../../src/lib/publico/lista-blanca.ts";
@@ -26,6 +25,21 @@ const RAIZ = process.cwd();
 const conocidos: ConocidosPublicos = conocidosDeDemo(RAIZ);
 const reglas = (archivo: string, texto: string) =>
   barrerTexto(archivo, texto, conocidos).map((h) => h.regla);
+
+describe("lo que no viaja en NINGUNA exportación pública (no solo en el paquete)", () => {
+  it("una dirección local, un dominio de despliegue o un DSN de Sentry fallan también en el modo público", () => {
+    const sin = (t: string, dominios: string[] = []) =>
+      barrerTexto("catalogo.html", t, conocidos, { dominios }).map(
+        (h) => h.regla,
+      );
+    expect(sin("<p>localhost:3000</p>")).toContain("direccion-local");
+    expect(sin("<p>nada</p>", ["ejemplo-despliegue.test"])).toEqual([]);
+    expect(
+      sin("<p>ejemplo-despliegue.test</p>", ["ejemplo-despliegue.test"]),
+    ).toContain("dominio-de-despliegue");
+    expect(sin("<p>abc@o1.ingest.sentry.io</p>")).toContain("dsn-de-sentry");
+  });
+});
 
 const temporales: string[] = [];
 const exportacion = (archivos: Record<string, string>) => {
@@ -246,11 +260,19 @@ describe("los demos conocidos y los archivos estáticos", () => {
   });
 
   it("la capa propia de controles viaja solo si es la demo, y los ids de evidencia salen solo de carpetas demo versionadas", () => {
-    for (const ok of ["org-demo", "org-demo-O.1.1", "org-demo-o.1.2"])
-      expect(esControlPropioPublico(ok), ok).toBe(true);
-    for (const no of ["org-acme", "org-acme-O.1.1", "org-demox-O.1", "org-"])
-      expect(esControlPropioPublico(no), no).toBe(false);
-    expect(reglas("catalogo.html", "org-demo-O.1.1")).toEqual([]);
+    // Una lista cerrada, la que declara el archivo de la demo: lo que solo PARECE de la demo no pasa.
+    expect([...conocidos.controlesPropios].sort()).toEqual([
+      "org-demo",
+      "org-demo-O.1.1",
+      "org-demo-O.1.2",
+      "org-demo-O.2.1",
+    ]);
+    for (const ok of ["org-demo", "org-demo-O.1.1", "org-demo-O.2.1"])
+      expect(reglas("catalogo.html", ok), ok).toEqual([]);
+    for (const no of ["org-demo-acme-prod", "org-demo-O.9.9", "org-demox-O.1"])
+      expect(reglas("catalogo.html", no), no).toEqual([
+        "control-propio-no-demo",
+      ]);
     expect(reglas("catalogo.html", "org-acme-O.1.1")).toEqual([
       "control-propio-no-demo",
     ]);

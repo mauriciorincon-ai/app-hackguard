@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 // C20 · el paquete servido como lo recibirá CV Viva: sin URL limpias, bajo /piezas/hackguard/, en 127.0.0.1. Se recorre desde la
@@ -8,25 +8,30 @@ import path from "node:path";
 // 127.0.0.1 (cualquier petición ajena se aborta y hace fallar el test) y no deja un error en la consola.
 
 const BASE = "/piezas/hackguard";
-const PIEZA = path.join(
-  process.cwd(),
-  "dist/paquete-hoja-de-vida/public/piezas/hackguard",
-);
-const paginasDelPaquete = (dir = PIEZA): string[] =>
-  readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
-    const abs = path.join(dir, e.name);
-    if (e.isDirectory())
-      return e.name === "_next" || e.name === "_not-found"
-        ? []
-        : paginasDelPaquete(abs);
-    return e.name.endsWith(".html")
-      ? [`${BASE}/${path.relative(PIEZA, abs).split(path.sep).join("/")}`]
-      : [];
-  });
-// Las páginas de la pieza: la entrada, el catálogo, las fichas, marcos, controles, la brecha y sus controles (sin `_not-found/`).
-const ESPERADAS = paginasDelPaquete()
-  .filter((r) => !/\/(404|_not-found)\.html$/.test(r))
-  .sort();
+// Lo que el paquete DEBE tener, fijado desde fuera de él (no desde lo que dejó el build, que haría el test circular): la entrada, las
+// pantallas de la lista blanca, una ficha por cada prueba de la instantánea oficial y las 8 páginas de control de la brecha.
+const CARPETA_DE_INSTANTANEAS = path.join(process.cwd(), "datos/instantaneas");
+const OFICIAL = readdirSync(CARPETA_DE_INSTANTANEAS)
+  .filter((n) => n.endsWith(".json"))
+  .sort()
+  .at(-1)!;
+const PRUEBAS: string[] = (
+  JSON.parse(
+    readFileSync(path.join(CARPETA_DE_INSTANTANEAS, OFICIAL), "utf8"),
+  ) as { catalogo: { pruebas: { id: string }[] } }
+).catalogo.pruebas.map((p) => p.id);
+const FIJAS = [
+  "index",
+  "brecha",
+  "brecha/control",
+  "catalogo",
+  "catalogo/controles",
+  "catalogo/marcos",
+  ...PRUEBAS.map((id) => `catalogo/${id}`),
+].map((r) => `${BASE}/${r}.html`);
+const CONTROLES_DE_LA_BRECHA = 8;
+const esControlDeBrecha = (r: string) =>
+  r.startsWith(`${BASE}/brecha/control/iso42001-`);
 
 function vigilar(page: Page) {
   const ajenas: string[] = [];
@@ -98,9 +103,15 @@ for (const idioma of ["es", "en"] as const) {
           porVer.push(sin);
         }
       }
-      expect([...vistas].sort(), "páginas alcanzables por enlaces").toEqual(
-        ESPERADAS,
-      );
+      const alcanzadas = [...vistas].sort();
+      expect(
+        alcanzadas.filter((r) => !esControlDeBrecha(r)),
+        "páginas alcanzables por enlaces",
+      ).toEqual([...FIJAS].sort());
+      expect(
+        alcanzadas.filter(esControlDeBrecha),
+        "páginas de control de la brecha",
+      ).toHaveLength(CONTROLES_DE_LA_BRECHA);
       expect(ajenas, "peticiones fuera de 127.0.0.1").toEqual([]);
       expect(malas, "errores de consola o respuestas ≥ 400").toEqual([]);
     });

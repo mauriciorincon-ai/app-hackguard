@@ -20,9 +20,13 @@ const PROPIAS_DE_NEXT = new Set([
   "as",
 ]);
 
-export default function Enlace(props: ComponentProps<typeof Link>) {
+// `href` es solo una cadena: un objeto `UrlObject` perdería `query` y `hash` al reducirlo a su ruta, y el paquete (C20) escribiría un
+// enlace distinto del que ve el modo normal. Ningún componente de la app pasa un objeto; el tipo lo impide.
+type Props = Omit<ComponentProps<typeof Link>, "href"> & { href: string };
+
+export default function Enlace(props: Props) {
   const { href, children, className } = props;
-  const destino = typeof href === "string" ? href : (href.pathname ?? "");
+  const destino = href;
   if (!enlaceVisible(destino))
     return <span className={className}>{children}</span>;
   if (modoPaquete()) {

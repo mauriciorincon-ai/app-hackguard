@@ -12,6 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
+import { huella } from "../../src/engine/huella.ts";
 import { conocidosDeDemo } from "../../src/lib/publico/frontera.ts";
 import {
   armarManifiesto,
@@ -125,6 +126,51 @@ describe("la verificación del paquete", () => {
     expect(await reglas(await paquete({}, { "favicon.ico": null }))).toEqual([
       "archivo-que-falta",
     ]);
+  });
+
+  it("con --entrega exige un árbol limpio y el commit que se entrega; sin ella solo los registra", async () => {
+    const limpio = await paquete();
+    expect(
+      (
+        await verificarPaquete(limpio.raiz, conocidos, DOMINIOS, {
+          commit: "abc",
+        })
+      ).map((h) => h.regla),
+    ).toEqual([]);
+    expect(
+      (
+        await verificarPaquete(limpio.raiz, conocidos, DOMINIOS, {
+          commit: "def",
+        })
+      ).map((h) => h.regla),
+    ).toEqual(["commit-distinto"]);
+    // Un paquete armado con cambios sin commitear: legítimo en local, no para entregar.
+    const sucio = await paquete();
+    const manifiesto = { ...sucio.m, arbol_limpio: false } as Record<
+      string,
+      unknown
+    >;
+    delete manifiesto.huella;
+    manifiesto.huella = await huella(manifiesto);
+    writeFileSync(
+      join(sucio.raiz, "manifiesto.json"),
+      JSON.stringify(manifiesto),
+    );
+    expect(await reglas(sucio)).toEqual([]);
+    expect(
+      (
+        await verificarPaquete(sucio.raiz, conocidos, DOMINIOS, {
+          commit: "abc",
+        })
+      ).map((h) => h.regla),
+    ).toEqual(["arbol-sucio"]);
+  });
+
+  it("nada viaja fuera de la pieza: un archivo suelto en la carpeta del paquete falla", async () => {
+    const p = await paquete();
+    mkdirSync(join(p.raiz, "datos", "privado"), { recursive: true });
+    writeFileSync(join(p.raiz, "datos", "privado", "x.json"), "{}");
+    expect(await reglas(p)).toEqual(["archivo-fuera-de-la-pieza"]);
   });
 
   it("falla si el manifiesto fue tocado a mano (su huella no es la de su contenido)", async () => {
