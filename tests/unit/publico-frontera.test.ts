@@ -15,7 +15,9 @@ import {
 import {
   archivoPermitido,
   enlaceVisible,
+  CARPETAS_DE_EVIDENCIA_DEMO,
   esActivoPublico,
+  esControlPropioPublico,
   esRutaPublica,
   rutaDeArchivo,
 } from "../../src/lib/publico/lista-blanca.ts";
@@ -241,6 +243,21 @@ describe("los demos conocidos y los archivos estáticos", () => {
       barrerTexto("catalogo.html", t, conocidos).map((h) => h.regla);
     expect(reglas("act-demo-asistente")).toEqual([]);
     expect(reglas("act-mi-asistente")).toEqual(["activo-no-demo"]);
+  });
+
+  it("la capa propia de controles viaja solo si es la demo, y los ids de evidencia salen solo de carpetas demo versionadas", () => {
+    for (const ok of ["org-demo", "org-demo-O.1.1", "org-demo-o.1.2"])
+      expect(esControlPropioPublico(ok), ok).toBe(true);
+    for (const no of ["org-acme", "org-acme-O.1.1", "org-demox-O.1", "org-"])
+      expect(esControlPropioPublico(no), no).toBe(false);
+    expect(reglas("catalogo.html", "org-demo-O.1.1")).toEqual([]);
+    expect(reglas("catalogo.html", "org-acme-O.1.1")).toEqual([
+      "control-propio-no-demo",
+    ]);
+    for (const carpeta of Object.values(CARPETAS_DE_EVIDENCIA_DEMO)) {
+      expect(carpeta, carpeta).toMatch(/\/demo$/);
+      expect(carpeta, carpeta).not.toMatch(/privado|ejecutor/);
+    }
   });
 
   it("de `_next/` solo viaja lo que las páginas permitidas nombran, y lo que eso nombra a su vez", () => {

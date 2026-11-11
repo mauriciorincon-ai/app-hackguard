@@ -10,7 +10,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import {
   archivoPermitido,
+  CARPETAS_DE_EVIDENCIA_DEMO,
   esActivoPublico,
+  esControlPropioPublico,
   esRutaPublica,
   normalizarRuta,
 } from "./lista-blanca.ts";
@@ -118,6 +120,11 @@ export function barrerTexto(
     /(?<![A-Za-z0-9_-])act-[a-z0-9]+(?:-[a-z0-9]+)*/g,
   ))
     if (!esActivoPublico(m[0])) marcar("activo-no-demo", m[0]);
+  // Lo mismo con la capa propia de controles: solo la demo (`org-demo…`) puede viajar.
+  for (const m of texto.matchAll(
+    /(?<![A-Za-z0-9_-])org-[a-z0-9]+(?:-[A-Za-z0-9.]+)*/gi,
+  ))
+    if (!esControlPropioPublico(m[0])) marcar("control-propio-no-demo", m[0]);
   for (const [regla, patron, demo] of [
     ["hallazgo-no-demo", /(?<![A-Z0-9-])HZ-\d{4}/g, conocidos.hallazgos],
     ["sobre-no-demo", /(?<![A-Z0-9-])SOB-\d{4}/g, conocidos.sobres],
@@ -221,13 +228,13 @@ export function barrerCarpeta(
 export function conocidosDeDemo(raiz: string): ConocidosPublicos {
   const ids = (carpeta: string, prefijo: string) =>
     new Set(
-      readdirSync(join(raiz, "datos", carpeta, "demo"))
+      readdirSync(join(raiz, carpeta))
         .filter((n) => new RegExp(`^${prefijo}-\\d{4}\\.json$`).test(n))
         .map((n) => n.replace(/\.json$/, "")),
     );
   return {
-    hallazgos: ids("hallazgos", "HZ"),
-    sobres: ids("evidencia", "SOB"),
-    lotes: ids("lotes", "LOTE"),
+    hallazgos: ids(CARPETAS_DE_EVIDENCIA_DEMO.hallazgos, "HZ"),
+    sobres: ids(CARPETAS_DE_EVIDENCIA_DEMO.sobres, "SOB"),
+    lotes: ids(CARPETAS_DE_EVIDENCIA_DEMO.lotes, "LOTE"),
   };
 }

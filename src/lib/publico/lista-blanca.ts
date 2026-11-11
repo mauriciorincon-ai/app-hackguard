@@ -2,7 +2,9 @@
 // qué rutas puede tener la exportación pública y qué datos pueden aparecer en ellas. Puro y sin Node: lo leen las pantallas (en
 // el build, para dejar inertes los enlaces que salen de la lista), el barrido de la frontera y el verificador del paquete.
 //
-// BORRADOR hasta la consulta al advisor de la F3: la lista se fija allí.
+// Fijada en la F3 tras la consulta al advisor: las rutas, los archivos de la raíz y TRES reglas de datos (activos demo, controles
+// propios demo y las carpetas de donde salen los ids de evidencia demo). Lo que garantiza que ningún dato real llegue al export
+// no es solo este barrido: es que las pantallas cargan con `privados: false` (tests/unit/publico-cargadores.test.ts).
 
 /** Las rutas de la exportación pública: catálogo, ficha de prueba, marcos, controles, cobertura, brecha y control de brecha. */
 export const RUTAS_PUBLICAS: readonly { nombre: string; patron: RegExp }[] = [
@@ -35,6 +37,24 @@ export const PATRON_DE_ACTIVO_PUBLICO = /^act-demo-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /** ¿Este id de activo puede aparecer en lo exportado? Solo un demo sintético. La frontera y el paquete usan esta misma lista. */
 export const esActivoPublico = (id: string): boolean =>
   PATRON_DE_ACTIVO_PUBLICO.test(id);
+
+/** La capa propia de controles que puede viajar: la demo sintética (`org-demo`, `org-demo-O.1.1`…). Una capa real vive en `datos/privado/`. */
+export const PATRON_DE_CONTROL_PROPIO_PUBLICO =
+  /^org-demo(?:-[A-Za-z0-9.]+)*$/i;
+
+/** ¿Este id de control de la capa propia puede aparecer en lo exportado? Solo el de la capa demo. */
+export const esControlPropioPublico = (id: string): boolean =>
+  PATRON_DE_CONTROL_PROPIO_PUBLICO.test(id);
+
+/**
+ * De dónde salen los ids de evidencia que pueden aparecer (hallazgos, sobres y lotes): solo carpetas `demo/` versionadas. Un id
+ * real que coincida en número con uno demo pasaría el barrido; lo que lo detiene es que ninguna pantalla pública carga `datos/privado/`.
+ */
+export const CARPETAS_DE_EVIDENCIA_DEMO = {
+  hallazgos: "datos/hallazgos/demo",
+  sobres: "datos/evidencia/demo",
+  lotes: "datos/lotes/demo",
+} as const;
 
 /** `HACKGUARD_PUBLICO=1` en el build. Next lo inlinea en el JS del cliente (next.config.ts), así que vale en los dos lados. */
 export const modoPublico = (): boolean => process.env.HACKGUARD_PUBLICO === "1";
