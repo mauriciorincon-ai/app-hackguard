@@ -356,6 +356,22 @@ su razón. La maqueta las alcanza en el `design-sync` del hito.
 | `/activos/<id>/re-planear` (nueva) | Vista previa del re-plan de un plan desactualizado: qué **entra**, qué **sale** y qué **se queda**, cada prueba con su **causa** (catálogo · regla de aplicabilidad · perfil, todas las que apliquen; «conjunta» si ninguna basta sola), su lugar antes y ahora, y el control de ISO/IEC 42001 que **gana o pierde cobertura** (chip con símbolo + texto). Dos secciones precalculadas, sin interruptor: la base **oficial** y la **demo** («Demo, no oficial», con chip y sello) | D4. Una cuenta, un cálculo: `replanear` del motor; la causa sale de probar cada cambio por separado, no de una sospecha. No escribe nada: la emisión es `plan replanear` en la terminal, que archiva el plan anterior |
 | `activo` · `plan` · `historial` | Una tercera pestaña **«Re-planear»** en la subnavegación (solo con plan desactualizado e historial) y un segundo enlace en el sello «Plan desactualizado» | Es la entrada a la pantalla nueva |
 
+## Lo que el producto suma frente a la maqueta (Sprint 13: lo tuyo y lo público)
+
+Ninguna clase de CSS nueva: todo se arma con panel, tabla, chip, sello y huella de la consola. La **capa propia** SÍ entra a la maqueta, porque se
+suma a dos pantallas que ya tiene: el generador (`scripts/maqueta/paginas/controles.mjs` y `control.mjs`) se actualizó y la maqueta se regeneró con
+`pnpm maqueta` (nunca a mano: solo cambian `controles.html` y `control.html`). La pantalla nueva de D2 llega a la maqueta en el `design-sync` del hito.
+
+| Pantalla | Suma | Razón |
+|---|---|---|
+| `controles` · `control` | Una **sección «Capa propia»** por capa, debajo de la tabla de la norma: control propio · qué exige, con palabras propias · con qué controles de ISO/IEC 42001 se corresponde (cada uno con su estado). Va **aparte**: no entra a las cifras de la norma | D12. Que una organización añada sus controles sin tocar los de la norma; el estado de uno propio sale del de los equivalentes, nunca de un valor propio |
+| `/activos/desde-ficha` (nueva) | Se elige o se suelta la ficha técnica de CV Viva; una fila por rasgo con su valor propuesto y el **texto de la ficha que lo respalda**, una casilla por rasgo y, aparte, lo que nada respalda («sin responder»). Descarga el perfil y muestra el comando de la terminal | D2. Es el primer `<input type=file>` del producto: la ficha se lee en la página (cero red, cero almacenamiento) y se muestra como texto inerte. Sin aceptar un rasgo no hay descarga |
+| Modo público y paquete (C19, C20) | **Ninguna pantalla nueva.** Las mismas pantallas, sin los enlaces que salen de la lista blanca (un `<span>` inerte en su lugar) | La vitrina muestra lo que la lista blanca permite y nada más; un enlace a lo que no viaja no se deja a medias |
+
+Decisiones que la maqueta no decía: la propuesta de D2 **no es un activo** (la ficha no responde la familia, el acceso, el dueño ni el alcance); su estado
+usa el vocabulario de `datos/estados.json` (símbolo + texto + color, regla 12), y las filas «sin responder» se cuentan en la cabecera antes de mostrarse.
+Las vigilan `tests/unit/fidelidad-controles.test.tsx`, `tests/e2e/desde-ficha.spec.ts` y `tests/e2e/flujo-en.spec.ts` (ES y EN, 380 px y axe).
+
 ## Cobertura
 
 | Página | Funcionalidad | Estados que muestra |

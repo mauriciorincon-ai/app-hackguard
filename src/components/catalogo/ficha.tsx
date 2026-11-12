@@ -4,7 +4,7 @@ import {
   MARCADA_PARA_REVISION,
   SIN_CONTROL,
 } from "@/lib/catalogo/etiquetas";
-import Link from "next/link";
+import Link from "@/components/enlace";
 import type { Bilingue, FichaDePrueba } from "@/lib/catalogo/tipos";
 import { Chip, Fechado, Sello } from "../estado";
 import { Simbolo } from "../simbolo";

@@ -19,6 +19,10 @@ const eslintConfig = defineConfig([
     "public/diseno/**",
     // Salida de `vercel build` (scripts/build-como-proveedor.mjs, kit v1.39.0).
     ".vercel/**",
+    // Salidas de build del modo público y del paquete (S13): se generan, no se editan.
+    "dist/**",
+    ".next-publico/**",
+    ".next-paquete/**",
     // Código de FIRST copiado sin tocar un byte (BSD-2, G-Plan P2) y el módulo que lo envuelve: no es nuestro y no se edita.
     "src/engine/severidad/vendor/**",
   ]),

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import type { VistaDeHistorial } from "@/lib/activos/tipos";
 import { Chip, Estado, Huella } from "../estado";
 import { Cabeceras } from "../cabeceras";

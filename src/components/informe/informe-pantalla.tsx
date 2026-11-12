@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import type { VistaDeInforme } from "@/lib/brecha/tipos";
 import { Par } from "../activos/piezas";
 import {

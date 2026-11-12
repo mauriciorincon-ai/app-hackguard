@@ -860,7 +860,7 @@ describe("controles y vocabulario", () => {
       r.hallazgos.filter((h) => h.ruta === ruta || h.ruta === CAPA),
     ).toEqual([]);
     expect(r.estado).toBe("ok");
-    expect(r.conteos.controles).toBe(39);
+    expect(r.conteos.controles).toBe(42);
   });
 
   it("una capa nombra su marco con versión, y sus equivalencias también", async () => {

@@ -196,7 +196,7 @@ describe("cada agente solo escribe el propuesta.json de una corrida suya", () =>
     for (const ruta of [
       "datos/pruebas/agente/PR-X-001.json",
       "datos/evidencia/demo/SOB-9999.json",
-      "datos/instantaneas/2026-10-05-010a8c56f706.json",
+      "datos/instantaneas/2026-10-05-d352e6afadfb.json",
       "src/cli/propuestas.ts",
       ".claude/settings.json",
       "scripts/propuestas/hooks/candado.mjs",

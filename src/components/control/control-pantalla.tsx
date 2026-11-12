@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { RUTAS } from "@/lib/brecha/etiquetas";
 import { EVIDENCIA_ORGANIZADA } from "@/lib/brecha/textos";
 import type { AccionDeControl, VistaDeControl } from "@/lib/brecha/tipos";

@@ -1,6 +1,6 @@
 {
   "formato": "hackguard/instantanea@1",
-  "fecha_evaluacion": "2026-10-05",
+  "fecha_evaluacion": "2026-11-01",
   "catalogo": {
     "familias": [
       {
@@ -5715,6 +5715,149 @@
             ]
           }
         ]
+      },
+      {
+        "id": "org-demo",
+        "capa": "propia",
+        "nombre": {
+          "es": "Controles de la organización de ejemplo",
+          "en": "Example organization's controls"
+        },
+        "descripcion": {
+          "es": "Una capa propia, sintética, que muestra cómo una organización agrega sus controles encima de los de la norma sin tocarlos. Cada control dice con cuáles controles de ISO/IEC 42001 se corresponde; su estado sale del estado de esos controles.",
+          "en": "A synthetic own layer that shows how an organization adds its controls on top of the standard's without touching them. Each control says which ISO/IEC 42001 controls it corresponds to; its state comes from the state of those controls."
+        },
+        "marco_id": "iso-iec-42001",
+        "version_marco": "2023",
+        "fuentes_de_los_resumenes": [
+          {
+            "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+            "http": 200,
+            "consultada": "2026-10-04"
+          }
+        ],
+        "areas": [
+          {
+            "id": "O.1",
+            "nombre": {
+              "es": "Antes de publicar",
+              "en": "Before publishing"
+            },
+            "controles": [
+              {
+                "id": "org-demo-O.1.1",
+                "nombre": {
+                  "es": "Se prueba el asistente antes de cada publicación",
+                  "en": "The assistant is tested before every release"
+                },
+                "resumen_llano": {
+                  "es": "Nadie publica una versión del asistente sin haber corrido antes sus pruebas de seguridad y haber leído el resultado.",
+                  "en": "Nobody releases a version of the assistant without first running its security tests and reading the result."
+                },
+                "verificado_contra_norma": false,
+                "controles_equivalentes": [
+                  {
+                    "marco_id": "iso-iec-42001",
+                    "version_marco": "2023",
+                    "referencia_en_marco": "A.6.2.4",
+                    "fuente": {
+                      "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                      "http": 200,
+                      "consultada": "2026-10-04"
+                    },
+                    "cobertura": "parcial",
+                    "nota_de_incompletitud": {
+                      "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                      "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+                    }
+                  },
+                  {
+                    "marco_id": "iso-iec-42001",
+                    "version_marco": "2023",
+                    "referencia_en_marco": "A.6.2.6",
+                    "fuente": {
+                      "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                      "http": 200,
+                      "consultada": "2026-10-04"
+                    },
+                    "cobertura": "parcial",
+                    "nota_de_incompletitud": {
+                      "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                      "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "org-demo-O.1.2",
+                "nombre": {
+                  "es": "Quien lo usa sabe que habla con una IA",
+                  "en": "The people using it know they are talking to an AI"
+                },
+                "resumen_llano": {
+                  "es": "La interfaz dice, en cada conversación, que quien responde es un sistema de IA y qué puede equivocarse.",
+                  "en": "The interface says, in every conversation, that the one answering is an AI system and that it can be wrong."
+                },
+                "verificado_contra_norma": false,
+                "controles_equivalentes": [
+                  {
+                    "marco_id": "iso-iec-42001",
+                    "version_marco": "2023",
+                    "referencia_en_marco": "A.8.2",
+                    "fuente": {
+                      "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                      "http": 200,
+                      "consultada": "2026-10-04"
+                    },
+                    "cobertura": "parcial",
+                    "nota_de_incompletitud": {
+                      "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                      "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "O.2",
+            "nombre": {
+              "es": "Datos de prueba",
+              "en": "Test data"
+            },
+            "controles": [
+              {
+                "id": "org-demo-O.2.1",
+                "nombre": {
+                  "es": "Las pruebas usan datos sintéticos",
+                  "en": "Tests use synthetic data"
+                },
+                "resumen_llano": {
+                  "es": "Ninguna prueba de seguridad se corre con datos de clientes: se usan casos inventados.",
+                  "en": "No security test runs with customer data: invented cases are used."
+                },
+                "verificado_contra_norma": false,
+                "controles_equivalentes": [
+                  {
+                    "marco_id": "iso-iec-42001",
+                    "version_marco": "2023",
+                    "referencia_en_marco": "A.7.4",
+                    "fuente": {
+                      "url": "https://airc.nist.gov/docs/NIST_AI_RMF_to_ISO_IEC_42001_Crosswalk.pdf",
+                      "http": 200,
+                      "consultada": "2026-10-04"
+                    },
+                    "cobertura": "parcial",
+                    "nota_de_incompletitud": {
+                      "es": "La organización de ejemplo lo cubre con su propia práctica; no es el control entero de la norma.",
+                      "en": "The example organization covers it with its own practice; it is not the standard's whole control."
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ],
     "herramientas": [
@@ -5946,7 +6089,7 @@
           "portatil"
         ],
         "formato_salida": ".eval",
-        "tiene_adaptador": false,
+        "tiene_adaptador": true,
         "selector": "modulo",
         "version_verificada": "0.3.276",
         "registro": {
@@ -6082,7 +6225,7 @@
           "plan_gratuito"
         ],
         "formato_salida": "results.json",
-        "tiene_adaptador": false,
+        "tiene_adaptador": true,
         "selector": "modulo",
         "version_verificada": "0.123.1",
         "registro": {
@@ -6139,7 +6282,7 @@
         "entornos_soportados": [
           "portatil"
         ],
-        "tiene_adaptador": false,
+        "tiene_adaptador": true,
         "selector": "modulo",
         "version_verificada": "1.1.0",
         "registro": {
@@ -8479,7 +8622,7 @@
             "en": "Applies if the asset returns typed decisions."
           }
         },
-        "prioridad_base": 3,
+        "prioridad_base": 2,
         "madurez": "emergente",
         "fuentes": [
           {
@@ -8495,13 +8638,185 @@
             "titulo": "CheckList · test_types"
           }
         ],
-        "fecha_verificacion": "2026-10-04",
+        "fecha_verificacion": "2026-10-30",
         "estado_aprobacion": "aprobada",
         "revision_contenido": "limpia",
         "notas": {
           "es": "La lista de 14 ítems no nombra la coherencia ante la negación; T2, acuerdo ante pedidos reformulados, es el ítem más cercano.",
           "en": "The 14-item checklist does not name consistency under negation; T2, agreement under rephrased requests, is the closest item."
         }
+      },
+      {
+        "id": "PR-MD-DEMO-001",
+        "nombre": {
+          "es": "Los casos etiquetados representan lo que llega",
+          "en": "The labelled cases represent what arrives"
+        },
+        "familia": "modelo_decision",
+        "categoria": "limites_conocidos",
+        "que_verifica": {
+          "es": "El conjunto de casos etiquetados con el que se mide la calidad cubre los tipos de solicitud que el modelo recibe de verdad, y no solo los fáciles.",
+          "en": "The set of labelled cases used to measure quality covers the kinds of request the model really receives, not only the easy ones."
+        },
+        "por_que_importa": {
+          "es": "Una medida de calidad sobre casos que no se parecen a lo real da una confianza que no se ha ganado.",
+          "en": "A quality measure over cases that do not look like the real ones gives a confidence that has not been earned."
+        },
+        "marco_id": "typesafe-jev",
+        "version_marco": "jev-1.13",
+        "referencia_en_marco": "math-and-numbers",
+        "referencias_adicionales": [
+          {
+            "marco_id": "typesafe-jev",
+            "version_marco": "jev-1.13",
+            "referencia_en_marco": "date-and-time-comparison"
+          }
+        ],
+        "controles": [
+          "iso42001-A.7.4"
+        ],
+        "control_pendiente": false,
+        "herramientas_recomendadas": [
+          {
+            "herramienta": "hackguard-revision",
+            "entorno": "portatil",
+            "selector": {
+              "tipo": "revision",
+              "que_se_revisa": {
+                "es": "Cada llamada al modelo frente a la lista de límites conocidos de la versión que usa la aplicación.",
+                "en": "Every call to the model against the list of known limits for the version the application uses."
+              }
+            }
+          }
+        ],
+        "resultado_esperado": {
+          "descripcion": {
+            "es": "La revisión no encuentra ninguna llamada que delegue al modelo una operación de la lista vigente de límites.",
+            "en": "The review finds no call that delegates to the model an operation on the current list of limits."
+          },
+          "medido_con": "hackguard-revision"
+        },
+        "criterio_de_veredicto": {
+          "regla": "revision_de_diseno",
+          "descripcion": {
+            "es": "«Superada» si ninguna llamada delega una operación de la lista y la persona que revisa lo deja escrito, con la versión de la lista que usó.",
+            "en": "“Passed” if no call delegates an operation on the list and the reviewer writes it down, with the version of the list they used."
+          }
+        },
+        "aplicabilidad": {
+          "modo": "todas",
+          "condiciones": [
+            {
+              "rasgo": "dispone_de_casos_etiquetados",
+              "valor": true
+            }
+          ],
+          "descripcion": {
+            "es": "Aplica si el activo dispone de casos etiquetados.",
+            "en": "Applies if the asset has labelled cases."
+          }
+        },
+        "prioridad_base": 4,
+        "madurez": "emergente",
+        "fuentes": [
+          {
+            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+            "http": 200,
+            "consultada": "2026-10-04",
+            "titulo": "TypeSafe · Jev known limits (jev-1.13)"
+          }
+        ],
+        "fecha_verificacion": "2026-10-30",
+        "estado_aprobacion": "aprobada",
+        "revision_contenido": "limpia"
+      },
+      {
+        "id": "PR-MD-DEMO-002",
+        "nombre": {
+          "es": "El modelo de un tercero se mide con los casos propios",
+          "en": "A third party's model is measured with your own cases"
+        },
+        "familia": "modelo_decision",
+        "categoria": "limites_conocidos",
+        "que_verifica": {
+          "es": "Cuando el activo consume un modelo de otro proveedor, su calidad se mide con los casos etiquetados del propio activo y no con la cifra que publica el proveedor.",
+          "en": "When the asset consumes another provider's model, its quality is measured with the asset's own labelled cases and not with the figure the provider publishes."
+        },
+        "por_que_importa": {
+          "es": "La cifra del proveedor sale de sus casos; la tuya sale de lo que tu aplicación recibe.",
+          "en": "The provider's figure comes from its cases; yours comes from what your application receives."
+        },
+        "marco_id": "typesafe-jev",
+        "version_marco": "jev-1.13",
+        "referencia_en_marco": "math-and-numbers",
+        "referencias_adicionales": [
+          {
+            "marco_id": "typesafe-jev",
+            "version_marco": "jev-1.13",
+            "referencia_en_marco": "date-and-time-comparison"
+          }
+        ],
+        "controles": [
+          "iso42001-A.10.3"
+        ],
+        "control_pendiente": false,
+        "herramientas_recomendadas": [
+          {
+            "herramienta": "hackguard-revision",
+            "entorno": "portatil",
+            "selector": {
+              "tipo": "revision",
+              "que_se_revisa": {
+                "es": "Cada llamada al modelo frente a la lista de límites conocidos de la versión que usa la aplicación.",
+                "en": "Every call to the model against the list of known limits for the version the application uses."
+              }
+            }
+          }
+        ],
+        "resultado_esperado": {
+          "descripcion": {
+            "es": "La revisión no encuentra ninguna llamada que delegue al modelo una operación de la lista vigente de límites.",
+            "en": "The review finds no call that delegates to the model an operation on the current list of limits."
+          },
+          "medido_con": "hackguard-revision"
+        },
+        "criterio_de_veredicto": {
+          "regla": "revision_de_diseno",
+          "descripcion": {
+            "es": "«Superada» si ninguna llamada delega una operación de la lista y la persona que revisa lo deja escrito, con la versión de la lista que usó.",
+            "en": "“Passed” if no call delegates an operation on the list and the reviewer writes it down, with the version of the list they used."
+          }
+        },
+        "aplicabilidad": {
+          "modo": "todas",
+          "condiciones": [
+            {
+              "rasgo": "modelo_de_terceros",
+              "valor": true
+            },
+            {
+              "rasgo": "dispone_de_casos_etiquetados",
+              "valor": true
+            }
+          ],
+          "descripcion": {
+            "es": "Aplica si el activo usa un modelo de terceros y dispone de casos etiquetados.",
+            "en": "Applies if the asset uses a third-party model and has labelled cases."
+          }
+        },
+        "prioridad_base": 4,
+        "madurez": "emergente",
+        "fuentes": [
+          {
+            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+            "http": 200,
+            "consultada": "2026-10-04",
+            "titulo": "TypeSafe · Jev known limits (jev-1.13)"
+          }
+        ],
+        "fecha_verificacion": "2026-10-30",
+        "estado_aprobacion": "aprobada",
+        "revision_contenido": "limpia"
       },
       {
         "id": "PR-MD-DER-001",
@@ -8830,11 +9145,15 @@
             {
               "rasgo": "devuelve_decision_tipada",
               "valor": true
+            },
+            {
+              "rasgo": "otro_sistema_usa_su_salida",
+              "valor": true
             }
           ],
           "descripcion": {
-            "es": "Aplica si el activo devuelve decisiones tipadas.",
-            "en": "Applies if the asset returns typed decisions."
+            "es": "Aplica si el activo devuelve decisiones tipadas y otro sistema usa su salida.",
+            "en": "Applies if the asset returns typed decisions and another system uses its output."
           }
         },
         "prioridad_base": 3,
@@ -8853,91 +9172,7 @@
             "titulo": "CheckList · test_types"
           }
         ],
-        "fecha_verificacion": "2026-10-04",
-        "estado_aprobacion": "aprobada",
-        "revision_contenido": "limpia"
-      },
-      {
-        "id": "PR-MD-LIM-001",
-        "nombre": {
-          "es": "Operaciones que el modelo no hace",
-          "en": "Operations the model does not do"
-        },
-        "familia": "modelo_decision",
-        "categoria": "limites_conocidos",
-        "que_verifica": {
-          "es": "La aplicación no le pide al modelo las operaciones que el fabricante declara como límite conocido en la versión usada, como contar, hacer aritmética o comparar fechas; las hace en código.",
-          "en": "The application does not ask the model for the operations the vendor declares as a known limit in the version used, such as counting, arithmetic or comparing dates; it does them in code."
-        },
-        "por_que_importa": {
-          "es": "El fabricante ya dijo dónde falla el modelo; delegarle justo eso es elegir el error.",
-          "en": "The vendor has already said where the model fails; delegating exactly that to it is choosing the error."
-        },
-        "marco_id": "typesafe-jev",
-        "version_marco": "jev-1.13",
-        "referencia_en_marco": "math-and-numbers",
-        "referencias_adicionales": [
-          {
-            "marco_id": "typesafe-jev",
-            "version_marco": "jev-1.13",
-            "referencia_en_marco": "date-and-time-comparison"
-          }
-        ],
-        "controles": [
-          "iso42001-A.6.2.2"
-        ],
-        "control_pendiente": false,
-        "herramientas_recomendadas": [
-          {
-            "herramienta": "hackguard-revision",
-            "entorno": "portatil",
-            "selector": {
-              "tipo": "revision",
-              "que_se_revisa": {
-                "es": "Cada llamada al modelo frente a la lista de límites conocidos de la versión que usa la aplicación.",
-                "en": "Every call to the model against the list of known limits for the version the application uses."
-              }
-            }
-          }
-        ],
-        "resultado_esperado": {
-          "descripcion": {
-            "es": "La revisión no encuentra ninguna llamada que delegue al modelo una operación de la lista vigente de límites.",
-            "en": "The review finds no call that delegates to the model an operation on the current list of limits."
-          },
-          "medido_con": "hackguard-revision"
-        },
-        "criterio_de_veredicto": {
-          "regla": "revision_de_diseno",
-          "descripcion": {
-            "es": "«Superada» si ninguna llamada delega una operación de la lista y la persona que revisa lo deja escrito, con la versión de la lista que usó.",
-            "en": "“Passed” if no call delegates an operation on the list and the reviewer writes it down, with the version of the list they used."
-          }
-        },
-        "aplicabilidad": {
-          "modo": "todas",
-          "condiciones": [
-            {
-              "rasgo": "devuelve_decision_tipada",
-              "valor": true
-            }
-          ],
-          "descripcion": {
-            "es": "Aplica si el activo devuelve decisiones tipadas.",
-            "en": "Applies if the asset returns typed decisions."
-          }
-        },
-        "prioridad_base": 4,
-        "madurez": "emergente",
-        "fuentes": [
-          {
-            "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
-            "http": 200,
-            "consultada": "2026-10-04",
-            "titulo": "TypeSafe · Jev known limits (jev-1.13)"
-          }
-        ],
-        "fecha_verificacion": "2026-10-04",
+        "fecha_verificacion": "2026-10-30",
         "estado_aprobacion": "aprobada",
         "revision_contenido": "limpia"
       },
@@ -10302,229 +10537,235 @@
       {
         "id": "PR-AG-CONF-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-EXF-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-HERR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-ID-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-LIM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-MEM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-MULTI-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-PERM-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-AG-REG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-CONT-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-DATO-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-ENC-002",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-FUGA-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-PINJ-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-RAG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-IA-SAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-CAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-COH-001",
-        "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "fecha_verificacion": "2026-10-30",
+        "dias": 2,
+        "estado": "vigente"
+      },
+      {
+        "id": "PR-MD-DEMO-001",
+        "fecha_verificacion": "2026-10-30",
+        "dias": 2,
+        "estado": "vigente"
+      },
+      {
+        "id": "PR-MD-DEMO-002",
+        "fecha_verificacion": "2026-10-30",
+        "dias": 2,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-DER-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-EST-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-ESTAB-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-INV-001",
-        "fecha_verificacion": "2026-10-04",
-        "dias": 1,
-        "estado": "vigente"
-      },
-      {
-        "id": "PR-MD-LIM-001",
-        "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "fecha_verificacion": "2026-10-30",
+        "dias": 2,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-PAR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-UMB-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-002",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-MD-VAL-003",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-ACC-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-CLK-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-CSP-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-DEP-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-ERR-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-LOG-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-SES-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-SQLI-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-TS-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "PR-SW-XSS-001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       }
     ],
@@ -10532,85 +10773,85 @@
       {
         "id": "cwe",
         "fecha_verificacion": "2026-10-05",
-        "dias": 0,
+        "dias": 27,
         "estado": "vigente"
       },
       {
         "id": "iso-iec-42001",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "lista-decision-14",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "mitre-atlas",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "mitre-attack",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-100-2",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-600-1",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "nist-ai-rmf",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "owasp-agentic-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "owasp-asvs",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "owasp-llm-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "owasp-top10",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "owasp-wstg",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "typesafe-jev",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       }
     ],
@@ -10618,79 +10859,79 @@
       {
         "id": "checklist",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "evidently",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "garak",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "giskard",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "hackguard-revision",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "inspect",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "mapie",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "nuclei",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "promptfoo",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "pyrit",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "scikit-learn",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "textattack",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       },
       {
         "id": "zap",
         "fecha_verificacion": "2026-10-04",
-        "dias": 1,
+        "dias": 28,
         "estado": "vigente"
       }
     ],
@@ -10698,7 +10939,7 @@
       {
         "id": "software",
         "estado": "vigente",
-        "dias": 1,
+        "dias": 28,
         "desglose": {
           "vigente": 10,
           "por_revisar": 0,
@@ -10708,7 +10949,7 @@
       {
         "id": "agente",
         "estado": "vigente",
-        "dias": 1,
+        "dias": 28,
         "desglose": {
           "vigente": 9,
           "por_revisar": 0,
@@ -10718,7 +10959,7 @@
       {
         "id": "modelo_generativo",
         "estado": "vigente",
-        "dias": 1,
+        "dias": 28,
         "desglose": {
           "vigente": 7,
           "por_revisar": 0,
@@ -10728,9 +10969,9 @@
       {
         "id": "modelo_decision",
         "estado": "vigente",
-        "dias": 1,
+        "dias": 28,
         "desglose": {
-          "vigente": 12,
+          "vigente": 13,
           "por_revisar": 0,
           "vencido": 0
         }
@@ -10831,5 +11072,5 @@
       "detalle": null
     }
   ],
-  "huella": "010a8c56f706128191955670f19818245ced1180008b47437deb1d1a262e678c"
+  "huella": "c5126b8ed8ac8a640ad0702ba3398048a6561840d891c06ecb2cddd5139d9c0e"
 }

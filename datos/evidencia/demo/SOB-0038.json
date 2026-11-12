@@ -5,10 +5,10 @@
   "activo": "act-demo-asistente",
   "prueba": "PR-AG-REG-001",
   "plan": {
-    "huella": "c0253ba518f9a2d9fd8a49187d27634441d5a291bde8639cd819782e1496c93b"
+    "huella": "8b77e6f020d9848f41812e5665af873f520d10f788677bfe42e4c0163eb9c610"
   },
   "paquete": {
-    "huella": "f4448b6f0c9cbf6ba6ea27de48d7b5469cd854abbce404c3bd3df25d392b3ff5"
+    "huella": "894f11f844c9575ea34c16e5a3d6795329edce7bec0d1847d355b57044d72976"
   },
   "herramienta": {
     "id": "hackguard-revision",
@@ -49,7 +49,7 @@
   },
   "huellas": {
     "crudo": "fdc7377c6db049cf341506787e86503e66feb749329ebc58a3899eb82658fc98",
-    "sobre": "beec6100550564993d9c4b0b9df755fb4be40eb84368ddd40f8c3b7a0daaa5ba",
+    "sobre": "93a96c5a0c3ec7dbc670221f7c856fd40e8ce6e1197b0c5d400e502ebc4f8546",
     "resultado": "9dfe66c234e4208fe5263c1b419e42bfacdde76d666bf847417f2fe354a9a0b1"
   }
 }

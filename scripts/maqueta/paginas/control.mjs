@@ -92,6 +92,25 @@ ${b.controles.map((c) => filaDeControl(c, existentes)).join("\n")}
 </table>
 </section>
 
+<section class="hg-panel" aria-labelledby="capa-propia-org-demo" data-capa="propia">
+<div class="hg-panel-cab"><h2 id="capa-propia-org-demo">${t({ es: "Capa propia", en: "Own layer" })}</h2><p class="hg-menor">${t({
+    es: "Aparte de los controles de la norma: no entra a sus cifras. Su estado sale del de los controles de la norma a los que se corresponde.",
+    en: "Separate from the standard's controls: it is not in their figures. Its status comes from the status of the standard's controls it corresponds to.",
+  })}</p></div>
+<div class="hg-panel-cuerpo"><p class="hg-menor">${t({ es: "Controles de la organización de ejemplo", en: "Example organization's controls" })}</p></div>
+<table class="hg-tabla">
+<caption class="hg-oculto">${t({ es: "Capa propia", en: "Own layer" })}</caption>
+${columnas([
+  { es: "Control propio", en: "Own control" },
+  { es: "Se corresponde con", en: "Corresponds to" },
+  { es: "Estado derivado", en: "Derived status" },
+])}
+<tbody>
+<tr data-fila-propia="org-demo-O.1.1"><td data-celda="id">${dato("org-demo-O.1.1")}</td><td data-celda="principal"><p>${t({ es: "Se prueba el asistente antes de cada publicación", en: "The assistant is tested before every release" })}</p><p class="hg-menor">${neutro("A.6.2.4")}</p></td><td data-celda="estado"><span data-control-propio="org-demo-O.1.1" data-control-propio-estado="sin_evidencia">${chip(ESTADO_DE_CONTROL.sin_evidencia)}</span></td></tr>
+</tbody>
+</table>
+</section>
+
 <section class="hg-panel" aria-labelledby="sin-control">
 <div class="hg-panel-cab"><h2 id="sin-control">${t({ es: "Pruebas del plan sin control", en: "Plan tests with no control" })}</h2><p class="hg-menor">${t({
     es: "Están en el plan por su marco, pero no dan evidencia a ningún control. No se esconden: esta es su cuenta.",

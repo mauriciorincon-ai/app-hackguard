@@ -286,6 +286,33 @@
         "es": "Pierde cobertura",
         "en": "Loses coverage"
       }
+    },
+    {
+      "id": "ficha_propuesto",
+      "rol": "atencion",
+      "simbolo": "aviso",
+      "nombre": {
+        "es": "Propuesto: falta tu decisión",
+        "en": "Proposed: awaiting your decision"
+      }
+    },
+    {
+      "id": "ficha_aceptado",
+      "rol": "acento",
+      "simbolo": "firma",
+      "nombre": {
+        "es": "Aceptado por ti",
+        "en": "Accepted by you"
+      }
+    },
+    {
+      "id": "ficha_sin_responder",
+      "rol": "neutro",
+      "simbolo": "vacio",
+      "nombre": {
+        "es": "Sin responder",
+        "en": "Unanswered"
+      }
     }
   ]
 }

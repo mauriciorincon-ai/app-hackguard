@@ -1,7 +1,7 @@
 {
-  "projectId": null,
+  "projectId": "1e12a634-7871-427b-bc5c-3b7fd799bb2e",
   "name": "HackGuard · design system",
-  "publishedFiles": 0,
-  "lastPublished": null,
-  "nota": "Sin publicar. Se publica en el cierre de pruebas del ciclo H1, después del gate ⭐⭐ corto, cuando el usuario invoque /design-sync; esa primera publicación fija el projectId. Aquí no va ninguna credencial."
+  "publishedFiles": 14,
+  "lastPublished": "2026-11-11",
+  "nota": "Primera publicación el 2026-11-11 (Sprint 13, /design-sync): design-system.md 1.1.0, 14 archivos (README, styles.css, 9 componentes, 3 fundamentos). Aquí no va ninguna credencial."
 }

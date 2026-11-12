@@ -135,6 +135,22 @@
     "F28": {
       "nombre": "An optional executor, off by default",
       "que_hace": "If you want, HackGuard runs your already-installed tools, on your machine and against the target you declare, which it checks against what you authorized (what your tool's configuration points at is yours to verify): without the run flag it only shows the commands, it rejects a demo asset, a target outside the scope, an expired authorization or third-party infrastructure, and what it gets stays as proposed evidence a person confirms. The web executes nothing."
+    },
+    "F29": {
+      "nombre": "Your app, from its ficha, with the quote",
+      "que_hace": "You give it your app's technical ficha and HackGuard proposes, trait by trait, the asset's profile with the literal sentence of the ficha that backs it. Whatever no sentence backs stays unanswered, and what the ficha contradicts is not decided for you. You accept, and only what you accepted is saved. Nothing is uploaded and no model is used."
+    },
+    "F30": {
+      "nombre": "Your controls, apart from the standard",
+      "que_hace": "An organization adds its own controls on top of ISO/IEC 42001's, each in its own words and tied to the controls of the standard it corresponds to. They show apart, labelled, with a derived status, and they change neither a control of the standard nor any of its figures."
+    },
+    "F31": {
+      "nombre": "A public showcase by allowlist",
+      "que_hace": "An export with only what the list allows: catalog, test sheet, frameworks, controls and coverage, gap and control view, over synthetic demos. A sweep checks every file and fails if it finds a route outside the list, an id that is not a demo's, an external host or a broken link."
+    },
+    "F32": {
+      "nombre": "The showcase package, verifiable",
+      "que_hace": "The same showcase, built to live inside another site: a fixed base, links that work without a clever server and a manifest with every file's SHA-256 fingerprint. A verifier checks it end to end; changing one byte makes it fail and name the file. It carries no access links."
     }
   }
 }

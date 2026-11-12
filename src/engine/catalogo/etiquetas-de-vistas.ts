@@ -44,6 +44,10 @@ export const IDS_DE_ETIQUETAS_DE_VISTAS = [
   "movimiento_se_queda",
   "cobertura_gana",
   "cobertura_pierde",
+  // El perfil de un activo desde la ficha (S13, D2)
+  "ficha_propuesto",
+  "ficha_aceptado",
+  "ficha_sin_responder",
 ] as const;
 export type IdDeEtiquetaDeVista = (typeof IDS_DE_ETIQUETAS_DE_VISTAS)[number];
 

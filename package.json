@@ -14,6 +14,7 @@
     "catalogo:instantanea": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts instantanea",
     "catalogo:diferencias": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/catalogo.ts diferencias",
     "activo:historial": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/activo.ts historial",
+    "activo:desde-ficha": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/activo.ts desde-ficha",
     "activo:validar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts activo-validar",
     "plan:emitir": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts emitir",
     "plan:replanear": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/cli/plan.ts replanear",
@@ -46,7 +47,12 @@
     "capturas:ficha": "node scripts/capturas-ficha.mjs",
     "brochure": "node scripts/brochure.mjs",
     "tokens": "node scripts/paleta/generar-tokens.mjs",
-    "design-sync:bundle": "node scripts/design-sync/generar.mjs"
+    "design-sync:bundle": "node scripts/design-sync/generar.mjs",
+    "build:publico": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/publico/construir.mjs",
+    "test:e2e:publico": "playwright test -c playwright.publico.config.ts",
+    "paquete:vitrina": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/paquete-vitrina.mjs",
+    "paquete:verificar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/paquete-verificar.mjs",
+    "test:e2e:paquete": "playwright test -c playwright.paquete.config.ts"
   },
   "dependencies": {
     "@sentry/nextjs": "^11.10.0",

@@ -52,19 +52,21 @@ the authoring format.
      plan cites it (audit finding AU-48).
      - **Sprint 001:** the audit made licence names bilingual, which rejects `2026-10-04-12d3b632a871.json`. It
        was replaced by a snapshot of 2026-10-05. The second audit pass corrected the promptfoo note, and that
-       snapshot was emitted again, and once more in Sprint 2 when the vocabulary gained the states of AU-14 (ADR-003): today it is
-       `2026-10-05-010a8c56f706.json`.
+       snapshot was emitted again, and once more in Sprint 2 when the vocabulary gained the states of AU-14 (ADR-003), and again in Sprint 13 (own control layer, three tools with an adapter): today it is
+       `2026-10-05-d352e6afadfb.json`.
      - **From Sprint 2:** once plans cite snapshots, a schema change that rejects one needs a migration decided
        in its own ADR.
 6. **Tool selectors are part of the schema, one shape per adapter.**
-   - `TIPOS_DE_SELECTOR` in `esquemas.ts` knows four shapes: garak (probes and detectors), ZAP (`pluginid`), a
-     generic `modulo` reference, and a human `revision`.
-   - A third adapter (promptfoo, PyRIT or Inspect) adds its shape there. That is the adapter's contract, kept as a
-     declared constant rather than spread through the engine.
-   - The task for Sprint 3, when the adapters arrive: move each selector to
-     `src/engine/adaptadores/<id>/selector.ts`, and build the union from that registry. After that, adding an
-     adapter no longer touches the catalog schema (hard rule 10).
-   - Audit finding AU-16.
+   - Each adapter that has a selector of its own declares it in `src/engine/adaptadores/<id>/selector.ts` (garak:
+     probes and detectors; ZAP: `pluginid`). The shapes that belong to no adapter (`modulo`, a human `revision`)
+     live in `src/engine/selectores/manuales.ts`.
+   - `src/engine/selectores/registro.ts` builds the union and `TIPOS_DE_SELECTOR` from them. `esquemas.ts`
+     consumes the registry and declares no shape, so adding an adapter no longer touches the catalog schema
+     (hard rule 10).
+   - Neither the registry nor a selector imports `esquemas.ts` (the two text primitives they share live in
+     `src/engine/selectores/primitivas.ts`), so there is no import cycle.
+   - Audit finding AU-16. Promised for Sprint 3 and done in Sprint 13 (decision 9 of Sprint 12); the official
+     snapshot fingerprint did not change (`tests/unit/selectores/registro.test.ts`).
 7. **The CLI runs on Node's native TypeScript type stripping** (`node src/cli/catalogo.ts`), with `.ts` import
    extensions and `allowImportingTsExtensions`, instead of adding `tsx`. Only erasable syntax is used in
    `src/engine/` and `src/cli/`.
@@ -74,7 +76,7 @@ the authoring format.
 - **The same code, the same fingerprint everywhere.**
   - `tests/e2e/determinismo.spec.ts` bundles the engine with esbuild. It evaluates 11 days after the catalog's
     latest verification.
-  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `1a1fa98de1b8…` in Node (three CLI runs) and in
+  - On 2026-10-05 that was the snapshot of 2026-10-16: fingerprint `0e4dd297a61b…` in Node (three CLI runs) and in
     Chromium 153, Firefox 155 and WebKit 26.6.
   - `tests/unit/guia-huellas.test.ts` checks that the fingerprints this ADR and the test guide cite are the
     engine's.

@@ -4,14 +4,15 @@
 // la caja exacta de una unidad de la pantalla, hallada por su TEXTO (no por un selector frágil), con la navegación oculta y el puntero
 // apartado. Usa solo los activos, lotes, hallazgos y propuestas demo sintéticos del repo.
 //
-//   node scripts/capturas-ficha.mjs --salida <carpeta>            toma las 24 del build que ya está en out/
+//   node scripts/capturas-ficha.mjs --salida <carpeta>            toma las del build que ya está en out/ (y las del modo público y el paquete, si están armados)
 //   node scripts/capturas-ficha.mjs --salida <carpeta> --construir  construye antes con HACKGUARD_CONSULTA (2026-10-05 por defecto)
 //   node scripts/capturas-ficha.mjs --listar                        imprime la tabla (funcionalidad · ruta · ancla) sin abrir nada
 //
-// El servidor propio escucha en 127.0.0.1 y se cierra al terminar, aunque falle. La salida va en PNG (lo que escribe Playwright); la
-// conversión a WebP de la ficha es del paso de entrega, fuera de este repo. `--salida` no puede estar dentro de `datos/`.
+// Cada pieza se captura a DPR 3 y se compone centrada en un lienzo de 1024×640 CSS (1536×960 a escala 1,5) con el fondo del `body` de
+// la app, con s = min(944/w, 560/h, 2). Los servidores propios escuchan en 127.0.0.1 y se cierran al terminar, aunque falle. La salida va
+// en PNG; la conversión a WebP (calidad 80, ≤ 80 KB) es del paso de entrega. `--salida` no puede estar dentro de `datos/`.
 import { spawn, spawnSync } from "node:child_process";
-import { mkdirSync, existsSync } from "node:fs";
+import { mkdirSync, existsSync, readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -20,6 +21,10 @@ const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 export const VENTANA = { width: 1024, height: 640 };
 export const ESCALA = 1.5;
+/** La pieza se captura a más resolución de la que se entrega, para que la ampliación del lienzo no la desenfoque. */
+export const CAPTURA_DPR = 3;
+/** Escala mínima legible: una pieza más alta que 560 / 0,75 px se recorta por abajo (se ve su parte de arriba, como en las primeras tomas). */
+export const ESCALA_MINIMA = 0.75;
 export const CONSULTA_POR_DEFECTO = "2026-10-05";
 
 /** Una toma por funcionalidad: la ruta, el texto que ancla la unidad y el contenedor que la encierra. */
@@ -157,19 +162,24 @@ export const TOMAS = [
     dentro: "main",
   },
   // S12: promptfoo, PyRIT e Inspect entran por la misma pantalla del texto pegado (la herramienta se elige en ella).
+  // Cada una elige SU herramienta y pega su archivo sintético del kit: lo que se ve es lo que el adaptador propone, no el formulario vacío.
   {
     f: "F25",
     ruta: "/evidencia/carga",
-    ancla: "Texto de la herramienta",
-    dentro: "main",
+    ancla: "El sobre propuesto",
+    dentro: "[data-pegado-resultado]",
     pulsar: "Texto pegado",
+    herramienta: "promptfoo",
+    texto: "tests/fixtures/adaptadores/promptfoo-0.123.1.sintetico.json",
   },
   {
     f: "F26",
     ruta: "/evidencia/carga",
-    ancla: "Texto de la herramienta",
-    dentro: "main",
+    ancla: "El sobre propuesto",
+    dentro: "[data-pegado-resultado]",
     pulsar: "Texto pegado",
+    herramienta: "inspect",
+    texto: "tests/fixtures/adaptadores/inspect-0.3.288.sintetico.json",
   },
   {
     f: "F27",
@@ -183,6 +193,36 @@ export const TOMAS = [
     ruta: "/conoce",
     ancla: "No ataca por su cuenta",
     dentro: "li",
+  },
+  // S13. D2: se suelta la ficha demo y se ve la propuesta con su cita (las filas sin responder se ocultan en la toma: la cabecera
+  // las cuenta). D12: la capa propia aparte de la norma. C19 y C20 se toman de lo que ellas arman: la exportación pública y el paquete.
+  {
+    f: "F29",
+    ruta: "/activos/desde-ficha",
+    ficha: "datos/fichas/demo/ficha-demo-asistente.json",
+    ancla: "rasgos propuestos",
+    dentro: "main",
+    ocultar: 'tr[data-estado="sin_responder"]',
+  },
+  {
+    f: "F30",
+    ruta: "/catalogo/controles",
+    ancla: "Capa propia",
+    dentro: "[data-capa=propia]",
+  },
+  {
+    f: "F31",
+    origen: "publico",
+    ruta: "/brecha",
+    ancla: "Cobertura",
+    dentro: "section",
+  },
+  {
+    f: "F32",
+    origen: "paquete",
+    ruta: "/piezas/hackguard/catalogo.html",
+    ancla: "Vigencia por familia",
+    dentro: "section",
   },
 ];
 
@@ -239,32 +279,63 @@ async function main() {
     });
     if (r.status !== 0) throw new Error("el build de producción falló");
   }
-  if (!existsSync(join(RAIZ, "out", "index.html")))
-    throw new Error("no hay out/: corre con --construir");
+  const origenes = new Set(TOMAS.map((t) => t.origen ?? "app"));
+  const carpetas = {
+    app: join(RAIZ, "out", "index.html"),
+    publico: join(RAIZ, "dist", "publico", "index.html"),
+    paquete: join(RAIZ, "dist", "paquete-hoja-de-vida", "manifiesto.json"),
+  };
+  if (args.includes("--construir")) {
+    const consulta = opcion("--consulta") ?? CONSULTA_POR_DEFECTO;
+    for (const orden of ["build:publico", "paquete:vitrina"]) {
+      const r = spawnSync("pnpm", [orden], {
+        cwd: RAIZ,
+        stdio: "inherit",
+        env: { ...process.env, HACKGUARD_CONSULTA: consulta },
+      });
+      if (r.status !== 0) throw new Error(`${orden} falló`);
+    }
+  }
+  for (const o of origenes)
+    if (!existsSync(carpetas[o]))
+      throw new Error(`no hay ${carpetas[o]}: corre con --construir`);
 
   const { chromium } = await import("@playwright/test");
-  const puerto = await puertoLibre();
-  const servidor = spawn(
-    "pnpm",
-    [
-      "exec",
-      "serve",
-      "out",
-      "-l",
-      `tcp://127.0.0.1:${puerto}`,
-      "--config",
-      "../serve.json",
-    ],
-    { cwd: RAIZ, stdio: "ignore" },
-  );
+  const servidores = [];
+  const servir = async (argumentos, sonda) => {
+    const puerto = await puertoLibre();
+    servidores.push(
+      spawn(
+        "pnpm",
+        ["exec", "serve", ...argumentos, "-l", `tcp://127.0.0.1:${puerto}`],
+        { cwd: RAIZ, stdio: "ignore" },
+      ),
+    );
+    const base = `http://127.0.0.1:${puerto}`;
+    await esperar(`${base}${sonda}`);
+    return base;
+  };
   let navegador;
   try {
-    const base = `http://127.0.0.1:${puerto}`;
-    await esperar(`${base}/tablero`);
+    const bases = {};
+    if (origenes.has("app"))
+      bases.app = await servir(
+        ["out", "--config", "../serve.json"],
+        "/tablero",
+      );
+    if (origenes.has("publico"))
+      bases.publico = await servir(["dist/publico"], "/catalogo");
+    if (origenes.has("paquete"))
+      bases.paquete = await servir(
+        ["-c", "tests/e2e-paquete/serve.json"],
+        "/piezas/hackguard/index.html",
+      );
     navegador = await chromium.launch();
     const contexto = await navegador.newContext({
       viewport: VENTANA,
-      deviceScaleFactor: ESCALA,
+      deviceScaleFactor: CAPTURA_DPR,
+      // `/conoce` lleva su propia política de estilos: la toma oculta la navegación con un estilo propio y no cambia nada visible.
+      bypassCSP: true,
       colorScheme: "light",
       reducedMotion: "reduce",
     });
@@ -276,10 +347,16 @@ async function main() {
         /* sin almacenamiento */
       }
     });
+    const lienzo = await navegador.newContext({
+      viewport: VENTANA,
+      deviceScaleFactor: ESCALA,
+    });
     const faltantes = [];
+    const solo = opcion("--solo")?.split(",");
     for (const t of TOMAS) {
+      if (solo && !solo.includes(t.f)) continue;
       const page = await contexto.newPage();
-      await page.goto(base + t.ruta);
+      await page.goto(bases[t.origen ?? "app"] + t.ruta);
       await page.evaluate(() =>
         document.documentElement.setAttribute("data-theme", "claro"),
       );
@@ -287,12 +364,37 @@ async function main() {
       await page.addStyleTag({
         content: ".hg-lateral { display: none !important; }",
       });
+      // D2: la ficha se elige en la página, como lo haría la persona; no sube nada.
+      if (t.ficha) {
+        await page
+          .locator("[data-ficha-entrada]")
+          .setInputFiles(join(RAIZ, t.ficha));
+        await page.locator("[data-ficha-leida]").waitFor();
+      }
+      if (t.ocultar)
+        await page.addStyleTag({
+          content: `${t.ocultar} { display: none !important; }`,
+        });
       // Algunas pantallas muestran una unidad a la vez (los lotes de la carga): se pulsa la pestaña que la trae.
       if (t.pulsar)
         await page
           .getByRole("button", { name: new RegExp(t.pulsar) })
           .first()
           .click();
+      // La herramienta se elige en la lista y su archivo del kit se pega, como lo haría la persona; solo se lee en la página.
+      if (t.herramienta) {
+        await page.locator("#pegado-herramienta").selectOption(t.herramienta);
+        await page
+          .locator("#pegado-texto")
+          .fill(
+            readFileSync(join(RAIZ, t.texto), "utf8").replaceAll(
+              "2026-10-12",
+              "2026-10-02",
+            ),
+          );
+        await page.locator("[data-proponer]").click();
+        await page.locator("[data-pegado-resultado]").waitFor();
+      }
       const unidad = page
         .locator(`${t.dentro}:visible`)
         .filter({ has: page.getByText(t.ancla, { exact: false }) })
@@ -303,15 +405,32 @@ async function main() {
         continue;
       }
       await page.mouse.move(0, 0);
-      await unidad.screenshot({ path: join(resolve(salida), `${t.f}.png`) });
+      const fondo = await page.evaluate(
+        () => getComputedStyle(document.body).backgroundColor,
+      );
+      const caja = await unidad.boundingBox();
+      const pieza = await unidad.screenshot();
       await page.close();
-      console.log(`${t.f}  ${t.ruta}`);
+      const alto = Math.min(caja.height, 560 / ESCALA_MINIMA);
+      const s = Math.min(944 / caja.width, 560 / alto, 2);
+      const recortada = alto < caja.height;
+      const hoja = await lienzo.newPage();
+      await hoja.setContent(
+        `<body style="margin:0;width:${VENTANA.width}px;height:${VENTANA.height}px;background:${fondo};display:grid;place-items:center;overflow:hidden">` +
+          `<div style="width:${caja.width * s}px;height:${alto * s}px;overflow:hidden;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.18)">` +
+          `<img alt="" style="display:block;width:${caja.width * s}px;height:${caja.height * s}px" src="data:image/png;base64,${pieza.toString("base64")}"></div></body>`,
+      );
+      await hoja.screenshot({ path: join(resolve(salida), `${t.f}.png`) });
+      await hoja.close();
+      console.log(
+        `${t.f}  ${t.ruta}  s=${s.toFixed(2)}${recortada ? "  (recortada abajo)" : ""}${s < 0.6 ? "  ⚠ bajo 0,6" : ""}`,
+      );
     }
     if (faltantes.length)
       throw new Error(`sin unidad para: ${faltantes.join(" · ")}`);
   } finally {
     await navegador?.close();
-    servidor.kill();
+    for (const sv of servidores) sv.kill();
   }
 }
 

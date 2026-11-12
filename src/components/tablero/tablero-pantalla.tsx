@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { RUTAS } from "@/lib/brecha/etiquetas";
 import { plural } from "@/lib/brecha/textos";
 import type { VistaDeTablero } from "@/lib/brecha/tipos";

@@ -12,14 +12,14 @@
     "enlaces.produccion": "null cuando la app no tiene URL pública. `razon` explica por qué, y es lo que la vitrina muestra en lugar del enlace. Nunca se rellena con un enlace de repositorio ni con una promesa."
   },
   "schema_version": "1.0.0",
-  "actualizado": "2026-11-10",
+  "actualizado": "2026-11-11",
   "app": {
     "slug": "hackguard",
     "nombre": "HackGuard",
     "ciclo": "H1",
     "estado": "inicial",
     "sellado_en": null,
-    "sprints_cerrados": 12,
+    "sprints_cerrados": 13,
     "version_repo": "0.1.0"
   },
   "promesa": {
@@ -29,8 +29,8 @@
     "diferencial": "Los gestores de hallazgos acumulan alertas, las plataformas de red teaming (ataques simulados contra modelos de IA) encuentran fallas y las herramientas de gobierno llenan matrices de controles. HackGuard une las tres cosas en un solo hilo que se sigue de punta a punta: la prueba con su resultado esperado, el marco que la pide con su versión, el control de ISO/IEC 42001 que respalda cuando aplica, la evidencia sellada con su huella y el cierre que solo llega con una re-prueba. Ese hilo ya corre completo sobre apps de demostración: catálogo, plan, carga de evidencia, hallazgos, brecha por control e informe imprimible. Su núcleo es código determinista: con los mismos datos, cualquiera obtiene los mismos bytes. La IA solo propone, siempre bajo tu aprobación. Corre como web estática, sin servidor ni servicios de pago: operarla cuesta cero. Y nunca guarda una carga de ataque: describe qué se verifica, jamás cómo se rompe."
   },
   "funcionalidades": {
-    "total": 28,
-    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 5 del roadmap del H-2 ya construidas (D1, D3, D4, D5 y D6), las 4 del Sprint 012 (D8, D9, D10 y D11) y la 1 que el primer corte dejó al H-2 (el texto pegado)",
+    "total": 32,
+    "fuente_del_conteo": "docs/MANUAL-DE-USO.md (secciones) cuadrado con las 18 funciones [MVP · personal] de la visión y las 5 del roadmap del H-2 ya construidas (D1, D3, D4, D5 y D6), las 4 del Sprint 012 (D8, D9, D10 y D11) y la 1 que el primer corte dejó al H-2 (el texto pegado), las 2 del roadmap del Sprint 013 (D2 y D12) y las 2 del modo público para terceros (C19 y C20)",
     "descartadas": [],
     "grupos": [
       {
@@ -80,6 +80,12 @@
             "nombre": "Un investigador con fuentes comprobadas",
             "que_hace": "Te avisa cuando un marco publica una versión nueva o cuando conviene sumar o retirar una prueba. Lo busca un asistente de IA que corres a demanda, y el código comprueba cada cita contra su fuente. Nada entra sin tu aprobación.",
             "seccion_manual": "Las propuestas y los dos agentes · desde Sprint 008"
+          },
+          {
+            "id": "F29",
+            "nombre": "Tu activo desde su ficha, con la cita",
+            "que_hace": "Le das la ficha técnica de tu app y HackGuard te propone, rasgo por rasgo, el perfil del activo con la frase literal de la ficha que lo respalda. Lo que ninguna frase respalda queda sin responder, y lo que la ficha contradice no se decide solo. Tú aceptas, y solo lo aceptado se guarda. Nada sube y no usa ningún modelo.",
+            "seccion_manual": "Lo tuyo y lo público · desde Sprint 013"
           }
         ]
       },
@@ -180,6 +186,24 @@
             "nombre": "Tus hallazgos, listos para DefectDojo",
             "que_hace": "Descargas los hallazgos de un activo en el formato de importación de DefectDojo, con su cadena de apertura, corrección y re-prueba, su control de ISO/IEC 42001, su severidad y las huellas de sus sobres. Solo sale mitigado el que una re-prueba confirmada cerró; el reabierto sale activo; el crudo nunca viaja.",
             "seccion_manual": "Tus herramientas · desde Sprint 012"
+          },
+          {
+            "id": "F30",
+            "nombre": "Tus controles, aparte de la norma",
+            "que_hace": "Una organización agrega sus propios controles encima de los de ISO/IEC 42001, cada uno dicho en sus palabras y ligado a los controles de la norma que le corresponden. Se ven aparte, rotulados, con un estado derivado, y no cambian ni un control de la norma ni ninguna de sus cifras.",
+            "seccion_manual": "Lo tuyo y lo público · desde Sprint 013"
+          },
+          {
+            "id": "F31",
+            "nombre": "Una vitrina pública por lista blanca",
+            "que_hace": "Una exportación con solo lo que la lista permite: catálogo, ficha de prueba, marcos, controles y cobertura, brecha y vista por control, sobre demos sintéticos. Un barrido revisa cada archivo y falla si encuentra una ruta fuera de la lista, un id que no es de un demo, un host externo o un enlace roto.",
+            "seccion_manual": "Lo tuyo y lo público · desde Sprint 013"
+          },
+          {
+            "id": "F32",
+            "nombre": "El paquete de la vitrina, verificable",
+            "que_hace": "La misma vitrina, armada para vivir dentro de otro sitio: una base fija, enlaces que funcionan sin servidor inteligente y un manifiesto con la huella SHA-256 de cada archivo. Un verificador la revisa de punta a punta; cambiar un byte lo hace fallar y nombrar el archivo. No lleva ningún enlace de acceso.",
+            "seccion_manual": "Lo tuyo y lo público · desde Sprint 013"
           }
         ]
       },
@@ -247,10 +271,10 @@
     {
       "clave": "funcionalidades",
       "etiqueta": "Funcionalidades",
-      "valor": 28,
+      "valor": 32,
       "unidad": "funcionalidades",
       "fuente": "medido",
-      "detalle": "Las 28 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 10 del roadmap del H-2, contadas contra 12 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y del modo público para terceros no se ha construido."
+      "detalle": "Las 32 funciones construidas: las 18 del primer corte que la visión aprueba para uso personal y 14 del roadmap del H-2, contadas contra 13 secciones de docs/MANUAL-DE-USO.md. El resto del roadmap y del modo público para terceros no se ha construido."
     },
     {
       "clave": "pruebas_en_el_catalogo",
@@ -258,7 +282,7 @@
       "valor": 38,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Archivos de datos/pruebas/ del 2026-11-10: 38 pruebas. Por familia: software 10, agente 9, modelo generativo 7 y modelo de decisión 12. `pnpm catalogo:validar` las da por publicables."
+      "detalle": "Archivos de datos/pruebas/ del 2026-11-11: 38 pruebas. Por familia: software 10, agente 9, modelo generativo 7 y modelo de decisión 12. `pnpm catalogo:validar` las da por publicables."
     },
     {
       "clave": "controles_iso_42001",
@@ -266,7 +290,7 @@
       "valor": 38,
       "unidad": "controles",
       "fuente": "medido",
-      "detalle": "Contados en datos/controles/iso42001-anexo-a.json del 2026-11-10. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
+      "detalle": "Contados en datos/controles/iso42001-anexo-a.json del 2026-11-11. Son resúmenes con palabras propias del Anexo A; ninguno está contrastado con el texto de la norma todavía (verificado_contra_norma: no)."
     },
     {
       "clave": "fichas_de_prueba",
@@ -274,39 +298,39 @@
       "valor": 38,
       "unidad": "fichas",
       "fuente": "medido",
-      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-10. El build entero genera 122 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
+      "detalle": "Una página por prueba en out/catalogo/ tras `pnpm build` del 2026-11-11. El build entero genera 123 páginas, idénticas a las que sirve el proveedor (`node scripts/build-como-proveedor.mjs`)."
     },
     {
       "clave": "pruebas_automaticas",
       "etiqueta": "Pruebas automáticas",
-      "valor": 5085,
+      "valor": 5233,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Suma de dos corridas del 2026-11-10 sobre el árbol de este export: `pnpm test` 3735 pruebas, y `pnpm test:e2e` 1350 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
+      "detalle": "Suma de dos corridas del 2026-11-11 sobre el árbol de este export: `pnpm test` 3869 pruebas, y `pnpm test:e2e` 1364 en Chromium, Firefox y WebKit sobre el build de producción (el mismo conjunto corre en cada navegador, por eso la cifra se cuenta varias veces)."
     },
     {
       "clave": "pruebas_unitarias",
       "etiqueta": "Pruebas unitarias",
-      "valor": 3735,
+      "valor": 3869,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-10 sobre el árbol de este export: 192 archivos, 3735 pruebas, todas pasan."
+      "detalle": "Salida de `pnpm test` (vitest run --coverage) del 2026-11-11 sobre el árbol de este export: 201 archivos, 3869 pruebas, todas pasan."
     },
     {
       "clave": "pruebas_e2e",
       "etiqueta": "Pruebas end-to-end",
-      "valor": 1350,
+      "valor": 1364,
       "unidad": "pruebas",
       "fuente": "medido",
-      "detalle": "Salida de `playwright test --list` del 2026-11-10 (17 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
+      "detalle": "Salida de `playwright test --list` del 2026-11-11 (18 archivos) sobre el build de producción; la corrida completa pasa sin flaky. Incluyen el recorrido de las pantallas con axe, el flujo en inglés y la prueba de que el motor da en el navegador la misma huella que en Node."
     },
     {
       "clave": "cobertura_lineas",
       "etiqueta": "Cobertura de líneas",
-      "valor": 96.92,
+      "valor": 95.78,
       "unidad": "%",
       "fuente": "medido",
-      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-10: 6235 de 6433 líneas. El umbral de src/engine/ es 90 %."
+      "detalle": "v8 sobre src/lib/, src/engine/ y src/components/ en la corrida de `pnpm test` del 2026-11-11: 6538 de 6826 líneas. El umbral de src/engine/ es 90 %."
     },
     {
       "clave": "reglas_del_validador",
@@ -322,7 +346,7 @@
       "valor": 14,
       "unidad": "marcos",
       "fuente": "medido",
-      "detalle": "Archivos de datos/marcos/ del 2026-11-10, cada uno con su versión; hay un mapa de equivalencias entre versiones."
+      "detalle": "Archivos de datos/marcos/ del 2026-11-11, cada uno con su versión; hay un mapa de equivalencias entre versiones."
     },
     {
       "clave": "herramientas",
@@ -330,7 +354,7 @@
       "valor": 13,
       "unidad": "herramientas",
       "fuente": "medido",
-      "detalle": "Archivos de datos/herramientas/ del 2026-11-10: 12 públicas con versión verificada y licencia, más 1 propia de HackGuard (la revisión documentada por una persona)."
+      "detalle": "Archivos de datos/herramientas/ del 2026-11-11: 12 públicas con versión verificada y licencia, más 1 propia de HackGuard (la revisión documentada por una persona)."
     },
     {
       "clave": "pruebas_de_software_sin_control",

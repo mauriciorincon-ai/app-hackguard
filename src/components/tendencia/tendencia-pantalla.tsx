@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { RUTAS, rutaDeControl } from "@/lib/brecha/etiquetas";
 import type {
   FilaDeControlEnElTiempo,

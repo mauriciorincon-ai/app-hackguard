@@ -34,6 +34,7 @@ import {
 } from "../evidencia/vista.ts";
 import { avisosDeMarco } from "../propuestas/avisos.ts";
 import { RUTA_DE_PROPUESTAS } from "../propuestas/etiquetas.ts";
+import { brechaDeCapasPropias } from "../../engine/brecha/propios.ts";
 import type { Tendencia } from "../../engine/brecha/tendencia.ts";
 import { etiquetaDeBrecha } from "./etiquetas.ts";
 import type { MundoDeBrecha } from "./mundo.ts";
@@ -57,7 +58,9 @@ import type {
   FilaDeActivoDeTablero,
   FilaDeAlerta,
   FilaDeControlDeInforme,
+  CapaPropiaDeLista,
   FilaDeControlDeLista,
+  FilaDeControlPropio,
   FilaDeEsperadoObtenido,
   FilaDeHallazgoDeInforme,
   FilaDePruebaDeControl,
@@ -606,6 +609,49 @@ export function construirVistaDeBrecha(m: MundoDeBrecha): VistaDeBrecha {
 
 // ── Vista por control: la lista ─────────────────────────────────────────────────────────────────
 
+/** D12: las capas propias de la instantánea, con el estado derivado de sus controles equivalentes de la norma. */
+function capasPropiasDeLista(
+  m: MundoDeBrecha,
+  k: ReturnType<typeof contexto>,
+): CapaPropiaDeLista[] {
+  const propias = m.instantanea.catalogo.controles.filter(
+    (x) => x.capa === "propia",
+  );
+  if (propias.length === 0) return [];
+  const derivadas = brechaDeCapasPropias(
+    propias,
+    k.capa,
+    new Map(k.b.controles.map((c) => [c.id, c.estado] as const)),
+  );
+  return derivadas.map((d) => {
+    const capa = propias.find((x) => x.id === d.capa)!;
+    const definidos = capa.areas.flatMap((area) =>
+      area.controles.map((x) => ({ x, area })),
+    );
+    return {
+      id: capa.id,
+      nombre: capa.nombre,
+      controles: d.controles.map((c): FilaDeControlPropio => {
+        const { x, area } = definidos.find((o) => o.x.id === c.id)!;
+        return {
+          id: c.id,
+          nombre: x.nombre,
+          area: { id: area.id, nombre: area.nombre },
+          apunta: c.apunta.map((a) => ({
+            id: a.id,
+            estado:
+              a.estado === null ? null : k.et("estado_de_control", a.estado),
+          })),
+          estado: k.et("estado_de_control", c.estado),
+          estadoId: c.estado,
+          sinAplicables: c.sinAplicables,
+          cubreParte: c.cubreParte,
+        };
+      }),
+    };
+  });
+}
+
 export function construirVistaDeControles(m: MundoDeBrecha): VistaDeControles {
   const k = contexto(m);
   const { b } = k;
@@ -641,6 +687,7 @@ export function construirVistaDeControles(m: MundoDeBrecha): VistaDeControles {
         estadoId: c.estado,
       };
     }),
+    capasPropias: capasPropiasDeLista(m, k),
     sinControl: b.sinControl.map(
       ({ activo, prueba }): PruebaSinControlDeLista => {
         const f = k.fila(activo, prueba);

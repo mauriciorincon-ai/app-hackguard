@@ -11,6 +11,7 @@ import { InformePantalla } from "../../../src/components/informe/informe-pantall
 import { TableroPantalla } from "../../../src/components/tablero/tablero-pantalla";
 import { ESTADOS_DE_CONTROL } from "../../../src/engine/brecha/esquemas.ts";
 import { fechaMasDias } from "../../../src/engine/fecha.ts";
+import { slugDeControl } from "../../../src/lib/brecha/etiquetas.ts";
 import {
   construirVistaDeBrecha,
   construirVistaDeControl,
@@ -183,5 +184,25 @@ describe("las cinco pantallas dicen lo mismo en cada fecha de la matriz", () => 
       }
     },
     60_000,
+  );
+});
+
+describe("la lista de controles no enlaza a una página que no existe", () => {
+  it.each(mundos)(
+    "%s: cada enlace a un control lleva a una página generada",
+    (_fecha, m) => {
+      const paginas = new Set(
+        idsDeControles(m).map((id) => `/brecha/control/${slugDeControl(id)}`),
+      );
+      const lista = html(<ListaDeControles v={construirVistaDeControles(m)} />);
+      const muertos = [
+        ...lista.querySelectorAll<HTMLAnchorElement>(
+          'a[href^="/brecha/control/"]',
+        ),
+      ]
+        .map((a) => a.getAttribute("href")!)
+        .filter((h) => !paginas.has(h));
+      expect(muertos).toEqual([]);
+    },
   );
 });

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/enlace";
 import { ETIQUETAS_DE_VISTAS as E, pruebas } from "@/lib/catalogo/etiquetas";
 import {
   SE_MANTIENE,

@@ -78,6 +78,12 @@ jobs:
       # Firefox y WebKit solo corren tests/e2e/determinismo.spec.ts: la misma huella en los tres motores (RNF-01).
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e        # incluye scans axe (@axe-core/playwright)
+      # C19 y C20 (S13), dentro de este mismo job (la ruleset no cambia): la exportación pública con su frontera, y el paquete de la vitrina
+      # armado, verificado (manifiesto, SHA-256, cero hosts, cero enlaces) y servido sin URL limpias, bajo /piezas/hackguard/.
+      - run: pnpm test:e2e:publico
+      - run: HACKGUARD_CONSULTA=2026-10-05 pnpm paquete:vitrina
+      - run: pnpm paquete:verificar
+      - run: pnpm test:e2e:paquete
       # El primer reintento graba trace (playwright.config `trace: on-first-retry`) con
       # consola, errores y DOM — se sube SOLO cuando algo falla (kit v1.26.0).
       - uses: actions/upload-artifact@v7

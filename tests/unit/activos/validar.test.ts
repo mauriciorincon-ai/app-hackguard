@@ -240,6 +240,9 @@ describe("el origen y la carpeta de un activo cuadran (regla 17-bis)", () => {
       },
     );
     expect(reglas(r)).toContain("activo/demo-en-carpeta-privada");
-    expect(r.hallazgos.find((h) => h.regla === "activo/demo-en-carpeta-privada")?.severidad).toBe("error");
+    expect(
+      r.hallazgos.find((h) => h.regla === "activo/demo-en-carpeta-privada")
+        ?.severidad,
+    ).toBe("error");
   });
 });
